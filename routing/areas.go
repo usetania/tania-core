@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+type AreasData struct {
+	Data []area.Area
+}
+
 // AreasIndex displays all available areas in a farm
 func AreasIndex(c echo.Context) error {
 	farmID := c.QueryParam("farm_id")
@@ -17,7 +21,9 @@ func AreasIndex(c echo.Context) error {
 
 	areasJSON := area.DisplayAll()
 
-	return c.JSON(http.StatusOK, areasJSON)
+	return c.JSON(http.StatusOK, AreasData{
+		Data: areasJSON,
+	})
 }
 
 // AreasCreate registers a new area inside a farm

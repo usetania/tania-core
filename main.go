@@ -25,5 +25,9 @@ func main() {
 	areas.POST("/:uid/dispose", routing.AreasDispose)
 	areas.DELETE("/:uid", routing.AreasDestroy)
 
+	// Group for Reservoirs HTTP routing
+	reservoirs := e.Group("/reservoirs")
+	reservoirs.GET("/", routing.ReservoirsIndex)
+
 	e.Logger.Fatal(e.Start(":1323"))
 }
