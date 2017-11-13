@@ -2,11 +2,16 @@
 // can do on the area of the farm
 package area
 
-type EventHandler interface {
-	areaCreated()
-	cropsHarvested()
-	cropsDisposed()
-	areaIrrigated()
-	areaFertilized()
-	areaDestroyed()
+type AreaCreated struct {
+	Uid           string
+	GrowingMethod string
+	Size          float64
 }
+
+type CropsHarvested struct{}
+
+type CropsDisposed struct {
+	ReasonAdded string
+}
+
+type AreaDestroyed struct{}

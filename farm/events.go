@@ -2,8 +2,19 @@
 // to their farm
 package farm
 
-type EventHandler interface {
-	farmCreated()
-	farmInformationUpdated()
-	farmDestroyed()
+type FarmCreated struct {
+	Uid         string
+	Name        string
+	Description string
+	Latitude    float64
+	Longitude   float64
 }
+
+type FarmInformationUpdated struct {
+	NameUpdated        string
+	DescriptionUpdated string
+	LatitudeUpdated    float64
+	LongitudeUpdated   float64
+}
+
+type FarmDestroyed struct{}
