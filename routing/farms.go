@@ -2,9 +2,10 @@
 package routing
 
 import (
-	"../farm"
-	"github.com/labstack/echo"
 	"net/http"
+
+	"github.com/Tanibox/tania-server/farm"
+	"github.com/labstack/echo"
 )
 
 // FarmsIndex displays all available farms in Tania
