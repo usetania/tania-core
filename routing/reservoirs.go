@@ -2,9 +2,10 @@
 package routing
 
 import (
-	"../reservoir"
-	"github.com/labstack/echo"
 	"net/http"
+
+	"github.com/Tanibox/tania-server/reservoir"
+	"github.com/labstack/echo"
 )
 
 type ReservoirsData struct {

@@ -2,9 +2,10 @@
 package routing
 
 import (
-	"../area"
-	"github.com/labstack/echo"
 	"net/http"
+
+	"github.com/Tanibox/tania-server/area"
+	"github.com/labstack/echo"
 )
 
 type AreasData struct {

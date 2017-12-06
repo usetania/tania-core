@@ -1,9 +1,8 @@
 package main
 
 import (
+	"github.com/Tanibox/tania-server/routing"
 	"github.com/labstack/echo"
-
-	"./routing"
 )
 
 func main() {
