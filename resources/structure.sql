@@ -1,4 +1,4 @@
-CREATE TABLE "fields" (
+CREATE TABLE IF NOT EXISTS "fields" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "name" TEXT(100) NOT NULL,
   "lat" REAL(10,8),
@@ -12,7 +12,7 @@ CREATE TABLE "fields" (
   "updated_at" TEXT(20)
 );
 
-CREATE TABLE "reservoirs" (
+CREATE TABLE IF NOT EXISTS "reservoirs" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "field_id" INTEGER(11),
   "name" TEXT(100) NOT NULL,
@@ -22,9 +22,9 @@ CREATE TABLE "reservoirs" (
   "updated_at" TEXT(20),
   CONSTRAINT "reservoirs_field_id_foreign" FOREIGN KEY ("field_id") REFERENCES "fields" ("id")
 );
-CREATE INDEX reservoirs_field_id ON reservoirs (field_id);
+CREATE INDEX IF NOT EXISTS reservoirs_field_id ON reservoirs (field_id);
 
-CREATE TABLE "areas" (
+CREATE TABLE IF NOT EXISTS "areas" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "reservoir_id" INTEGER(11),
   "field_id" INTEGER(11),
@@ -41,10 +41,10 @@ CREATE TABLE "areas" (
   CONSTRAINT "areas_field_id_foreign" FOREIGN KEY ("field_id") REFERENCES "fields" ("id"),
   CONSTRAINT "areas_reservoir_id_foreign" FOREIGN KEY ("reservoir_id") REFERENCES "reservoirs" ("id")
 );
-CREATE INDEX areas_field_id ON areas (field_id);
-CREATE INDEX areas_reservoir_id ON areas (reservoir_id);
+CREATE INDEX IF NOT EXISTS areas_field_id ON areas (field_id);
+CREATE INDEX IF NOT EXISTS areas_reservoir_id ON areas (reservoir_id);
 
-CREATE TABLE "devices" (
+CREATE TABLE IF NOT EXISTS "devices" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "field_id" INTEGER(11),
   "name" TEXT(100),
@@ -54,9 +54,9 @@ CREATE TABLE "devices" (
   "updated_at" TEXT(20),
   CONSTRAINT "devices_field_id_foreign" FOREIGN KEY ("field_id") REFERENCES "fields" ("id")
 );
-CREATE INDEX devices_field_id ON devices (field_id);
+CREATE INDEX IF NOT EXISTS devices_field_id ON devices (field_id);
 
-CREATE TABLE "areas_devices" (
+CREATE TABLE IF NOT EXISTS "areas_devices" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "area_id" INTEGER(11),
   "device_id" INTEGER(11),
@@ -65,10 +65,10 @@ CREATE TABLE "areas_devices" (
   CONSTRAINT "areas_devices_areaa_id_foreign" FOREIGN KEY ("area_id") REFERENCES "areas" ("id"),
   CONSTRAINT "areas_devices_device_id_foreign" FOREIGN KEY ("device_id") REFERENCES "devices" ("id")
 );
-CREATE INDEX areas_devices_area_id ON areas_devices (area_id);
-CREATE INDEX areas_devices_device_id ON areas_devices (device_id);
+CREATE INDEX IF NOT EXISTS areas_devices_area_id ON areas_devices (area_id);
+CREATE INDEX IF NOT EXISTS areas_devices_device_id ON areas_devices (device_id);
 
-CREATE TABLE "seed_categories" (
+CREATE TABLE IF NOT EXISTS "seed_categories" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "name" TEXT(100) NOT NULL,
   "slug" TEXT(100) NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE "seed_categories" (
   "updated_at" TEXT(20)
 );
 
-CREATE TABLE "seeds" (
+CREATE TABLE IF NOT EXISTS "seeds" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "seedcategory_id" INTEGER(11),
   "name" TEXT(100) NOT NULL,
@@ -97,9 +97,9 @@ CREATE TABLE "seeds" (
   "created_at" TEXT(20) NOT NULL,
   CONSTRAINT "seeds_seedcategory_id_foreign" FOREIGN KEY ("seedcategory_id") REFERENCES "seed_categories" ("id")
 );
-CREATE INDEX seeds_seedcategory_id ON seeds (seedcategory_id);
+CREATE INDEX IF NOT EXISTS seeds_seedcategory_id ON seeds (seedcategory_id);
 
-CREATE TABLE "plants" (
+CREATE TABLE IF NOT EXISTS "plants" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "area_id" INTEGER(11) NOT NULL,
   "seed_id" INTEGER(11) NOT NULL,
@@ -114,17 +114,17 @@ CREATE TABLE "plants" (
   CONSTRAINT "plants_area_id_foreign" FOREIGN KEY ("area_id") REFERENCES "areas" ("id"),
   CONSTRAINT "plants_seed_id_foreign" FOREIGN KEY ("seed_id") REFERENCES "seeds" ("id")
 );
-CREATE INDEX plants_area_id ON plants (area_id);
-CREATE INDEX plants_seed_id ON plants (seed_id);
+CREATE INDEX IF NOT EXISTS plants_area_id ON plants (area_id);
+CREATE INDEX IF NOT EXISTS plants_seed_id ON plants (seed_id);
 
-CREATE TABLE "resources" (
+CREATE TABLE IF NOT EXISTS "resources" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "type" TEXT(100) NOT NULL,
   "created_at" TEXT(20) NOT NULL,
   "updated_at" TEXT(20)
 );
 
-CREATE TABLE "resources_devices" (
+CREATE TABLE IF NOT EXISTS "resources_devices" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "device_id" INTEGER(11),
   "resource_id" INTEGER(11),
@@ -138,17 +138,17 @@ CREATE TABLE "resources_devices" (
   CONSTRAINT "resources_devices_device_id_foreign" FOREIGN KEY ("device_id") REFERENCES "devices" ("id"),
   CONSTRAINT "resources_devices_resource_id_foreign" FOREIGN KEY ("resource_id") REFERENCES "resources" ("id")
 );
-CREATE INDEX resources_devices_area_id ON resources_devices (device_id);
-CREATE INDEX resources_devices_seed_id ON resources_devices (resource_id);
+CREATE INDEX IF NOT EXISTS resources_devices_area_id ON resources_devices (device_id);
+CREATE INDEX IF NOT EXISTS resources_devices_seed_id ON resources_devices (resource_id);
 
-CREATE TABLE "settings" (
+CREATE TABLE IF NOT EXISTS "settings" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "key" TEXT(200) NOT NULL,
   "value" TEXT(200) NOT NULL,
   "updated_at" TEXT(20)
 );
 
-CREATE TABLE "tasks" (
+CREATE TABLE IF NOT EXISTS "tasks" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "name" TEXT(100) NOT NULL,
   "notes" TEXT,
@@ -161,7 +161,7 @@ CREATE TABLE "tasks" (
   "updated_at" TEXT(20)
 );
 
-CREATE TABLE "users" (
+CREATE TABLE IF NOT EXISTS "users" (
   "id" INTEGER PRIMARY KEY AUTOINCREMENT,
   "username" TEXT(180) NOT NULL,
   "username_canonical" TEXT(180) NOT NULL,
