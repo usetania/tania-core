@@ -8,6 +8,14 @@ import (
 	"github.com/labstack/echo"
 )
 
+func FarmsRouter(g *echo.Group) {
+	g.GET("/", FarmsIndex)
+	g.POST("/", FarmsCreate)
+	g.GET("/:uid", FarmsShow)
+	g.PUT("/:uid", FarmsUpdate)
+	g.DELETE("/:uid", FarmsDestroy)
+}
+
 // FarmsIndex displays all available farms in Tania
 func FarmsIndex(c echo.Context) error {
 	farmJSON := farm.DisplayAll()

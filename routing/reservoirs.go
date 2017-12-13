@@ -12,6 +12,10 @@ type ReservoirsData struct {
 	Data []reservoir.Reservoir
 }
 
+func ReservoirsRouter(g *echo.Group) {
+	g.GET("/", ReservoirsIndex)
+}
+
 // ReservoirsIndex displays all available reservoirs in a farm
 func ReservoirsIndex(c echo.Context) error {
 	farmID := c.QueryParam("farm_id")

@@ -12,6 +12,14 @@ type AreasData struct {
 	Data []area.Area
 }
 
+func AreasRouter(g *echo.Group) {
+	g.GET("/", FarmsIndex)
+	g.POST("/", FarmsCreate)
+	g.GET("/:uid", FarmsShow)
+	g.PUT("/:uid", FarmsUpdate)
+	g.DELETE("/:uid", FarmsDestroy)
+}
+
 // AreasIndex displays all available areas in a farm
 func AreasIndex(c echo.Context) error {
 	farmID := c.QueryParam("farm_id")
