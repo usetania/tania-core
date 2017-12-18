@@ -24,7 +24,7 @@ func ReservoirsIndex(c echo.Context) error {
 		return c.JSON(http.StatusOK, RequestError{ErrorFarmID})
 	}
 
-	reservoirsJSON := reservoir.DisplayAll()
+	reservoirsJSON := []reservoir.Reservoir{} //reservoir.DisplayAll()
 
 	return c.JSON(http.StatusOK, ReservoirsData{
 		Data: reservoirsJSON,
