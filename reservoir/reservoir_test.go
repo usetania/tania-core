@@ -56,32 +56,60 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 
 }
 
-func TestCreateWaterSource(t *testing.T) {
+func TestAttachWaterSource(t *testing.T) {
 	// Given
+	reservoir1, _ := CreateReservoir("My Reservoir 1", 8, 24.5, 31.8)
+	bucket, _ := CreateBucket(100, 50)
+
+	reservoir2, _ := CreateReservoir("My Reservoir 2", 8, 24.5, 31.8)
+	tap, _ := CreateTap()
 
 	// When
-	bucket, err1 := CreateBucket(100, 50)
-	tap, err2 := CreateTap()
+	err1 := reservoir1.AttachBucket(&bucket)
+	err2 := reservoir2.AttachTap(&tap)
 
 	// Then
-	assert.NotEqual(t, bucket, Bucket{})
+	val1 := reservoir1.waterSource
+	val2 := reservoir2.waterSource
+
+	assert.Equal(t, val1, bucket)
 	assert.Nil(t, err1)
 
-	assert.Equal(t, tap, Tap{})
+	assert.Equal(t, val2, tap)
 	assert.Nil(t, err2)
 }
 
-func TestAttachBucket(t *testing.T) {
+func TestInvalidAttachWaterSource(t *testing.T) {
 	// Given
-	reservoir, err := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
-	bucket, err := CreateBucket(100, 50)
+	reservoir, _ := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
+	bucket1, _ := CreateBucket(100, 50)
+	bucket2, _ := CreateBucket(200, 150)
+	tap, _ := CreateTap()
 
 	// When
-	err = reservoir.AttachBucket(&bucket)
+	reservoir.AttachBucket(&bucket1)
+	err1 := reservoir.AttachBucket(&bucket2)
+	err2 := reservoir.AttachTap(&tap)
+
+	assert.Equal(t, err1, ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode})
+	assert.Equal(t, err2, ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode})
+}
+
+func TestMeasureCondition(t *testing.T) {
+	// Given
+	reservoir1, _ := CreateReservoir("My Reservoir 1", 8, 24.5, 31.8)
+	bucket, _ := CreateBucket(100, 50)
+	reservoir1.AttachBucket(&bucket)
+
+	reservoir2, _ := CreateReservoir("My Reservoir 2", 10, 21.2, 34.2)
+	tap, _ := CreateTap()
+	reservoir2.AttachTap(&tap)
+
+	// When
+	val1 := reservoir1.MeasureCondition()
+	val2 := reservoir2.MeasureCondition()
 
 	// Then
-	val := reservoir.waterSource
-
-	assert.Equal(t, val, bucket)
-	assert.Nil(t, err)
+	assert.Equal(t, val1, float32(1))
+	assert.Equal(t, val2, float32(0))
 }
