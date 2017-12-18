@@ -20,8 +20,9 @@ func CreateBucket(capacity, currentCapacity float32) (Bucket, error) {
 		return Bucket{}, ReservoirError{ReservoirErrorInvalidCapacityCode}
 	}
 
-	if currentCapacity > capacity || currentCapacity < 0 {
-		return Bucket{}, ReservoirError{ReservoirErrorInvalidCurrentBucketCapacityCode}
+	err := validateCurrentCapacity(capacity, currentCapacity)
+	if err != nil {
+		return Bucket{}, err
 	}
 
 	return Bucket{Capacity: capacity, CurrentCapacity: currentCapacity}, nil
@@ -34,8 +35,9 @@ func CreateTap() (Tap, error) {
 
 // ChangeCurrentCapacity changes the amount of water in the Bucket
 func (b *Bucket) ChangeCurrentCapacity(currentCapacity float32) error {
-	if currentCapacity > b.Capacity || currentCapacity < 0 {
-		return ReservoirError{ReservoirErrorInvalidCurrentBucketCapacityCode}
+	err := validateCurrentCapacity(b.CurrentCapacity, currentCapacity)
+	if err != nil {
+		return err
 	}
 
 	b.CurrentCapacity = currentCapacity
@@ -50,4 +52,12 @@ func (b Bucket) IsBucketEmpty() bool {
 	}
 
 	return false
+}
+
+func validateCurrentCapacity(capacity, currentCapacity float32) error {
+	if currentCapacity > capacity || currentCapacity < 0 {
+		return ReservoirError{ReservoirErrorInvalidCurrentBucketCapacityCode}
+	}
+
+	return nil
 }
