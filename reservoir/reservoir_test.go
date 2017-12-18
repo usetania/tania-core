@@ -21,7 +21,7 @@ func TestCreateReservoir(t *testing.T) {
 	assert.NotEqual(t, reservoir, Reservoir{})
 }
 
-func TestAbnormalCreateReservoir(t *testing.T) {
+func TestInvalidCreateReservoir(t *testing.T) {
 	// Given
 	name := ""
 
@@ -112,4 +112,38 @@ func TestMeasureCondition(t *testing.T) {
 	// Then
 	assert.Equal(t, val1, float32(1))
 	assert.Equal(t, val2, float32(0))
+}
+
+func TestChangeTemperature(t *testing.T) {
+	// Given
+	reservoir, _ := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
+	temperature := float32(32)
+	ph := float32(4.3)
+	ec := float32(23.5)
+
+	// When
+	reservoir.ChangeTemperature(temperature, ph, ec)
+
+	// Then
+	assert.Equal(t, reservoir.Temperature, temperature)
+	assert.Equal(t, reservoir.PH, ph)
+	assert.Equal(t, reservoir.EC, ec)
+}
+
+func TestInvalidChangeTemperature(t *testing.T) {
+	// Given
+	reservoir, _ := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
+	temperature := float32(32)
+	ph1 := float32(-10)
+	ec1 := float32(23.5)
+	ph2 := float32(4)
+	ec2 := float32(-1)
+
+	// When
+	err1 := reservoir.ChangeTemperature(temperature, ph1, ec1)
+	err2 := reservoir.ChangeTemperature(temperature, ph2, ec2)
+
+	// Then
+	assert.Equal(t, err1, ReservoirError{ReservoirErrorInvalidPHCode})
+	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidECCode})
 }
