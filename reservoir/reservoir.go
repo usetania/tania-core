@@ -26,6 +26,7 @@ func (e ReservoirError) Error() string {
 
 const (
 	ReservoirErrorEmptyNameCode = iota
+	ReservoirErrorNotEnoughCharacterCode
 	ReservoirErrorInvalidPHCode
 	ReservoirErrorInvalidECCode
 	ReservoirErrorInvalidCapacityCode
@@ -140,30 +141,33 @@ func (r Reservoir) MeasureCondition() float32 {
 	return 1
 }
 
-// ChangeInformation is used to change Reservoir information. All arguments are optional
-func (r *Reservoir) ChangeInformation(name string, ph, ec, temperature float32) error {
+// ChangeName is used to change Reservoir Name
+func (r *Reservoir) ChangeName(name string) error {
+	err := validateName(name)
+	if err != nil {
+		return err
+	}
+
+	r.Name = name
+
+	return nil
+}
+
+// ChangePH is used to change Reservoir pH
+func (r *Reservoir) ChangePH(ph float32) error {
 	err := validatePH(ph)
 	if err != nil {
 		return err
 	}
 
-	err = validateEC(ec)
-	if err != nil {
-		return err
-	}
+	r.PH = ph
 
-	if name != "" {
-		r.Name = name
-	}
-	if ph != 0 {
-		r.PH = ph
-	}
-	if ec != 0 {
-		r.EC = ec
-	}
-	if temperature != 0 {
-		r.Temperature = temperature
-	}
+	return nil
+}
+
+// ChangeTemperature is used to change Reservoir Temperature
+func (r *Reservoir) ChangeTemperature(temperature float32) error {
+	r.Temperature = temperature
 
 	return nil
 }
@@ -171,6 +175,9 @@ func (r *Reservoir) ChangeInformation(name string, ph, ec, temperature float32) 
 func validateName(name string) error {
 	if name == "" {
 		return ReservoirError{ReservoirErrorEmptyNameCode}
+	}
+	if len(name) < 5 {
+		return ReservoirError{ReservoirErrorNotEnoughCharacterCode}
 	}
 
 	return nil
