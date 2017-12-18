@@ -2,6 +2,8 @@ package reservoir
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateReservoir(t *testing.T) {
@@ -12,12 +14,11 @@ func TestCreateReservoir(t *testing.T) {
 	temperature := float32(27.0)
 
 	// When
-	_, err := CreateReservoir(name, ph, ec, temperature)
+	reservoir, err := CreateReservoir(name, ph, ec, temperature)
 
 	// Then
-	if err != nil {
-		t.Error(err)
-	}
+	assert.Nil(t, err)
+	assert.NotEqual(t, reservoir, Reservoir{})
 }
 
 func TestAbnormalCreateReservoir(t *testing.T) {
@@ -28,9 +29,7 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 	_, err := CreateReservoir(name, 0, 0, 0)
 
 	// Then
-	if err != (ReservoirError{ReservoirErrorEmptyNameCode}) {
-		t.Error("Expected error return: ", ReservoirError{ReservoirErrorEmptyNameCode})
-	}
+	assert.Equal(t, err, ReservoirError{ReservoirErrorEmptyNameCode})
 
 	// Given
 	name = "My Reservoir"
@@ -40,9 +39,7 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 	_, err = CreateReservoir(name, ph, 0, 0)
 
 	// Then
-	if err != (ReservoirError{ReservoirErrorInvalidPHCode}) {
-		t.Error("Expected error return: ", ReservoirError{ReservoirErrorInvalidPHCode})
-	}
+	assert.Equal(t, err, ReservoirError{ReservoirErrorInvalidPHCode})
 
 	// Given
 	name = "My Reservoir"
@@ -54,28 +51,24 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 	_, err2 := CreateReservoir(name, 0, ec2, 0)
 
 	// Then
-	if err != (ReservoirError{ReservoirErrorInvalidECCode}) {
-		t.Error("Expected error return: ", ReservoirError{ReservoirErrorInvalidECCode})
-	}
-	if err2 != (ReservoirError{ReservoirErrorInvalidECCode}) {
-		t.Error("Expected error return: ", ReservoirError{ReservoirErrorInvalidECCode})
-	}
+	assert.Equal(t, err, ReservoirError{ReservoirErrorInvalidECCode})
+	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidECCode})
+
 }
 
 func TestCreateWaterSource(t *testing.T) {
 	// Given
 
 	// When
-	bucket, err := CreateBucket(100)
-	tap, err := CreateTap()
+	bucket, err1 := CreateBucket(100)
+	tap, err2 := CreateTap()
 
 	// Then
-	if bucket == (Bucket{}) && err != nil {
-		t.Error("Expected error return: ", nil, ", found: ", err)
-	}
-	if tap == (Tap{}) && err != nil {
-		t.Error("Expected error return: ", nil, ", found: ", err)
-	}
+	assert.NotEqual(t, bucket, Bucket{})
+	assert.Nil(t, err1)
+
+	assert.Equal(t, tap, Tap{})
+	assert.Nil(t, err2)
 }
 
 func TestAttachBucket(t *testing.T) {
@@ -89,7 +82,6 @@ func TestAttachBucket(t *testing.T) {
 	// Then
 	val := reservoir.waterSource
 
-	if val == nil || err != nil {
-		t.Error("Expected error: ", nil, ", found: ", err)
-	}
+	assert.Equal(t, val, bucket)
+	assert.Nil(t, err)
 }
