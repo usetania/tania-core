@@ -20,7 +20,7 @@ func (e ReservoirError) Error() string {
 	case ReservoirErrorBucketAlreadyAttachedCode:
 		return "Reservoir water source is already attached."
 	case ReservoirErrorInvalidCurrentBucketCapacityCode:
-		return "Reservoir bucket current capacity is excee"
+		return "Reservoir bucket is invalid."
 	default:
 		return "Unrecognized Reservoir Error Code"
 	}
