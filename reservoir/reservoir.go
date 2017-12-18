@@ -99,21 +99,23 @@ func (r *Reservoir) ChangeName(name string) error {
 	return nil
 }
 
-// ChangePH is used to change Reservoir pH
-func (r *Reservoir) ChangePH(ph float32) error {
+// ChangeTemperature is used to change Reservoir Temperature.
+// Temperature change can affect the value of pH and EC,
+// so we will accept pH and EC value in arguments
+func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
 	err := validatePH(ph)
 	if err != nil {
 		return err
 	}
 
-	r.PH = ph
+	err = validateEC(ec)
+	if err != nil {
+		return err
+	}
 
-	return nil
-}
-
-// ChangeTemperature is used to change Reservoir Temperature
-func (r *Reservoir) ChangeTemperature(temperature float32) error {
 	r.Temperature = temperature
+	r.PH = ph
+	r.EC = ec
 
 	return nil
 }
