@@ -17,7 +17,7 @@ func (e ReservoirError) Error() string {
 		return "Reservoir EC value is invalid."
 	case ReservoirErrorInvalidCapacityCode:
 		return "Reservoir bucket is invalid."
-	case ReservoirErrorBucketAlreadyAttachedCode:
+	case ReservoirErrorWaterSourceAlreadyAttachedCode:
 		return "Reservoir water source is already attached."
 	case ReservoirErrorInvalidCurrentBucketCapacityCode:
 		return "Reservoir bucket is invalid."
@@ -32,6 +32,6 @@ const (
 	ReservoirErrorInvalidPHCode
 	ReservoirErrorInvalidECCode
 	ReservoirErrorInvalidCapacityCode
-	ReservoirErrorBucketAlreadyAttachedCode
+	ReservoirErrorWaterSourceAlreadyAttachedCode
 	ReservoirErrorInvalidCurrentBucketCapacityCode
 )

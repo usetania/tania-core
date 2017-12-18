@@ -42,7 +42,7 @@ func CreateReservoir(name string, ph, ec, temperature float32) (Reservoir, error
 // AttachBucket attach Bucket value object to Reservoir.waterSource
 func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 	if r.IsAttachedToWaterSource() {
-		return ReservoirError{ReservoirErrorBucketAlreadyAttachedCode}
+		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
 	r.waterSource = *bucket
@@ -52,7 +52,7 @@ func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 // AttachTap attach Tap value object to Reservoir.waterSource
 func (r *Reservoir) AttachTap(tap *Tap) error {
 	if r.IsAttachedToWaterSource() {
-		return ReservoirError{ReservoirErrorBucketAlreadyAttachedCode}
+		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
 	r.waterSource = *tap
