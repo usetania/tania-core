@@ -35,7 +35,8 @@ func CreateTap() (Tap, error) {
 
 // ChangeCurrentCapacity changes the amount of water in the Bucket
 func (b *Bucket) ChangeCurrentCapacity(currentCapacity float32) error {
-	err := validateCurrentCapacity(b.CurrentCapacity, currentCapacity)
+	err := validateCurrentCapacity(b.Capacity, currentCapacity)
+
 	if err != nil {
 		return err
 	}
