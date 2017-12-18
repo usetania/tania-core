@@ -28,8 +28,8 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 	_, err := CreateReservoir(name, 0, 0, 0)
 
 	// Then
-	if err != ReservoirErrorEmptyName {
-		t.Error("Expected error return: ", ReservoirErrorEmptyName)
+	if err != (ReservoirError{ReservoirErrorEmptyNameCode}) {
+		t.Error("Expected error return: ", ReservoirError{ReservoirErrorEmptyNameCode})
 	}
 
 	// Given
@@ -40,8 +40,8 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 	_, err = CreateReservoir(name, ph, 0, 0)
 
 	// Then
-	if err != ReservoirErrorInvalidPH {
-		t.Error("Expected error return: ", ReservoirErrorInvalidPH)
+	if err != (ReservoirError{ReservoirErrorInvalidPHCode}) {
+		t.Error("Expected error return: ", ReservoirError{ReservoirErrorInvalidPHCode})
 	}
 
 	// Given
@@ -54,11 +54,11 @@ func TestAbnormalCreateReservoir(t *testing.T) {
 	_, err2 := CreateReservoir(name, 0, ec2, 0)
 
 	// Then
-	if err != ReservoirErrorInvalidEC {
-		t.Error("Expected error return: ", ReservoirErrorInvalidEC)
+	if err != (ReservoirError{ReservoirErrorInvalidECCode}) {
+		t.Error("Expected error return: ", ReservoirError{ReservoirErrorInvalidECCode})
 	}
-	if err2 != ReservoirErrorInvalidEC {
-		t.Error("Expected error return: ", ReservoirErrorInvalidEC)
+	if err2 != (ReservoirError{ReservoirErrorInvalidECCode}) {
+		t.Error("Expected error return: ", ReservoirError{ReservoirErrorInvalidECCode})
 	}
 }
 

@@ -32,14 +32,6 @@ const (
 	ReservoirErrorBucketAlreadyAttachedCode
 )
 
-var (
-	ReservoirErrorEmptyName             = ReservoirError{ReservoirErrorEmptyNameCode}
-	ReservoirErrorInvalidPH             = ReservoirError{ReservoirErrorInvalidPHCode}
-	ReservoirErrorInvalidEC             = ReservoirError{ReservoirErrorInvalidECCode}
-	ReservoirErrorInvalidCapacity       = ReservoirError{ReservoirErrorInvalidCapacityCode}
-	ReservoirErrorBucketAlreadyAttached = ReservoirError{ReservoirErrorBucketAlreadyAttachedCode}
-)
-
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm
 type Reservoir struct {
@@ -89,7 +81,7 @@ func CreateReservoir(name string, ph, ec, temperature float32) (Reservoir, error
 // CreateBucket registers a new Bucket
 func CreateBucket(capacity float32) (Bucket, error) {
 	if capacity <= 0 {
-		return Bucket{}, ReservoirErrorInvalidCapacity
+		return Bucket{}, ReservoirError{ReservoirErrorInvalidCapacityCode}
 	}
 
 	return Bucket{Capacity: capacity}, nil
@@ -103,7 +95,7 @@ func CreateTap() (Tap, error) {
 // AttachBucket attach Bucket value object to Reservoir.waterSource
 func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 	if r.IsAttachedToWaterSource() {
-		return ReservoirErrorBucketAlreadyAttached
+		return ReservoirError{ReservoirErrorBucketAlreadyAttachedCode}
 	}
 
 	r.waterSource = *bucket
@@ -113,7 +105,7 @@ func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 // AttachTap attach Tap value object to Reservoir.waterSource
 func (r *Reservoir) AttachTap(tap *Tap) error {
 	if r.IsAttachedToWaterSource() {
-		return ReservoirErrorBucketAlreadyAttached
+		return ReservoirError{ReservoirErrorBucketAlreadyAttachedCode}
 	}
 
 	r.waterSource = *tap
@@ -178,7 +170,7 @@ func (r *Reservoir) ChangeInformation(name string, ph, ec, temperature float32) 
 
 func validateName(name string) error {
 	if name == "" {
-		return ReservoirErrorEmptyName
+		return ReservoirError{ReservoirErrorEmptyNameCode}
 	}
 
 	return nil
@@ -186,7 +178,7 @@ func validateName(name string) error {
 
 func validatePH(ph float32) error {
 	if ph < 0 {
-		return ReservoirErrorInvalidPH
+		return ReservoirError{ReservoirErrorInvalidPHCode}
 	}
 
 	return nil
@@ -194,7 +186,7 @@ func validatePH(ph float32) error {
 
 func validateEC(ec float32) error {
 	if ec <= 0 {
-		return ReservoirErrorInvalidEC
+		return ReservoirError{ReservoirErrorInvalidECCode}
 	}
 
 	return nil
