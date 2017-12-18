@@ -2,37 +2,6 @@
 // can do with the reservoir in a farm
 package reservoir
 
-// ReservoirError is a custom error from Go built-in error
-type ReservoirError struct {
-	code int
-}
-
-func (e ReservoirError) Error() string {
-	switch e.code {
-	case ReservoirErrorEmptyNameCode:
-		return "Reservoir name is required."
-	case ReservoirErrorInvalidPHCode:
-		return "Reservoir pH value is invalid."
-	case ReservoirErrorInvalidECCode:
-		return "Reservoir EC value is invalid."
-	case ReservoirErrorInvalidCapacityCode:
-		return "Reservoir bucket is invalid."
-	case ReservoirErrorBucketAlreadyAttachedCode:
-		return "Reservoir water source is already attached."
-	default:
-		return "Unrecognized Reservoir Error Code"
-	}
-}
-
-const (
-	ReservoirErrorEmptyNameCode = iota
-	ReservoirErrorNotEnoughCharacterCode
-	ReservoirErrorInvalidPHCode
-	ReservoirErrorInvalidECCode
-	ReservoirErrorInvalidCapacityCode
-	ReservoirErrorBucketAlreadyAttachedCode
-)
-
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm
 type Reservoir struct {
@@ -43,15 +12,6 @@ type Reservoir struct {
 	Temperature float32
 
 	waterSource interface{}
-}
-
-// Bucket is value object attached to the Reservoir.waterSource
-type Bucket struct {
-	Capacity float32
-}
-
-// Tap is value object attached to the Reservoir.waterSource entity
-type Tap struct {
 }
 
 // CreateReservoir registers a new Reservoir
@@ -77,20 +37,6 @@ func CreateReservoir(name string, ph, ec, temperature float32) (Reservoir, error
 		EC:          ec,
 		Temperature: temperature,
 	}, nil
-}
-
-// CreateBucket registers a new Bucket
-func CreateBucket(capacity float32) (Bucket, error) {
-	if capacity <= 0 {
-		return Bucket{}, ReservoirError{ReservoirErrorInvalidCapacityCode}
-	}
-
-	return Bucket{Capacity: capacity}, nil
-}
-
-// CreateTap registers a new Tab
-func CreateTap() (Tap, error) {
-	return Tap{}, nil
 }
 
 // AttachBucket attach Bucket value object to Reservoir.waterSource

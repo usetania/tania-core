@@ -60,7 +60,7 @@ func TestCreateWaterSource(t *testing.T) {
 	// Given
 
 	// When
-	bucket, err1 := CreateBucket(100)
+	bucket, err1 := CreateBucket(100, 50)
 	tap, err2 := CreateTap()
 
 	// Then
@@ -74,7 +74,7 @@ func TestCreateWaterSource(t *testing.T) {
 func TestAttachBucket(t *testing.T) {
 	// Given
 	reservoir, err := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
-	bucket, err := CreateBucket(100)
+	bucket, err := CreateBucket(100, 50)
 
 	// When
 	err = reservoir.AttachBucket(&bucket)
