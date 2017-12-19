@@ -7,7 +7,7 @@ const (
 	ReservoirErrorInvalidECCode
 	ReservoirErrorInvalidCapacityCode
 	ReservoirErrorWaterSourceAlreadyAttachedCode
-	ReservoirErrorInvalidCurrentBucketCapacityCode
+	ReservoirErrorInvalidBucketVolumeCode
 )
 
 // ReservoirError is a custom error from Go built-in error
@@ -26,11 +26,11 @@ func (e ReservoirError) Error() string {
 	case ReservoirErrorInvalidECCode:
 		return "Reservoir EC value is invalid."
 	case ReservoirErrorInvalidCapacityCode:
-		return "Reservoir bucket is invalid."
+		return "Reservoir bucket capacity is invalid."
 	case ReservoirErrorWaterSourceAlreadyAttachedCode:
 		return "Reservoir water source is already attached."
-	case ReservoirErrorInvalidCurrentBucketCapacityCode:
-		return "Current Reservoir bucket capacity is invalid."
+	case ReservoirErrorInvalidBucketVolumeCode:
+		return "Reservoir bucket volume is invalid."
 	default:
 		return "Unrecognized Reservoir Error Code"
 	}

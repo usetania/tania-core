@@ -17,35 +17,35 @@ func TestCreateWaterSource(t *testing.T) {
 	assert.Nil(t, err1)
 	assert.NotEqual(t, bucket, Bucket{})
 	assert.Equal(t, bucket.Capacity, float32(100))
-	assert.Equal(t, bucket.CurrentCapacity, float32(50))
+	assert.Equal(t, bucket.Volume, float32(50))
 
 	assert.Nil(t, err2)
 	assert.Equal(t, tap, Tap{})
 }
 
-func TestCurrentCapacity(t *testing.T) {
+func TestVolume(t *testing.T) {
 	// Given
 	bucket, _ := CreateBucket(100, 50)
 
 	// When
-	bucket.ChangeCurrentCapacity(85)
+	bucket.ChangeVolume(85)
 
 	// Then
-	assert.Equal(t, bucket.CurrentCapacity, float32(85))
+	assert.Equal(t, bucket.Volume, float32(85))
 }
 
-func TestInvalidCurrentCapacity(t *testing.T) {
+func TestInvalidVolume(t *testing.T) {
 	// Given
 	bucket1, _ := CreateBucket(100, 50)
 	bucket2, _ := CreateBucket(100, 50)
 
 	// When
-	err1 := bucket1.ChangeCurrentCapacity(110)
-	err2 := bucket2.ChangeCurrentCapacity(-5)
+	err1 := bucket1.ChangeVolume(110)
+	err2 := bucket2.ChangeVolume(-5)
 
 	// Then
-	assert.Equal(t, err1, ReservoirError{ReservoirErrorInvalidCurrentBucketCapacityCode})
-	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidCurrentBucketCapacityCode})
+	assert.Equal(t, err1, ReservoirError{ReservoirErrorInvalidBucketVolumeCode})
+	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidBucketVolumeCode})
 }
 
 func TestEmptyBucket(t *testing.T) {
@@ -53,10 +53,10 @@ func TestEmptyBucket(t *testing.T) {
 	bucket, _ := CreateBucket(100, 50)
 
 	// When
-	bucket.ChangeCurrentCapacity(19)
+	bucket.ChangeVolume(19)
 	val1 := bucket.IsBucketEmpty()
 
-	bucket.ChangeCurrentCapacity(20)
+	bucket.ChangeVolume(20)
 	val2 := bucket.IsBucketEmpty()
 
 	// Then
