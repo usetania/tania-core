@@ -3,6 +3,7 @@ package reservoir
 import (
 	"testing"
 
+	"github.com/Tanibox/tania-server/helper/mathhelper"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -16,8 +17,8 @@ func TestCreateWaterSource(t *testing.T) {
 	// Then
 	assert.Nil(t, err1)
 	assert.NotEqual(t, bucket, Bucket{})
-	assert.Equal(t, bucket.Capacity, float32(100))
-	assert.Equal(t, bucket.Volume, float32(50))
+	assert.InDelta(t, bucket.Capacity, float32(100), mathhelper.EPSILON)
+	assert.InDelta(t, bucket.Volume, float32(50), mathhelper.EPSILON)
 
 	assert.Nil(t, err2)
 	assert.Equal(t, tap, Tap{})
