@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"io/ioutil"
+	"os"
 
 	"github.com/Tanibox/tania-server/routing"
 	"github.com/labstack/echo"
@@ -16,7 +17,8 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Bootstraping Database
-	db := initDB("resources/storage.db")
+	pwd, _ := os.Getwd()
+	db := initDB(pwd + "/resources/storage.db")
 	migrate(db)
 
 	// HTTP routing
@@ -45,7 +47,8 @@ func initDB(filepath string) *sql.DB {
 }
 
 func migrate(db *sql.DB) {
-	filerc, err := ioutil.ReadFile("resources/structure.sql")
+	pwd, _ := os.Getwd()
+	filerc, err := ioutil.ReadFile(pwd + "/resources/structure.sql")
 	if err != nil {
 		panic(err)
 	}
