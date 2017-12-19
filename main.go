@@ -24,7 +24,8 @@ func main() {
 	API.Use(middleware.CORS())
 	routing.AreasRouter(API.Group("/farms"))
 	routing.FarmsRouter(API.Group("/areas"))
-	routing.ReservoirsRouter(e.Group("/reservoirs"))
+	routing.ReservoirsRouter(API.Group("/reservoirs"))
+	routing.LocationsRouter(API.Group("/locations"))
 
 	e.Static("/", "public")
 	e.Logger.Fatal(e.Start(":8080"))
