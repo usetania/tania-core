@@ -4,17 +4,17 @@ const (
 	ReservoirEmptyBucketPercentage = 0.2
 )
 
-// Bucket is value object attached to the Reservoir.waterSource
+// Bucket is value object attached to the Reservoir.waterSource.
 type Bucket struct {
 	Capacity        float32
 	CurrentCapacity float32
 }
 
-// Tap is value object attached to the Reservoir.waterSource entity
+// Tap is value object attached to the Reservoir.waterSource entity.
 type Tap struct {
 }
 
-// CreateBucket registers a new Bucket
+// CreateBucket registers a new Bucket.
 func CreateBucket(capacity, currentCapacity float32) (Bucket, error) {
 	if capacity <= 0 {
 		return Bucket{}, ReservoirError{ReservoirErrorInvalidCapacityCode}
@@ -28,12 +28,12 @@ func CreateBucket(capacity, currentCapacity float32) (Bucket, error) {
 	return Bucket{Capacity: capacity, CurrentCapacity: currentCapacity}, nil
 }
 
-// CreateTap registers a new Tab
+// CreateTap registers a new Tab.
 func CreateTap() (Tap, error) {
 	return Tap{}, nil
 }
 
-// ChangeCurrentCapacity changes the amount of water in the Bucket
+// ChangeCurrentCapacity changes the amount of water in the Bucket.
 func (b *Bucket) ChangeCurrentCapacity(currentCapacity float32) error {
 	err := validateCurrentCapacity(b.Capacity, currentCapacity)
 
@@ -46,7 +46,7 @@ func (b *Bucket) ChangeCurrentCapacity(currentCapacity float32) error {
 	return nil
 }
 
-// IsBucketEmpty is used to check if bucket is empty
+// IsBucketEmpty is used to check if bucket is empty.
 func (b Bucket) IsBucketEmpty() bool {
 	if b.CurrentCapacity < b.Capacity*ReservoirEmptyBucketPercentage {
 		return true

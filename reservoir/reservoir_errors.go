@@ -1,5 +1,15 @@
 package reservoir
 
+const (
+	ReservoirErrorEmptyNameCode = iota
+	ReservoirErrorNotEnoughCharacterCode
+	ReservoirErrorInvalidPHCode
+	ReservoirErrorInvalidECCode
+	ReservoirErrorInvalidCapacityCode
+	ReservoirErrorWaterSourceAlreadyAttachedCode
+	ReservoirErrorInvalidCurrentBucketCapacityCode
+)
+
 // ReservoirError is a custom error from Go built-in error
 type ReservoirError struct {
 	code int
@@ -25,13 +35,3 @@ func (e ReservoirError) Error() string {
 		return "Unrecognized Reservoir Error Code"
 	}
 }
-
-const (
-	ReservoirErrorEmptyNameCode = iota
-	ReservoirErrorNotEnoughCharacterCode
-	ReservoirErrorInvalidPHCode
-	ReservoirErrorInvalidECCode
-	ReservoirErrorInvalidCapacityCode
-	ReservoirErrorWaterSourceAlreadyAttachedCode
-	ReservoirErrorInvalidCurrentBucketCapacityCode
-)

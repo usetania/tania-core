@@ -1,9 +1,9 @@
 // Package reservoir provides the operation that farm owner or his/her staff
-// can do with the reservoir in a farm
+// can do with the reservoir in a farm.
 package reservoir
 
 // Reservoir is entity that provides the operation that farm owner or his/her staff
-// can do with the reservoir in a farm
+// can do with the reservoir in a farm.
 type Reservoir struct {
 	UID         string
 	Name        string
@@ -14,7 +14,7 @@ type Reservoir struct {
 	waterSource interface{}
 }
 
-// CreateReservoir registers a new Reservoir
+// CreateReservoir registers a new Reservoir.
 func CreateReservoir(name string, ph, ec, temperature float32) (Reservoir, error) {
 	err := validateName(name)
 	if err != nil {
@@ -39,7 +39,7 @@ func CreateReservoir(name string, ph, ec, temperature float32) (Reservoir, error
 	}, nil
 }
 
-// AttachBucket attach Bucket value object to Reservoir.waterSource
+// AttachBucket attach Bucket value object to Reservoir.waterSource.
 func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 	if r.IsAttachedToWaterSource() {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
@@ -49,7 +49,7 @@ func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 	return nil
 }
 
-// AttachTap attach Tap value object to Reservoir.waterSource
+// AttachTap attach Tap value object to Reservoir.waterSource.
 func (r *Reservoir) AttachTap(tap *Tap) error {
 	if r.IsAttachedToWaterSource() {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
@@ -59,24 +59,24 @@ func (r *Reservoir) AttachTap(tap *Tap) error {
 	return nil
 }
 
-// IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource
+// IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource.
 func (r Reservoir) IsAttachedToTap() bool {
 	_, ok := r.waterSource.(Tap)
 	return ok
 }
 
-// IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource
+// IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource.
 func (r Reservoir) IsAttachedToBucket() bool {
 	_, ok := r.waterSource.(Bucket)
 	return ok
 }
 
-// IsAttachedToWaterSource is used to check if Reservoir is attached to WaterSource
+// IsAttachedToWaterSource is used to check if Reservoir is attached to WaterSource.
 func (r Reservoir) IsAttachedToWaterSource() bool {
 	return r.waterSource != nil
 }
 
-// MeasureCondition will measure the Reservoir condition based on its properties
+// MeasureCondition will measure the Reservoir condition based on its properties.
 func (r Reservoir) MeasureCondition() float32 {
 	if !r.IsAttachedToBucket() {
 		// We can't measure non bucket reservoir
@@ -87,7 +87,7 @@ func (r Reservoir) MeasureCondition() float32 {
 	return 1
 }
 
-// ChangeName is used to change Reservoir Name
+// ChangeName is used to change Reservoir Name.
 func (r *Reservoir) ChangeName(name string) error {
 	err := validateName(name)
 	if err != nil {
@@ -100,8 +100,9 @@ func (r *Reservoir) ChangeName(name string) error {
 }
 
 // ChangeTemperature is used to change Reservoir Temperature.
+//
 // Temperature change can affect the value of pH and EC,
-// so we will accept pH and EC value in arguments
+// so we will accept pH and EC value in arguments.
 func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
 	err := validatePH(ph)
 	if err != nil {
