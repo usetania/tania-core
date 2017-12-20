@@ -2,8 +2,6 @@
 // to their farm
 package farm
 
-import "regexp"
-
 type Farm struct {
 	Name        string
 	Description string
@@ -50,46 +48,6 @@ func CreateNew(name string, description string, latitude string, longitude strin
 		CountryCode: countryCode,
 		CityCode:    cityCode,
 	}, nil
-}
-
-func validateName(name string) error {
-	if name == "" {
-		return FarmError{FarmErrorEmptyNameCode}
-	}
-	if len(name) < 5 {
-		return FarmError{FarmErrorNotEnoughCharacterCode}
-	}
-
-	return nil
-}
-
-func validateGeoLocation(latitude string, longitude string) error {
-	patternLatitude := "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$"
-	patternLongitude := "^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$"
-
-	rxLatitude := regexp.MustCompile(patternLatitude)
-	rxLongitude := regexp.MustCompile(patternLatitude)
-
-	ok := rxLatitude.MatchString(latitude)
-	if !ok {
-		return FarmError{FarmErrorInvalidLatitudeValueCode}
-	}
-
-	ok = rxLongitude.MatchString(longitude)
-	if !ok {
-		return FarmError{FarmErrorInvalidLongitudeValueCode}
-	}
-
-	return nil
-}
-
-func validateFarmType(code string) error {
-	farm, err := FindFarmTypeByCode(code)
-
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 // ShowInformation shows information of a farm
