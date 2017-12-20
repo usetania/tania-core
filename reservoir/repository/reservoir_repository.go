@@ -11,8 +11,8 @@ import (
 // ReservoirRepository is a repository
 type ReservoirRepository interface {
 	FindAll() ([]reservoir.Reservoir, error)
-	FindByID() (reservoir.Reservoir, error)
-	Save() (reservoir.Reservoir, error)
+	FindByID(uid string) (reservoir.Reservoir, error)
+	Save(val reservoir.Reservoir) (string, error)
 }
 
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
@@ -21,23 +21,23 @@ type ReservoirRepositoryInMemory struct {
 }
 
 // FindAll is to find all
-func (r ReservoirRepositoryInMemory) FindAll() []reservoir.Reservoir {
+func (r ReservoirRepositoryInMemory) FindAll() ([]reservoir.Reservoir, error) {
 	reservoirs := []reservoir.Reservoir{}
 
 	for _, val := range r.ReservoirMap {
 		reservoirs = append(reservoirs, val)
 	}
 
-	return reservoirs
+	return reservoirs, nil
 }
 
 // FindByID is to find by ID
-func (r ReservoirRepositoryInMemory) FindByID(id string) reservoir.Reservoir {
-	return r.ReservoirMap[id]
+func (r ReservoirRepositoryInMemory) FindByID(uid string) (reservoir.Reservoir, error) {
+	return r.ReservoirMap[uid], nil
 }
 
 // Save is to save
-func (r *ReservoirRepositoryInMemory) Save(val reservoir.Reservoir) (UID string) {
+func (r *ReservoirRepositoryInMemory) Save(val reservoir.Reservoir) (UID string, err error) {
 	if r.ReservoirMap == nil {
 		r.ReservoirMap = map[string]reservoir.Reservoir{}
 	}
@@ -47,7 +47,7 @@ func (r *ReservoirRepositoryInMemory) Save(val reservoir.Reservoir) (UID string)
 	val.UID = uid
 	r.ReservoirMap[uid] = val
 
-	return uid
+	return uid, nil
 }
 
 func getRandomUID() string {
