@@ -45,7 +45,7 @@ func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
-	r.waterSource = *bucket
+	r.waterSource = bucket
 	return nil
 }
 
@@ -55,19 +55,19 @@ func (r *Reservoir) AttachTap(tap *Tap) error {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
-	r.waterSource = *tap
+	r.waterSource = tap
 	return nil
 }
 
 // IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource.
 func (r Reservoir) IsAttachedToTap() bool {
-	_, ok := r.waterSource.(Tap)
+	_, ok := r.waterSource.(*Tap)
 	return ok
 }
 
 // IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource.
 func (r Reservoir) IsAttachedToBucket() bool {
-	_, ok := r.waterSource.(Bucket)
+	_, ok := r.waterSource.(*Bucket)
 	return ok
 }
 

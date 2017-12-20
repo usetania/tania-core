@@ -72,10 +72,10 @@ func TestAttachWaterSource(t *testing.T) {
 	val1 := reservoir1.waterSource
 	val2 := reservoir2.waterSource
 
-	assert.Equal(t, val1, bucket)
+	assert.Equal(t, val1, &bucket)
 	assert.Nil(t, err1)
 
-	assert.Equal(t, val2, tap)
+	assert.Equal(t, val2, &tap)
 	assert.Nil(t, err2)
 }
 
