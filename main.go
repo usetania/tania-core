@@ -22,8 +22,8 @@ func main() {
 	// HTTP routing
 	API := e.Group("api")
 	API.Use(middleware.CORS())
-	routing.AreasRouter(API.Group("/farms"))
-	routing.FarmsRouter(API.Group("/areas"))
+	routing.AreasRouter(API.Group("/areas"))
+	routing.FarmsRouter(API.Group("/farms"))
 	routing.ReservoirsRouter(API.Group("/reservoirs"))
 	routing.LocationsRouter(API.Group("/locations"))
 

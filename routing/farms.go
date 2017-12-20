@@ -9,11 +9,19 @@ import (
 )
 
 func FarmsRouter(g *echo.Group) {
+	g.GET("/types", FarmGetTypes)
+
 	g.GET("/", FarmsIndex)
 	g.POST("/", FarmsCreate)
 	g.GET("/:uid", FarmsShow)
 	g.PUT("/:uid", FarmsUpdate)
 	g.DELETE("/:uid", FarmsDestroy)
+}
+
+func FarmGetTypes(c echo.Context) error {
+	types := farm.FindAllFarmTypes()
+
+	return c.JSON(http.StatusOK, types)
 }
 
 // FarmsIndex displays all available farms in Tania
