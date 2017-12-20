@@ -17,6 +17,6 @@ func (e LocationError) Error() string {
 	case LocationErrorInvalidCityCode:
 		return "City code value is invalid."
 	default:
-		return "Unrecognized location errror code"
+		return "Unrecognized location error code"
 	}
 }

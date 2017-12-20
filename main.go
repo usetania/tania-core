@@ -33,14 +33,11 @@ func main() {
 	API.Use(middleware.CORS())
 	routing.AreasRouter(API.Group("/farms"))
 	routing.FarmsRouter(API.Group("/areas"))
-<<<<<<< HEAD
+
+	routing.LocationsRouter(API.Group("/locations"))
 
 	reservoirGroup := API.Group("/reservoirs")
 	reservoirServer.Mount(reservoirGroup)
-=======
-	routing.ReservoirsRouter(API.Group("/reservoirs"))
-	routing.LocationsRouter(API.Group("/locations"))
->>>>>>> Initial commit for farm features
 
 	e.Static("/", "public")
 	e.Logger.Fatal(e.Start(":8080"))

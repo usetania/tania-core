@@ -2,111 +2,77 @@ package location
 
 import "github.com/pariz/gountries"
 
-// Country is a representation of a Country
+// Country is country
 type Country struct {
 	ID   string
 	Name string
 }
 
-// City is a representation of a city
+// City is city
 type City struct {
 	ID          string
 	Name        string
 	CountryCode string
 }
 
-// CountryRepo is a interface how country can be accessed
-type CountryRepo interface {
-	FindAllCountries() []Country
-	FindCountryByCode(code string) (*Country, error)
-}
-
-// The LocationStore struct
-type LocationStore struct {
-	countryMap map[string]Country
-	cityMap    map[string]City
-}
-
-// initPackageStore
-func (cm *LocationStore) initPackageStore() error {
+// FindAllCountries Find All Country
+func FindAllCountries() []Country {
+	var countries []Country
 	query := gountries.New()
 	items := query.FindAllCountries()
 
-	for _, country := range items {
-		cm.countryMap[country.Codes.Alpha2] = Country{
-			ID:   country.Codes.Alpha2,
-			Name: country.Name.Common,
-		}
-
-		for _, city := range country.SubDivisions() {
-			cm.cityMap[city.Code] = City{
-				ID:          city.Code,
-				Name:        city.Name,
-				CountryCode: city.CountryAlpha2,
-			}
-		}
-	}
-
-	return nil
-}
-
-// FindAllCountries find all available countries
-func (cm *LocationStore) FindAllCountries() []Country {
-	var countries []Country
-
-	for _, item := range cm.countryMap {
+	for _, item := range items {
 		countries = append(countries, Country{
-			ID:   item.ID,
-			Name: item.Name,
+			ID:   item.Codes.Alpha2,
+			Name: item.Name.Common,
 		})
 	}
-
 	return countries
 }
 
-// FindCountryByCode find country by code
-func (cm *LocationStore) FindCountryByCode(code string) (Country, error) {
-	country, ok := cm.countryMap[code]
+// FindCountryByCountryCode find country by code
+func FindCountryByCountryCode(code string) (Country, error) {
+	query := gountries.New()
+	country, err := query.FindCountryByAlpha(code)
 
-	if !ok {
+	if err != nil {
 		return Country{}, LocationError{LocationErrorInvalidCountryCode}
 	}
 
 	return Country{
-		ID:   country.ID,
-		Name: country.Name,
+		ID:   country.Codes.Alpha2,
+		Name: country.Name.Common,
 	}, nil
 }
 
-// FindAllCitiesByCountryCode find cities by country code
-func (cm *LocationStore) FindAllCitiesByCountryCode(code string) ([]City, error) {
+// FindAllCitiesByCountryCode find all cities
+func FindAllCitiesByCountryCode(code string) ([]City, error) {
 	var cities []City
-	country := cm.countryMap[code]
+	query := gountries.New()
+	country, err := query.FindCountryByAlpha(code)
 
-	for _, city := range cm.cityMap {
-		if city.CountryCode == code {
-			cities = append(cities, City{
-				ID:          city.ID,
-				Name:        city.Name,
-				CountryCode: country.ID,
-			})
-		}
+	if err != nil {
+		return cities, LocationError{LocationErrorInvalidCountryCode}
 	}
 
+	items := country.SubDivisions()
+
+	for _, item := range items {
+		cities = append(cities, City{
+			ID:          item.Code,
+			Name:        item.Name,
+			CountryCode: item.CountryAlpha2,
+		})
+	}
 	return cities, nil
 }
 
-// FindCityByCode find city by city code
-func (cm *LocationStore) FindCityByCode(code string) (City, error) {
-	city, ok := cm.cityMap[code]
-
-	if !ok {
-		return City{}, LocationError{LocationErrorInvalidCityCode}
-	}
+// FindCityByCityCode find city by city code
+func FindCityByCityCode(code string) (City, error) {
 
 	return City{
-		ID:          city.ID,
-		Name:        city.Name,
-		CountryCode: city.CountryCode,
+		ID:          "JKT",
+		Name:        "Jakarta",
+		CountryCode: "ID",
 	}, nil
 }
