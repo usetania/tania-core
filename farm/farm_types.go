@@ -16,17 +16,15 @@ type FarmType struct {
 }
 
 func FindAllFarmTypes() []FarmType {
-	var types []FarmType
-
-	types = append(types, FarmType{Code: FarmTypeOrganic, Name: "Organic / Soil-Based"})
-	types = append(types, FarmType{Code: FarmTypeHydroponic, Name: "Hydroponic"})
-	types = append(types, FarmType{Code: FarmTypeAquaponic, Name: "Aquaponic"})
-	types = append(types, FarmType{Code: FarmTypeMushroom, Name: "Mushroom"})
-	types = append(types, FarmType{Code: FarmTypeLiveStock, Name: "Livestock"})
-	types = append(types, FarmType{Code: FarmTypeFisheries, Name: "Fisheries"})
-	types = append(types, FarmType{Code: FarmTypePermaculture, Name: "Permaculture"})
-
-	return types
+	return []FarmType{
+		FarmType{Code: FarmTypeOrganic, Name: "Organic / Soil-Based"},
+		FarmType{Code: FarmTypeHydroponic, Name: "Hydroponic"},
+		FarmType{Code: FarmTypeAquaponic, Name: "Aquaponic"},
+		FarmType{Code: FarmTypeMushroom, Name: "Mushroom"},
+		FarmType{Code: FarmTypeLiveStock, Name: "Livestock"},
+		FarmType{Code: FarmTypeFisheries, Name: "Fisheries"},
+		FarmType{Code: FarmTypePermaculture, Name: "Permaculture"},
+	}
 }
 
 func FindFarmTypeByCode(code string) (FarmType, error) {

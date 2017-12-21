@@ -17,3 +17,4 @@ node_modules/
 vendor/
 storage.db
 notes.md
+.vscode

@@ -68,11 +68,22 @@ func FindAllCitiesByCountryCode(code string) ([]City, error) {
 }
 
 // FindCityByCityCode find city by city code
-func FindCityByCityCode(code string) (City, error) {
+func FindCityByCityCode(countryCode string, code string) (City, error) {
+	items, err := FindAllCitiesByCountryCode(countryCode)
 
-	return City{
-		ID:          "JKT",
-		Name:        "Jakarta",
-		CountryCode: "ID",
-	}, nil
+	if err != nil {
+		return City{}, LocationError{LocationErrorInvalidCountryCode}
+	}
+
+	for _, item := range items {
+		if item.ID == code {
+			return City{
+				ID:          item.ID,
+				Name:        item.Name,
+				CountryCode: item.CountryCode,
+			}, nil
+		}
+	}
+
+	return City{}, LocationError{LocationErrorInvalidCityCode}
 }
