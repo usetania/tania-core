@@ -14,11 +14,13 @@ type Farm struct {
 
 // DisplayAll dispalys all existing farms
 func DisplayAll() []Farm {
+	var farms []Farm
 
+	return farms
 }
 
-// CreateNew registers a new farm to Tania
-func CreateNew(name string, description string, latitude string, longitude string, farmType string, countryCode string, cityCode string) (Farm, error) {
+// CreateFarm registers a new farm to Tania
+func CreateFarm(name string, description string, latitude string, longitude string, farmType string, countryCode string, cityCode string) (Farm, error) {
 
 	err := validateName(name)
 	if err != nil {
@@ -35,9 +37,15 @@ func CreateNew(name string, description string, latitude string, longitude strin
 		return Farm{}, err
 	}
 
-	// validate contry code
+	err = validateCountryCode(countryCode)
+	if err != nil {
+		return Farm{}, err
+	}
 
-	// validate city code
+	err = validateCityCode(countryCode, cityCode)
+	if err != nil {
+		return Farm{}, err
+	}
 
 	return Farm{
 		Name:        name,
@@ -51,8 +59,8 @@ func CreateNew(name string, description string, latitude string, longitude strin
 }
 
 // ShowInformation shows information of a farm
-func ShowInformation(uid string) *Farm {
-
+func ShowInformation(uid string) Farm {
+	return Farm{}
 }
 
 // UpdateInformation updates the existing farm information in Tania

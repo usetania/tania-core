@@ -1,6 +1,10 @@
 package farm
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/Tanibox/tania-server/location"
+)
 
 func validateName(name string) error {
 	if name == "" {
@@ -34,10 +38,28 @@ func validateGeoLocation(latitude string, longitude string) error {
 }
 
 func validateFarmType(code string) error {
-	farm, err := FindFarmTypeByCode(code)
+	_, err := FindFarmTypeByCode(code)
 
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func validateCountryCode(code string) error {
+	_, err := location.FindCountryByCountryCode(code)
+
+	if err != nil {
+		return FarmError{FarmErrorInvalidCountryCode}
+	}
+	return nil
+}
+
+func validateCityCode(countryCode string, cityCode string) error {
+	_, err := location.FindCityByCityCode(countryCode, cityCode)
+
+	if err != nil {
+		return FarmError{FarmErrorInvalidCityCode}
 	}
 	return nil
 }
