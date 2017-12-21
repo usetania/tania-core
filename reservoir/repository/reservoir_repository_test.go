@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-	"sync"
 	"testing"
 
 	"github.com/Tanibox/tania-server/reservoir"
@@ -11,8 +9,8 @@ import (
 
 func TestInMemorySave(t *testing.T) {
 	// Given
-	var m sync.Mutex
-	var repo ReservoirRepository = &ReservoirRepositoryInMemory{mutex: &m}
+	done := make(chan bool)
+	repo := CreateNewRepositoryInMemory()
 
 	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1", 8.1, 12.2, 30.0)
 
@@ -25,35 +23,49 @@ func TestInMemorySave(t *testing.T) {
 	reservoir3.AttachTap(&tap3)
 
 	// When
-	saveResult1 := repo.Save(&reservoir1)
-	saveResult2 := repo.Save(&reservoir2)
-	saveResult3 := repo.Save(&reservoir3)
+	var saveResult1, saveResult2, saveResult3, count1 RepositoryResult
+	go func() {
+		saveResult1 = <-repo.Save(&reservoir1)
+		saveResult2 = <-repo.Save(&reservoir2)
+		saveResult3 = <-repo.Save(&reservoir3)
+
+		count1 = <-repo.Count()
+		done <- true
+	}()
 
 	// Then
+	<-done
 	assert.NotNil(t, saveResult1)
 	assert.NotNil(t, saveResult2)
 	assert.NotNil(t, saveResult3)
+	assert.Equal(t, count1.Result, 3)
 }
 
 func TestInMemoryFindAll(t *testing.T) {
 	// Given
-	var m sync.Mutex
-	var repo ReservoirRepository = &ReservoirRepositoryInMemory{mutex: &m}
+	done := make(chan bool)
+
+	repo := CreateNewRepositoryInMemory()
 
 	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1", 8.1, 12.2, 30.0)
 	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2", 8.1, 12.2, 30.0)
 	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3", 8.1, 12.2, 30.0)
-	repo.Save(&reservoir1)
-	repo.Save(&reservoir2)
-	repo.Save(&reservoir3)
 
-	// When
-	results := repo.FindAll()
+	var result RepositoryResult
+	go func() {
+		// Given
+		<-repo.Save(&reservoir1)
+		<-repo.Save(&reservoir2)
+		<-repo.Save(&reservoir3)
+
+		// When
+		result = <-repo.FindAll()
+		done <- true
+	}()
 
 	// Then
-	for val := range results {
-		fmt.Println(val.Result)
-	}
-
-	assert.Equal(t, len(results), 3)
+	<-done
+	val, ok := result.Result.([]reservoir.Reservoir)
+	assert.Equal(t, ok, true)
+	assert.Equal(t, len(val), 3)
 }
