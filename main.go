@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"io/ioutil"
 
+	"github.com/Tanibox/tania-server/reservoir/server"
 	"github.com/Tanibox/tania-server/routing"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -12,6 +13,12 @@ import (
 
 func main() {
 	e := echo.New()
+
+	reservoirServer, err := server.NewServer()
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
@@ -24,7 +31,9 @@ func main() {
 	API.Use(middleware.CORS())
 	routing.AreasRouter(API.Group("/farms"))
 	routing.FarmsRouter(API.Group("/areas"))
-	routing.ReservoirsRouter(e.Group("/reservoirs"))
+
+	reservoirGroup := API.Group("/reservoirs")
+	reservoirServer.Mount(reservoirGroup)
 
 	e.Static("/", "public")
 	e.Logger.Fatal(e.Start(":8080"))
