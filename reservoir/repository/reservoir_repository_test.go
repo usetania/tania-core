@@ -51,7 +51,7 @@ func TestInMemoryFindAll(t *testing.T) {
 	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2", 8.1, 12.2, 30.0)
 	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3", 8.1, 12.2, 30.0)
 
-	var result RepositoryResult
+	var result, foundOne RepositoryResult
 	go func() {
 		// Given
 		<-repo.Save(&reservoir1)
@@ -60,12 +60,20 @@ func TestInMemoryFindAll(t *testing.T) {
 
 		// When
 		result = <-repo.FindAll()
+
+		val := result.Result.([]reservoir.Reservoir)
+		foundOne = <-repo.FindByID(val[0].UID)
+
 		done <- true
 	}()
 
 	// Then
 	<-done
-	val, ok := result.Result.([]reservoir.Reservoir)
+	val1, ok := result.Result.([]reservoir.Reservoir)
 	assert.Equal(t, ok, true)
-	assert.Equal(t, len(val), 3)
+	assert.Equal(t, len(val1), 3)
+
+	val2, ok := foundOne.Result.(reservoir.Reservoir)
+	assert.Equal(t, ok, true)
+	assert.Equal(t, val2.UID, val1[0].UID)
 }

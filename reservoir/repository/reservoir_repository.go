@@ -12,7 +12,7 @@ import (
 // ReservoirRepository is a repository
 type ReservoirRepository interface {
 	FindAll() <-chan RepositoryResult
-	// FindByID(uid string) (reservoir.Reservoir, error)
+	FindByID(uid string) <-chan RepositoryResult
 	Count() <-chan RepositoryResult
 	Save(val *reservoir.Reservoir) <-chan RepositoryResult
 }
@@ -26,17 +26,12 @@ type RepositoryResult struct {
 
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
 type ReservoirRepositoryInMemory struct {
-	lock         *sync.RWMutex
-	wg           sync.WaitGroup
+	lock         sync.RWMutex
 	ReservoirMap map[string]reservoir.Reservoir
 }
 
 func CreateNewRepositoryInMemory() ReservoirRepository {
-	var m sync.RWMutex
-	return &ReservoirRepositoryInMemory{
-		ReservoirMap: map[string]reservoir.Reservoir{},
-		lock:         &m,
-	}
+	return &ReservoirRepositoryInMemory{ReservoirMap: make(map[string]reservoir.Reservoir)}
 }
 
 // FindAll is to find all
@@ -61,22 +56,31 @@ func (r *ReservoirRepositoryInMemory) FindAll() <-chan RepositoryResult {
 }
 
 // FindByID is to find by ID
-// func (r *ReservoirRepositoryInMemory) FindByID(uid string) (reservoir.Reservoir, error) {
-// 	// Unimplemented
-// 	return r.ReservoirMap[uid], nil
-// }
+func (r *ReservoirRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
+	result := make(chan RepositoryResult)
+
+	go func() {
+		r.lock.RLock()
+		defer r.lock.RUnlock()
+
+		result <- RepositoryResult{Result: r.ReservoirMap[uid]}
+	}()
+
+	return result
+}
 
 // Save is to save
 func (r *ReservoirRepositoryInMemory) Save(val *reservoir.Reservoir) <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
+		r.lock.Lock()
+		defer r.lock.Unlock()
+
 		uid := getRandomUID()
 		val.UID = uid
 
-		r.lock.Lock()
 		r.ReservoirMap[uid] = *val
-		r.lock.Unlock()
 
 		result <- RepositoryResult{Result: uid}
 
@@ -91,9 +95,10 @@ func (r *ReservoirRepositoryInMemory) Count() <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.Lock()
+		r.lock.RLock()
+		defer r.lock.RUnlock()
+
 		count := len(r.ReservoirMap)
-		r.lock.Unlock()
 
 		result <- RepositoryResult{Result: count}
 	}()
