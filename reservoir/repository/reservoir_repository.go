@@ -30,7 +30,7 @@ type ReservoirRepositoryInMemory struct {
 	ReservoirMap map[string]reservoir.Reservoir
 }
 
-func CreateNewRepositoryInMemory() ReservoirRepository {
+func NewReservoirRepositoryInMemory() ReservoirRepository {
 	return &ReservoirRepositoryInMemory{ReservoirMap: make(map[string]reservoir.Reservoir)}
 }
 

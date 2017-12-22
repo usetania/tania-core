@@ -10,7 +10,7 @@ import (
 func TestInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	repo := CreateNewRepositoryInMemory()
+	repo := NewReservoirRepositoryInMemory()
 
 	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1", 8.1, 12.2, 30.0)
 
@@ -45,7 +45,7 @@ func TestInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
-	repo := CreateNewRepositoryInMemory()
+	repo := NewReservoirRepositoryInMemory()
 
 	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1", 8.1, 12.2, 30.0)
 	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2", 8.1, 12.2, 30.0)

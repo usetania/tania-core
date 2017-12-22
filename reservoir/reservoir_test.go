@@ -9,12 +9,9 @@ import (
 func TestCreateReservoir(t *testing.T) {
 	// Given
 	name := "My reservoir"
-	ph := float32(10.0)
-	ec := float32(12.34)
-	temperature := float32(27.0)
 
 	// When
-	reservoir, err := CreateReservoir(name, ph, ec, temperature)
+	reservoir, err := CreateReservoir(name)
 
 	// Then
 	assert.Nil(t, err)
@@ -26,42 +23,27 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	name := ""
 
 	// When
-	_, err := CreateReservoir(name, 0, 0, 0)
+	_, err := CreateReservoir(name)
 
 	// Then
 	assert.Equal(t, err, ReservoirError{ReservoirErrorEmptyNameCode})
 
 	// Given
-	name = "My Reservoir"
-	ph := float32(-10)
+	name = "asd"
 
 	// When
-	_, err = CreateReservoir(name, ph, 0, 0)
+	_, err = CreateReservoir(name)
 
 	// Then
-	assert.Equal(t, err, ReservoirError{ReservoirErrorInvalidPHCode})
-
-	// Given
-	name = "My Reservoir"
-	ec := float32(0)
-	ec2 := float32(-10)
-
-	// When
-	_, err = CreateReservoir(name, 0, ec, 0)
-	_, err2 := CreateReservoir(name, 0, ec2, 0)
-
-	// Then
-	assert.Equal(t, err, ReservoirError{ReservoirErrorInvalidECCode})
-	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidECCode})
-
+	assert.Equal(t, err, ReservoirError{ReservoirErrorNotEnoughCharacterCode})
 }
 
 func TestAttachWaterSource(t *testing.T) {
 	// Given
-	reservoir1, _ := CreateReservoir("My Reservoir 1", 8, 24.5, 31.8)
+	reservoir1, _ := CreateReservoir("My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
 
-	reservoir2, _ := CreateReservoir("My Reservoir 2", 8, 24.5, 31.8)
+	reservoir2, _ := CreateReservoir("My Reservoir 2")
 	tap, _ := CreateTap()
 
 	// When
@@ -81,7 +63,7 @@ func TestAttachWaterSource(t *testing.T) {
 
 func TestInvalidAttachWaterSource(t *testing.T) {
 	// Given
-	reservoir, _ := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
+	reservoir, _ := CreateReservoir("My Reservoir")
 	bucket1, _ := CreateBucket(100, 50)
 	bucket2, _ := CreateBucket(200, 150)
 	tap, _ := CreateTap()
@@ -97,11 +79,11 @@ func TestInvalidAttachWaterSource(t *testing.T) {
 
 func TestMeasureCondition(t *testing.T) {
 	// Given
-	reservoir1, _ := CreateReservoir("My Reservoir 1", 8, 24.5, 31.8)
+	reservoir1, _ := CreateReservoir("My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
 	reservoir1.AttachBucket(&bucket)
 
-	reservoir2, _ := CreateReservoir("My Reservoir 2", 10, 21.2, 34.2)
+	reservoir2, _ := CreateReservoir("My Reservoir 2")
 	tap, _ := CreateTap()
 	reservoir2.AttachTap(&tap)
 
@@ -116,7 +98,7 @@ func TestMeasureCondition(t *testing.T) {
 
 func TestChangeTemperature(t *testing.T) {
 	// Given
-	reservoir, _ := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
+	reservoir, _ := CreateReservoir("My Reservoir")
 	temperature := float32(32)
 	ph := float32(4.3)
 	ec := float32(23.5)
@@ -132,7 +114,7 @@ func TestChangeTemperature(t *testing.T) {
 
 func TestInvalidChangeTemperature(t *testing.T) {
 	// Given
-	reservoir, _ := CreateReservoir("My Reservoir", 8, 24.5, 31.8)
+	reservoir, _ := CreateReservoir("My Reservoir")
 	temperature := float32(32)
 	ph1 := float32(-10)
 	ec1 := float32(23.5)

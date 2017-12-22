@@ -15,27 +15,17 @@ type Reservoir struct {
 }
 
 // CreateReservoir registers a new Reservoir.
-func CreateReservoir(name string, ph, ec, temperature float32) (Reservoir, error) {
+func CreateReservoir(name string) (Reservoir, error) {
 	err := validateName(name)
-	if err != nil {
-		return Reservoir{}, err
-	}
-
-	err = validatePH(ph)
-	if err != nil {
-		return Reservoir{}, err
-	}
-
-	err = validateEC(ph)
 	if err != nil {
 		return Reservoir{}, err
 	}
 
 	return Reservoir{
 		Name:        name,
-		PH:          ph,
-		EC:          ec,
-		Temperature: temperature,
+		PH:          0,
+		EC:          0,
+		Temperature: 0,
 	}, nil
 }
 
