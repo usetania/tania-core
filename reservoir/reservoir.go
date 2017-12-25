@@ -1,38 +1,139 @@
 // Package reservoir provides the operation that farm owner or his/her staff
-// can do with the reservoir in a farm
+// can do with the reservoir in a farm.
 package reservoir
 
+// Reservoir is entity that provides the operation that farm owner or his/her staff
+// can do with the reservoir in a farm.
 type Reservoir struct {
-	Uid         string
+	UID         string
 	Name        string
-	Description string
-	Capacity    float64
+	PH          float32
+	EC          float32
+	Temperature float32
+
+	waterSource interface{}
 }
 
-// DisplayAll shows all reservoirs in a farm
-func DisplayAll() []Reservoir {
-	var reservoirs []Reservoir
-
-	for i := 0; i < 5; i++ {
-		reservoirs = append(reservoirs, Reservoir{
-			Uid:         string(i),
-			Name:        "Dummy reservoir",
-			Description: "Just a description",
-			Capacity:    160.58,
-		})
+// CreateReservoir registers a new Reservoir.
+func CreateReservoir(name string) (Reservoir, error) {
+	err := validateName(name)
+	if err != nil {
+		return Reservoir{}, err
 	}
 
-	return reservoirs
+	return Reservoir{
+		Name:        name,
+		PH:          0,
+		EC:          0,
+		Temperature: 0,
+	}, nil
 }
 
-// CreateNew registers a new reservoir in a farm
-func CreateNew() {
+// AttachBucket attach Bucket value object to Reservoir.waterSource.
+func (r *Reservoir) AttachBucket(bucket *Bucket) error {
+	if r.IsAttachedToWaterSource() {
+		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
+	}
+
+	r.waterSource = bucket
+	return nil
 }
 
-// UpdateInformation updates information of the particular reservoir
-func UpdateInformation(uid string) {
+// AttachTap attach Tap value object to Reservoir.waterSource.
+func (r *Reservoir) AttachTap(tap *Tap) error {
+	if r.IsAttachedToWaterSource() {
+		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
+	}
+
+	r.waterSource = tap
+	return nil
 }
 
-// Destroy destroys the reservoir. This is dangerous.
-func Destroy(uid string) {
+// IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource.
+func (r Reservoir) IsAttachedToTap() bool {
+	_, ok := r.waterSource.(*Tap)
+	return ok
+}
+
+// IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource.
+func (r Reservoir) IsAttachedToBucket() bool {
+	_, ok := r.waterSource.(*Bucket)
+	return ok
+}
+
+// IsAttachedToWaterSource is used to check if Reservoir is attached to WaterSource.
+func (r Reservoir) IsAttachedToWaterSource() bool {
+	return r.waterSource != nil
+}
+
+// MeasureCondition will measure the Reservoir condition based on its properties.
+func (r Reservoir) MeasureCondition() float32 {
+	if !r.IsAttachedToBucket() {
+		// We can't measure non bucket reservoir
+		return 0
+	}
+
+	// Do measure here
+	return 1
+}
+
+// ChangeName is used to change Reservoir Name.
+func (r *Reservoir) ChangeName(name string) error {
+	err := validateName(name)
+	if err != nil {
+		return err
+	}
+
+	r.Name = name
+
+	return nil
+}
+
+// ChangeTemperature is used to change Reservoir Temperature.
+//
+// Temperature change can affect the value of pH and EC,
+// so we will accept pH and EC value in arguments.
+func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
+	err := validatePH(ph)
+	if err != nil {
+		return err
+	}
+
+	err = validateEC(ec)
+	if err != nil {
+		return err
+	}
+
+	r.Temperature = temperature
+	r.PH = ph
+	r.EC = ec
+
+	return nil
+}
+
+func validateName(name string) error {
+	if name == "" {
+		return ReservoirError{ReservoirErrorEmptyNameCode}
+	}
+	if len(name) < 5 {
+		return ReservoirError{ReservoirErrorNotEnoughCharacterCode}
+	}
+
+	return nil
+}
+
+func validatePH(ph float32) error {
+	if ph < 0 {
+		return ReservoirError{ReservoirErrorInvalidPHCode}
+	}
+
+	return nil
+}
+
+func validateEC(ec float32) error {
+	if ec <= 0 {
+		return ReservoirError{ReservoirErrorInvalidECCode}
+	}
+
+	return nil
 }
