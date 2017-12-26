@@ -45,8 +45,8 @@ func TestInvalidVolume(t *testing.T) {
 	err2 := bucket2.ChangeVolume(-5)
 
 	// Then
-	assert.Equal(t, err1, ReservoirError{ReservoirErrorInvalidBucketVolumeCode})
-	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidBucketVolumeCode})
+	assert.Equal(t, err1, ReservoirError{ReservoirErrorBucketVolumeInvalidCode})
+	assert.Equal(t, err2, ReservoirError{ReservoirErrorBucketVolumeInvalidCode})
 }
 
 func TestEmptyBucket(t *testing.T) {

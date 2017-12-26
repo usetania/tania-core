@@ -26,7 +26,7 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	_, err := CreateReservoir(name)
 
 	// Then
-	assert.Equal(t, err, ReservoirError{ReservoirErrorEmptyNameCode})
+	assert.Equal(t, err, ReservoirError{ReservoirErrorNameEmptyCode})
 
 	// Given
 	name = "asd"
@@ -35,7 +35,7 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	_, err = CreateReservoir(name)
 
 	// Then
-	assert.Equal(t, err, ReservoirError{ReservoirErrorNotEnoughCharacterCode})
+	assert.Equal(t, err, ReservoirError{ReservoirErrorNameNotEnoughCharacterCode})
 }
 
 func TestAttachWaterSource(t *testing.T) {
@@ -126,6 +126,6 @@ func TestInvalidChangeTemperature(t *testing.T) {
 	err2 := reservoir.ChangeTemperature(temperature, ph2, ec2)
 
 	// Then
-	assert.Equal(t, err1, ReservoirError{ReservoirErrorInvalidPHCode})
-	assert.Equal(t, err2, ReservoirError{ReservoirErrorInvalidECCode})
+	assert.Equal(t, err1, ReservoirError{ReservoirErrorPHInvalidCode})
+	assert.Equal(t, err2, ReservoirError{ReservoirErrorECInvalidCode})
 }

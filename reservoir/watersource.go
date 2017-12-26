@@ -57,7 +57,7 @@ func (b Bucket) IsBucketEmpty() bool {
 
 func validateVolume(capacity, volume float32) error {
 	if volume > capacity || volume < 0 {
-		return ReservoirError{ReservoirErrorBucketCapacityInvalidCode}
+		return ReservoirError{ReservoirErrorBucketVolumeInvalidCode}
 	}
 
 	return nil
