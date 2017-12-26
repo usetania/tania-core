@@ -3,7 +3,11 @@ package reservoir
 const (
 	ReservoirErrorEmptyNameCode = iota
 	ReservoirErrorNotEnoughCharacterCode
+	ReservoirErrorExceedMaximunCharacterCode
+	ReservoirErrorAlphanumericOnlyCode
+
 	ReservoirErrorInvalidPHCode
+
 	ReservoirErrorInvalidECCode
 	ReservoirErrorInvalidCapacityCode
 	ReservoirErrorWaterSourceAlreadyAttachedCode
@@ -12,15 +16,19 @@ const (
 
 // ReservoirError is a custom error from Go built-in error
 type ReservoirError struct {
-	code int
+	Code int
 }
 
 func (e ReservoirError) Error() string {
-	switch e.code {
+	switch e.Code {
 	case ReservoirErrorEmptyNameCode:
 		return "Reservoir name is required."
 	case ReservoirErrorNotEnoughCharacterCode:
 		return "Not enough character on Reservoir Name"
+	case ReservoirErrorExceedMaximunCharacterCode:
+		return "Reservoir name cannot more than 100 characters"
+	case ReservoirErrorAlphanumericOnlyCode:
+		return "Reservoir name should be alphanumeric"
 	case ReservoirErrorInvalidPHCode:
 		return "Reservoir pH value is invalid."
 	case ReservoirErrorInvalidECCode:

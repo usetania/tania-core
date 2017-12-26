@@ -118,6 +118,9 @@ func validateName(name string) error {
 	if len(name) < 5 {
 		return ReservoirError{ReservoirErrorNotEnoughCharacterCode}
 	}
+	if len(name) > 100 {
+		return ReservoirError{ReservoirErrorExceedMaximunCharacterCode}
+	}
 
 	return nil
 }
