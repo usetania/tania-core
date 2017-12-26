@@ -3,10 +3,10 @@ package server
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/Tanibox/tania-server/reservoir"
 	"github.com/Tanibox/tania-server/reservoir/repository"
+	"github.com/Tanibox/tania-server/reservoir/validation"
 	"github.com/labstack/echo"
 )
 
@@ -54,25 +54,38 @@ func (s *ReservoirServer) FindAll(c echo.Context) error {
 // Save is a ReservoirServer's handler to save new Reservoir
 func (s *ReservoirServer) Save(c echo.Context) error {
 	data := make(map[string]string)
+	validation := validation.RequestValidation{}
 
-	r, err := reservoir.CreateReservoir(c.FormValue("name"))
+	// Validate requests //
+	name, err := validation.ValidateName(c.FormValue("name"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	waterSourceType, err := validation.ValidateType(c.FormValue("type"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	capacity, err := validation.ValidateCapacity(waterSourceType, c.FormValue("capacity"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Process //
+	r, err := reservoir.CreateReservoir(name)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err)
 	}
 
-	if c.FormValue("type") == "bucket" {
-		capacity, err := strconv.ParseFloat(c.FormValue("capacity"), 32)
-		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err)
-		}
-
-		b, err := reservoir.CreateBucket(float32(capacity), 0)
+	if waterSourceType == "bucket" {
+		b, err := reservoir.CreateBucket(capacity, 0)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
 		}
 
 		r.AttachBucket(&b)
-	} else if c.FormValue("type") == "tap" {
+	} else if waterSourceType == "tap" {
 		t, err := reservoir.CreateTap()
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
@@ -81,6 +94,7 @@ func (s *ReservoirServer) Save(c echo.Context) error {
 		r.AttachTap(&t)
 	}
 
+	// Persists //
 	result := <-s.ReservoirRepo.Save(&r)
 
 	if result.Error != nil {
@@ -96,4 +110,8 @@ func (s *ReservoirServer) Save(c echo.Context) error {
 	data["data"] = uid
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func Error(c echo.Context, err error) error {
+	return c.JSON(http.StatusBadRequest, err)
 }
