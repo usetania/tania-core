@@ -3,6 +3,7 @@
 package farm
 
 type Farm struct {
+	UID         string
 	Name        string
 	Description string
 	Latitude    string
