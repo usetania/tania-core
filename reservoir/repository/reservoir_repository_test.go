@@ -12,13 +12,13 @@ func TestInMemorySave(t *testing.T) {
 	done := make(chan bool)
 	repo := NewReservoirRepositoryInMemory()
 
-	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1", 8.1, 12.2, 30.0)
+	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1")
 
-	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2", 8.1, 12.2, 30.0)
+	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2")
 	bucket2, _ := reservoir.CreateBucket(100, 50)
 	reservoir2.AttachBucket(&bucket2)
 
-	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3", 8.1, 12.2, 30.0)
+	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3")
 	tap3, _ := reservoir.CreateTap()
 	reservoir3.AttachTap(&tap3)
 
@@ -47,9 +47,9 @@ func TestInMemoryFindAll(t *testing.T) {
 
 	repo := NewReservoirRepositoryInMemory()
 
-	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1", 8.1, 12.2, 30.0)
-	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2", 8.1, 12.2, 30.0)
-	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3", 8.1, 12.2, 30.0)
+	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1")
+	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2")
+	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3")
 
 	var result, foundOne RepositoryResult
 	go func() {
