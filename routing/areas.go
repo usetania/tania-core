@@ -13,11 +13,11 @@ type AreasData struct {
 }
 
 func AreasRouter(g *echo.Group) {
-	g.GET("/", FarmsIndex)
-	g.POST("/", FarmsCreate)
-	g.GET("/:uid", FarmsShow)
-	g.PUT("/:uid", FarmsUpdate)
-	g.DELETE("/:uid", FarmsDestroy)
+	g.GET("/", AreasIndex)
+	g.POST("/", AreasCreate)
+	g.GET("/:uid", AreasHarvest)
+	g.PUT("/:uid", AreasDispose)
+	g.DELETE("/:uid", AreasDestroy)
 }
 
 // AreasIndex displays all available areas in a farm

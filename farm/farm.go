@@ -3,45 +3,65 @@
 package farm
 
 type Farm struct {
-	Uid         string
+	UID         string
 	Name        string
 	Description string
-	Latitude    float64
-	Longitude   float64
+	Latitude    string
+	Longitude   string
+	Type        string
+	CountryCode string
+	CityCode    string
 }
 
 // DisplayAll dispalys all existing farms
 func DisplayAll() []Farm {
-	var information []Farm
+	var farms []Farm
 
-	for i := 0; i < 5; i++ {
-		information = append(information, Farm{
-			Uid:         string(i),
-			Name:        "Dummy farm",
-			Description: "",
-			Latitude:    1.335678,
-			Longitude:   5.34352,
-		})
-	}
-
-	return information
+	return farms
 }
 
-// CreateNew registers a new farm to Tania
-func CreateNew() {
+// CreateFarm registers a new farm to Tania
+func CreateFarm(name string, description string, latitude string, longitude string, farmType string, countryCode string, cityCode string) (Farm, error) {
+
+	err := validateName(name)
+	if err != nil {
+		return Farm{}, err
+	}
+
+	err = validateGeoLocation(latitude, longitude)
+	if err != nil {
+		return Farm{}, err
+	}
+
+	err = validateFarmType(farmType)
+	if err != nil {
+		return Farm{}, err
+	}
+
+	err = validateCountryCode(countryCode)
+	if err != nil {
+		return Farm{}, err
+	}
+
+	err = validateCityCode(countryCode, cityCode)
+	if err != nil {
+		return Farm{}, err
+	}
+
+	return Farm{
+		Name:        name,
+		Description: description,
+		Latitude:    latitude,
+		Longitude:   longitude,
+		Type:        farmType,
+		CountryCode: countryCode,
+		CityCode:    cityCode,
+	}, nil
 }
 
 // ShowInformation shows information of a farm
-func ShowInformation(uid string) *Farm {
-	information := &Farm{
-		Uid:         uid,
-		Name:        "Dummy farm",
-		Description: "",
-		Latitude:    1.335678,
-		Longitude:   5.34352,
-	}
-
-	return information
+func ShowInformation(uid string) Farm {
+	return Farm{}
 }
 
 // UpdateInformation updates the existing farm information in Tania
