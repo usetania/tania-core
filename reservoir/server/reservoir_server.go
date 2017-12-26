@@ -3,6 +3,7 @@ package server
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Tanibox/tania-server/reservoir"
 	"github.com/Tanibox/tania-server/reservoir/repository"
@@ -75,20 +76,20 @@ func (s *ReservoirServer) Save(c echo.Context) error {
 	// Process //
 	r, err := reservoir.CreateReservoir(name)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		return Error(c, err)
 	}
 
 	if waterSourceType == "bucket" {
 		b, err := reservoir.CreateBucket(capacity, 0)
 		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err)
+			return Error(c, err)
 		}
 
 		r.AttachBucket(&b)
 	} else if waterSourceType == "tap" {
 		t, err := reservoir.CreateTap()
 		if err != nil {
-			return echo.NewHTTPError(http.StatusBadRequest, err)
+			return Error(c, err)
 		}
 
 		r.AttachTap(&t)
@@ -104,7 +105,7 @@ func (s *ReservoirServer) Save(c echo.Context) error {
 	uid, ok := result.Result.(string)
 
 	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
 	data["data"] = uid
@@ -113,5 +114,17 @@ func (s *ReservoirServer) Save(c echo.Context) error {
 }
 
 func Error(c echo.Context, err error) error {
-	return c.JSON(http.StatusBadRequest, err)
+	if re, ok := err.(reservoir.ReservoirError); ok {
+		errMap := map[string]string{
+			"field_name":    "",
+			"error_code":    strconv.Itoa(re.Code),
+			"error_message": re.Error(),
+		}
+
+		return c.JSON(http.StatusBadRequest, errMap)
+	} else if rve, ok := err.(validation.RequestValidationError); ok {
+		return c.JSON(http.StatusBadRequest, rve)
+	}
+
+	return c.JSON(http.StatusInternalServerError, err)
 }

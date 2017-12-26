@@ -1,17 +1,19 @@
 package reservoir
 
 const (
-	ReservoirErrorEmptyNameCode = iota
-	ReservoirErrorNotEnoughCharacterCode
-	ReservoirErrorExceedMaximunCharacterCode
-	ReservoirErrorAlphanumericOnlyCode
+	ReservoirErrorNameEmptyCode = iota
+	ReservoirErrorNameNotEnoughCharacterCode
+	ReservoirErrorNameExceedMaximunCharacterCode
+	ReservoirErrorNameAlphanumericOnlyCode
 
-	ReservoirErrorInvalidPHCode
+	ReservoirErrorPHInvalidCode
 
-	ReservoirErrorInvalidECCode
-	ReservoirErrorInvalidCapacityCode
+	ReservoirErrorECInvalidCode
+
+	ReservoirErrorBucketCapacityInvalidCode
+	ReservoirErrorBucketVolumeInvalidCode
+
 	ReservoirErrorWaterSourceAlreadyAttachedCode
-	ReservoirErrorInvalidBucketVolumeCode
 )
 
 // ReservoirError is a custom error from Go built-in error
@@ -21,23 +23,23 @@ type ReservoirError struct {
 
 func (e ReservoirError) Error() string {
 	switch e.Code {
-	case ReservoirErrorEmptyNameCode:
+	case ReservoirErrorNameEmptyCode:
 		return "Reservoir name is required."
-	case ReservoirErrorNotEnoughCharacterCode:
+	case ReservoirErrorNameNotEnoughCharacterCode:
 		return "Not enough character on Reservoir Name"
-	case ReservoirErrorExceedMaximunCharacterCode:
+	case ReservoirErrorNameExceedMaximunCharacterCode:
 		return "Reservoir name cannot more than 100 characters"
-	case ReservoirErrorAlphanumericOnlyCode:
+	case ReservoirErrorNameAlphanumericOnlyCode:
 		return "Reservoir name should be alphanumeric"
-	case ReservoirErrorInvalidPHCode:
+	case ReservoirErrorPHInvalidCode:
 		return "Reservoir pH value is invalid."
-	case ReservoirErrorInvalidECCode:
+	case ReservoirErrorECInvalidCode:
 		return "Reservoir EC value is invalid."
-	case ReservoirErrorInvalidCapacityCode:
+	case ReservoirErrorBucketCapacityInvalidCode:
 		return "Reservoir bucket capacity is invalid."
 	case ReservoirErrorWaterSourceAlreadyAttachedCode:
 		return "Reservoir water source is already attached."
-	case ReservoirErrorInvalidBucketVolumeCode:
+	case ReservoirErrorBucketVolumeInvalidCode:
 		return "Reservoir bucket volume is invalid."
 	default:
 		return "Unrecognized Reservoir Error Code"

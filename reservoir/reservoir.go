@@ -113,13 +113,13 @@ func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
 
 func validateName(name string) error {
 	if name == "" {
-		return ReservoirError{ReservoirErrorEmptyNameCode}
+		return ReservoirError{ReservoirErrorNameEmptyCode}
 	}
 	if len(name) < 5 {
-		return ReservoirError{ReservoirErrorNotEnoughCharacterCode}
+		return ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}
 	}
 	if len(name) > 100 {
-		return ReservoirError{ReservoirErrorExceedMaximunCharacterCode}
+		return ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}
 	}
 
 	return nil
@@ -127,7 +127,7 @@ func validateName(name string) error {
 
 func validatePH(ph float32) error {
 	if ph < 0 {
-		return ReservoirError{ReservoirErrorInvalidPHCode}
+		return ReservoirError{ReservoirErrorPHInvalidCode}
 	}
 
 	return nil
@@ -135,7 +135,7 @@ func validatePH(ph float32) error {
 
 func validateEC(ec float32) error {
 	if ec <= 0 {
-		return ReservoirError{ReservoirErrorInvalidECCode}
+		return ReservoirError{ReservoirErrorECInvalidCode}
 	}
 
 	return nil

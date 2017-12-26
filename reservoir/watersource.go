@@ -17,7 +17,7 @@ type Tap struct {
 // CreateBucket registers a new Bucket.
 func CreateBucket(capacity, volume float32) (Bucket, error) {
 	if capacity <= 0 {
-		return Bucket{}, ReservoirError{ReservoirErrorInvalidCapacityCode}
+		return Bucket{}, ReservoirError{ReservoirErrorBucketCapacityInvalidCode}
 	}
 
 	err := validateVolume(capacity, volume)
@@ -57,7 +57,7 @@ func (b Bucket) IsBucketEmpty() bool {
 
 func validateVolume(capacity, volume float32) error {
 	if volume > capacity || volume < 0 {
-		return ReservoirError{ReservoirErrorInvalidBucketVolumeCode}
+		return ReservoirError{ReservoirErrorBucketCapacityInvalidCode}
 	}
 
 	return nil
