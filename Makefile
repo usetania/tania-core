@@ -11,34 +11,38 @@ clean:
 	@[ -f terra.win.amd64.exe ] && rm -f terra.win.amd64.exe || true
 
 clean-osx: terra.osx.amd64
-	rm -rf $@
+	rm -rf $^
 
 clean-linux-arm: terra.linux.arm
-	rm -rf $@
+	rm -rf $^
 
 clean-linux-amd64: terra.linux.amd64
-	rm -rf $@
+	rm -rf $^
 
 clean-win64: terra.win.amd64.exe
-	rm -rf $@
+	rm -rf $^
 
 terra.osx.amd64: main.go
 	GOOS=darwin GOARCH=amd64 go build -ldflags '-s -w' -o $@
+	file $@
 
 osx: terra.osx.amd64
 
 terra.linux.arm: main.go
 	GOOS=linux GOARCH=arm GOARM=7 go build -ldflags '-s -w' -o $@
+	file $@
 
 linux-arm: terra.linux.arm
 
 terra.linux.amd64: main.go
 	GOOS=linux GOARCH=amd64 go build -ldflags '-s -w' -o $@
+	file $@
 
 linux-amd64: terra.linux.amd64
 
 terra.windaws.amd64: main.go
 	GOOS=windows GOARCH=amd74 go build -ldflags '-s -w' -o $@
+	file $@
 
 windows: terra.windows.amd64
 
