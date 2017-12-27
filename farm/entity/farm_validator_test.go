@@ -1,4 +1,4 @@
-package farm
+package entity
 
 import (
 	"testing"
@@ -18,7 +18,7 @@ func TestValidateFarmName(t *testing.T) {
 
 	for _, test := range tests {
 		// When
-		actual := validateName(test.param)
+		actual := validateFarmName(test.param)
 		if actual != test.expected {
 			t.Errorf("Expected (%q) to be %v, got %v", test.param, test.expected, actual)
 		}

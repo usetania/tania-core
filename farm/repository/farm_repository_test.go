@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/Tanibox/tania-server/farm"
+	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInMemorySave(t *testing.T) {
+func TestFarmInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
 	repo := NewFarmRepositoryInMemory()
 
-	farm1, _ := farm.CreateFarm("My Farm Family", "", "-90.000", "-180.000", "organic", "ID", "JK")
-	farm2, _ := farm.CreateFarm("My Second Farm", "", "-90.000", "-180.000", "organic", "ID", "JK")
+	farm1, _ := entity.CreateFarm("My Farm Family", "", "-90.000", "-180.000", "organic", "ID", "JK")
+	farm2, _ := entity.CreateFarm("My Second Farm", "", "-90.000", "-180.000", "organic", "ID", "JK")
 
 	fmt.Println(farm2)
 

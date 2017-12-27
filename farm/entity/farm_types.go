@@ -1,4 +1,4 @@
-package farm
+package entity
 
 const (
 	FarmTypeOrganic      = "organic"

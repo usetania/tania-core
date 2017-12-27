@@ -1,4 +1,4 @@
-package reservoir
+package entity
 
 import (
 	"testing"
@@ -9,9 +9,10 @@ import (
 func TestCreateReservoir(t *testing.T) {
 	// Given
 	name := "My reservoir"
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
 
 	// When
-	reservoir, err := CreateReservoir(name)
+	reservoir, err := CreateReservoir(farm, name)
 
 	// Then
 	assert.Nil(t, err)
@@ -21,9 +22,10 @@ func TestCreateReservoir(t *testing.T) {
 func TestInvalidCreateReservoir(t *testing.T) {
 	// Given
 	name := ""
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
 
 	// When
-	_, err := CreateReservoir(name)
+	_, err := CreateReservoir(farm, name)
 
 	// Then
 	assert.Equal(t, err, ReservoirError{ReservoirErrorNameEmptyCode})
@@ -32,7 +34,7 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	name = "asd"
 
 	// When
-	_, err = CreateReservoir(name)
+	_, err = CreateReservoir(farm, name)
 
 	// Then
 	assert.Equal(t, err, ReservoirError{ReservoirErrorNameNotEnoughCharacterCode})
@@ -40,10 +42,12 @@ func TestInvalidCreateReservoir(t *testing.T) {
 
 func TestAttachWaterSource(t *testing.T) {
 	// Given
-	reservoir1, _ := CreateReservoir("My Reservoir 1")
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+
+	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
 
-	reservoir2, _ := CreateReservoir("My Reservoir 2")
+	reservoir2, _ := CreateReservoir(farm, "My Reservoir 2")
 	tap, _ := CreateTap()
 
 	// When
@@ -51,8 +55,8 @@ func TestAttachWaterSource(t *testing.T) {
 	err2 := reservoir2.AttachTap(&tap)
 
 	// Then
-	val1 := reservoir1.waterSource
-	val2 := reservoir2.waterSource
+	val1 := reservoir1.WaterSource
+	val2 := reservoir2.WaterSource
 
 	assert.Equal(t, val1, &bucket)
 	assert.Nil(t, err1)
@@ -63,7 +67,8 @@ func TestAttachWaterSource(t *testing.T) {
 
 func TestInvalidAttachWaterSource(t *testing.T) {
 	// Given
-	reservoir, _ := CreateReservoir("My Reservoir")
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	reservoir, _ := CreateReservoir(farm, "My Reservoir")
 	bucket1, _ := CreateBucket(100, 50)
 	bucket2, _ := CreateBucket(200, 150)
 	tap, _ := CreateTap()
@@ -79,11 +84,13 @@ func TestInvalidAttachWaterSource(t *testing.T) {
 
 func TestMeasureCondition(t *testing.T) {
 	// Given
-	reservoir1, _ := CreateReservoir("My Reservoir 1")
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+
+	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
 	reservoir1.AttachBucket(&bucket)
 
-	reservoir2, _ := CreateReservoir("My Reservoir 2")
+	reservoir2, _ := CreateReservoir(farm, "My Reservoir 2")
 	tap, _ := CreateTap()
 	reservoir2.AttachTap(&tap)
 
@@ -98,7 +105,8 @@ func TestMeasureCondition(t *testing.T) {
 
 func TestChangeTemperature(t *testing.T) {
 	// Given
-	reservoir, _ := CreateReservoir("My Reservoir")
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	reservoir, _ := CreateReservoir(farm, "My Reservoir")
 	temperature := float32(32)
 	ph := float32(4.3)
 	ec := float32(23.5)
@@ -114,7 +122,8 @@ func TestChangeTemperature(t *testing.T) {
 
 func TestInvalidChangeTemperature(t *testing.T) {
 	// Given
-	reservoir, _ := CreateReservoir("My Reservoir")
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	reservoir, _ := CreateReservoir(farm, "My Reservoir")
 	temperature := float32(32)
 	ph1 := float32(-10)
 	ec1 := float32(23.5)

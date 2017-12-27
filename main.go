@@ -5,8 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	sFarm "github.com/Tanibox/tania-server/farm/server"
-	sReservoir "github.com/Tanibox/tania-server/reservoir/server"
+	"github.com/Tanibox/tania-server/farm/server"
 	"github.com/Tanibox/tania-server/routing"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -16,8 +15,8 @@ import (
 func main() {
 	e := echo.New()
 
-	reservoirServer, err := sReservoir.NewServer()
-	farmServer, err := sFarm.NewServer()
+	reservoirServer, err := server.NewReservoirServer()
+	farmServer, err := server.NewFarmServer()
 	if err != nil {
 		e.Logger.Fatal(err)
 	}

@@ -1,12 +1,13 @@
-package farm
+package entity
 
-// LocationError is a custom error from Go built-in error
+// FarmError is a custom error from Go built-in error
 type FarmError struct {
-	code int
+	Code int
 }
 
 const (
 	FarmErrorInvalidFarmTypeCode = iota
+	FarmErrorReservoirAlreadyAdded
 	FarmErrorEmptyNameCode
 	FarmErrorNotEnoughCharacterCode
 	FarmErrorInvalidLatitudeValueCode
@@ -16,9 +17,11 @@ const (
 )
 
 func (e FarmError) Error() string {
-	switch e.code {
+	switch e.Code {
 	case FarmErrorInvalidFarmTypeCode:
 		return "Farm type code value is invalid."
+	case FarmErrorReservoirAlreadyAdded:
+		return "Reservoir is already added."
 	case FarmErrorEmptyNameCode:
 		return "Farm name is required."
 	case FarmErrorNotEnoughCharacterCode:

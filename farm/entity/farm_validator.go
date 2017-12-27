@@ -1,4 +1,4 @@
-package farm
+package entity
 
 import (
 	"regexp"
@@ -6,7 +6,7 @@ import (
 	"github.com/Tanibox/tania-server/location"
 )
 
-func validateName(name string) error {
+func validateFarmName(name string) error {
 	if name == "" {
 		return FarmError{FarmErrorEmptyNameCode}
 	}

@@ -1,6 +1,6 @@
-// Package farm provides the operation that farm holder can do
+// Package entity provides the operation that farm holder can do
 // to their farm
-package farm
+package entity
 
 type Farm struct {
 	UID         string
@@ -11,19 +11,14 @@ type Farm struct {
 	Type        string
 	CountryCode string
 	CityCode    string
-}
+	IsActive    bool
 
-// DisplayAll dispalys all existing farms
-func DisplayAll() []Farm {
-	var farms []Farm
-
-	return farms
+	Reservoirs []Reservoir
 }
 
 // CreateFarm registers a new farm to Tania
 func CreateFarm(name string, description string, latitude string, longitude string, farmType string, countryCode string, cityCode string) (Farm, error) {
-
-	err := validateName(name)
+	err := validateFarmName(name)
 	if err != nil {
 		return Farm{}, err
 	}
@@ -56,19 +51,39 @@ func CreateFarm(name string, description string, latitude string, longitude stri
 		Type:        farmType,
 		CountryCode: countryCode,
 		CityCode:    cityCode,
+		IsActive:    true,
 	}, nil
 }
 
-// ShowInformation shows information of a farm
-func ShowInformation(uid string) Farm {
-	return Farm{}
+func (f *Farm) AddReservoir(res Reservoir) error {
+	found := f.IsReservoirAdded(res.Name)
+
+	if found {
+		return FarmError{FarmErrorReservoirAlreadyAdded}
+	}
+
+	f.Reservoirs = append(f.Reservoirs, res)
+
+	return nil
 }
 
-// UpdateInformation updates the existing farm information in Tania
-func UpdateInformation() {
+// IsReservoirAdded is to check whether a reservoir is already added.
+// It knows by matching the reservoir's name
+func (f Farm) IsReservoirAdded(name string) bool {
+	for _, r := range f.Reservoirs {
+		if r.Name == name {
+			return true
+		}
+	}
+
+	return false
 }
 
-// DestroyFarm destroys the farm and its properties. This is dangerous.
-func Destroy() {
+// IsHaveReservoir checks whether a farm has any reservoir.
+func (f Farm) IsHaveReservoir() bool {
+	if len(f.Reservoirs) > 0 {
+		return true
+	}
 
+	return false
 }

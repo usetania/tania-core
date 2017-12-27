@@ -3,23 +3,25 @@ package repository
 import (
 	"testing"
 
-	"github.com/Tanibox/tania-server/reservoir"
+	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInMemorySave(t *testing.T) {
+func TestReservoirInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
 	repo := NewReservoirRepositoryInMemory()
 
-	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1")
+	farm, _ := entity.CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "ID")
 
-	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2")
-	bucket2, _ := reservoir.CreateBucket(100, 50)
+	reservoir1, _ := entity.CreateReservoir(farm, "My Reservoir 1")
+
+	reservoir2, _ := entity.CreateReservoir(farm, "My Reservoir 2")
+	bucket2, _ := entity.CreateBucket(100, 50)
 	reservoir2.AttachBucket(&bucket2)
 
-	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3")
-	tap3, _ := reservoir.CreateTap()
+	reservoir3, _ := entity.CreateReservoir(farm, "My Reservoir 3")
+	tap3, _ := entity.CreateTap()
 	reservoir3.AttachTap(&tap3)
 
 	// When
@@ -41,15 +43,16 @@ func TestInMemorySave(t *testing.T) {
 	assert.Equal(t, count1.Result, 3)
 }
 
-func TestInMemoryFindAll(t *testing.T) {
+func TestReservoirInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
 	repo := NewReservoirRepositoryInMemory()
 
-	reservoir1, _ := reservoir.CreateReservoir("My Reservoir 1")
-	reservoir2, _ := reservoir.CreateReservoir("My Reservoir 2")
-	reservoir3, _ := reservoir.CreateReservoir("My Reservoir 3")
+	farm, _ := entity.CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "ID")
+	reservoir1, _ := entity.CreateReservoir(farm, "My Reservoir 1")
+	reservoir2, _ := entity.CreateReservoir(farm, "My Reservoir 2")
+	reservoir3, _ := entity.CreateReservoir(farm, "My Reservoir 3")
 
 	var result, foundOne RepositoryResult
 	go func() {
@@ -61,7 +64,7 @@ func TestInMemoryFindAll(t *testing.T) {
 		// When
 		result = <-repo.FindAll()
 
-		val := result.Result.([]reservoir.Reservoir)
+		val := result.Result.([]entity.Reservoir)
 		foundOne = <-repo.FindByID(val[0].UID)
 
 		done <- true
@@ -69,11 +72,11 @@ func TestInMemoryFindAll(t *testing.T) {
 
 	// Then
 	<-done
-	val1, ok := result.Result.([]reservoir.Reservoir)
+	val1, ok := result.Result.([]entity.Reservoir)
 	assert.Equal(t, ok, true)
 	assert.Equal(t, len(val1), 3)
 
-	val2, ok := foundOne.Result.(reservoir.Reservoir)
+	val2, ok := foundOne.Result.(entity.Reservoir)
 	assert.Equal(t, ok, true)
 	assert.Equal(t, val2.UID, val1[0].UID)
 }

@@ -1,12 +1,9 @@
 package repository
 
 import (
-	"math/rand"
-	"strconv"
 	"sync"
-	"time"
 
-	"github.com/Tanibox/tania-server/reservoir"
+	"github.com/Tanibox/tania-server/farm/entity"
 )
 
 // ReservoirRepository is a repository
@@ -14,24 +11,17 @@ type ReservoirRepository interface {
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 	Count() <-chan RepositoryResult
-	Save(val *reservoir.Reservoir) <-chan RepositoryResult
-}
-
-// RepositoryResult is a struct to wrap repository result
-// so its easy to use it in channel
-type RepositoryResult struct {
-	Result interface{}
-	Error  error
+	Save(val *entity.Reservoir) <-chan RepositoryResult
 }
 
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
 type ReservoirRepositoryInMemory struct {
 	lock         sync.RWMutex
-	ReservoirMap map[string]reservoir.Reservoir
+	ReservoirMap map[string]entity.Reservoir
 }
 
 func NewReservoirRepositoryInMemory() ReservoirRepository {
-	return &ReservoirRepositoryInMemory{ReservoirMap: make(map[string]reservoir.Reservoir)}
+	return &ReservoirRepositoryInMemory{ReservoirMap: make(map[string]entity.Reservoir)}
 }
 
 // FindAll is to find all
@@ -42,7 +32,7 @@ func (r *ReservoirRepositoryInMemory) FindAll() <-chan RepositoryResult {
 		r.lock.RLock()
 		defer r.lock.RUnlock()
 
-		reservoirs := []reservoir.Reservoir{}
+		reservoirs := []entity.Reservoir{}
 		for _, val := range r.ReservoirMap {
 			reservoirs = append(reservoirs, val)
 		}
@@ -70,7 +60,7 @@ func (r *ReservoirRepositoryInMemory) FindByID(uid string) <-chan RepositoryResu
 }
 
 // Save is to save
-func (r *ReservoirRepositoryInMemory) Save(val *reservoir.Reservoir) <-chan RepositoryResult {
+func (r *ReservoirRepositoryInMemory) Save(val *entity.Reservoir) <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
@@ -104,10 +94,4 @@ func (r *ReservoirRepositoryInMemory) Count() <-chan RepositoryResult {
 	}()
 
 	return result
-}
-
-func getRandomUID() string {
-	rand.Seed(time.Now().UnixNano())
-	uid := rand.Int()
-	return strconv.Itoa(uid)
 }

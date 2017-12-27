@@ -1,38 +1,28 @@
 package repository
 
 import (
-	"math/rand"
-	"strconv"
 	"sync"
-	"time"
 
-	"github.com/Tanibox/tania-server/farm"
+	"github.com/Tanibox/tania-server/farm/entity"
 )
 
 type FarmRepository interface {
 	Count() <-chan RepositoryResult
-	Save(val *farm.Farm) <-chan RepositoryResult
-}
-
-// RepositoryResult is a struct to wrap repository result
-// so its easy to use it in channel
-type RepositoryResult struct {
-	Result interface{}
-	Error  error
+	Save(val *entity.Farm) <-chan RepositoryResult
 }
 
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
 type FarmRepositoryInMemory struct {
 	lock    sync.RWMutex
-	FarmMap map[string]farm.Farm
+	FarmMap map[string]entity.Farm
 }
 
 func NewFarmRepositoryInMemory() FarmRepository {
-	return &FarmRepositoryInMemory{FarmMap: make(map[string]farm.Farm)}
+	return &FarmRepositoryInMemory{FarmMap: make(map[string]entity.Farm)}
 }
 
 // Save is to save
-func (f *FarmRepositoryInMemory) Save(val *farm.Farm) <-chan RepositoryResult {
+func (f *FarmRepositoryInMemory) Save(val *entity.Farm) <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
@@ -66,10 +56,4 @@ func (f *FarmRepositoryInMemory) Count() <-chan RepositoryResult {
 	}()
 
 	return result
-}
-
-func getRandomUID() string {
-	rand.Seed(time.Now().UnixNano())
-	uid := rand.Int()
-	return strconv.Itoa(uid)
 }

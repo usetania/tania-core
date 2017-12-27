@@ -1,4 +1,4 @@
-package farm
+package entity
 
 import (
 	"testing"

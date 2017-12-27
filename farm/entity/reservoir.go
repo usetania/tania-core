@@ -1,6 +1,4 @@
-// Package reservoir provides the operation that farm owner or his/her staff
-// can do with the reservoir in a farm.
-package reservoir
+package entity
 
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm.
@@ -10,13 +8,13 @@ type Reservoir struct {
 	PH          float32
 	EC          float32
 	Temperature float32
-
-	waterSource interface{}
+	WaterSource interface{}
+	Farm        Farm
 }
 
 // CreateReservoir registers a new Reservoir.
-func CreateReservoir(name string) (Reservoir, error) {
-	err := validateName(name)
+func CreateReservoir(farm Farm, name string) (Reservoir, error) {
+	err := validateReservoirName(name)
 	if err != nil {
 		return Reservoir{}, err
 	}
@@ -26,6 +24,7 @@ func CreateReservoir(name string) (Reservoir, error) {
 		PH:          0,
 		EC:          0,
 		Temperature: 0,
+		Farm:        farm,
 	}, nil
 }
 
@@ -35,35 +34,35 @@ func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
-	r.waterSource = bucket
+	r.WaterSource = bucket
 	return nil
 }
 
-// AttachTap attach Tap value object to Reservoir.waterSource.
+// AttachTap attach Tap value object to Reservoir.WaterSource.
 func (r *Reservoir) AttachTap(tap *Tap) error {
 	if r.IsAttachedToWaterSource() {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
-	r.waterSource = tap
+	r.WaterSource = tap
 	return nil
 }
 
 // IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource.
 func (r Reservoir) IsAttachedToTap() bool {
-	_, ok := r.waterSource.(*Tap)
+	_, ok := r.WaterSource.(*Tap)
 	return ok
 }
 
 // IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource.
 func (r Reservoir) IsAttachedToBucket() bool {
-	_, ok := r.waterSource.(*Bucket)
+	_, ok := r.WaterSource.(*Bucket)
 	return ok
 }
 
 // IsAttachedToWaterSource is used to check if Reservoir is attached to WaterSource.
 func (r Reservoir) IsAttachedToWaterSource() bool {
-	return r.waterSource != nil
+	return r.WaterSource != nil
 }
 
 // MeasureCondition will measure the Reservoir condition based on its properties.
@@ -79,7 +78,7 @@ func (r Reservoir) MeasureCondition() float32 {
 
 // ChangeName is used to change Reservoir Name.
 func (r *Reservoir) ChangeName(name string) error {
-	err := validateName(name)
+	err := validateReservoirName(name)
 	if err != nil {
 		return err
 	}
@@ -111,7 +110,7 @@ func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
 	return nil
 }
 
-func validateName(name string) error {
+func validateReservoirName(name string) error {
 	if name == "" {
 		return ReservoirError{ReservoirErrorNameEmptyCode}
 	}

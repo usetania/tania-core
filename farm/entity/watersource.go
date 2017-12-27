@@ -1,4 +1,4 @@
-package reservoir
+package entity
 
 const (
 	ReservoirEmptyBucketPercentage = 0.2

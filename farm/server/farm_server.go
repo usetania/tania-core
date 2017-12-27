@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/Tanibox/tania-server/farm"
+	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/farm/repository"
 	"github.com/labstack/echo"
 )
@@ -13,8 +13,8 @@ type FarmServer struct {
 	FarmRepo repository.FarmRepository
 }
 
-// NewServer initializes FarmServer's dependencies and create new FarmServer struct
-func NewServer() (*FarmServer, error) {
+// NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
+func NewFarmServer() (*FarmServer, error) {
 	farmRepo := repository.NewFarmRepositoryInMemory()
 
 	return &FarmServer{
@@ -31,7 +31,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 
 // GetTypes is a FarmServer's handle to get farm types
 func (s *FarmServer) GetTypes(c echo.Context) error {
-	types := farm.FindAllFarmTypes()
+	types := entity.FindAllFarmTypes()
 
 	return c.JSON(http.StatusOK, types)
 }
@@ -40,7 +40,7 @@ func (s *FarmServer) GetTypes(c echo.Context) error {
 func (s *FarmServer) Save(c echo.Context) error {
 	data := make(map[string]string)
 
-	r, err := farm.CreateFarm(
+	r, err := entity.CreateFarm(
 		c.FormValue("name"),
 		c.FormValue("description"),
 		c.FormValue("latitude"),

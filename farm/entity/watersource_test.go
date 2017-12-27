@@ -1,4 +1,4 @@
-package reservoir
+package entity
 
 import (
 	"testing"
