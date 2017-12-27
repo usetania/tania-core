@@ -14,13 +14,13 @@ func TestReservoirInMemorySave(t *testing.T) {
 
 	farm, _ := entity.CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "ID")
 
-	reservoir1, _ := entity.CreateReservoir(farm, "My Reservoir 1")
+	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
 
-	reservoir2, _ := entity.CreateReservoir(farm, "My Reservoir 2")
+	reservoir2, _ := entity.CreateReservoir(farm, "MyReservoir2")
 	bucket2, _ := entity.CreateBucket(100, 50)
 	reservoir2.AttachBucket(&bucket2)
 
-	reservoir3, _ := entity.CreateReservoir(farm, "My Reservoir 3")
+	reservoir3, _ := entity.CreateReservoir(farm, "MyReservoir3")
 	tap3, _ := entity.CreateTap()
 	reservoir3.AttachTap(&tap3)
 

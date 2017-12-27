@@ -15,7 +15,6 @@ import (
 func main() {
 	e := echo.New()
 
-	reservoirServer, err := server.NewReservoirServer()
 	farmServer, err := server.NewFarmServer()
 	if err != nil {
 		e.Logger.Fatal(err)
@@ -38,9 +37,6 @@ func main() {
 
 	farmGroup := API.Group("/farms")
 	farmServer.Mount(farmGroup)
-
-	reservoirGroup := API.Group("/reservoirs")
-	reservoirServer.Mount(reservoirGroup)
 
 	e.Static("/", "public")
 	e.Logger.Fatal(e.Start(":8080"))

@@ -10,15 +10,15 @@ import (
 
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
-	FarmRepo repository.FarmRepository
+	FarmRepo      repository.FarmRepository
+	ReservoirRepo repository.ReservoirRepository
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer() (*FarmServer, error) {
-	farmRepo := repository.NewFarmRepositoryInMemory()
-
 	return &FarmServer{
-		FarmRepo: farmRepo,
+		FarmRepo:      repository.NewFarmRepositoryInMemory(),
+		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
 	}, nil
 }
 
@@ -26,7 +26,10 @@ func NewFarmServer() (*FarmServer, error) {
 func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 
-	g.POST("", s.Save)
+	g.POST("", s.SaveFarm)
+	g.GET("/:id", s.FindFarmByID)
+	g.POST("/:id/reservoirs", s.SaveReservoir)
+	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 }
 
 // GetTypes is a FarmServer's handle to get farm types
@@ -36,8 +39,8 @@ func (s *FarmServer) GetTypes(c echo.Context) error {
 	return c.JSON(http.StatusOK, types)
 }
 
-// Save is a FarmServer's handler to save new Reservoir
-func (s *FarmServer) Save(c echo.Context) error {
+// SaveFarm is a FarmServer's handler to save new Farm
+func (s *FarmServer) SaveFarm(c echo.Context) error {
 	data := make(map[string]string)
 
 	r, err := entity.CreateFarm(
@@ -69,4 +72,86 @@ func (s *FarmServer) Save(c echo.Context) error {
 	data["data"] = uid
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) FindFarmByID(c echo.Context) error {
+	return nil
+}
+
+// SaveReservoir is a FarmServer's handler to save new Reservoir and place it to a Farm
+func (s *FarmServer) SaveReservoir(c echo.Context) error {
+	data := make(map[string]string)
+	validation := RequestValidation{}
+
+	// Validate requests //
+	name, err := validation.ValidateReservoirName(c.FormValue("name"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	waterSourceType, err := validation.ValidateType(c.FormValue("type"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	capacity, err := validation.ValidateCapacity(waterSourceType, c.FormValue("capacity"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	farm, err := validation.ValidateFarm(*s, c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Process //
+	r, err := entity.CreateReservoir(farm, name)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	if waterSourceType == "bucket" {
+		b, err := entity.CreateBucket(capacity, 0)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		r.AttachBucket(&b)
+	} else if waterSourceType == "tap" {
+		t, err := entity.CreateTap()
+		if err != nil {
+			return Error(c, err)
+		}
+
+		r.AttachTap(&t)
+	}
+
+	err = farm.AddReservoir(r)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Persists //
+	reservoirResult := <-s.ReservoirRepo.Save(&r)
+	if reservoirResult.Error != nil {
+		return reservoirResult.Error
+	}
+
+	uid, ok := reservoirResult.Result.(string)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	farmResult := <-s.FarmRepo.Update(&farm)
+	if farmResult.Error != nil {
+		return farmResult.Error
+	}
+
+	data["data"] = uid
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
+	return nil
 }

@@ -55,10 +55,9 @@ func CreateFarm(name string, description string, latitude string, longitude stri
 	}, nil
 }
 
+// AddReservoir adds a reservoir to a farm
 func (f *Farm) AddReservoir(res Reservoir) error {
-	found := f.IsReservoirAdded(res.Name)
-
-	if found {
+	if f.IsReservoirAdded(res.Name) {
 		return FarmError{FarmErrorReservoirAlreadyAdded}
 	}
 

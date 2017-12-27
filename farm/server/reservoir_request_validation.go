@@ -1,29 +1,11 @@
 package server
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/helper/validationhelper"
 )
-
-func (rve RequestValidationError) Error() string {
-	return fmt.Sprintf(
-		"Field Name: %s, Error Code: %s, Error Message: %s",
-		rve.FieldName,
-		rve.ErrorCode,
-		rve.ErrorMessage,
-	)
-}
-
-// RequestValidation sanitizes request inputs and convert the input to its correct data type.
-// This is mostly used to prevent issues like invalid data type or potential SQL Injection.
-// So we can focus on processing data without converting data type after this sanitizing.
-// This validation doesn't aim to validate business process.
-// The business process validation will be handled in each entity's behaviour.
-type RequestValidation struct {
-}
 
 func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) {
 	if name == "" {
@@ -73,6 +55,13 @@ func (rv *RequestValidation) ValidateType(t string) (string, error) {
 	return t, nil
 }
 
-func (rv *RequestValidation) ValidateFarm(farmId string) (entity.Farm, error) {
-	return entity.Farm{}, nil
+func (rv *RequestValidation) ValidateFarm(s FarmServer, farmId string) (entity.Farm, error) {
+	result := <-s.FarmRepo.FindByID(farmId)
+	farm, _ := result.Result.(entity.Farm)
+
+	if farm.UID == "" {
+		return farm, NewRequestValidationError(NOT_FOUND, "farm_id")
+	}
+
+	return farm, nil
 }
