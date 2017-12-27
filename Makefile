@@ -23,25 +23,28 @@ clean-win64: terra.win.amd64.exe
 	rm -rf $^
 
 terra.osx.amd64: main.go
-	GOOS=darwin GOARCH=amd64 go build -ldflags '-s -w' -o $@
+	CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags '-s -w' -o $@
 	file $@
 
 osx: terra.osx.amd64
 
 terra.linux.arm: main.go
-	GOOS=linux GOARCH=arm GOARM=7 go build -ldflags '-s -w' -o $@
+	CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 \
+		CC_FOR_TARGET=arm-linux-gnueabihf-gcc	\
+		CXX_FOR_TARGET=arm-linux-gnueabihf-g++ \
+		go build -ldflags '-s -w' -o $@
 	file $@
 
 linux-arm: terra.linux.arm
 
 terra.linux.amd64: main.go
-	GOOS=linux GOARCH=amd64 go build -ldflags '-s -w' -o $@
+	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags '-s -w' -o $@
 	file $@
 
 linux-amd64: terra.linux.amd64
 
-terra.windaws.amd64: main.go
-	GOOS=windows GOARCH=amd74 go build -ldflags '-s -w' -o $@
+terra.windows.amd64: main.go
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -ldflags '-s -w' -o $@
 	file $@
 
 windows: terra.windows.amd64
