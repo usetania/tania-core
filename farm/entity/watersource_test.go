@@ -24,6 +24,19 @@ func TestCreateWaterSource(t *testing.T) {
 	assert.Equal(t, tap, Tap{})
 }
 
+func TestInvalidCreateWaterSource(t *testing.T) {
+	// When
+	bucket1, err1 := CreateBucket(0, 0)
+	bucket2, err2 := CreateBucket(-1, 0)
+
+	// Then
+	assert.Equal(t, ReservoirError{ReservoirErrorBucketCapacityInvalidCode}, err1)
+	assert.Equal(t, Bucket{}, bucket1)
+
+	assert.Equal(t, ReservoirError{ReservoirErrorBucketCapacityInvalidCode}, err2)
+	assert.Equal(t, Bucket{}, bucket2)
+}
+
 func TestVolume(t *testing.T) {
 	// Given
 	bucket, _ := CreateBucket(100, 50)
