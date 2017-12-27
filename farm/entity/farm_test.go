@@ -37,8 +37,8 @@ func TestCreateFarm(t *testing.T) {
 func TestAddReservoirToFarm(t *testing.T) {
 	// Given
 	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
-	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
-	reservoir2, _ := CreateReservoir(farm, "My Reservoir 2")
+	reservoir1, _ := CreateReservoir(farm, "MyReservoir1")
+	reservoir2, _ := CreateReservoir(farm, "MyReservoir2")
 
 	// When
 	err1 := farm.AddReservoir(reservoir1)
@@ -58,7 +58,7 @@ func TestAddReservoirToFarm(t *testing.T) {
 func TestInvalidAddReservoirToFarm(t *testing.T) {
 	// Given
 	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
-	reservoir, _ := CreateReservoir(farm, "My Reservoir 1")
+	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
 
 	// When
 	err1 := farm.AddReservoir(reservoir)
@@ -72,11 +72,11 @@ func TestInvalidAddReservoirToFarm(t *testing.T) {
 func TestIsReservoirAddedInFarm(t *testing.T) {
 	// Given
 	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
-	reservoir, _ := CreateReservoir(farm, "My Reservoir 1")
+	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
 	farm.AddReservoir(reservoir)
 
 	// When
-	result1 := farm.IsReservoirAdded("My Reservoir 1")
+	result1 := farm.IsReservoirAdded("MyReservoir1")
 
 	// Then
 	assert.Equal(t, true, result1)
@@ -93,7 +93,7 @@ func TestInvalidIsReservoirAddedInFarm(t *testing.T) {
 	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
 
 	// When
-	result1 := farm.IsReservoirAdded("My Reservoir")
+	result1 := farm.IsReservoirAdded("MyReservoir")
 
 	// Then
 	assert.Equal(t, false, result1)
@@ -105,11 +105,11 @@ func TestInvalidIsReservoirAddedInFarm(t *testing.T) {
 	assert.Equal(t, false, result2)
 
 	// Given
-	reservoir, _ := CreateReservoir(farm, "My Reservoir 1")
+	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
 	farm.AddReservoir(reservoir)
 
 	// When
-	result3 := farm.IsReservoirAdded("My Reservoir")
+	result3 := farm.IsReservoirAdded("MyReservoir")
 
 	// Then
 	assert.Equal(t, false, result3)

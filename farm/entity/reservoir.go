@@ -1,5 +1,7 @@
 package entity
 
+import "github.com/Tanibox/tania-server/helper/validationhelper"
+
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm.
 type Reservoir struct {
@@ -113,6 +115,9 @@ func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
 func validateReservoirName(name string) error {
 	if name == "" {
 		return ReservoirError{ReservoirErrorNameEmptyCode}
+	}
+	if !validationhelper.IsAlphanumeric(name) {
+		return ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}
 	}
 	if len(name) < 5 {
 		return ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}

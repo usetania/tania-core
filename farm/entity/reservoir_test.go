@@ -8,7 +8,7 @@ import (
 
 func TestCreateReservoir(t *testing.T) {
 	// Given
-	name := "My reservoir"
+	name := "MyReservoir"
 	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
 
 	// When
@@ -21,23 +21,25 @@ func TestCreateReservoir(t *testing.T) {
 
 func TestInvalidCreateReservoir(t *testing.T) {
 	// Given
-	name := ""
 	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
 
-	// When
-	_, err := CreateReservoir(farm, name)
+	reservoirData := []struct {
+		farm     Farm
+		name     string
+		expected ReservoirError
+	}{
+		{farm, "My<>Reserv", ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}},
+		{farm, "MyR", ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}},
+		{farm, "MyReservoirNameShouldNotBeMoreThanAHundredLongCharactersMyReservoirNameShouldNotBeMoreThanAHundredLongCharacters", ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}},
+	}
 
-	// Then
-	assert.Equal(t, err, ReservoirError{ReservoirErrorNameEmptyCode})
+	for _, data := range reservoirData {
+		// When
+		_, err := CreateReservoir(data.farm, data.name)
 
-	// Given
-	name = "asd"
-
-	// When
-	_, err = CreateReservoir(farm, name)
-
-	// Then
-	assert.Equal(t, err, ReservoirError{ReservoirErrorNameNotEnoughCharacterCode})
+		// Then
+		assert.Equal(t, data.expected, err)
+	}
 }
 
 func TestAttachWaterSource(t *testing.T) {
