@@ -50,9 +50,9 @@ func TestReservoirInMemoryFindAll(t *testing.T) {
 	repo := NewReservoirRepositoryInMemory()
 
 	farm, _ := entity.CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "ID")
-	reservoir1, _ := entity.CreateReservoir(farm, "My Reservoir 1")
-	reservoir2, _ := entity.CreateReservoir(farm, "My Reservoir 2")
-	reservoir3, _ := entity.CreateReservoir(farm, "My Reservoir 3")
+	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
+	reservoir2, _ := entity.CreateReservoir(farm, "MyReservoir2")
+	reservoir3, _ := entity.CreateReservoir(farm, "MyReservoir3")
 
 	var result, foundOne RepositoryResult
 	go func() {
@@ -75,8 +75,10 @@ func TestReservoirInMemoryFindAll(t *testing.T) {
 	val1, ok := result.Result.([]entity.Reservoir)
 	assert.Equal(t, ok, true)
 	assert.Equal(t, len(val1), 3)
+	assert.Contains(t, val1[0].Name, "MyReservoir")
 
 	val2, ok := foundOne.Result.(entity.Reservoir)
 	assert.Equal(t, ok, true)
 	assert.Equal(t, val2.UID, val1[0].UID)
+	assert.Contains(t, val2.Name, "MyReservoir")
 }

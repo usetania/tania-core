@@ -9,6 +9,7 @@ import (
 type FarmRepository interface {
 	Count() <-chan RepositoryResult
 	Save(val *entity.Farm) <-chan RepositoryResult
+	FindByID(uid string) <-chan RepositoryResult
 }
 
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
@@ -53,6 +54,20 @@ func (f *FarmRepositoryInMemory) Count() <-chan RepositoryResult {
 		count := len(f.FarmMap)
 
 		result <- RepositoryResult{Result: count}
+	}()
+
+	return result
+}
+
+// FindByID is to find by ID
+func (f *FarmRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
+	result := make(chan RepositoryResult)
+
+	go func() {
+		f.lock.RLock()
+		defer f.lock.RUnlock()
+
+		result <- RepositoryResult{Result: f.FarmMap[uid]}
 	}()
 
 	return result
