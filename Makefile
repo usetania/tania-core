@@ -30,8 +30,8 @@ osx: terra.osx.amd64
 
 terra.linux.arm: main.go
 	CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 \
-		CC_FOR_TARGET=arm-linux-gnueabihf-gcc	\
-		CXX_FOR_TARGET=arm-linux-gnueabihf-g++ \
+		CC=arm-linux-gnueabihf-gcc	\
+		CXX=arm-linux-gnueabihf-g++ \
 		go build -ldflags '-s -w' -o $@
 	file $@
 
