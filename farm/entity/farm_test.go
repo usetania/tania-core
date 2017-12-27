@@ -67,5 +67,50 @@ func TestInvalidAddReservoirToFarm(t *testing.T) {
 	// Then
 	assert.Equal(t, nil, err1)
 	assert.Equal(t, FarmError{FarmErrorReservoirAlreadyAdded}, err2)
+}
 
+func TestIsReservoirAddedInFarm(t *testing.T) {
+	// Given
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	reservoir, _ := CreateReservoir(farm, "My Reservoir 1")
+	farm.AddReservoir(reservoir)
+
+	// When
+	result1 := farm.IsReservoirAdded("My Reservoir 1")
+
+	// Then
+	assert.Equal(t, true, result1)
+
+	// When
+	result2 := farm.IsHaveReservoir()
+
+	// Then
+	assert.Equal(t, true, result2)
+}
+
+func TestInvalidIsReservoirAddedInFarm(t *testing.T) {
+	// Given
+	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+
+	// When
+	result1 := farm.IsReservoirAdded("My Reservoir")
+
+	// Then
+	assert.Equal(t, false, result1)
+
+	// When
+	result2 := farm.IsHaveReservoir()
+
+	// Then
+	assert.Equal(t, false, result2)
+
+	// Given
+	reservoir, _ := CreateReservoir(farm, "My Reservoir 1")
+	farm.AddReservoir(reservoir)
+
+	// When
+	result3 := farm.IsReservoirAdded("My Reservoir")
+
+	// Then
+	assert.Equal(t, false, result3)
 }
