@@ -7,6 +7,7 @@ import (
 )
 
 type FarmRepository interface {
+	FindAll() <-chan RepositoryResult
 	Count() <-chan RepositoryResult
 	Save(val *entity.Farm) <-chan RepositoryResult
 	Update(val *entity.Farm) <-chan RepositoryResult
@@ -21,6 +22,26 @@ type FarmRepositoryInMemory struct {
 
 func NewFarmRepositoryInMemory() FarmRepository {
 	return &FarmRepositoryInMemory{FarmMap: make(map[string]entity.Farm)}
+}
+
+func (f *FarmRepositoryInMemory) FindAll() <-chan RepositoryResult {
+	result := make(chan RepositoryResult)
+
+	go func() {
+		f.lock.RLock()
+		defer f.lock.RUnlock()
+
+		farms := []entity.Farm{}
+		for _, val := range f.FarmMap {
+			farms = append(farms, val)
+		}
+
+		result <- RepositoryResult{Result: farms}
+
+		close(result)
+	}()
+
+	return result
 }
 
 // Save is to save

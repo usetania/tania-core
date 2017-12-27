@@ -27,6 +27,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 
 	g.POST("", s.SaveFarm)
+	g.GET("", s.FindAllFarm)
 	g.GET("/:id", s.FindFarmByID)
 	g.POST("/:id/reservoirs", s.SaveReservoir)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
@@ -37,6 +38,24 @@ func (s *FarmServer) GetTypes(c echo.Context) error {
 	types := entity.FindAllFarmTypes()
 
 	return c.JSON(http.StatusOK, types)
+}
+
+func (s FarmServer) FindAllFarm(c echo.Context) error {
+	data := make(map[string][]entity.Farm)
+
+	result := <-s.FarmRepo.FindAll()
+	if result.Error != nil {
+		return result.Error
+	}
+
+	farms, ok := result.Result.([]entity.Farm)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	data["data"] = farms
+
+	return c.JSON(http.StatusOK, data)
 }
 
 // SaveFarm is a FarmServer's handler to save new Farm
