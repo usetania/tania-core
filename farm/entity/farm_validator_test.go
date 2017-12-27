@@ -106,7 +106,7 @@ func TestValidateCityCode(t *testing.T) {
 		cityCode    string
 		expected    error
 	}{
-		{"ID", "JKT", nil},
+		{"ID", "JK", nil},
 		{"ID", "HKG", FarmError{FarmErrorInvalidCityCode}},
 		{"ID", "", FarmError{FarmErrorInvalidCityCode}},
 	}
