@@ -62,21 +62,22 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 func (s *FarmServer) SaveFarm(c echo.Context) error {
 	data := make(map[string]string)
 
-	r, err := entity.CreateFarm(
-		c.FormValue("name"),
-		c.FormValue("description"),
-		c.FormValue("latitude"),
-		c.FormValue("longitude"),
-		c.FormValue("farm_type"),
-		c.FormValue("country_code"),
-		c.FormValue("city_code"),
-	)
-
+	farm, err := entity.CreateFarm(c.FormValue("name"), c.FormValue("farm_type"))
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err)
+		return Error(c, err)
 	}
 
-	result := <-s.FarmRepo.Save(&r)
+	err = farm.ChangeGeoLocation(c.FormValue("latitude"), c.FormValue("longitude"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = farm.ChangeRegion(c.FormValue("country_code"), c.FormValue("city_code"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.FarmRepo.Save(&farm)
 
 	if result.Error != nil {
 		return result.Error
