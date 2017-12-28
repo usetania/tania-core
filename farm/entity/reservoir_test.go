@@ -9,19 +9,20 @@ import (
 func TestCreateReservoir(t *testing.T) {
 	// Given
 	name := "MyReservoir"
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 
 	// When
 	reservoir, err := CreateReservoir(farm, name)
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Nil(t, err)
 	assert.NotEqual(t, reservoir, Reservoir{})
 }
 
 func TestInvalidCreateReservoir(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 
 	reservoirData := []struct {
 		farm     Farm
@@ -40,11 +41,14 @@ func TestInvalidCreateReservoir(t *testing.T) {
 		// Then
 		assert.Equal(t, data.expected, err)
 	}
+
+	// Then
+	assert.Nil(t, farmErr)
 }
 
 func TestAttachWaterSource(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 
 	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
@@ -60,6 +64,8 @@ func TestAttachWaterSource(t *testing.T) {
 	val1 := reservoir1.WaterSource
 	val2 := reservoir2.WaterSource
 
+	assert.Nil(t, farmErr)
+
 	assert.Equal(t, val1, &bucket)
 	assert.Nil(t, err1)
 
@@ -69,7 +75,7 @@ func TestAttachWaterSource(t *testing.T) {
 
 func TestInvalidAttachWaterSource(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 	reservoir, _ := CreateReservoir(farm, "My Reservoir")
 	bucket1, _ := CreateBucket(100, 50)
 	bucket2, _ := CreateBucket(200, 150)
@@ -80,13 +86,15 @@ func TestInvalidAttachWaterSource(t *testing.T) {
 	err1 := reservoir.AttachBucket(&bucket2)
 	err2 := reservoir.AttachTap(&tap)
 
+	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, err1, ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode})
 	assert.Equal(t, err2, ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode})
 }
 
 func TestMeasureCondition(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 
 	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
@@ -101,13 +109,14 @@ func TestMeasureCondition(t *testing.T) {
 	val2 := reservoir2.MeasureCondition()
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, val1, float32(1))
 	assert.Equal(t, val2, float32(0))
 }
 
 func TestChangeTemperature(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 	reservoir, _ := CreateReservoir(farm, "My Reservoir")
 	temperature := float32(32)
 	ph := float32(4.3)
@@ -117,6 +126,7 @@ func TestChangeTemperature(t *testing.T) {
 	reservoir.ChangeTemperature(temperature, ph, ec)
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, reservoir.Temperature, temperature)
 	assert.Equal(t, reservoir.PH, ph)
 	assert.Equal(t, reservoir.EC, ec)
@@ -124,7 +134,7 @@ func TestChangeTemperature(t *testing.T) {
 
 func TestInvalidChangeTemperature(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "JK")
 	reservoir, _ := CreateReservoir(farm, "My Reservoir")
 	temperature := float32(32)
 	ph1 := float32(-10)
@@ -137,6 +147,7 @@ func TestInvalidChangeTemperature(t *testing.T) {
 	err2 := reservoir.ChangeTemperature(temperature, ph2, ec2)
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, err1, ReservoirError{ReservoirErrorPHInvalidCode})
 	assert.Equal(t, err2, ReservoirError{ReservoirErrorECInvalidCode})
 }
