@@ -12,7 +12,7 @@ func TestReservoirInMemorySave(t *testing.T) {
 	done := make(chan bool)
 	repo := NewReservoirRepositoryInMemory()
 
-	farm, _ := entity.CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := entity.CreateFarm("Farm1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "JK")
 
 	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
 
@@ -37,6 +37,8 @@ func TestReservoirInMemorySave(t *testing.T) {
 
 	// Then
 	<-done
+	assert.Nil(t, farmErr)
+
 	assert.NotNil(t, saveResult1)
 	assert.NotNil(t, saveResult2)
 	assert.NotNil(t, saveResult3)
@@ -49,7 +51,7 @@ func TestReservoirInMemoryFindAll(t *testing.T) {
 
 	repo := NewReservoirRepositoryInMemory()
 
-	farm, _ := entity.CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "ID")
+	farm, farmErr1 := entity.CreateFarm("Farm1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "JK")
 	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
 	reservoir2, _ := entity.CreateReservoir(farm, "MyReservoir2")
 	reservoir3, _ := entity.CreateReservoir(farm, "MyReservoir3")
@@ -72,6 +74,8 @@ func TestReservoirInMemoryFindAll(t *testing.T) {
 
 	// Then
 	<-done
+	assert.Nil(t, farmErr1)
+
 	val1, ok := result.Result.([]entity.Reservoir)
 	assert.Equal(t, ok, true)
 	assert.Equal(t, len(val1), 3)
