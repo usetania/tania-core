@@ -16,8 +16,8 @@ then
 
   echo -n "Uploading to S3..."
 
-  aws s3 cp tania-server-${TIMESTAMP}-linux-arm.txz s3://tanibox-terra/archives/
-  aws s3 cp tania-server-${TIMESTAMP}-linux-amd64.txz s3://tanibox-terra/archives/
-  aws s3 cp tania-server-${TIMESTAMP}-windows-amd64.7z s3://tanibox-terra/archives/
+  aws s3 cp tania-server-${TIMESTAMP}-linux-arm.txz s3://tanibox-terra/archives/ --storage-class STANDARD_IA
+  aws s3 cp tania-server-${TIMESTAMP}-linux-amd64.txz s3://tanibox-terra/archives/ --storage-class STANDARD_IA
+  aws s3 cp tania-server-${TIMESTAMP}-windows-amd64.7z s3://tanibox-terra/archives/ --storage-class STANDARD_IA
 
 fi
