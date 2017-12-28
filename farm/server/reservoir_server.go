@@ -2,9 +2,6 @@
 package server
 
 import (
-	"net/http"
-
-	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/farm/repository"
 	"github.com/labstack/echo"
 )
@@ -31,23 +28,7 @@ func (s *ReservoirServer) Mount(g *echo.Group) {
 
 // FindAll is a ResevoirServer's handler to get all Reservoir
 func (s *ReservoirServer) FindAll(c echo.Context) error {
-	data := make(map[string][]entity.Reservoir)
-
-	result := <-s.ReservoirRepo.FindAll()
-
-	if result.Error != nil {
-		return result.Error
-	}
-
-	reservoirs, ok := result.Result.([]entity.Reservoir)
-
-	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	data["data"] = reservoirs
-
-	return c.JSON(http.StatusOK, data)
+	return nil
 }
 
 // Save is a ReservoirServer's handler to save new Reservoir

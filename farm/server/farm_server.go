@@ -172,5 +172,19 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 }
 
 func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
-	return nil
+	data := make(map[string][]entity.Reservoir)
+
+	result := <-s.FarmRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	farm, ok := result.Result.(entity.Farm)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	data["data"] = farm.Reservoirs
+
+	return c.JSON(http.StatusOK, data)
 }
