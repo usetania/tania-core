@@ -5,7 +5,6 @@ package entity
 type Farm struct {
 	UID         string
 	Name        string
-	Description string
 	Latitude    string
 	Longitude   string
 	Type        string
@@ -17,13 +16,8 @@ type Farm struct {
 }
 
 // CreateFarm registers a new farm to Tania
-func CreateFarm(name string, description string, latitude string, longitude string, farmType string, countryCode string, cityCode string) (Farm, error) {
+func CreateFarm(name string, farmType string) (Farm, error) {
 	err := validateFarmName(name)
-	if err != nil {
-		return Farm{}, err
-	}
-
-	err = validateGeoLocation(latitude, longitude)
 	if err != nil {
 		return Farm{}, err
 	}
@@ -33,26 +27,46 @@ func CreateFarm(name string, description string, latitude string, longitude stri
 		return Farm{}, err
 	}
 
-	err = validateCountryCode(countryCode)
+	return Farm{
+		Name:        name,
+		Type:        farmType,
+		Latitude:    "",
+		Longitude:   "",
+		CountryCode: "",
+		CityCode:    "",
+		IsActive:    true,
+	}, nil
+}
+
+// ChangeGeoLocation changes the geolocation of a farm
+func (f *Farm) ChangeGeoLocation(latitude, longitude string) error {
+	err := validateGeoLocation(latitude, longitude)
 	if err != nil {
-		return Farm{}, err
+		return err
+	}
+
+	f.Latitude = latitude
+	f.Longitude = longitude
+
+	return nil
+}
+
+// ChangeRegion changes country and city of a farm
+func (f *Farm) ChangeRegion(countryCode, cityCode string) error {
+	err := validateCountryCode(countryCode)
+	if err != nil {
+		return err
 	}
 
 	err = validateCityCode(countryCode, cityCode)
 	if err != nil {
-		return Farm{}, err
+		return err
 	}
 
-	return Farm{
-		Name:        name,
-		Description: description,
-		Latitude:    latitude,
-		Longitude:   longitude,
-		Type:        farmType,
-		CountryCode: countryCode,
-		CityCode:    cityCode,
-		IsActive:    true,
-	}, nil
+	f.CountryCode = countryCode
+	f.CityCode = cityCode
+
+	return nil
 }
 
 // AddReservoir adds a reservoir to a farm

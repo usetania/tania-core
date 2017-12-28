@@ -10,33 +10,43 @@ func TestCreateFarm(t *testing.T) {
 	t.Parallel()
 
 	var tests = []struct {
-		name        string
-		description string
-		latitude    string
-		longitude   string
-		farmType    string
-		countryCode string
-		cityCode    string
-		expected    error
+		name                 string
+		latitude             string
+		longitude            string
+		farmType             string
+		countryCode          string
+		cityCode             string
+		expectedCreateFarm   error
+		expectedChangeGeo    error
+		expectedChangeRegion error
 	}{
-		{"MyFarmFamily", "", "-90.000", "-180.000", "organic", "ID", "JK", nil},
-		{"", "", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}},
-		{"MyFarmFamily", "", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountryCode}},
-		{"MyFarmFamily", "", "-90.000", "-180.000", "organic", "ID", "Jakarta", FarmError{FarmErrorInvalidCityCode}},
+		{"MyFarmFamily", "-90.000", "-180.000", "organic", "ID", "JK", nil, nil, nil},
+		{"", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}, nil, nil},
+		{"MyFarmFamily", "-90.000", "-180.000", "organic", "", "Jakarta", nil, nil, FarmError{FarmErrorInvalidCountryCode}},
+		{"MyFarmFamily", "-90.000", "-180.000", "organic", "ID", "Jakarta", nil, nil, FarmError{FarmErrorInvalidCityCode}},
 	}
 
 	for _, test := range tests {
-		_, actual := CreateFarm(test.name, test.description, test.latitude, test.longitude, test.farmType, test.countryCode, test.cityCode)
+		farm, err := CreateFarm(test.name, test.farmType)
 
-		if actual != test.expected {
-			t.Errorf("Expected be %v, got %v", test.expected, actual)
+		assert.Equal(t, test.expectedCreateFarm, err)
+
+		// check farm error to avoid null pointer reference of farm
+		if err == nil {
+			err = farm.ChangeGeoLocation(test.latitude, test.longitude)
+
+			assert.Equal(t, test.expectedChangeGeo, err)
+
+			err = farm.ChangeRegion(test.countryCode, test.cityCode)
+
+			assert.Equal(t, test.expectedChangeRegion, err)
 		}
 	}
 }
 
 func TestAddReservoirToFarm(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
 	reservoir1, _ := CreateReservoir(farm, "MyReservoir1")
 	reservoir2, _ := CreateReservoir(farm, "MyReservoir2")
 
@@ -51,13 +61,14 @@ func TestAddReservoirToFarm(t *testing.T) {
 	err2 := farm.AddReservoir(reservoir2)
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, nil, err2)
 	assert.Equal(t, len(farm.Reservoirs), 2)
 }
 
 func TestInvalidAddReservoirToFarm(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
 	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
 
 	// When
@@ -65,13 +76,14 @@ func TestInvalidAddReservoirToFarm(t *testing.T) {
 	err2 := farm.AddReservoir(reservoir)
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, nil, err1)
 	assert.Equal(t, FarmError{FarmErrorReservoirAlreadyAdded}, err2)
 }
 
 func TestIsReservoirAddedInFarm(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
 	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
 	farm.AddReservoir(reservoir)
 
@@ -79,6 +91,7 @@ func TestIsReservoirAddedInFarm(t *testing.T) {
 	result1 := farm.IsReservoirAdded("MyReservoir1")
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, true, result1)
 
 	// When
@@ -90,12 +103,13 @@ func TestIsReservoirAddedInFarm(t *testing.T) {
 
 func TestInvalidIsReservoirAddedInFarm(t *testing.T) {
 	// Given
-	farm, _ := CreateFarm("Farm 1", "This is our farm", "10.00", "11.00", FarmTypeOrganic, "ID", "ID")
+	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
 
 	// When
 	result1 := farm.IsReservoirAdded("MyReservoir")
 
 	// Then
+	assert.Nil(t, farmErr)
 	assert.Equal(t, false, result1)
 
 	// When

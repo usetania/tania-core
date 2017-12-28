@@ -12,7 +12,7 @@ func TestReservoirInMemorySave(t *testing.T) {
 	done := make(chan bool)
 	repo := NewReservoirRepositoryInMemory()
 
-	farm, farmErr := entity.CreateFarm("Farm1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "JK")
+	farm, farmErr := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 
 	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
 
@@ -51,7 +51,7 @@ func TestReservoirInMemoryFindAll(t *testing.T) {
 
 	repo := NewReservoirRepositoryInMemory()
 
-	farm, farmErr1 := entity.CreateFarm("Farm1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "JK")
+	farm, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
 	reservoir2, _ := entity.CreateReservoir(farm, "MyReservoir2")
 	reservoir3, _ := entity.CreateReservoir(farm, "MyReservoir3")

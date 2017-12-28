@@ -12,8 +12,8 @@ func TestFarmInMemorySave(t *testing.T) {
 	done := make(chan bool)
 	repo := NewFarmRepositoryInMemory()
 
-	farm1, farmErr1 := entity.CreateFarm("MyFarmFamily", "", "-90.000", "-180.000", "organic", "ID", "JK")
-	farm2, farmErr2 := entity.CreateFarm("MySecondFarm", "", "-90.000", "-180.000", "organic", "ID", "JK")
+	farm1, farmErr1 := entity.CreateFarm("MyFarmFamily", "organic")
+	farm2, farmErr2 := entity.CreateFarm("MySecondFarm", "organic")
 
 	// When
 	var saveResult1, saveResult2, count1 RepositoryResult
@@ -40,8 +40,8 @@ func TestFarmInMemoryFindAll(t *testing.T) {
 
 	repo := NewFarmRepositoryInMemory()
 
-	farm1, farmErr1 := entity.CreateFarm("Farm1", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "JK")
-	farm2, farmErr2 := entity.CreateFarm("Farm2", "This is our farm", "10.00", "11.00", entity.FarmTypeOrganic, "ID", "JK")
+	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
+	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
 
 	var result, foundOne RepositoryResult
 	go func() {
@@ -80,8 +80,8 @@ func TestFarmInMemoryFindByID(t *testing.T) {
 
 	repo := NewFarmRepositoryInMemory()
 
-	farm1, farmErr1 := entity.CreateFarm("Farm1", "", "-90.000", "-180.000", entity.FarmTypeOrganic, "ID", "JK")
-	farm2, farmErr2 := entity.CreateFarm("Farm2", "", "-90.000", "-180.000", entity.FarmTypeOrganic, "ID", "JK")
+	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
+	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
 
 	var result1, result2, found1, found2 RepositoryResult
 	go func() {
