@@ -43,11 +43,14 @@ terra.linux.amd64: main.go
 
 linux-amd64: terra.linux.amd64
 
-terra.windows.amd64: main.go
-	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -ldflags '-s -w' -o $@
+terra.windows.amd64.exe: main.go
+	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
+		CC=x86_64-w64-mingw32-gcc \
+		CXX=x86_64-w64-mingw32-g++ \
+		go build -ldflags '-s -w' -o $@
 	file $@
 
-windows: terra.windows.amd64
+windows: terra.windows.amd64.exe
 
 fetch-dep: Gopkg.toml Gopke.lock
 	dep ensure
