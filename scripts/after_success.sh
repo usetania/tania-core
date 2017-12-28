@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -11,7 +11,8 @@ tar cvJf tania-server-${TIMESTAMP}-linux-amd64.txz terra.linux.amd64 public js
 tar cvJf tania-server-${TIMESTAMP}-windows-amd64.txz terra.windows.amd64.exe public js
 
 
-if [ "x$TRAVIS_PULL_REQUEST" == "xfalse" ]; then
+if  [ "x$TRAVIS_PULL_REQUEST" == "xfalse" ] 
+then
 
   echo -n "Uploading to S3..."
 
