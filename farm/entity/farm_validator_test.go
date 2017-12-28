@@ -11,9 +11,10 @@ func TestValidateFarmName(t *testing.T) {
 		param    string
 		expected error
 	}{
-		{"My Awesome Farm", nil},
-		{"", FarmError{FarmErrorEmptyNameCode}},
-		{"Mys ", FarmError{FarmErrorNotEnoughCharacterCode}},
+		{"MyAwesomeFarm", nil},
+		{"", FarmError{FarmErrorNameEmptyCode}},
+		{"Mys", FarmError{FarmErrorNameNotEnoughCharacterCode}},
+		{"My4m gre<>", FarmError{FarmErrorNameAlphanumericOnlyCode}},
 	}
 
 	for _, test := range tests {

@@ -9,8 +9,12 @@ const (
 	FarmErrorInvalidFarmTypeCode = iota
 	FarmErrorReservoirAlreadyAdded
 	FarmErrorReservoirNotFound
-	FarmErrorEmptyNameCode
-	FarmErrorNotEnoughCharacterCode
+
+	FarmErrorNameEmptyCode
+	FarmErrorNameNotEnoughCharacterCode
+	FarmErrorNameExceedMaximunCharacterCode
+	FarmErrorNameAlphanumericOnlyCode
+
 	FarmErrorInvalidLatitudeValueCode
 	FarmErrorInvalidLongitudeValueCode
 	FarmErrorInvalidCountryCode
@@ -25,10 +29,14 @@ func (e FarmError) Error() string {
 		return "Reservoir is already added."
 	case FarmErrorReservoirNotFound:
 		return "Farm reservoir not found."
-	case FarmErrorEmptyNameCode:
+	case FarmErrorNameEmptyCode:
 		return "Farm name is required."
-	case FarmErrorNotEnoughCharacterCode:
+	case FarmErrorNameNotEnoughCharacterCode:
 		return "Not enough character on farm name"
+	case FarmErrorNameExceedMaximunCharacterCode:
+		return "Farm name cannot more than 100 characters"
+	case FarmErrorNameAlphanumericOnlyCode:
+		return "Farm name should be alphanumeric"
 	case FarmErrorInvalidLatitudeValueCode:
 		return "Latitude value is invalid"
 	case FarmErrorInvalidLongitudeValueCode:

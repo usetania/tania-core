@@ -3,15 +3,22 @@ package entity
 import (
 	"regexp"
 
+	"github.com/Tanibox/tania-server/helper/validationhelper"
 	"github.com/Tanibox/tania-server/location"
 )
 
 func validateFarmName(name string) error {
 	if name == "" {
-		return FarmError{FarmErrorEmptyNameCode}
+		return FarmError{FarmErrorNameEmptyCode}
+	}
+	if !validationhelper.IsAlphanumeric(name) {
+		return FarmError{FarmErrorNameAlphanumericOnlyCode}
 	}
 	if len(name) < 5 {
-		return FarmError{FarmErrorNotEnoughCharacterCode}
+		return FarmError{FarmErrorNameNotEnoughCharacterCode}
+	}
+	if len(name) > 100 {
+		return FarmError{FarmErrorNameExceedMaximunCharacterCode}
 	}
 
 	return nil

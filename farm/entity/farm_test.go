@@ -19,10 +19,10 @@ func TestCreateFarm(t *testing.T) {
 		cityCode    string
 		expected    error
 	}{
-		{"My Farm Family", "", "-90.000", "-180.000", "organic", "ID", "JK", nil},
-		{"", "", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorEmptyNameCode}},
-		{"My Farm Family", "", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountryCode}},
-		{"My Farm Family", "", "-90.000", "-180.000", "organic", "ID", "Jakarta", FarmError{FarmErrorInvalidCityCode}},
+		{"MyFarmFamily", "", "-90.000", "-180.000", "organic", "ID", "JK", nil},
+		{"", "", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}},
+		{"MyFarmFamily", "", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountryCode}},
+		{"MyFarmFamily", "", "-90.000", "-180.000", "organic", "ID", "Jakarta", FarmError{FarmErrorInvalidCityCode}},
 	}
 
 	for _, test := range tests {
