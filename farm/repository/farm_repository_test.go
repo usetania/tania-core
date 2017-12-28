@@ -15,13 +15,15 @@ func TestFarmInMemorySave(t *testing.T) {
 	farm1, farmErr1 := entity.CreateFarm("MyFarmFamily", "organic")
 	farm2, farmErr2 := entity.CreateFarm("MySecondFarm", "organic")
 
+	farm1.UID = GetRandomUID()
+	farm2.UID = GetRandomUID()
+
 	// When
-	var saveResult1, saveResult2, count1 RepositoryResult
+	var saveResult1, saveResult2 RepositoryResult
 	go func() {
 		saveResult1 = <-repo.Save(&farm1)
 		saveResult2 = <-repo.Save(&farm2)
 
-		count1 = <-repo.Count()
 		done <- true
 	}()
 
@@ -31,7 +33,7 @@ func TestFarmInMemorySave(t *testing.T) {
 	assert.Nil(t, farmErr2)
 
 	assert.NotNil(t, saveResult1)
-	assert.Equal(t, count1.Result, 2)
+	assert.NotNil(t, saveResult2)
 }
 
 func TestFarmInMemoryFindAll(t *testing.T) {
@@ -42,6 +44,9 @@ func TestFarmInMemoryFindAll(t *testing.T) {
 
 	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
+
+	farm1.UID = GetRandomUID()
+	farm2.UID = GetRandomUID()
 
 	var result, foundOne RepositoryResult
 	go func() {
@@ -82,6 +87,9 @@ func TestFarmInMemoryFindByID(t *testing.T) {
 
 	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
+
+	farm1.UID = GetRandomUID()
+	farm2.UID = GetRandomUID()
 
 	var result1, result2, found1, found2 RepositoryResult
 	go func() {

@@ -8,10 +8,9 @@ import (
 
 // ReservoirRepository is a repository
 type ReservoirRepository interface {
+	Save(val *entity.Reservoir) <-chan RepositoryResult
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
-	Count() <-chan RepositoryResult
-	Save(val *entity.Reservoir) <-chan RepositoryResult
 }
 
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
@@ -67,30 +66,11 @@ func (r *ReservoirRepositoryInMemory) Save(val *entity.Reservoir) <-chan Reposit
 		r.lock.Lock()
 		defer r.lock.Unlock()
 
-		uid := getRandomUID()
-		val.UID = uid
+		r.ReservoirMap[val.UID] = *val
 
-		r.ReservoirMap[uid] = *val
-
-		result <- RepositoryResult{Result: uid}
+		result <- RepositoryResult{Result: val.UID}
 
 		close(result)
-	}()
-
-	return result
-}
-
-// Count is to count
-func (r *ReservoirRepositoryInMemory) Count() <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
-
-	go func() {
-		r.lock.RLock()
-		defer r.lock.RUnlock()
-
-		count := len(r.ReservoirMap)
-
-		result <- RepositoryResult{Result: count}
 	}()
 
 	return result

@@ -13,7 +13,9 @@ type RepositoryResult struct {
 	Error  error
 }
 
-func getRandomUID() string {
+// GetRandomUID generates a random UID.
+// Please use it before you save a struct.
+func GetRandomUID() string {
 	rand.Seed(time.Now().UnixNano())
 	uid := rand.Int()
 	return strconv.Itoa(uid)

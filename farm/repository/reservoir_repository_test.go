@@ -24,14 +24,17 @@ func TestReservoirInMemorySave(t *testing.T) {
 	tap3, _ := entity.CreateTap()
 	reservoir3.AttachTap(&tap3)
 
+	reservoir1.UID = GetRandomUID()
+	reservoir2.UID = GetRandomUID()
+	reservoir3.UID = GetRandomUID()
+
 	// When
-	var saveResult1, saveResult2, saveResult3, count1 RepositoryResult
+	var saveResult1, saveResult2, saveResult3 RepositoryResult
 	go func() {
 		saveResult1 = <-repo.Save(&reservoir1)
 		saveResult2 = <-repo.Save(&reservoir2)
 		saveResult3 = <-repo.Save(&reservoir3)
 
-		count1 = <-repo.Count()
 		done <- true
 	}()
 
@@ -42,7 +45,6 @@ func TestReservoirInMemorySave(t *testing.T) {
 	assert.NotNil(t, saveResult1)
 	assert.NotNil(t, saveResult2)
 	assert.NotNil(t, saveResult3)
-	assert.Equal(t, count1.Result, 3)
 }
 
 func TestReservoirInMemoryFindAll(t *testing.T) {
@@ -55,6 +57,10 @@ func TestReservoirInMemoryFindAll(t *testing.T) {
 	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")
 	reservoir2, _ := entity.CreateReservoir(farm, "MyReservoir2")
 	reservoir3, _ := entity.CreateReservoir(farm, "MyReservoir3")
+
+	reservoir1.UID = GetRandomUID()
+	reservoir2.UID = GetRandomUID()
+	reservoir3.UID = GetRandomUID()
 
 	var result, foundOne RepositoryResult
 	go func() {

@@ -77,6 +77,8 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	farm.UID = repository.GetRandomUID()
+
 	result := <-s.FarmRepo.Save(&farm)
 
 	if result.Error != nil {
@@ -151,6 +153,8 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	r.UID = repository.GetRandomUID()
+
 	// Persists //
 	reservoirResult := <-s.ReservoirRepo.Save(&r)
 	if reservoirResult.Error != nil {
@@ -162,7 +166,7 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	farmResult := <-s.FarmRepo.Update(&farm)
+	farmResult := <-s.FarmRepo.Save(&farm)
 	if farmResult.Error != nil {
 		return farmResult.Error
 	}

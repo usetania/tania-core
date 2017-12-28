@@ -7,10 +7,8 @@ import (
 )
 
 type FarmRepository interface {
-	FindAll() <-chan RepositoryResult
-	Count() <-chan RepositoryResult
 	Save(val *entity.Farm) <-chan RepositoryResult
-	Update(val *entity.Farm) <-chan RepositoryResult
+	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
 
@@ -52,48 +50,11 @@ func (f *FarmRepositoryInMemory) Save(val *entity.Farm) <-chan RepositoryResult 
 		f.lock.Lock()
 		defer f.lock.Unlock()
 
-		uid := getRandomUID()
-		val.UID = uid
-
-		f.FarmMap[uid] = *val
-
-		result <- RepositoryResult{Result: uid}
-
-		close(result)
-	}()
-
-	return result
-}
-
-// Update is to update
-func (f *FarmRepositoryInMemory) Update(val *entity.Farm) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
-
-	go func() {
-		f.lock.Lock()
-		defer f.lock.Unlock()
-
 		f.FarmMap[val.UID] = *val
 
-		result <- RepositoryResult{Result: val}
+		result <- RepositoryResult{Result: val.UID}
 
 		close(result)
-	}()
-
-	return result
-}
-
-// Count is to count
-func (f *FarmRepositoryInMemory) Count() <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
-
-	go func() {
-		f.lock.RLock()
-		defer f.lock.RUnlock()
-
-		count := len(f.FarmMap)
-
-		result <- RepositoryResult{Result: count}
 	}()
 
 	return result
