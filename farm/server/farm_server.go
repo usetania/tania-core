@@ -185,6 +185,9 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 	}
 
 	data["data"] = farm.Reservoirs
+	if len(farm.Reservoirs) == 0 {
+		data["data"] = []entity.Reservoir{}
+	}
 
 	return c.JSON(http.StatusOK, data)
 }
