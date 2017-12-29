@@ -70,12 +70,12 @@ func (f *Farm) ChangeRegion(countryCode, cityCode string) error {
 }
 
 // AddReservoir adds a reservoir to a farm
-func (f *Farm) AddReservoir(res Reservoir) error {
+func (f *Farm) AddReservoir(res *Reservoir) error {
 	if f.IsReservoirAdded(res.Name) {
 		return FarmError{FarmErrorReservoirAlreadyAdded}
 	}
 
-	f.Reservoirs = append(f.Reservoirs, res)
+	f.Reservoirs = append(f.Reservoirs, *res)
 
 	return nil
 }

@@ -148,12 +148,12 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		r.AttachTap(&t)
 	}
 
-	err = farm.AddReservoir(r)
+	r.UID = repository.GetRandomUID()
+
+	err = farm.AddReservoir(&r)
 	if err != nil {
 		return Error(c, err)
 	}
-
-	r.UID = repository.GetRandomUID()
 
 	// Persists //
 	reservoirResult := <-s.ReservoirRepo.Save(&r)
