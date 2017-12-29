@@ -13,6 +13,9 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+public/index.html
+public/mix-manifest.json
+public/service-worker.js
 node_modules/
 vendor/
 storage.db

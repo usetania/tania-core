@@ -3,7 +3,11 @@
     ["env", { "modules": false }],
     "stage-2"
   ],
-  "plugins": ["transform-runtime", "transform-object-rest-spread"],
+  "plugins": [
+    "transform-runtime",
+    "transform-object-rest-spread",
+    ["babel-plugin-root-import", { "rootPathSuffix": "resources/js", "rootPathPrefix": "@" }]
+  ],
   "comments": false,
   "env": {
     "test": {
