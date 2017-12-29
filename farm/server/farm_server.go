@@ -41,7 +41,7 @@ func (s *FarmServer) GetTypes(c echo.Context) error {
 }
 
 func (s FarmServer) FindAllFarm(c echo.Context) error {
-	data := make(map[string][]entity.Farm)
+	data := make(map[string][]SimpleFarm)
 
 	result := <-s.FarmRepo.FindAll()
 	if result.Error != nil {
@@ -53,7 +53,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = farms
+	data["data"] = FarmListSerializer(farms)
 
 	return c.JSON(http.StatusOK, data)
 }
