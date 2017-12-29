@@ -6,8 +6,8 @@ const (
 
 // Bucket is value object attached to the Reservoir.waterSource.
 type Bucket struct {
-	Capacity float32
-	Volume   float32
+	Capacity float32 `json:"capacity"`
+	Volume   float32 `json:"volume"`
 }
 
 // Tap is value object attached to the Reservoir.waterSource entity.

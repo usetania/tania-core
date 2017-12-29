@@ -3,16 +3,16 @@
 package entity
 
 type Farm struct {
-	UID         string
-	Name        string
-	Latitude    string
-	Longitude   string
-	Type        string
-	CountryCode string
-	CityCode    string
-	IsActive    bool
+	UID         string `json:"uid"`
+	Name        string `json:"name"`
+	Latitude    string `json:"latitude"`
+	Longitude   string `json:"longitude"`
+	Type        string `json:"type"`
+	CountryCode string `json:"country_code"`
+	CityCode    string `json:"city_code"`
+	IsActive    bool   `json:"is_active"`
 
-	Reservoirs []Reservoir
+	Reservoirs []Reservoir `json:"-"`
 }
 
 // CreateFarm registers a new farm to Tania

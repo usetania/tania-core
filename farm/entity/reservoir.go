@@ -5,13 +5,13 @@ import "github.com/Tanibox/tania-server/helper/validationhelper"
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm.
 type Reservoir struct {
-	UID         string
-	Name        string
-	PH          float32
-	EC          float32
-	Temperature float32
-	WaterSource interface{}
-	Farm        Farm
+	UID         string      `json:"uid"`
+	Name        string      `json:"name"`
+	PH          float32     `json:"ph"`
+	EC          float32     `json:"ec"`
+	Temperature float32     `json:"temperature"`
+	WaterSource interface{} `json:"water_source"`
+	Farm        Farm        `json:"-"`
 }
 
 // CreateReservoir registers a new Reservoir.
