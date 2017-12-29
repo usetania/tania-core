@@ -11,8 +11,8 @@ const (
 )
 
 type FarmType struct {
-	Code string
-	Name string
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
 
 func FindAllFarmTypes() []FarmType {
