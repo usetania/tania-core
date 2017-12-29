@@ -97,7 +97,21 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 }
 
 func (s *FarmServer) FindFarmByID(c echo.Context) error {
-	return nil
+	data := make(map[string]entity.Farm)
+
+	result := <-s.FarmRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	farm, ok := result.Result.(entity.Farm)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	data["data"] = farm
+
+	return c.JSON(http.StatusOK, data)
 }
 
 // SaveReservoir is a FarmServer's handler to save new Reservoir and place it to a Farm
