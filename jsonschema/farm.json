@@ -1,0 +1,121 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "definitions": {
+        "farm": {
+            "title": "Farm",
+            "description": "Schema for farm",
+            "type": "object",
+            "required": [
+                "uid",
+                "name",
+                "latitude",
+                "longitude",
+                "type",
+                "country_code",
+                "city_code",
+                "is_active"
+            ],
+            "properties": {
+                "uid": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100
+                },
+                "latitude": {
+                    "type": "string",
+                    "pattern": "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$"
+                },
+                "longitude": {
+                    "type": "string",
+                    "pattern": "^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "organic",
+                        "hidroponic"
+                    ]
+                },
+                "country_code": {
+                    "type": "string",
+                    "minLength": 2,
+                    "maxLength": 2
+                },
+                "city_code": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "reservoir": {
+            "title": "Reservoir",
+            "description": "Schema for reservoir",
+            "type": "object",
+            "required": [
+                "uid",
+                "name",
+                "ph",
+                "ec",
+                "temperature"
+            ],
+            "properties": {
+                "uid": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100
+                },
+                "ph": {
+                    "type": "number",
+                    "minLength": 0
+                },
+                "ec": {
+                    "type": "number",
+                    "minLength": 0
+                },
+                "temperature": {
+                    "type": "number"
+                },
+                "water_source": {
+                    "title": "Reservoir Water Source",
+                    "type": "object"
+                }
+            }
+        }
+    },
+    "oneOf": [
+        {
+            "title": "Farm List",
+            "description": "Schema for list of farm",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/farm"
+                    }
+                }
+            }
+        },
+        {
+            "title": "Farm's Reservoir List",
+            "description": "Schema for list of farm's reservoir",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/reservoir"
+                    }
+                }
+            }
+        }
+    ]
+}
