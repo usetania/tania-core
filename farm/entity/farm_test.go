@@ -51,14 +51,14 @@ func TestAddReservoirToFarm(t *testing.T) {
 	reservoir2, _ := CreateReservoir(farm, "MyReservoir2")
 
 	// When
-	err1 := farm.AddReservoir(reservoir1)
+	err1 := farm.AddReservoir(&reservoir1)
 
 	// Then
 	assert.Equal(t, nil, err1)
 	assert.Equal(t, len(farm.Reservoirs), 1)
 
 	// When
-	err2 := farm.AddReservoir(reservoir2)
+	err2 := farm.AddReservoir(&reservoir2)
 
 	// Then
 	assert.Nil(t, farmErr)
@@ -72,8 +72,8 @@ func TestInvalidAddReservoirToFarm(t *testing.T) {
 	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
 
 	// When
-	err1 := farm.AddReservoir(reservoir)
-	err2 := farm.AddReservoir(reservoir)
+	err1 := farm.AddReservoir(&reservoir)
+	err2 := farm.AddReservoir(&reservoir)
 
 	// Then
 	assert.Nil(t, farmErr)
@@ -85,7 +85,7 @@ func TestIsReservoirAddedInFarm(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
 	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
-	farm.AddReservoir(reservoir)
+	farm.AddReservoir(&reservoir)
 
 	// When
 	result1 := farm.IsReservoirAdded("MyReservoir1")
@@ -120,7 +120,7 @@ func TestInvalidIsReservoirAddedInFarm(t *testing.T) {
 
 	// Given
 	reservoir, _ := CreateReservoir(farm, "MyReservoir1")
-	farm.AddReservoir(reservoir)
+	farm.AddReservoir(&reservoir)
 
 	// When
 	result3 := farm.IsReservoirAdded("MyReservoir")
