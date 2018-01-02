@@ -279,16 +279,12 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 			return Error(c, err)
 		}
 
-		areaPhoto, err := entity.CreateAreaPhoto(
-			photo.Filename,
-			photo.Header["Content-Type"][0],
-			int(photo.Size),
-		)
-		if err != nil {
-			return Error(c, err)
+		areaPhoto := entity.AreaPhoto{
+			Filename: photo.Filename,
+			MimeType: photo.Header["Content-Type"][0],
+			Size:     int(photo.Size),
 		}
 
-		areaPhoto.UID = repository.GetRandomUID()
 		area.Photo = areaPhoto
 	}
 
@@ -364,7 +360,7 @@ func (s *FarmServer) GetAreaPhoto(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	if area.Photo.UID == "" {
+	if area.Photo.Filename == "" {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "photo"))
 	}
 

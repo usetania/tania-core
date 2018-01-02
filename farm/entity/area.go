@@ -17,6 +17,12 @@ type Area struct {
 type AreaSizeUnitMetre struct{}
 type AreaSizeUnitHectare struct{}
 
+type AreaPhoto struct {
+	Filename string `json:"filename"`
+	MimeType string `json:"mime_type"`
+	Size     int    `json:"size"`
+}
+
 // CreateArea registers a new area to a farm
 func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 	err := validateAreaName(name)
