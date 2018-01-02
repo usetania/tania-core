@@ -12,6 +12,7 @@ import (
 type FarmServer struct {
 	FarmRepo      repository.FarmRepository
 	ReservoirRepo repository.ReservoirRepository
+	AreaRepo      repository.AreaRepository
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -19,6 +20,7 @@ func NewFarmServer() (*FarmServer, error) {
 	return &FarmServer{
 		FarmRepo:      repository.NewFarmRepositoryInMemory(),
 		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
+		AreaRepo:      repository.NewAreaRepositoryInMemory(),
 	}, nil
 }
 
@@ -31,6 +33,8 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id", s.FindFarmByID)
 	g.POST("/:id/reservoirs", s.SaveReservoir)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
+	g.POST("/:id/areas", s.SaveArea)
+	g.GET("/:id/areas", s.GetFarmAreas)
 }
 
 // GetTypes is a FarmServer's handle to get farm types
@@ -206,6 +210,100 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 	data["data"] = farm.Reservoirs
 	if len(farm.Reservoirs) == 0 {
 		data["data"] = []entity.Reservoir{}
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) SaveArea(c echo.Context) error {
+	data := make(map[string]string)
+	validation := RequestValidation{}
+
+	// Validation //
+	farm, err := validation.ValidateFarm(*s, c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	reservoir, err := validation.ValidateReservoir(*s, c.FormValue("reservoir_id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	size, err := validation.ValidateAreaSize(c.FormValue("size"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	sizeUnit, err := validation.ValidateAreaSizeUnit(c.FormValue("size_unit"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Process //
+	area, err := entity.CreateArea(farm, c.FormValue("name"), c.FormValue("type"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	area.UID = repository.GetRandomUID()
+
+	err = area.ChangeSize(size, sizeUnit)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// TODO: validate location first
+	err = area.ChangeLocation(c.FormValue("location"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	area.Farm = farm
+	area.Reservoir = reservoir
+
+	err = farm.AddArea(&area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Persists //
+	areaResult := <-s.AreaRepo.Save(&area)
+	if areaResult.Error != nil {
+		return areaResult.Error
+	}
+
+	uid, ok := areaResult.Result.(string)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	farmResult := <-s.FarmRepo.Save(&farm)
+	if farmResult.Error != nil {
+		return farmResult.Error
+	}
+
+	data["data"] = uid
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetFarmAreas(c echo.Context) error {
+	data := make(map[string][]entity.Area)
+
+	result := <-s.FarmRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	farm, ok := result.Result.(entity.Farm)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	data["data"] = farm.Areas
+	if len(farm.Areas) == 0 {
+		data["data"] = []entity.Area{}
 	}
 
 	return c.JSON(http.StatusOK, data)
