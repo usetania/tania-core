@@ -5,6 +5,7 @@ import (
 
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/farm/repository"
+	"github.com/Tanibox/tania-server/helper/stringhelper"
 	"github.com/labstack/echo"
 )
 
@@ -13,6 +14,7 @@ type FarmServer struct {
 	FarmRepo      repository.FarmRepository
 	ReservoirRepo repository.ReservoirRepository
 	AreaRepo      repository.AreaRepository
+	File          File
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -21,6 +23,7 @@ func NewFarmServer() (*FarmServer, error) {
 		FarmRepo:      repository.NewFarmRepositoryInMemory(),
 		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
 		AreaRepo:      repository.NewAreaRepositoryInMemory(),
+		File:          InitLocalFile(),
 	}, nil
 }
 
@@ -35,6 +38,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 	g.POST("/:id/areas", s.SaveArea)
 	g.GET("/:id/areas", s.GetFarmAreas)
+	g.GET("/:farm_id/areas/:area_id/files/:file_id", s.GetAreaPhoto)
 }
 
 // GetTypes is a FarmServer's handle to get farm types
@@ -259,6 +263,28 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	photo, err := c.FormFile("photo")
+	if err == nil {
+		destPath := stringhelper.Join(s.File.GetAreaFilepath(), photo.Filename)
+		err = s.File.Upload(photo, destPath)
+
+		if err != nil {
+			return Error(c, err)
+		}
+
+		areaPhoto, err := entity.CreateAreaPhoto(
+			photo.Filename,
+			photo.Header["Content-Type"][0],
+			int(photo.Size),
+		)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		areaPhoto.UID = repository.GetRandomUID()
+		area.Photo = areaPhoto
+	}
+
 	area.Farm = farm
 	area.Reservoir = reservoir
 
@@ -307,4 +333,36 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetAreaPhoto(c echo.Context) error {
+	// Validate //
+	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	_, ok := result.Result.(entity.Farm)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	result = <-s.AreaRepo.FindByID(c.Param("area_id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	area, ok := result.Result.(entity.Area)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	if area.Photo.UID == "" {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "photo"))
+	}
+
+	// Process //
+	srcPath := stringhelper.Join(s.File.GetAreaFilepath(), area.Photo.Filename)
+
+	return c.File(srcPath)
 }

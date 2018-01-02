@@ -3,16 +3,15 @@ package entity
 import "github.com/Tanibox/tania-server/helper/validationhelper"
 
 type Area struct {
-	UID      string      `json:"uid"`
-	Name     string      `json:"name"`
-	Size     float32     `json:"size"`
-	SizeUnit string      `json:"size_unit"`
-	Type     string      `json:"type"`
-	Location string      `json:"location"`
-	Photo    interface{} `json:"-"`
-
-	Farm      Farm      `json:"-"`
+	UID       string    `json:"uid"`
+	Name      string    `json:"name"`
+	Size      float32   `json:"size"`
+	SizeUnit  string    `json:"size_unit"`
+	Type      string    `json:"type"`
+	Location  string    `json:"location"`
+	Photo     AreaPhoto `json:"photo"`
 	Reservoir Reservoir `json:"reservoir"`
+	Farm      Farm      `json:"-"`
 }
 
 // CreateArea registers a new area to a farm
