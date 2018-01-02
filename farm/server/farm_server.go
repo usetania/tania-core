@@ -244,6 +244,11 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	location, err := validation.ValidateAreaLocation(c.FormValue("location"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	// Process //
 	area, err := entity.CreateArea(farm, c.FormValue("name"), c.FormValue("type"))
 	if err != nil {
@@ -251,8 +256,10 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	area.UID = repository.GetRandomUID()
+	area.SizeUnit = sizeUnit
+	area.Location = location
 
-	err = area.ChangeSize(size, sizeUnit)
+	err = area.ChangeSize(size)
 	if err != nil {
 		return Error(c, err)
 	}

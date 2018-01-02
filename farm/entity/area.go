@@ -3,16 +3,19 @@ package entity
 import "github.com/Tanibox/tania-server/helper/validationhelper"
 
 type Area struct {
-	UID       string    `json:"uid"`
-	Name      string    `json:"name"`
-	Size      float32   `json:"size"`
-	SizeUnit  string    `json:"size_unit"`
-	Type      string    `json:"type"`
-	Location  string    `json:"location"`
-	Photo     AreaPhoto `json:"photo"`
-	Reservoir Reservoir `json:"reservoir"`
-	Farm      Farm      `json:"-"`
+	UID       string      `json:"uid"`
+	Name      string      `json:"name"`
+	Size      float32     `json:"size"`
+	SizeUnit  interface{} `json:"size_unit"`
+	Type      string      `json:"type"`
+	Location  string      `json:"location"`
+	Photo     AreaPhoto   `json:"photo"`
+	Reservoir Reservoir   `json:"reservoir"`
+	Farm      Farm        `json:"-"`
 }
+
+type AreaSizeUnitMetre struct{}
+type AreaSizeUnitHectare struct{}
 
 // CreateArea registers a new area to a farm
 func CreateArea(farm Farm, name string, areaType string) (Area, error) {
@@ -34,14 +37,13 @@ func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 }
 
 // ChangeSize changes an area size
-func (a *Area) ChangeSize(size float32, sizeUnit string) error {
+func (a *Area) ChangeSize(size float32) error {
 	err := validateSize(size)
 	if err != nil {
 		return err
 	}
 
 	a.Size = size
-	a.SizeUnit = sizeUnit
 
 	return nil
 }
