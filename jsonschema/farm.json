@@ -8,12 +8,7 @@
             "required": [
                 "uid",
                 "name",
-                "latitude",
-                "longitude",
-                "type",
-                "country_code",
-                "city_code",
-                "is_active"
+                "type"
             ],
             "properties": {
                 "uid": {
