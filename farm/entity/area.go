@@ -12,7 +12,7 @@ type Area struct {
 	Photo    interface{} `json:"-"`
 
 	Farm      Farm      `json:"-"`
-	Reservoir Reservoir `json:"-"`
+	Reservoir Reservoir `json:"reservoir"`
 }
 
 // CreateArea registers a new area to a farm
