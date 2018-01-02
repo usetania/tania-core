@@ -13,6 +13,7 @@ type Farm struct {
 	IsActive    bool   `json:"is_active"`
 
 	Reservoirs []Reservoir `json:"-"`
+	Areas      []Area      `json:"-"`
 }
 
 // CreateFarm registers a new farm to Tania
@@ -95,6 +96,38 @@ func (f Farm) IsReservoirAdded(name string) bool {
 // IsHaveReservoir checks whether a farm has any reservoir.
 func (f Farm) IsHaveReservoir() bool {
 	if len(f.Reservoirs) > 0 {
+		return true
+	}
+
+	return false
+}
+
+// AddArea adds a area to a farm
+func (f *Farm) AddArea(res *Area) error {
+	if f.IsAreaAdded(res.Name) {
+		return FarmError{FarmErrorAreaAlreadyAdded}
+	}
+
+	f.Areas = append(f.Areas, *res)
+
+	return nil
+}
+
+// IsAreaAdded is to check whether a area is already added.
+// It knows by matching the area's name
+func (f Farm) IsAreaAdded(name string) bool {
+	for _, r := range f.Areas {
+		if r.Name == name {
+			return true
+		}
+	}
+
+	return false
+}
+
+// IsHaveArea checks whether a farm has any area.
+func (f Farm) IsHaveArea() bool {
+	if len(f.Areas) > 0 {
 		return true
 	}
 

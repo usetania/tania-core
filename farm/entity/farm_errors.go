@@ -7,8 +7,12 @@ type FarmError struct {
 
 const (
 	FarmErrorInvalidFarmTypeCode = iota
+
 	FarmErrorReservoirAlreadyAdded
 	FarmErrorReservoirNotFound
+
+	FarmErrorAreaAlreadyAdded
+	FarmErrorAreaNotFound
 
 	FarmErrorNameEmptyCode
 	FarmErrorNameNotEnoughCharacterCode
@@ -29,6 +33,10 @@ func (e FarmError) Error() string {
 		return "Reservoir is already added."
 	case FarmErrorReservoirNotFound:
 		return "Farm reservoir not found."
+	case FarmErrorAreaAlreadyAdded:
+		return "Area is already added."
+	case FarmErrorAreaNotFound:
+		return "Farm area not found."
 	case FarmErrorNameEmptyCode:
 		return "Farm name is required."
 	case FarmErrorNameNotEnoughCharacterCode:
