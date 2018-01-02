@@ -53,7 +53,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = FarmListSerializer(farms)
+	data["data"] = MapToSimpleFarm(farms)
 
 	return c.JSON(http.StatusOK, data)
 }

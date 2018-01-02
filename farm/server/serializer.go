@@ -8,13 +8,11 @@ import (
 
 type SimpleFarm entity.Farm
 
-func FarmListSerializer(farms []entity.Farm) []SimpleFarm {
+func MapToSimpleFarm(farms []entity.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))
 
 	for i, farm := range farms {
-		farmList[i].UID = farm.UID
-		farmList[i].Name = farm.Name
-		farmList[i].Type = farm.Type
+		farmList[i] = SimpleFarm(farm)
 	}
 
 	return farmList
