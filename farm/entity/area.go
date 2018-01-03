@@ -21,6 +21,8 @@ type AreaPhoto struct {
 	Filename string `json:"filename"`
 	MimeType string `json:"mime_type"`
 	Size     int    `json:"size"`
+	Width    int    `json:"width"`
+	Height   int    `json:"height"`
 }
 
 // CreateArea registers a new area to a farm

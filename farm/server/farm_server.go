@@ -5,6 +5,7 @@ import (
 
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/farm/repository"
+	"github.com/Tanibox/tania-server/helper/imagehelper"
 	"github.com/Tanibox/tania-server/helper/stringhelper"
 	"github.com/labstack/echo"
 )
@@ -279,10 +280,17 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 			return Error(c, err)
 		}
 
+		width, height, err := imagehelper.GetImageDimension(destPath)
+		if err != nil {
+			return Error(c, err)
+		}
+
 		areaPhoto := entity.AreaPhoto{
 			Filename: photo.Filename,
 			MimeType: photo.Header["Content-Type"][0],
 			Size:     int(photo.Size),
+			Width:    width,
+			Height:   height,
 		}
 
 		area.Photo = areaPhoto
