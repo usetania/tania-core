@@ -17,26 +17,25 @@ func (rv *RequestValidation) ValidateReservoir(s FarmServer, farmId string) (ent
 	return reservoir, nil
 }
 
-func (rv *RequestValidation) ValidateAreaSize(size string) (float32, error) {
+func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (entity.AreaUnit, error) {
 	if size == "" {
-		return 0, NewRequestValidationError(REQUIRED, "size")
+		return nil, NewRequestValidationError(REQUIRED, "size")
+	}
+
+	if sizeUnit == "" {
+		return nil, NewRequestValidationError(REQUIRED, "size_unit")
 	}
 
 	sizeFloat, err := strconv.ParseFloat(size, 32)
-
-	return float32(sizeFloat), err
-}
-
-func (rv *RequestValidation) ValidateAreaSizeUnit(sizeUnit string) (interface{}, error) {
-	if sizeUnit == "" {
-		return "", NewRequestValidationError(REQUIRED, "size_unit")
+	if err != nil {
+		return nil, err
 	}
 
 	switch sizeUnit {
 	case "m2":
-		return entity.AreaSizeUnitMetre{}, nil
+		return entity.SquareMeter{Value: float32(sizeFloat)}, nil
 	case "hectare":
-		return entity.AreaSizeUnitHectare{}, nil
+		return entity.Hectare{Value: float32(sizeFloat)}, nil
 	default:
 		return nil, NewRequestValidationError(INVALID_OPTION, "size_unit")
 	}

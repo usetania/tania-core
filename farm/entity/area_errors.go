@@ -7,6 +7,7 @@ const (
 	AreaErrorNameAlphanumericOnlyCode
 
 	AreaErrorSizeEmptyCode
+	AreaErrorInvalidSizeUnitCode
 
 	AreaErrorTypeEmptyCode
 	AreaErrorInvalidAreaTypeCode
@@ -32,6 +33,8 @@ func (e AreaError) Error() string {
 		return "Area name should be alphanumeric"
 	case AreaErrorSizeEmptyCode:
 		return "Area size cannot be empty"
+	case AreaErrorInvalidSizeUnitCode:
+		return "Area size unit is invalid"
 	case AreaErrorTypeEmptyCode:
 		return "Area type cannot be empty"
 	case AreaErrorInvalidAreaTypeCode:

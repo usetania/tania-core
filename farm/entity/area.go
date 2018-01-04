@@ -1,21 +1,39 @@
 package entity
 
-import "github.com/Tanibox/tania-server/helper/validationhelper"
+import (
+	"github.com/Tanibox/tania-server/helper/validationhelper"
+)
 
 type Area struct {
-	UID       string      `json:"uid"`
-	Name      string      `json:"name"`
-	Size      float32     `json:"size"`
-	SizeUnit  interface{} `json:"size_unit"`
-	Type      string      `json:"type"`
-	Location  string      `json:"location"`
-	Photo     AreaPhoto   `json:"photo"`
-	Reservoir Reservoir   `json:"reservoir"`
-	Farm      Farm        `json:"-"`
+	UID       string    `json:"uid"`
+	Name      string    `json:"name"`
+	Size      AreaUnit  `json:"size"`
+	Type      string    `json:"type"`
+	Location  string    `json:"location"`
+	Photo     AreaPhoto `json:"photo"`
+	Reservoir Reservoir `json:"reservoir"`
+	Farm      Farm      `json:"-"`
 }
 
-type AreaSizeUnitMetre struct{}
-type AreaSizeUnitHectare struct{}
+type AreaUnit interface {
+	Symbol() string
+}
+
+type SquareMeter struct {
+	Value float32
+}
+
+func (sm SquareMeter) Symbol() string {
+	return "m2"
+}
+
+type Hectare struct {
+	Value float32
+}
+
+func (h Hectare) Symbol() string {
+	return "Ha"
+}
 
 type AreaPhoto struct {
 	Filename string `json:"filename"`
@@ -45,7 +63,7 @@ func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 }
 
 // ChangeSize changes an area size
-func (a *Area) ChangeSize(size float32) error {
+func (a *Area) ChangeSize(size AreaUnit) error {
 	err := validateSize(size)
 	if err != nil {
 		return err
@@ -85,9 +103,27 @@ func validateAreaName(name string) error {
 	return nil
 }
 
-func validateSize(size float32) error {
-	if size <= 0 {
+func validateSize(size AreaUnit) error {
+	isValidUnit := true
+	sizeValue := float32(0)
+
+	switch v := size.(type) {
+	case SquareMeter:
+		sizeValue = v.Value
+		isValidUnit = true
+	case Hectare:
+		sizeValue = v.Value
+		isValidUnit = true
+	default:
+		sizeValue = 0
+		isValidUnit = false
+	}
+
+	if sizeValue <= 0 {
 		return AreaError{AreaErrorSizeEmptyCode}
+	}
+	if isValidUnit == false {
+		return AreaError{AreaErrorInvalidSizeUnitCode}
 	}
 
 	return nil

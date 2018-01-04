@@ -7,6 +7,7 @@ import (
 
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/labstack/echo"
+	"github.com/labstack/gommon/log"
 )
 
 const (
@@ -96,9 +97,19 @@ func Error(c echo.Context, err error) error {
 		}
 
 		return c.JSON(http.StatusBadRequest, errMap)
+	} else if re, ok := err.(entity.AreaError); ok {
+		errMap := map[string]string{
+			"field_name":    "",
+			"error_code":    strconv.Itoa(re.Code),
+			"error_message": re.Error(),
+		}
+
+		return c.JSON(http.StatusBadRequest, errMap)
 	} else if rve, ok := err.(RequestValidationError); ok {
 		return c.JSON(http.StatusBadRequest, rve)
 	}
+
+	log.Error(err)
 
 	return c.JSON(http.StatusInternalServerError, err)
 }

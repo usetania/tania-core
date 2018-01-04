@@ -235,12 +235,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	size, err := validation.ValidateAreaSize(c.FormValue("size"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	sizeUnit, err := validation.ValidateAreaSizeUnit(c.FormValue("size_unit"))
+	size, err := validation.ValidateAreaSize(c.FormValue("size"), c.FormValue("size_unit"))
 	if err != nil {
 		return Error(c, err)
 	}
@@ -257,7 +252,6 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	area.UID = repository.GetRandomUID()
-	area.SizeUnit = sizeUnit
 	area.Location = location
 
 	err = area.ChangeSize(size)
@@ -265,7 +259,6 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	// TODO: validate location first
 	err = area.ChangeLocation(c.FormValue("location"))
 	if err != nil {
 		return Error(c, err)
@@ -338,7 +331,7 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = farm.Areas
+	data["data"] = MapToArea(farm.Areas)
 	if len(farm.Areas) == 0 {
 		data["data"] = []entity.Area{}
 	}
