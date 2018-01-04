@@ -2,6 +2,7 @@ package entity
 
 import (
 	"github.com/Tanibox/tania-server/helper/validationhelper"
+	uuid "github.com/satori/go.uuid"
 )
 
 type Area struct {
@@ -55,7 +56,13 @@ func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 		return Area{}, err
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return Area{}, err
+	}
+
 	return Area{
+		UID:  uid.String(),
 		Farm: farm,
 		Name: name,
 		Type: areaType,

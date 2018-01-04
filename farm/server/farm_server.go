@@ -251,15 +251,12 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	area.UID = repository.GetRandomUID()
-	area.Location = location
-
 	err = area.ChangeSize(size)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	err = area.ChangeLocation(c.FormValue("location"))
+	err = area.ChangeLocation(location)
 	if err != nil {
 		return Error(c, err)
 	}
