@@ -16,9 +16,8 @@ const getters = {
 }
 
 const actions = {
-  login ({commit, state}, payload) {
+  userLogin ({ commit, state }, payload) {
     NProgress.start()
-
     return new Promise(( resolve, reject ) => {
       commit(types.USER_LOGIN, {
         id: 1001,
@@ -29,12 +28,18 @@ const actions = {
       // implement login http request
       resolve()
     })
+  },
+  userCompletedIntro({ commit, state }) {
+    commit(types.USER_COMPLETED_INTRO)
   }
 }
 
 const mutations = {
   [types.USER_LOGIN] (state, { id, username, email, intro }) {
     state.current = { id, username, email, intro }
+  },
+  [types.USER_COMPLETED_INTRO] (state) {
+    state.current.intro = false
   }
 }
 

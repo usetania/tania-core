@@ -6,16 +6,18 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
-    { path: '/', name: 'Home', meta: { requiresAuth: true }, component: () => import('./pages/home') },
+    { path: '/', name: 'Home', meta: { requiresAuth: true }, component: () => import('./pages/home.vue') },
 
     // Authenticated
-    { path: '/auth/login', name: 'AuthLogin', component: () => import('./pages/auth/login') },
+    { path: '/auth/login', name: 'AuthLogin', component: () => import('./pages/auth/login.vue') },
 
     // intro
-    { path: '/intro/farm', name: 'IntroFarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro') },
+    { path: '/intro/farm', name: 'IntroFarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/farm.vue') },
+    { path: '/intro/reservoir', name: 'IntroReservoirCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/reservoir.vue') },
+    { path: '/intro/area', name: 'IntroAreaCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/area.vue') },
 
     // Farm
-    { path: '/farm-add', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create') }
+    { path: '/farm-add', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create.vue') }
   ]
 })
 

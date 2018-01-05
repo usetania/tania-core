@@ -1,11 +1,16 @@
 import axios from 'axios'
 import NProgress from 'nprogress'
+import qs from 'qs';
 
 import { ls } from '@/services'
 
 export const http = {
   request (method, url, data, successCb = null, errorCb = null) {
-    axios.request({ url, data, method }).then(successCb).catch(errorCb)
+    axios.request({
+      url,
+      data: qs.stringify(data),
+      method
+    }).then(successCb).catch(errorCb)
   },
 
   get (url, successCb = null, errorCb = null) {
@@ -35,6 +40,7 @@ export const http = {
     axios.interceptors.request.use(config => {
       // we intercept axios request and add authorizatio header before perform send a request to the server
       // config.headers.Authorization = `Bearer ${ls.get('jwt-token')}`
+      config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
       return config
     })
 

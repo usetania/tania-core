@@ -1,9 +1,11 @@
 export default {
+  id: '',
   name: '',
   description: '',
   latitude: '',
   longitude: '',
-  type: '',
+  farm_type: '',
   country_code: '',
-  city_code: ''
+  city_code: '',
+  reservoirs: []
 }

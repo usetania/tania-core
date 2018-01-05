@@ -7,13 +7,15 @@
       .wrapper
         .panel.panel-default
           .panel-body
-            form(@submit.prevent="login")
-              .form-group
-                label Username
-                input.form-control(type="text" placeholder="Please input username" v-model="username")
-              .form-group
-                label Password
-                input.form-control(type="password" placeholder="Please input username" v-model="password")
+            form(@submit.prevent="validateBeforeSubmit")
+              .form-group(:class="{ 'control': true }")
+                label(for="username" id="label-username") Username
+                input.form-control#username(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('username') }" placeholder="Please input username" v-model="username" name="username")
+                span.help-block.text-danger(v-show="errors.has('username')") {{ errors.first('username') }}
+              .form-group(:class="{ 'control': true }")
+                label(for="password" id="label-password") Password
+                input.form-control#password(type="password" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('password') }" placeholder="Please input username" v-model="password" name="password")
+                span.help-block.text-danger(v-show="errors.has('password')") {{ errors.first('password') }}
               .form-group.text-center.m-t
                   button.btn.btn-addon.btn-primary(type="submit")
                     i.fa.fa-long-arrow-right
@@ -41,25 +43,28 @@ export default {
 
   methods: {
     ...mapActions({
-      loginUser: 'login'
+      loginUser: 'userLogin'
     }),
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.login()
+        }
+      })
+    },
     login () {
       this.loginUser({
         username: this.username,
         password: this.password
       }).then(response => {
         Nprogres.done()
-
         // if the current user is new user
         if (this.user.intro === true) {
           this.$router.push({ name: 'IntroFarmCreate' })
         } else {
           this.$router.push({ name: 'Home' })
         }
-
-      }).catch(error => {
-
-      })
+      }).catch(error => {})
     }
   }
 }

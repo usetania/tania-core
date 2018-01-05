@@ -5,9 +5,9 @@
         nav.navi.clearfix
           ul.nav
             li
-              a.auto(href="")
+              a.auto#nav-item-dashboard(href="")
                 i.fa.fa-home.icon.text-primary
-                span.font-bold.text-primary Dashboar
+                span.font-bold.text-primary Dashboard
             li
               a.auto(href="")
                 span.pull-right.text-muted

@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { event } from '@/services'
+import { event } from '@/services/bus'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'AppComponent',
@@ -28,9 +28,9 @@ export default {
     })
   },
   components: {
-    AppHeaderComponent: () => import('./header'),
-    AppAsideComponent: () => import('./aside'),
-    AppFooterComponent: () => import('./footer')
+    AppHeaderComponent: () => import('./header.vue'),
+    AppAsideComponent: () => import('./aside.vue'),
+    AppFooterComponent: () => import('./footer.vue')
   },
 
   mounted () {
@@ -41,7 +41,7 @@ export default {
     event.on({
       'tanibox:ready': () => {
         this.appReady = true
-        // console.log('tanibox is ready')
+        console.log('tanibox is ready')
       }
     })
   },

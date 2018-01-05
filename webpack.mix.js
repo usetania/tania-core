@@ -6,9 +6,9 @@ const fs = require('fs')
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PurifyCSSPlugin = require('purifycss-webpack');
-const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 mix.setPublicPath('public/')
 
@@ -24,7 +24,6 @@ mix.webpackConfig({
   },
   plugins: [
     new CleanWebpackPlugin('./public/js/*.js*'),
-    new LodashModuleReplacementPlugin,
     new webpack.optimize.CommonsChunkPlugin({
       name: '/js/vendor',
       minChunks: (module) => {
@@ -40,7 +39,7 @@ mix.webpackConfig({
     new PurifyCSSPlugin({
       paths: glob.sync([
         path.join(__dirname, 'resources/js/**/*.pug'),
-        path.join(__dirname, 'resources/js/**/*.vue')
+        path.join(__dirname, 'resources/js/**/**/*.vue')
       ]),
     }),
     new SWPrecacheWebpackPlugin({
@@ -49,6 +48,16 @@ mix.webpackConfig({
       staticFileGlobs: ['public/**/*.{js,html,css}'],
       minify: true,
       stripPrefix: 'public/'
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'report.html',
+      defaultSizes: 'parsed',
+      openAnalyzer: false,
+      generateStatsFile: false,
+      statsFilename: 'stats.json',
+      statsOptions: null,
+      logLevel: 'info'
     }),
     new HtmlWebpackPlugin({
       filename: './index.html',

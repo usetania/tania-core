@@ -13,7 +13,7 @@
           i.fa.fa-indent.text-active
       .nav.navbar-nav.hidden-xs
         .h3.text-lt.wrapper
-          | Gracia Farm &nbsp;
+          | Gracia Farm
           a.h6
             i.fa.fa-external-link
 </template>
