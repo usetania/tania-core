@@ -6,8 +6,6 @@ import (
 	"mime/multipart"
 	"os"
 	"strings"
-
-	"github.com/Tanibox/tania-server/helper/stringhelper"
 )
 
 // File used to handle file path and file operation.
@@ -15,24 +13,9 @@ import (
 type File interface {
 	GetFile(src string) ([]byte, error)
 	Upload(file *multipart.FileHeader, destPath string) error
-
-	GetAreaFilepath() string
 }
 
 type LocalFile struct {
-	AreaFilepath string
-}
-
-func InitLocalFile() File {
-	// Set custom env variable
-	// TODO: Move the setter to something like `.env` file
-	os.Setenv("TANIA_AREA_FILE_PATH", "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads")
-
-	areaFilepath := stringhelper.Join(os.Getenv("TANIA_AREA_FILE_PATH"), "/areas/")
-
-	return LocalFile{
-		AreaFilepath: areaFilepath,
-	}
 }
 
 func (f LocalFile) GetFile(srcPath string) ([]byte, error) {
@@ -68,8 +51,4 @@ func (f LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
 	}
 
 	return nil
-}
-
-func (f LocalFile) GetAreaFilepath() string {
-	return f.AreaFilepath
 }

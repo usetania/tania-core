@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 
+	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/farm/repository"
 	"github.com/Tanibox/tania-server/helper/imagehelper"
@@ -17,6 +18,7 @@ type FarmServer struct {
 	ReservoirRepo repository.ReservoirRepository
 	AreaRepo      repository.AreaRepository
 	File          File
+	Config        config.Configuration
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -25,7 +27,8 @@ func NewFarmServer() (*FarmServer, error) {
 		FarmRepo:      repository.NewFarmRepositoryInMemory(),
 		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
 		AreaRepo:      repository.NewAreaRepositoryInMemory(),
-		File:          InitLocalFile(),
+		File:          LocalFile{},
+		Config:        config.Init(),
 	}, nil
 }
 
@@ -264,7 +267,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 
 	photo, err := c.FormFile("photo")
 	if err == nil {
-		destPath := stringhelper.Join(s.File.GetAreaFilepath(), photo.Filename)
+		destPath := stringhelper.Join(s.Config.File.AreaPhoto, photo.Filename)
 		err = s.File.Upload(photo, destPath)
 
 		if err != nil {
@@ -364,7 +367,7 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	}
 
 	// Process //
-	srcPath := stringhelper.Join(s.File.GetAreaFilepath(), area.Photo.Filename)
+	srcPath := stringhelper.Join(s.Config.File.AreaPhoto, area.Photo.Filename)
 
 	return c.File(srcPath)
 }

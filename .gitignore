@@ -21,6 +21,7 @@ vendor/
 storage.db
 notes.md
 .vscode
+conf.json
 
 
 # Swap
