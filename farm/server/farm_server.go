@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/helper/imagehelper"
 	"github.com/Tanibox/tania-server/helper/stringhelper"
 	"github.com/labstack/echo"
+	uuid "github.com/satori/go.uuid"
 )
 
 // FarmServer ties the routes and handlers with injected dependencies
@@ -300,17 +301,17 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return areaResult.Error
 	}
 
-	uid, ok := areaResult.Result.(string)
+	uid, ok := areaResult.Result.(uuid.UUID)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
 	farmResult := <-s.FarmRepo.Save(&farm)
 	if farmResult.Error != nil {
-		return farmResult.Error
+		return Error(c, farmResult.Error)
 	}
 
-	data["data"] = uid
+	data["data"] = uid.String()
 
 	return c.JSON(http.StatusOK, data)
 }

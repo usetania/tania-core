@@ -6,7 +6,7 @@ import (
 )
 
 type Area struct {
-	UID       string    `json:"uid"`
+	UID       uuid.UUID `json:"uid"`
 	Name      string    `json:"name"`
 	Size      AreaUnit  `json:"size"`
 	Type      string    `json:"type"`
@@ -62,7 +62,7 @@ func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 	}
 
 	return Area{
-		UID:  uid.String(),
+		UID:  uid,
 		Farm: farm,
 		Name: name,
 		Type: areaType,

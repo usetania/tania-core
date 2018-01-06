@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	uuid "github.com/satori/go.uuid"
 )
 
 // AreaRepository is a repository
@@ -16,11 +17,11 @@ type AreaRepository interface {
 // AreaRepositoryInMemory is in-memory AreaRepository db implementation
 type AreaRepositoryInMemory struct {
 	lock    sync.RWMutex
-	AreaMap map[string]entity.Area
+	AreaMap map[uuid.UUID]entity.Area
 }
 
 func NewAreaRepositoryInMemory() AreaRepository {
-	return &AreaRepositoryInMemory{AreaMap: make(map[string]entity.Area)}
+	return &AreaRepositoryInMemory{AreaMap: make(map[uuid.UUID]entity.Area)}
 }
 
 // FindAll is to find all
@@ -51,6 +52,11 @@ func (r *AreaRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
 	go func() {
 		r.lock.RLock()
 		defer r.lock.RUnlock()
+
+		uid, err := uuid.FromString(uid)
+		if err != nil {
+			result <- RepositoryResult{Error: err}
+		}
 
 		result <- RepositoryResult{Result: r.AreaMap[uid]}
 	}()

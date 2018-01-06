@@ -7,7 +7,6 @@ import (
 
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
 )
 
 const (
@@ -108,8 +107,6 @@ func Error(c echo.Context, err error) error {
 	} else if rve, ok := err.(RequestValidationError); ok {
 		return c.JSON(http.StatusBadRequest, rve)
 	}
-
-	log.Error(err)
 
 	return c.JSON(http.StatusInternalServerError, err)
 }
