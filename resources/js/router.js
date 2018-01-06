@@ -17,7 +17,8 @@ const router = new VueRouter({
     { path: '/intro/area', name: 'IntroAreaCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/area.vue') },
 
     // Farm
-    { path: '/farm-add', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create.vue') }
+    { path: '/farm-add', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create') },
+    { path: '/task', name: 'Task', meta: { requiresAuth: true }, component: () => import('./pages/tasks/task') }
   ]
 })
 

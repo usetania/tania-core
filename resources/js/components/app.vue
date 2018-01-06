@@ -1,14 +1,14 @@
 <template lang="pug">
   .app.app-header-fixed(:class="folded == true ? 'app-aside-folded': ''")
-    AppHeaderComponent(:folded="folded" v-on:header-folded="setFolded" v-show="authenticated")
-    AppAsideComponent(v-show="authenticated")
+    AppHeaderComponent(v-show="authenticated")
+    AppAsideComponent(:folded="folded" v-on:header-folded="setFolded" v-show="authenticated")
 
     #content(role="main" :class="authenticated ? 'app-content': ''")
       .app-content-body
         .hbox.hbox-auto-xs.hbox-auto-sm
           router-view
 
-    AppFooterComponent(v-if="authenticated")
+    AppFooterComponent(v-show="authenticated")
 </template>
 
 <script>
