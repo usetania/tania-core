@@ -40,7 +40,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 	g.POST("/:id/areas", s.SaveArea)
 	g.GET("/:id/areas", s.GetFarmAreas)
-	g.GET("/:farm_id/areas/:area_id/files/:file_id", s.GetAreaPhoto)
+	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
 
 // GetTypes is a FarmServer's handle to get farm types
@@ -337,7 +337,7 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) GetAreaPhoto(c echo.Context) error {
+func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	// Validate //
 	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
 	if result.Error != nil {
