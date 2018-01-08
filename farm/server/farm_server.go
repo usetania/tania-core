@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Tanibox/tania-server/config"
@@ -41,6 +42,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 	g.POST("/:id/areas", s.SaveArea)
 	g.GET("/:id/areas", s.GetFarmAreas)
+	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
 
@@ -318,12 +320,12 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 
 	result := <-s.FarmRepo.FindByID(c.Param("id"))
 	if result.Error != nil {
-		return result.Error
+		return Error(c, result.Error)
 	}
 
 	farm, ok := result.Result.(entity.Farm)
 	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
 	data["data"] = MapToArea(farm.Areas)
@@ -334,26 +336,57 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
+func (s *FarmServer) GetAreasByID(c echo.Context) error {
+	data := make(map[string]DetailArea)
+
 	// Validate //
 	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
 	if result.Error != nil {
-		return result.Error
+		return Error(c, result.Error)
 	}
 
 	_, ok := result.Result.(entity.Farm)
 	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
 	result = <-s.AreaRepo.FindByID(c.Param("area_id"))
 	if result.Error != nil {
-		return result.Error
+		fmt.Println("ERROR")
+		fmt.Println(result.Error)
+		return Error(c, result.Error)
 	}
 
 	area, ok := result.Result.(entity.Area)
 	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	data["data"] = MapToDetailArea(area)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
+	// Validate //
+	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	_, ok := result.Result.(entity.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	result = <-s.AreaRepo.FindByID(c.Param("area_id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	area, ok := result.Result.(entity.Area)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
 	if area.Photo.Filename == "" {

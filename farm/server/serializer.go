@@ -8,6 +8,8 @@ import (
 
 type SimpleFarm entity.Farm
 
+type DetailArea entity.Area
+
 type AreaSquareMeter struct {
 	entity.SquareMeter
 }
@@ -42,6 +44,17 @@ func MapToArea(areas []entity.Area) []entity.Area {
 	return areaList
 }
 
+func MapToDetailArea(area entity.Area) DetailArea {
+	switch v := area.Size.(type) {
+	case entity.SquareMeter:
+		area.Size = AreaSquareMeter{SquareMeter: v}
+	case entity.Hectare:
+		area.Size = AreaHectare{Hectare: v}
+	}
+
+	return DetailArea(area)
+}
+
 func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		UID  string `json:"uid"`
@@ -51,6 +64,26 @@ func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
 		UID:  sf.UID.String(),
 		Name: sf.Name,
 		Type: sf.Type,
+	})
+}
+
+func (da DetailArea) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		UID       string           `json:"uid"`
+		Name      string           `json:"name"`
+		Size      entity.AreaUnit  `json:"size"`
+		Type      string           `json:"type"`
+		Location  string           `json:"location"`
+		Photo     entity.AreaPhoto `json:"photo"`
+		Reservoir entity.Reservoir `json:"reservoir"`
+	}{
+		UID:       da.UID.String(),
+		Name:      da.Name,
+		Size:      da.Size,
+		Type:      da.Type,
+		Location:  da.Location,
+		Photo:     da.Photo,
+		Reservoir: da.Reservoir,
 	})
 }
 

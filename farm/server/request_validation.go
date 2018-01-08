@@ -80,33 +80,35 @@ func NewRequestValidationError(errorCode, fieldName string) RequestValidationErr
 // Error wraps errors from application layer and domain layer
 // to some format in JSON for response
 func Error(c echo.Context, err error) error {
+	errorResponse := map[string]string{
+		"field_name":    "",
+		"error_code":    "",
+		"error_message": "",
+	}
+
 	if re, ok := err.(entity.ReservoirError); ok {
-		errMap := map[string]string{
-			"field_name":    "",
-			"error_code":    strconv.Itoa(re.Code),
-			"error_message": re.Error(),
-		}
+		errorResponse["error_code"] = strconv.Itoa(re.Code)
+		errorResponse["error_message"] = re.Error()
 
-		return c.JSON(http.StatusBadRequest, errMap)
+		return c.JSON(http.StatusBadRequest, errorResponse)
 	} else if re, ok := err.(entity.FarmError); ok {
-		errMap := map[string]string{
-			"field_name":    "",
-			"error_code":    strconv.Itoa(re.Code),
-			"error_message": re.Error(),
-		}
+		errorResponse["error_code"] = strconv.Itoa(re.Code)
+		errorResponse["error_message"] = re.Error()
 
-		return c.JSON(http.StatusBadRequest, errMap)
+		return c.JSON(http.StatusBadRequest, errorResponse)
 	} else if re, ok := err.(entity.AreaError); ok {
-		errMap := map[string]string{
-			"field_name":    "",
-			"error_code":    strconv.Itoa(re.Code),
-			"error_message": re.Error(),
-		}
+		errorResponse["error_code"] = strconv.Itoa(re.Code)
+		errorResponse["error_message"] = re.Error()
 
-		return c.JSON(http.StatusBadRequest, errMap)
+		return c.JSON(http.StatusBadRequest, errorResponse)
 	} else if rve, ok := err.(RequestValidationError); ok {
+		errorResponse["field_name"] = rve.FieldName
+		errorResponse["error_code"] = rve.ErrorCode
+		errorResponse["error_message"] = rve.ErrorMessage
+
 		return c.JSON(http.StatusBadRequest, rve)
 	}
 
-	return c.JSON(http.StatusInternalServerError, err)
+	errorResponse["error_message"] = err.Error()
+	return c.JSON(http.StatusInternalServerError, errorResponse)
 }
