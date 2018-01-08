@@ -39,6 +39,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id", s.FindFarmByID)
 	g.POST("/:id/reservoirs", s.SaveReservoir)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
+	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
 	g.GET("/:id/areas", s.GetFarmAreas)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
@@ -215,6 +216,35 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 	if len(farm.Reservoirs) == 0 {
 		data["data"] = []entity.Reservoir{}
 	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
+	data := make(map[string]entity.Reservoir)
+
+	// Validate //
+	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	_, ok := result.Result.(entity.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	result = <-s.ReservoirRepo.FindByID(c.Param("reservoir_id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	reservoir, ok := result.Result.(entity.Reservoir)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	data["data"] = MapToDetailReservoir(reservoir)
 
 	return c.JSON(http.StatusOK, data)
 }

@@ -66,6 +66,17 @@ func MapToReservoir(reservoirs []entity.Reservoir) []entity.Reservoir {
 	return reservoirList
 }
 
+func MapToDetailReservoir(reservoir entity.Reservoir) entity.Reservoir {
+	switch v := reservoir.WaterSource.(type) {
+	case entity.Bucket:
+		reservoir.WaterSource = ReservoirBucket{Bucket: v}
+	case entity.Tap:
+		reservoir.WaterSource = ReservoirTap{Tap: v}
+	}
+
+	return reservoir
+}
+
 func MapToDetailArea(area entity.Area) DetailArea {
 	switch v := area.Size.(type) {
 	case entity.SquareMeter:
