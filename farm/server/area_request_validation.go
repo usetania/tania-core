@@ -6,11 +6,11 @@ import (
 	"github.com/Tanibox/tania-server/farm/entity"
 )
 
-func (rv *RequestValidation) ValidateReservoir(s FarmServer, farmId string) (entity.Reservoir, error) {
-	result := <-s.ReservoirRepo.FindByID(farmId)
+func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirId string) (entity.Reservoir, error) {
+	result := <-s.ReservoirRepo.FindByID(reservoirId)
 	reservoir, _ := result.Result.(entity.Reservoir)
 
-	if reservoir.UID == "" {
+	if reservoir.UID.String() == "" {
 		return reservoir, NewRequestValidationError(NOT_FOUND, "reservoir_id")
 	}
 

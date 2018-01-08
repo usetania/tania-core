@@ -171,8 +171,6 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		r.AttachTap(&t)
 	}
 
-	r.UID = repository.GetRandomUID()
-
 	err = farm.AddReservoir(&r)
 	if err != nil {
 		return Error(c, err)
@@ -184,7 +182,7 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		return reservoirResult.Error
 	}
 
-	uid, ok := reservoirResult.Result.(string)
+	uid, ok := reservoirResult.Result.(uuid.UUID)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
@@ -194,7 +192,7 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		return farmResult.Error
 	}
 
-	data["data"] = uid
+	data["data"] = uid.String()
 
 	return c.JSON(http.StatusOK, data)
 }

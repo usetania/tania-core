@@ -1,11 +1,14 @@
 package entity
 
-import "github.com/Tanibox/tania-server/helper/validationhelper"
+import (
+	"github.com/Tanibox/tania-server/helper/validationhelper"
+	uuid "github.com/satori/go.uuid"
+)
 
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm.
 type Reservoir struct {
-	UID         string      `json:"uid"`
+	UID         uuid.UUID   `json:"uid"`
 	Name        string      `json:"name"`
 	PH          float32     `json:"ph"`
 	EC          float32     `json:"ec"`
@@ -21,7 +24,13 @@ func CreateReservoir(farm Farm, name string) (Reservoir, error) {
 		return Reservoir{}, err
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return Reservoir{}, err
+	}
+
 	return Reservoir{
+		UID:         uid,
 		Name:        name,
 		PH:          0,
 		EC:          0,
