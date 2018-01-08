@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -14,9 +15,6 @@ func TestFarmInMemorySave(t *testing.T) {
 
 	farm1, farmErr1 := entity.CreateFarm("MyFarmFamily", "organic")
 	farm2, farmErr2 := entity.CreateFarm("MySecondFarm", "organic")
-
-	farm1.UID = GetRandomUID()
-	farm2.UID = GetRandomUID()
 
 	// When
 	var saveResult1, saveResult2 RepositoryResult
@@ -45,9 +43,6 @@ func TestFarmInMemoryFindAll(t *testing.T) {
 	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
 
-	farm1.UID = GetRandomUID()
-	farm2.UID = GetRandomUID()
-
 	var result, foundOne RepositoryResult
 	go func() {
 		// Given
@@ -58,7 +53,7 @@ func TestFarmInMemoryFindAll(t *testing.T) {
 		result = <-repo.FindAll()
 
 		val := result.Result.([]entity.Farm)
-		foundOne = <-repo.FindByID(val[0].UID)
+		foundOne = <-repo.FindByID(val[0].UID.String())
 
 		done <- true
 	}()
@@ -88,9 +83,6 @@ func TestFarmInMemoryFindByID(t *testing.T) {
 	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
 
-	farm1.UID = GetRandomUID()
-	farm2.UID = GetRandomUID()
-
 	var result1, result2, found1, found2 RepositoryResult
 	go func() {
 		// Given
@@ -98,11 +90,11 @@ func TestFarmInMemoryFindByID(t *testing.T) {
 		result2 = <-repo.Save(&farm2)
 
 		// When
-		uid1, _ := result1.Result.(string)
-		found1 = <-repo.FindByID(uid1)
+		uid1, _ := result1.Result.(uuid.UUID)
+		found1 = <-repo.FindByID(uid1.String())
 
-		uid2, _ := result2.Result.(string)
-		found2 = <-repo.FindByID(uid2)
+		uid2, _ := result2.Result.(uuid.UUID)
+		found2 = <-repo.FindByID(uid2.String())
 
 		done <- true
 	}()

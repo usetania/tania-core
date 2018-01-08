@@ -2,15 +2,17 @@
 // to their farm
 package entity
 
+import uuid "github.com/satori/go.uuid"
+
 type Farm struct {
-	UID         string `json:"uid"`
-	Name        string `json:"name"`
-	Latitude    string `json:"latitude"`
-	Longitude   string `json:"longitude"`
-	Type        string `json:"type"`
-	CountryCode string `json:"country_code"`
-	CityCode    string `json:"city_code"`
-	IsActive    bool   `json:"is_active"`
+	UID         uuid.UUID `json:"uid"`
+	Name        string    `json:"name"`
+	Latitude    string    `json:"latitude"`
+	Longitude   string    `json:"longitude"`
+	Type        string    `json:"type"`
+	CountryCode string    `json:"country_code"`
+	CityCode    string    `json:"city_code"`
+	IsActive    bool      `json:"is_active"`
 
 	Reservoirs []Reservoir `json:"-"`
 	Areas      []Area      `json:"-"`
@@ -28,7 +30,13 @@ func CreateFarm(name string, farmType string) (Farm, error) {
 		return Farm{}, err
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return Farm{}, err
+	}
+
 	return Farm{
+		UID:         uid,
 		Name:        name,
 		Type:        farmType,
 		Latitude:    "",

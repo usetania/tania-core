@@ -88,21 +88,19 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	farm.UID = repository.GetRandomUID()
-
 	result := <-s.FarmRepo.Save(&farm)
 
 	if result.Error != nil {
 		return result.Error
 	}
 
-	uid, ok := result.Result.(string)
+	uid, ok := result.Result.(uuid.UUID)
 
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = uid
+	data["data"] = uid.String()
 
 	return c.JSON(http.StatusOK, data)
 }

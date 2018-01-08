@@ -59,8 +59,8 @@ func (rv *RequestValidation) ValidateFarm(s FarmServer, farmId string) (entity.F
 	result := <-s.FarmRepo.FindByID(farmId)
 	farm, _ := result.Result.(entity.Farm)
 
-	if farm.UID == "" {
-		return farm, NewRequestValidationError(NOT_FOUND, "farm_id")
+	if farm.UID.String() == "" {
+		return entity.Farm{}, NewRequestValidationError(NOT_FOUND, "farm_id")
 	}
 
 	return farm, nil

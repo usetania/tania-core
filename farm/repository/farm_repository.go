@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	uuid "github.com/satori/go.uuid"
 )
 
 type FarmRepository interface {
@@ -15,11 +16,11 @@ type FarmRepository interface {
 // ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
 type FarmRepositoryInMemory struct {
 	lock    sync.RWMutex
-	FarmMap map[string]entity.Farm
+	FarmMap map[uuid.UUID]entity.Farm
 }
 
 func NewFarmRepositoryInMemory() FarmRepository {
-	return &FarmRepositoryInMemory{FarmMap: make(map[string]entity.Farm)}
+	return &FarmRepositoryInMemory{FarmMap: make(map[uuid.UUID]entity.Farm)}
 }
 
 func (f *FarmRepositoryInMemory) FindAll() <-chan RepositoryResult {
@@ -67,6 +68,11 @@ func (f *FarmRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
 	go func() {
 		f.lock.RLock()
 		defer f.lock.RUnlock()
+
+		uid, err := uuid.FromString(uid)
+		if err != nil {
+			result <- RepositoryResult{Error: err}
+		}
 
 		result <- RepositoryResult{Result: f.FarmMap[uid]}
 	}()

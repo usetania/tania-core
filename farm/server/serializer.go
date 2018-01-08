@@ -48,7 +48,7 @@ func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
 		Name string `json:"name"`
 		Type string `json:"type"`
 	}{
-		UID:  sf.UID,
+		UID:  sf.UID.String(),
 		Name: sf.Name,
 		Type: sf.Type,
 	})
