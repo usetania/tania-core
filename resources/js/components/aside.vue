@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import AsideItemComponent from './aside-item'
+import AsideItemComponent from './aside-item.vue'
 export default {
   name: 'AppAsideComponent',
   components: {
