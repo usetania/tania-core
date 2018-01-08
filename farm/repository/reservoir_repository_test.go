@@ -18,11 +18,11 @@ func TestReservoirInMemorySave(t *testing.T) {
 
 	reservoir2, _ := entity.CreateReservoir(farm, "MyReservoir2")
 	bucket2, _ := entity.CreateBucket(100, 50)
-	reservoir2.AttachBucket(&bucket2)
+	reservoir2.AttachBucket(bucket2)
 
 	reservoir3, _ := entity.CreateReservoir(farm, "MyReservoir3")
 	tap3, _ := entity.CreateTap()
-	reservoir3.AttachTap(&tap3)
+	reservoir3.AttachTap(tap3)
 
 	// When
 	var saveResult1, saveResult2, saveResult3 RepositoryResult

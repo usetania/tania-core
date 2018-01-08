@@ -1,6 +1,8 @@
 package entity
 
 import (
+	"time"
+
 	"github.com/Tanibox/tania-server/helper/validationhelper"
 	uuid "github.com/satori/go.uuid"
 )
@@ -13,8 +15,9 @@ type Reservoir struct {
 	PH          float32     `json:"ph"`
 	EC          float32     `json:"ec"`
 	Temperature float32     `json:"temperature"`
-	WaterSource interface{} `json:"water_source"`
+	WaterSource WaterSource `json:"water_source"`
 	Farm        Farm        `json:"-"`
+	CreatedDate time.Time   `json:"created_date"`
 }
 
 // CreateReservoir registers a new Reservoir.
@@ -36,11 +39,12 @@ func CreateReservoir(farm Farm, name string) (Reservoir, error) {
 		EC:          0,
 		Temperature: 0,
 		Farm:        farm,
+		CreatedDate: time.Now(),
 	}, nil
 }
 
 // AttachBucket attach Bucket value object to Reservoir.waterSource.
-func (r *Reservoir) AttachBucket(bucket *Bucket) error {
+func (r *Reservoir) AttachBucket(bucket Bucket) error {
 	if r.IsAttachedToWaterSource() {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
@@ -50,7 +54,7 @@ func (r *Reservoir) AttachBucket(bucket *Bucket) error {
 }
 
 // AttachTap attach Tap value object to Reservoir.WaterSource.
-func (r *Reservoir) AttachTap(tap *Tap) error {
+func (r *Reservoir) AttachTap(tap Tap) error {
 	if r.IsAttachedToWaterSource() {
 		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
@@ -61,13 +65,13 @@ func (r *Reservoir) AttachTap(tap *Tap) error {
 
 // IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource.
 func (r Reservoir) IsAttachedToTap() bool {
-	_, ok := r.WaterSource.(*Tap)
+	_, ok := r.WaterSource.(Tap)
 	return ok
 }
 
 // IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource.
 func (r Reservoir) IsAttachedToBucket() bool {
-	_, ok := r.WaterSource.(*Bucket)
+	_, ok := r.WaterSource.(Bucket)
 	return ok
 }
 

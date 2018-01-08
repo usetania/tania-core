@@ -4,6 +4,10 @@ const (
 	ReservoirEmptyBucketPercentage = 0.2
 )
 
+type WaterSource interface {
+	Type() string
+}
+
 // Bucket is value object attached to the Reservoir.waterSource.
 type Bucket struct {
 	Capacity float32 `json:"capacity"`
@@ -33,6 +37,10 @@ func CreateTap() (Tap, error) {
 	return Tap{}, nil
 }
 
+func (b Bucket) Type() string {
+	return "bucket"
+}
+
 // ChangeVolume changes the amount of water in the Bucket.
 func (b *Bucket) ChangeVolume(volume float32) error {
 	err := validateVolume(b.Capacity, volume)
@@ -53,6 +61,10 @@ func (b Bucket) IsBucketEmpty() bool {
 	}
 
 	return false
+}
+
+func (t Tap) Type() string {
+	return "tap"
 }
 
 func validateVolume(capacity, volume float32) error {

@@ -57,8 +57,8 @@ func TestAttachWaterSource(t *testing.T) {
 	tap, tapErr := CreateTap()
 
 	// When
-	err1 := reservoir1.AttachBucket(&bucket)
-	err2 := reservoir2.AttachTap(&tap)
+	err1 := reservoir1.AttachBucket(bucket)
+	err2 := reservoir2.AttachTap(tap)
 
 	// Then
 	val1 := reservoir1.WaterSource
@@ -70,10 +70,10 @@ func TestAttachWaterSource(t *testing.T) {
 	assert.Nil(t, bucketErr)
 	assert.Nil(t, tapErr)
 
-	assert.Equal(t, val1, &bucket)
+	assert.Equal(t, val1, bucket)
 	assert.Nil(t, err1)
 
-	assert.Equal(t, val2, &tap)
+	assert.Equal(t, val2, tap)
 	assert.Nil(t, err2)
 }
 
@@ -86,9 +86,9 @@ func TestInvalidAttachWaterSource(t *testing.T) {
 	tap, _ := CreateTap()
 
 	// When
-	reservoir.AttachBucket(&bucket1)
-	err1 := reservoir.AttachBucket(&bucket2)
-	err2 := reservoir.AttachTap(&tap)
+	reservoir.AttachBucket(bucket1)
+	err1 := reservoir.AttachBucket(bucket2)
+	err2 := reservoir.AttachTap(tap)
 
 	// Then
 	assert.Nil(t, farmErr)
@@ -102,11 +102,11 @@ func TestMeasureCondition(t *testing.T) {
 
 	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
 	bucket, _ := CreateBucket(100, 50)
-	reservoir1.AttachBucket(&bucket)
+	reservoir1.AttachBucket(bucket)
 
 	reservoir2, _ := CreateReservoir(farm, "My Reservoir 2")
 	tap, _ := CreateTap()
-	reservoir2.AttachTap(&tap)
+	reservoir2.AttachTap(tap)
 
 	// When
 	val1 := reservoir1.MeasureCondition()

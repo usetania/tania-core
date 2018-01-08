@@ -7,7 +7,6 @@ import (
 )
 
 type SimpleFarm entity.Farm
-
 type DetailArea entity.Area
 
 type AreaSquareMeter struct {
@@ -15,6 +14,12 @@ type AreaSquareMeter struct {
 }
 type AreaHectare struct {
 	entity.Hectare
+}
+type ReservoirBucket struct {
+	entity.Bucket
+}
+type ReservoirTap struct {
+	entity.Tap
 }
 
 func MapToSimpleFarm(farms []entity.Farm) []SimpleFarm {
@@ -42,6 +47,23 @@ func MapToArea(areas []entity.Area) []entity.Area {
 	}
 
 	return areaList
+}
+
+func MapToReservoir(reservoirs []entity.Reservoir) []entity.Reservoir {
+	reservoirList := make([]entity.Reservoir, len(reservoirs))
+
+	for i, reservoir := range reservoirs {
+		reservoirList[i] = reservoir
+
+		switch v := reservoir.WaterSource.(type) {
+		case entity.Bucket:
+			reservoirList[i].WaterSource = ReservoirBucket{Bucket: v}
+		case entity.Tap:
+			reservoirList[i].WaterSource = ReservoirTap{Tap: v}
+		}
+	}
+
+	return reservoirList
 }
 
 func MapToDetailArea(area entity.Area) DetailArea {
@@ -104,5 +126,25 @@ func (h AreaHectare) MarshalJSON() ([]byte, error) {
 	}{
 		Value:  h.Value,
 		Symbol: h.Symbol(),
+	})
+}
+
+func (rb ReservoirBucket) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Type     string  `json:"type"`
+		Capacity float32 `json:"capacity"`
+		Volume   float32 `json:"volume"`
+	}{
+		Type:     rb.Type(),
+		Capacity: rb.Capacity,
+		Volume:   rb.Volume,
+	})
+}
+
+func (rt ReservoirTap) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Type string `json:"type"`
+	}{
+		Type: rt.Type(),
 	})
 }

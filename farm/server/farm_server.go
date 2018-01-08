@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Tanibox/tania-server/config"
@@ -163,14 +162,14 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 			return Error(c, err)
 		}
 
-		r.AttachBucket(&b)
+		r.AttachBucket(b)
 	} else if waterSourceType == "tap" {
 		t, err := entity.CreateTap()
 		if err != nil {
 			return Error(c, err)
 		}
 
-		r.AttachTap(&t)
+		r.AttachTap(t)
 	}
 
 	err = farm.AddReservoir(&r)
@@ -212,7 +211,7 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = farm.Reservoirs
+	data["data"] = MapToReservoir(farm.Reservoirs)
 	if len(farm.Reservoirs) == 0 {
 		data["data"] = []entity.Reservoir{}
 	}
@@ -352,8 +351,6 @@ func (s *FarmServer) GetAreasByID(c echo.Context) error {
 
 	result = <-s.AreaRepo.FindByID(c.Param("area_id"))
 	if result.Error != nil {
-		fmt.Println("ERROR")
-		fmt.Println(result.Error)
 		return Error(c, result.Error)
 	}
 
