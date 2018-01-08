@@ -9,5 +9,10 @@ export default {
   },
   ApiCreateReservoir: (farmid, payload, cbSuccess, cbError) => {
     http.post('farms/' + farmid + '/reservoirs', payload, cbSuccess, cbError)
+  },
+  ApiCreateArea: (farmid, payload, cbSuccess, cbError) => {
+    http.post('farms/' + farmid + '/areas', payload, cbSuccess, cbError, {
+      'Content-Type': 'multipart/form-data'
+    })
   }
 }

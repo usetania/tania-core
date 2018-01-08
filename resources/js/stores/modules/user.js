@@ -10,6 +10,7 @@ const state = {
 const getters = {
   getCurrentUser: state => state.current,
   IsUserAuthenticated: state => state.current.id !== 0,
+  IsNewUser: state => state.current.intro === true,
   IsUserAllowSeeNavigator: (state, getters) => {
     return getters.IsUserAuthenticated && state.current.intro === false
   }

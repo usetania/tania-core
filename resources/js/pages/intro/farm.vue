@@ -1,7 +1,7 @@
 <template lang="pug">
   .container.init.col-md-4.col-md-offset-4
     a.navbar-brand.block.m-b.m-t.text-center
-      img(src="../../../../images/logobig.png")
+      img(src="../../../images/logobig.png")
     h3.text-lt.text-center.wrapper.m-t Hello! Can you tell me a little <br/> about your farm?
     .m-b-lg
       .wrapper
@@ -60,31 +60,66 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import mixins from '../mixins'
+import stubFarm from '@/stores/stubs/farm'
+import stubMessage from '@/stores/stubs/message'
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
-  name: 'FarmIntro',
-  mixins: [mixins],
+  data () {
+    return {
+      message: Object.assign({}, stubMessage),
+      farm: Object.assign({}, stubFarm)
+    }
+  },
 
   computed: {
     ...mapGetters({
-      currentFarm: 'getCurrentFarm',
+      countries: 'getCountries',
+      cities: 'getCities',
+      types: 'getAllFarmTypes',
+      currentFarm: 'introGetFarm',
     })
   },
 
   mounted () {
-    // if user comming from reservoir intro aka back button, we need to check if on the state
-    // have current farm we need to passed into farm data
-    if (this.currentFarm && this.currentFarm.id !== '') {
+    if (this.currentFarm) {
       this.farm = Object.assign({}, this.currentFarm)
     }
   },
 
   methods: {
-    redirectTo (data) {
+    ...mapActions([
+      'introSetFarm',
+      'fetchCitiesByCountryCode'
+    ]),
+
+    validateBeforeSubmit () {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.create()
+        }
+      })
+    },
+
+    create () {
+      this.introSetFarm(this.farm)
       this.$router.push({ name: 'IntroReservoirCreate' })
     },
+
+    findMe () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.farm.latitude = position.coords.latitude
+          this.farm.longitude = position.coords.longitude
+        }, error => console.log(error))
+      }
+    },
+
+    countryChanged (countryCode) {
+      this.fetchCitiesByCountryCode(countryCode)
+    }
   }
 }
+
 </script>
 

@@ -1,7 +1,7 @@
 <template lang="pug">
   .container.init.col-md-4.col-md-offset-4
     a.navbar-brand.block.m-b.m-t.text-center
-      img(src="../../../../images/logobig.png")
+      img(src="../../../images/logobig.png")
     h3.text-lt.text-center.wrapper.m-t Awesome! Now let's create a new<br/> water source for your farm.
     .m-b-lg
       .wrapper
@@ -37,7 +37,7 @@
 <script>
 import stub from '@/stores/stubs/reservoir'
 import stubMessage from '@/stores/stubs/message'
-import { mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'ReservoirIntro',
@@ -52,13 +52,21 @@ export default {
     }
   },
 
-  watch: {
-    'reservoir.type' () {}
+  computed: {
+    ...mapGetters({
+      currentReservoir: 'introGetReservoir'
+    })
+  },
+
+  mounted () {
+    if (this.currentReservoir) {
+      this.reservoir = Object.assign({}, this.currentReservoir)
+    }
   },
 
   methods: {
     ...mapActions([
-      'createReservoir'
+      'introSetReservoir'
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -75,13 +83,8 @@ export default {
       }
     },
     create () {
-      // TODO if reservoir have UID we need to update endpoint API
-      //
-      this.createReservoir(this.reservoir)
-        .then(data => {
-          this.$router.push({ name: 'IntroAreaCreate' })
-        })
-        .catch(({ data }) => this.message = data)
+      this.introSetReservoir(this.reservoir)
+      this.$router.push({ name: 'IntroAreaCreate' })
     }
   }
 }

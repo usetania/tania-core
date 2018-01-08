@@ -2,19 +2,27 @@ import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
 import FarmApi from '@/stores/api/farm'
+import stubFarm from '@/stores/stubs/farm'
+import stubReservoir from '@/stores/stubs/reservoir'
 import stub from '@/stores/stubs/farm'
 
 const state = {
-  current: stub,
+  farm: stub,
   farms: [],
+  reservoir: {},
   reservoirs: [],
+  area: {},
+  areas: [],
   types: []
 }
 
 const getters = {
-  getCurrentFarm: state => state.current,
+  getCurrentFarm: state => state.farm,
+  getCurrentReservoir: state => state.reservoir,
+  getCurrentArea: state => state.area,
   getAllFarms: state => state.farms,
   getAllReservoirs: state => state.reservoirs,
+  getAllAreass: state => state.areas,
   getAllFarmTypes: state => state.types,
   haveFarms: state => state.farms.length > 0 ? true : false
 }
@@ -56,6 +64,14 @@ const actions = {
           resolve(payload)
         }, error => reject(error.response))
     })
+  },
+
+  createArea ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      commit(types.CREATE_AREA, payload)
+      resolve(payload)
+    })
   }
 }
 
@@ -67,10 +83,19 @@ const mutations = {
     state.farms.push(payload)
   },
   [types.SET_FARM] (state, payload) {
-    state.current = payload
+    state.farm = payload
   },
   [types.CREATE_RESERVOIR] (state, payload) {
     state.reservoirs.push(payload)
+  },
+  [types.SET_RESERVOIR] (state, payload) {
+    state.reservoir = payload
+  },
+  [types.CREATE_AREA] (state, payload) {
+    state.areas.push(payload)
+  },
+  [types.SET_AREA] (state, payload) {
+    state.area = payload
   }
 }
 

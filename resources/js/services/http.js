@@ -5,11 +5,14 @@ import qs from 'qs';
 import { ls } from '@/services'
 
 export const http = {
-  request (method, url, data, successCb = null, errorCb = null) {
+  request (method, url, data, successCb = null, errorCb = null, headers = {}) {
     axios.request({
       url,
-      data: qs.stringify(data),
-      method
+      data: data instanceof FormData ? data : qs.stringify(data),
+      method,
+      headers: Object.assign({}, {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }, headers)
     }).then(successCb).catch(errorCb)
   },
 
@@ -17,8 +20,8 @@ export const http = {
     return this.request('get', url, {}, successCb, errorCb)
   },
 
-  post (url, data, successCb = null, errorCb = null) {
-    return this.request('post', url, data, successCb, errorCb)
+  post (url, data, successCb = null, errorCb = null, headers = {}) {
+    return this.request('post', url, data, successCb, errorCb, headers)
   },
 
   put (url, data, successCb = null, errorCb = null) {
@@ -40,7 +43,6 @@ export const http = {
     axios.interceptors.request.use(config => {
       // we intercept axios request and add authorizatio header before perform send a request to the server
       // config.headers.Authorization = `Bearer ${ls.get('jwt-token')}`
-      config.headers.common['Content-Type'] = 'application/x-www-form-urlencoded'
       return config
     })
 

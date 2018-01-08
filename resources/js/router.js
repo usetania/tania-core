@@ -12,9 +12,9 @@ const router = new VueRouter({
     { path: '/auth/login', name: 'AuthLogin', component: () => import('./pages/auth/login.vue') },
 
     // intro
-    { path: '/intro/farm', name: 'IntroFarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/farm.vue') },
-    { path: '/intro/reservoir', name: 'IntroReservoirCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/reservoir.vue') },
-    { path: '/intro/area', name: 'IntroAreaCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/intro/area.vue') },
+    { path: '/intro/farm', name: 'IntroFarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/intro/farm.vue') },
+    { path: '/intro/reservoir', name: 'IntroReservoirCreate', meta: { requiresAuth: true }, component: () => import('./pages/intro/reservoir.vue') },
+    { path: '/intro/area', name: 'IntroAreaCreate', meta: { requiresAuth: true }, component: () => import('./pages/intro/area.vue') },
 
     // Farm
     { path: '/farm-add', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create') },
@@ -22,21 +22,44 @@ const router = new VueRouter({
   ]
 })
 
-
-router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.IsUserAuthenticated === false) {
-      next({
-        name: 'AuthLogin',
-        query: { redirect: to.fullPath }
-      })
-    } else {
+function middleware (to, from, next) {
+  // if user have property intro == true a.k.a new user we will redirect into intro pages
+  if (store.getters.IsNewUser === true) {
+    const positioning = store.getters.introGetUserPosition
+    if (to.name === positioning) {
       next()
+    } else {
+      let introMaps = [
+        { from: 'IntroReservoirCreate', to: 'IntroFarmCreate' }, // back button
+        { from: 'IntroAreaCreate', to: 'IntroReservoirCreate' }, // back button
+        { from: 'IntroFarmCreate', to: 'IntroReservoirCreate' }, // next button
+        { from: 'IntroReservoirCreate', to: 'IntroAreaCreate' } // next button
+      ].filter(item => {
+        return from.name === item.from && to.name === item.to
+      })
+
+      // check if the route is available in intro maps
+      if (introMaps.length === 1) {
+        next()
+      } else {
+        next({ name: store.getters.introGetUserPosition })
+      }
     }
   } else {
     next()
   }
+}
 
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (store.getters.IsUserAuthenticated === false) {
+      next({ name: 'AuthLogin', query: { redirect: to.fullPath }})
+    } else {
+      middleware(to, from, next)
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

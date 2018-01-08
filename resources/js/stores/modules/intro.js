@@ -1,0 +1,123 @@
+import Api from '@/stores/api/farm'
+import * as types from '@/stores/mutation-types'
+import stubFarm from '@/stores/stubs/farm'
+import stubReservoir from '@/stores/stubs/reservoir'
+import stubArea from '@/stores/stubs/area'
+
+const defaults = {
+  farm: Object.assign({}, stubFarm),
+  reservoir: Object.assign({}, stubReservoir),
+  area: Object.assign({}, stubArea)
+}
+
+const state = Object.assign({}, defaults)
+
+const getters = {
+  introGetFarm : state => state.farm,
+  introGetReservoir: state => state.reservoir,
+  introGetArea: state => state.area,
+  introGetUserPosition: (state, getters) => {
+    if (getters.introGetFarm.name === '') {
+      return 'IntroFarmCreate'
+    } else if (getters.introGetReservoir.name === '') {
+      return 'IntroReservoirCreate'
+    } else if (getters.introGetArea.name === '') {
+      return 'IntroAreaCreate'
+    } else {
+      return 'IntroAreaCreate'
+    }
+  }
+}
+
+const actions = {
+  introSetFarm ({ commit, state }, payload) {
+    commit(types.INTRO_SET_FARM, payload)
+  },
+  introSetReservoir ({ commit, state }, payload) {
+    commit(types.INTRO_SET_RESERVOIR, payload)
+  },
+  introSetArea ({ commit, state }, payload) {
+    commit(types.INTRO_SET_AREA, payload)
+  },
+  introCreateFarm ({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      if (state.farm.id !== '') {
+        resolve(state.farm)
+      } else {
+        Api.ApiCreateFarm(state.farm, ({ data }) => {
+          let farm = Object.assign({}, state.farm, {id: data.data})
+          commit(types.INTRO_SET_FARM, farm)
+          resolve(farm)
+        }, err => reject(err))
+      }
+    })
+  },
+  introCreateReservoir ({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      if (state.reservoir.id !== '') {
+        resolve(state.reservoir)
+      } else {
+        Api.ApiCreateReservoir(state.farm.id, state.reservoir, ({ data }) => {
+          let reservoir = Object.assign({}, state.reservoir, {id: data.data})
+          let area = Object.assign({}, state.area, {reservoir_id: data.data, farm_id: state.farm.id})
+          commit(types.INTRO_SET_RESERVOIR, reservoir)
+          commit(types.INTRO_SET_AREA, area)
+          resolve(reservoir)
+        }, err => reject(err))
+      }
+    })
+  },
+  introCreateArea ({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      if (state.area.id !== '') {
+        resolve(state.area)
+      } else {
+        const formData = new FormData()
+        formData.set('name', state.area.name)
+        formData.set('size', state.area.size)
+        formData.set('size_unit', state.area.size_unit)
+        formData.set('type', state.area.type)
+        formData.set('location', state.area.location)
+        formData.set('reservoir_id', state.area.reservoir_id)
+        formData.set('photo', state.area.photo)
+
+        Api.ApiCreateArea(state.farm.id, formData, ({ data }) => {
+          let area = Object.assign({}, state.area, {id: data.data})
+          // COMMIT
+          commit(types.CREATE_FARM, state.farm)
+          commit(types.SET_FARM, state.farm)
+          commit(types.CREATE_RESERVOIR, state.reservoir)
+          commit(types.SET_RESERVOIR, state.reservoir)
+          commit(types.CREATE_AREA, area)
+          commit(types.SET_AREA, area)
+
+          commit(types.USER_COMPLETED_INTRO)
+
+          // reset intro
+          commit(types.INTRO_SET_FARM, Object.assign({}, defaults.farm))
+          commit(types.INTRO_SET_RESERVOIR, Object.assign({}, defaults.reservoir))
+          commit(types.INTRO_SET_AREA, Object.assign({}, defaults.area))
+
+          // resolve
+          resolve(area)
+        }, err => reject(err))
+      }
+    })
+  },
+}
+
+const mutations = {
+  [types.INTRO_SET_FARM] (state, payload) {
+    state.farm = payload
+  },
+  [types.INTRO_SET_RESERVOIR] (state, payload) {
+    state.reservoir = payload
+  },
+  [types.INTRO_SET_AREA] (state, payload) {
+    state.area = payload
+  }
+}
+
+export default {
+  state, getters, actions, mutations
+}
