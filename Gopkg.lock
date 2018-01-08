@@ -14,6 +14,12 @@
   version = "v3.1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hashicorp/hcl"
+  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
+
+[[projects]]
   name = "github.com/labstack/echo"
   packages = [".","middleware"]
   revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
@@ -42,6 +48,12 @@
   packages = ["."]
   revision = "ed69081a91fd053f17672236b0dd52ba7485e1a3"
   version = "v1.4.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/paked/configure"
+  packages = ["."]
+  revision = "5203c690d95a533ea7ff84abbaf1c8f3b93abdbe"
 
 [[projects]]
   name = "github.com/pariz/gountries"
@@ -105,6 +117,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e83c72118cb840997b1adf13aa520daf5d490173aa7f866480ba24c0e752cd8e"
+  inputs-digest = "77854dbc6e2df2892adce4fa0ccfde22abf87e9635772c50d49677d2b678aa15"
   solver-name = "gps-cdcl"
   solver-version = 1

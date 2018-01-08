@@ -18,7 +18,6 @@ type FarmServer struct {
 	ReservoirRepo repository.ReservoirRepository
 	AreaRepo      repository.AreaRepository
 	File          File
-	Config        config.Configuration
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -28,7 +27,6 @@ func NewFarmServer() (*FarmServer, error) {
 		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
 		AreaRepo:      repository.NewAreaRepositoryInMemory(),
 		File:          LocalFile{},
-		Config:        config.Init(),
 	}, nil
 }
 
@@ -267,7 +265,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 
 	photo, err := c.FormFile("photo")
 	if err == nil {
-		destPath := stringhelper.Join(s.Config.File.AreaPhoto, photo.Filename)
+		destPath := stringhelper.Join(*config.Config.UploadPathArea, "/", photo.Filename)
 		err = s.File.Upload(photo, destPath)
 
 		if err != nil {
@@ -367,7 +365,7 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	}
 
 	// Process //
-	srcPath := stringhelper.Join(s.Config.File.AreaPhoto, area.Photo.Filename)
+	srcPath := stringhelper.Join(*config.Config.UploadPathArea, "/", area.Photo.Filename)
 
 	return c.File(srcPath)
 }

@@ -5,12 +5,19 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/Tanibox/tania-server/config"
+
 	"github.com/Tanibox/tania-server/farm/server"
 	"github.com/Tanibox/tania-server/routing"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/paked/configure"
 )
+
+func init() {
+	initConfig()
+}
 
 func main() {
 	e := echo.New()
@@ -68,4 +75,50 @@ func migrate(db *sql.DB) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+/*
+	Example setting and usage of configure package:
+
+	// main.initConfig()
+	configuration := config.Configuration{
+		// this will be filled from environment variables
+		DBPassword: conf.String("TANIA_DB_PASSWORD", "123456", "Description"),
+
+		// this will be filled from flags (ie ./tania-server --port=9000)
+		Port: conf.String("port", "3000", "Description"),
+
+		// this will be filled from conf.json
+		UploadPath: conf.String("UploadPath", "/home/tania/uploads", "Description"),
+	}
+
+	// config.Configuration struct
+	type Configuration struct {
+		DBPassword 		*string
+		Port 			*string
+		UploadPath 		*string
+	}
+
+	// Usage. config.Config can be called globally
+	fmt.Println(*config.Config.DBPassword)
+	fmt.Println(*config.Config.Port)
+	fmt.Println(*config.Config.UploadPath)
+
+*/
+func initConfig() {
+	conf := configure.New()
+
+	configuration := config.Configuration{
+		UploadPathArea: conf.String("UploadPathArea", "/home/tania/uploads", "Upload path for the Area photo"),
+	}
+
+	// This config will read the first configuration.
+	// If it doesn't find the key, then it go to the next configuration.
+	conf.Use(configure.NewEnvironment())
+	conf.Use(configure.NewFlag())
+	conf.Use(configure.NewJSONFromFile("conf.json"))
+
+	conf.Parse()
+
+	config.Config = configuration
 }
