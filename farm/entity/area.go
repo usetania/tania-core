@@ -12,7 +12,7 @@ type Area struct {
 	Type      string    `json:"type"`
 	Location  string    `json:"location"`
 	Photo     AreaPhoto `json:"photo"`
-	Reservoir Reservoir `json:"reservoir"`
+	Reservoir Reservoir `json:"-"`
 	Farm      Farm      `json:"-"`
 }
 
