@@ -6,6 +6,7 @@ import (
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/farm/entity"
 	"github.com/Tanibox/tania-server/farm/repository"
+	"github.com/Tanibox/tania-server/farm/storage"
 	"github.com/Tanibox/tania-server/helper/imagehelper"
 	"github.com/Tanibox/tania-server/helper/stringhelper"
 	"github.com/labstack/echo"
@@ -17,15 +18,21 @@ type FarmServer struct {
 	FarmRepo      repository.FarmRepository
 	ReservoirRepo repository.ReservoirRepository
 	AreaRepo      repository.AreaRepository
+	AreaQuery     repository.AreaQuery
 	File          File
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer() (*FarmServer, error) {
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
+	areaRepo := repository.NewAreaStorageInMemory(&areaStorage)
+	areaQuery := repository.NewAreaQueryInMemory(&areaStorage)
+
 	return &FarmServer{
 		FarmRepo:      repository.NewFarmRepositoryInMemory(),
 		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
-		AreaRepo:      repository.NewAreaRepositoryInMemory(),
+		AreaRepo:      areaRepo,
+		AreaQuery:     areaQuery,
 		File:          LocalFile{},
 	}, nil
 }
@@ -200,7 +207,7 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 }
 
 func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
-	data := make(map[string][]entity.Reservoir)
+	data := make(map[string][]DetailReservoir)
 
 	result := <-s.FarmRepo.FindByID(c.Param("id"))
 	if result.Error != nil {
@@ -212,9 +219,14 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = MapToReservoir(farm.Reservoirs)
+	reservoirs, err := MapToReservoir(s, farm.Reservoirs)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = reservoirs
 	if len(farm.Reservoirs) == 0 {
-		data["data"] = []entity.Reservoir{}
+		data["data"] = []DetailReservoir{}
 	}
 
 	return c.JSON(http.StatusOK, data)
@@ -324,9 +336,14 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	// Persists //
+	reservoirResult := <-s.ReservoirRepo.Save(&reservoir)
+	if reservoirResult.Error != nil {
+		return Error(c, reservoirResult.Error)
+	}
+
 	areaResult := <-s.AreaRepo.Save(&area)
 	if areaResult.Error != nil {
-		return areaResult.Error
+		return Error(c, areaResult.Error)
 	}
 
 	uid, ok := areaResult.Result.(uuid.UUID)

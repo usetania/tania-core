@@ -18,6 +18,9 @@ type Reservoir struct {
 	WaterSource WaterSource `json:"water_source"`
 	Farm        Farm        `json:"-"`
 	CreatedDate time.Time   `json:"created_date"`
+
+	// This is for serialization purposes
+	InstalledToArea []Area `json:"-"`
 }
 
 // CreateReservoir registers a new Reservoir.

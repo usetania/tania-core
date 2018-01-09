@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"sync"
-
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/Tanibox/tania-server/farm/storage"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -16,12 +15,11 @@ type AreaRepository interface {
 
 // AreaRepositoryInMemory is in-memory AreaRepository db implementation
 type AreaRepositoryInMemory struct {
-	lock    sync.RWMutex
-	AreaMap map[uuid.UUID]entity.Area
+	Storage *storage.AreaStorage
 }
 
-func NewAreaRepositoryInMemory() AreaRepository {
-	return &AreaRepositoryInMemory{AreaMap: make(map[uuid.UUID]entity.Area)}
+func NewAreaStorageInMemory(s *storage.AreaStorage) AreaRepository {
+	return &AreaRepositoryInMemory{Storage: s}
 }
 
 // FindAll is to find all
@@ -29,11 +27,11 @@ func (r *AreaRepositoryInMemory) FindAll() <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.RLock()
-		defer r.lock.RUnlock()
+		r.Storage.Lock.RLock()
+		defer r.Storage.Lock.RUnlock()
 
 		areas := []entity.Area{}
-		for _, val := range r.AreaMap {
+		for _, val := range r.Storage.AreaMap {
 			areas = append(areas, val)
 		}
 
@@ -50,15 +48,15 @@ func (r *AreaRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.RLock()
-		defer r.lock.RUnlock()
+		r.Storage.Lock.RLock()
+		defer r.Storage.Lock.RUnlock()
 
 		uid, err := uuid.FromString(uid)
 		if err != nil {
 			result <- RepositoryResult{Error: err}
 		}
 
-		result <- RepositoryResult{Result: r.AreaMap[uid]}
+		result <- RepositoryResult{Result: r.Storage.AreaMap[uid]}
 	}()
 
 	return result
@@ -69,10 +67,10 @@ func (r *AreaRepositoryInMemory) Save(val *entity.Area) <-chan RepositoryResult 
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.Lock()
-		defer r.lock.Unlock()
+		r.Storage.Lock.Lock()
+		defer r.Storage.Lock.Unlock()
 
-		r.AreaMap[val.UID] = *val
+		r.Storage.AreaMap[val.UID] = *val
 
 		result <- RepositoryResult{Result: val.UID}
 

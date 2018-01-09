@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/Tanibox/tania-server/farm/storage"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +12,8 @@ import (
 func TestAreaInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	repo := NewAreaRepositoryInMemory()
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
+	repo := NewAreaStorageInMemory(&areaStorage)
 
 	farm, err := entity.CreateFarm("MyFarm1", "organic")
 	if err != nil {
@@ -43,7 +45,8 @@ func TestAreaInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
-	repo := NewAreaRepositoryInMemory()
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
+	repo := NewAreaStorageInMemory(&areaStorage)
 
 	farm, err := entity.CreateFarm("MyFarm1", "organic")
 	if err != nil {
@@ -88,7 +91,8 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
-	repo := NewAreaRepositoryInMemory()
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
+	repo := NewAreaStorageInMemory(&areaStorage)
 
 	farm, err := entity.CreateFarm("MyFarm1", "organic")
 	if err != nil {

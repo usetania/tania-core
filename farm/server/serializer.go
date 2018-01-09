@@ -2,12 +2,20 @@ package server
 
 import (
 	"encoding/json"
+	"net/http"
+	"time"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/labstack/echo"
 )
 
 type SimpleFarm entity.Farm
+type SimpleArea entity.Area
 type DetailArea entity.Area
+type DetailReservoir struct {
+	entity.Reservoir
+	InstalledToAreas []SimpleArea
+}
 
 type AreaSquareMeter struct {
 	entity.SquareMeter
@@ -49,11 +57,21 @@ func MapToArea(areas []entity.Area) []entity.Area {
 	return areaList
 }
 
-func MapToReservoir(reservoirs []entity.Reservoir) []entity.Reservoir {
-	reservoirList := make([]entity.Reservoir, len(reservoirs))
+func MapToSimpleArea(areas []entity.Area) []SimpleArea {
+	installedAreaList := make([]SimpleArea, len(areas))
+
+	for i, area := range areas {
+		installedAreaList[i] = SimpleArea(area)
+	}
+
+	return installedAreaList
+}
+
+func MapToReservoir(s *FarmServer, reservoirs []entity.Reservoir) ([]DetailReservoir, error) {
+	reservoirList := make([]DetailReservoir, len(reservoirs))
 
 	for i, reservoir := range reservoirs {
-		reservoirList[i] = reservoir
+		reservoirList[i] = DetailReservoir{Reservoir: reservoir}
 
 		switch v := reservoir.WaterSource.(type) {
 		case entity.Bucket:
@@ -61,9 +79,21 @@ func MapToReservoir(reservoirs []entity.Reservoir) []entity.Reservoir {
 		case entity.Tap:
 			reservoirList[i].WaterSource = ReservoirTap{Tap: v}
 		}
+
+		queryResult := <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
+		if queryResult.Error != nil {
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		}
+
+		areas, ok := queryResult.Result.([]entity.Area)
+		if !ok {
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		}
+
+		reservoirList[i].InstalledToAreas = MapToSimpleArea(areas)
 	}
 
-	return reservoirList
+	return reservoirList, nil
 }
 
 func MapToDetailReservoir(reservoir entity.Reservoir) entity.Reservoir {
@@ -100,6 +130,18 @@ func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
 	})
 }
 
+func (sa SimpleArea) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		UID  string `json:"uid"`
+		Name string `json:"name"`
+		Type string `json:"type"`
+	}{
+		UID:  sa.UID.String(),
+		Name: sa.Name,
+		Type: sa.Type,
+	})
+}
+
 func (da DetailArea) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		UID       string           `json:"uid"`
@@ -117,6 +159,28 @@ func (da DetailArea) MarshalJSON() ([]byte, error) {
 		Location:  da.Location,
 		Photo:     da.Photo,
 		Reservoir: da.Reservoir,
+	})
+}
+
+func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		UID              string             `json:"uid"`
+		Name             string             `json:"name"`
+		PH               float32            `json:"ph"`
+		EC               float32            `json:"ec"`
+		Temperature      float32            `json:"temperature"`
+		WaterSource      entity.WaterSource `json:"water_source"`
+		CreatedDate      time.Time          `json:"created_date"`
+		InstalledToAreas []SimpleArea       `json:"installed_to_areas"`
+	}{
+		UID:              dr.UID.String(),
+		Name:             dr.Name,
+		PH:               dr.PH,
+		EC:               dr.EC,
+		Temperature:      dr.Temperature,
+		WaterSource:      dr.WaterSource,
+		CreatedDate:      dr.CreatedDate,
+		InstalledToAreas: dr.InstalledToAreas,
 	})
 }
 
