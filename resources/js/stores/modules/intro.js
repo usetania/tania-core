@@ -1,3 +1,4 @@
+import NProgress from 'nprogress'
 import Api from '@/stores/api/farm'
 import * as types from '@/stores/mutation-types'
 import stubFarm from '@/stores/stubs/farm'
@@ -40,6 +41,7 @@ const actions = {
     commit(types.INTRO_SET_AREA, payload)
   },
   introCreateFarm ({ commit, state }) {
+    NProgress.start()
     return new Promise((resolve, reject) => {
       if (state.farm.id !== '') {
         resolve(state.farm)
@@ -53,6 +55,7 @@ const actions = {
     })
   },
   introCreateReservoir ({ commit, state }) {
+    NProgress.start()
     return new Promise((resolve, reject) => {
       if (state.reservoir.id !== '') {
         resolve(state.reservoir)
@@ -68,6 +71,7 @@ const actions = {
     })
   },
   introCreateArea ({ commit, state }) {
+    NProgress.start()
     return new Promise((resolve, reject) => {
       if (state.area.id !== '') {
         resolve(state.area)
@@ -82,7 +86,10 @@ const actions = {
         formData.set('photo', state.area.photo)
 
         Api.ApiCreateArea(state.farm.id, formData, ({ data }) => {
-          let area = Object.assign({}, state.area, {id: data.data})
+          let area = Object.assign({}, state.area, {
+            id: data.data,
+            photo: '/api/farms/' + state.farm.id + '/areas/' + data.data + '/photos'
+          })
           // COMMIT
           commit(types.CREATE_FARM, state.farm)
           commit(types.SET_FARM, state.farm)
