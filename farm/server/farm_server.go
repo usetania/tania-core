@@ -24,13 +24,19 @@ type FarmServer struct {
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer() (*FarmServer, error) {
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]entity.Farm)}
+	farmRepo := repository.NewFarmRepositoryInMemory(&farmStorage)
+
 	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
-	areaRepo := repository.NewAreaStorageInMemory(&areaStorage)
+	areaRepo := repository.NewAreaRepositoryInMemory(&areaStorage)
 	areaQuery := repository.NewAreaQueryInMemory(&areaStorage)
 
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]entity.Reservoir)}
+	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
+
 	return &FarmServer{
-		FarmRepo:      repository.NewFarmRepositoryInMemory(),
-		ReservoirRepo: repository.NewReservoirRepositoryInMemory(),
+		FarmRepo:      farmRepo,
+		ReservoirRepo: reservoirRepo,
 		AreaRepo:      areaRepo,
 		AreaQuery:     areaQuery,
 		File:          LocalFile{},
@@ -233,7 +239,7 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 }
 
 func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
-	data := make(map[string]entity.Reservoir)
+	data := make(map[string]DetailReservoir)
 
 	// Validate //
 	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
@@ -256,7 +262,12 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	data["data"] = MapToDetailReservoir(reservoir)
+	detailReservoir, err := MapToDetailReservoir(s, reservoir)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = detailReservoir
 
 	return c.JSON(http.StatusOK, data)
 }

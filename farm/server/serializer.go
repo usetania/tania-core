@@ -96,15 +96,29 @@ func MapToReservoir(s *FarmServer, reservoirs []entity.Reservoir) ([]DetailReser
 	return reservoirList, nil
 }
 
-func MapToDetailReservoir(reservoir entity.Reservoir) entity.Reservoir {
-	switch v := reservoir.WaterSource.(type) {
+func MapToDetailReservoir(s *FarmServer, reservoir entity.Reservoir) (DetailReservoir, error) {
+	detailReservoir := DetailReservoir{Reservoir: reservoir}
+
+	switch v := detailReservoir.WaterSource.(type) {
 	case entity.Bucket:
-		reservoir.WaterSource = ReservoirBucket{Bucket: v}
+		detailReservoir.WaterSource = ReservoirBucket{Bucket: v}
 	case entity.Tap:
-		reservoir.WaterSource = ReservoirTap{Tap: v}
+		detailReservoir.WaterSource = ReservoirTap{Tap: v}
 	}
 
-	return reservoir
+	queryResult := <-s.AreaQuery.FindAreasByReservoirID(detailReservoir.UID.String())
+	if queryResult.Error != nil {
+		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	areas, ok := queryResult.Result.([]entity.Area)
+	if !ok {
+		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	detailReservoir.InstalledToAreas = MapToSimpleArea(areas)
+
+	return detailReservoir, nil
 }
 
 func MapToDetailArea(area entity.Area) DetailArea {

@@ -4,13 +4,16 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/Tanibox/tania-server/farm/storage"
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestReservoirInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	repo := NewReservoirRepositoryInMemory()
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]entity.Reservoir)}
+	repo := NewReservoirRepositoryInMemory(&reservoirStorage)
 
 	farm, farmErr := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 
@@ -46,8 +49,8 @@ func TestReservoirInMemorySave(t *testing.T) {
 func TestReservoirInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
-
-	repo := NewReservoirRepositoryInMemory()
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]entity.Reservoir)}
+	repo := NewReservoirRepositoryInMemory(&reservoirStorage)
 
 	farm, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	reservoir1, _ := entity.CreateReservoir(farm, "MyReservoir1")

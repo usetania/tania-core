@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"sync"
-
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/Tanibox/tania-server/farm/storage"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -14,14 +13,13 @@ type ReservoirRepository interface {
 	FindByID(uid string) <-chan RepositoryResult
 }
 
-// ReservoirRepositoryInMemory is in-memory ReservoirRepository db implementation
+// ReservoirRepositoryInMemory is in-memory AreaRepository db implementation
 type ReservoirRepositoryInMemory struct {
-	lock         sync.RWMutex
-	ReservoirMap map[uuid.UUID]entity.Reservoir
+	Storage *storage.ReservoirStorage
 }
 
-func NewReservoirRepositoryInMemory() ReservoirRepository {
-	return &ReservoirRepositoryInMemory{ReservoirMap: make(map[uuid.UUID]entity.Reservoir)}
+func NewReservoirRepositoryInMemory(s *storage.ReservoirStorage) ReservoirRepository {
+	return &ReservoirRepositoryInMemory{Storage: s}
 }
 
 // FindAll is to find all
@@ -29,11 +27,11 @@ func (r *ReservoirRepositoryInMemory) FindAll() <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.RLock()
-		defer r.lock.RUnlock()
+		r.Storage.Lock.RLock()
+		defer r.Storage.Lock.RUnlock()
 
 		reservoirs := []entity.Reservoir{}
-		for _, val := range r.ReservoirMap {
+		for _, val := range r.Storage.ReservoirMap {
 			reservoirs = append(reservoirs, val)
 		}
 
@@ -50,15 +48,15 @@ func (r *ReservoirRepositoryInMemory) FindByID(uid string) <-chan RepositoryResu
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.RLock()
-		defer r.lock.RUnlock()
+		r.Storage.Lock.RLock()
+		defer r.Storage.Lock.RUnlock()
 
 		uid, err := uuid.FromString(uid)
 		if err != nil {
 			result <- RepositoryResult{Error: err}
 		}
 
-		result <- RepositoryResult{Result: r.ReservoirMap[uid]}
+		result <- RepositoryResult{Result: r.Storage.ReservoirMap[uid]}
 	}()
 
 	return result
@@ -69,10 +67,10 @@ func (r *ReservoirRepositoryInMemory) Save(val *entity.Reservoir) <-chan Reposit
 	result := make(chan RepositoryResult)
 
 	go func() {
-		r.lock.Lock()
-		defer r.lock.Unlock()
+		r.Storage.Lock.Lock()
+		defer r.Storage.Lock.Unlock()
 
-		r.ReservoirMap[val.UID] = *val
+		r.Storage.ReservoirMap[val.UID] = *val
 
 		result <- RepositoryResult{Result: val.UID}
 

@@ -18,7 +18,7 @@ type AreaRepositoryInMemory struct {
 	Storage *storage.AreaStorage
 }
 
-func NewAreaStorageInMemory(s *storage.AreaStorage) AreaRepository {
+func NewAreaRepositoryInMemory(s *storage.AreaStorage) AreaRepository {
 	return &AreaRepositoryInMemory{Storage: s}
 }
 

@@ -13,7 +13,7 @@ func TestAreaInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
 	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
-	repo := NewAreaStorageInMemory(&areaStorage)
+	repo := NewAreaRepositoryInMemory(&areaStorage)
 
 	farm, err := entity.CreateFarm("MyFarm1", "organic")
 	if err != nil {
@@ -46,7 +46,7 @@ func TestAreaInMemoryFindAll(t *testing.T) {
 	done := make(chan bool)
 
 	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
-	repo := NewAreaStorageInMemory(&areaStorage)
+	repo := NewAreaRepositoryInMemory(&areaStorage)
 
 	farm, err := entity.CreateFarm("MyFarm1", "organic")
 	if err != nil {
@@ -92,7 +92,7 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 	done := make(chan bool)
 
 	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
-	repo := NewAreaStorageInMemory(&areaStorage)
+	repo := NewAreaRepositoryInMemory(&areaStorage)
 
 	farm, err := entity.CreateFarm("MyFarm1", "organic")
 	if err != nil {

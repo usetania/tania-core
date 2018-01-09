@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/Tanibox/tania-server/farm/storage"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -11,7 +12,8 @@ import (
 func TestFarmInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	repo := NewFarmRepositoryInMemory()
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]entity.Farm)}
+	repo := NewFarmRepositoryInMemory(&farmStorage)
 
 	farm1, farmErr1 := entity.CreateFarm("MyFarmFamily", "organic")
 	farm2, farmErr2 := entity.CreateFarm("MySecondFarm", "organic")
@@ -37,8 +39,8 @@ func TestFarmInMemorySave(t *testing.T) {
 func TestFarmInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
-
-	repo := NewFarmRepositoryInMemory()
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]entity.Farm)}
+	repo := NewFarmRepositoryInMemory(&farmStorage)
 
 	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
@@ -77,8 +79,8 @@ func TestFarmInMemoryFindAll(t *testing.T) {
 func TestFarmInMemoryFindByID(t *testing.T) {
 	// Given
 	done := make(chan bool)
-
-	repo := NewFarmRepositoryInMemory()
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]entity.Farm)}
+	repo := NewFarmRepositoryInMemory(&farmStorage)
 
 	farm1, farmErr1 := entity.CreateFarm("Farm1", entity.FarmTypeOrganic)
 	farm2, farmErr2 := entity.CreateFarm("Farm2", entity.FarmTypeOrganic)
