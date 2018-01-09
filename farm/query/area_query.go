@@ -1,4 +1,4 @@
-package repository
+package query
 
 import (
 	"github.com/Tanibox/tania-server/farm/entity"

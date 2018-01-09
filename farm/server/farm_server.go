@@ -5,6 +5,7 @@ import (
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/farm/entity"
+	"github.com/Tanibox/tania-server/farm/query"
 	"github.com/Tanibox/tania-server/farm/repository"
 	"github.com/Tanibox/tania-server/farm/storage"
 	"github.com/Tanibox/tania-server/helper/imagehelper"
@@ -18,7 +19,7 @@ type FarmServer struct {
 	FarmRepo      repository.FarmRepository
 	ReservoirRepo repository.ReservoirRepository
 	AreaRepo      repository.AreaRepository
-	AreaQuery     repository.AreaQuery
+	AreaQuery     query.AreaQuery
 	File          File
 }
 
@@ -29,7 +30,7 @@ func NewFarmServer() (*FarmServer, error) {
 
 	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]entity.Area)}
 	areaRepo := repository.NewAreaRepositoryInMemory(&areaStorage)
-	areaQuery := repository.NewAreaQueryInMemory(&areaStorage)
+	areaQuery := query.NewAreaQueryInMemory(&areaStorage)
 
 	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]entity.Reservoir)}
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
