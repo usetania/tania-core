@@ -23,8 +23,9 @@ func TestCreateCropBatch(t *testing.T) {
 	errType1 := cropBatch1.ChangeCropType(Nursery{})
 	errType2 := cropBatch2.ChangeCropType(Growing{})
 
-	errPlantType1 := cropBatch1.ChangePlantType(Vegetable{})
-	errPlantType2 := cropBatch2.ChangePlantType(Herb{})
+	inventory1 := InventoryMaterial{PlantType: Vegetable{}, Variety: "Sawi"}
+	errPlantType1 := cropBatch1.ChangeInventory(inventory1)
+	errPlantType2 := cropBatch2.ChangeInventory(inventory1)
 
 	tray := CropContainer{Quantity: 10, Type: Tray{Cell: 20}}
 	pot := CropContainer{Quantity: 50, Type: Pot{}}

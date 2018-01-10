@@ -12,7 +12,7 @@ type Crop struct {
 	InitialArea Area
 	CurrentArea Area
 	Type        CropType
-	PlantType   PlantType
+	Inventory   InventoryMaterial
 	Container   CropContainer
 	CreatedDate time.Time
 }
@@ -78,15 +78,15 @@ func (c *Crop) ChangeCropType(cropType CropType) error {
 	return nil
 }
 
-func (c *Crop) ChangePlantType(plantType PlantType) error {
-	err := validatePlantType(plantType)
+func (c *Crop) ChangeInventory(inventory InventoryMaterial) error {
+	err := validateInventory(inventory)
 	if err != nil {
 		return err
 	}
 
-	batchID, err := generateBatchID(plantType)
+	batchID, err := generateBatchID(inventory)
 
-	c.PlantType = plantType
+	c.Inventory = inventory
 	c.BatchID = batchID
 
 	return nil
@@ -101,10 +101,23 @@ func (c *Crop) ChangeContainer(container CropContainer) error {
 	return nil
 }
 
-func generateBatchID(plantType PlantType) (string, error) {
+func generateBatchID(inventory InventoryMaterial) (string, error) {
 	batchID := "DUMMY-BATCH-ID"
 
 	return batchID, nil
+}
+
+func validateInventory(inventory InventoryMaterial) error {
+	err := validatePlantType(inventory.PlantType)
+	if err != nil {
+		return err
+	}
+
+	if inventory.Variety == "" {
+		return InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
+	}
+
+	return nil
 }
 
 func validateCropType(cropType CropType) error {

@@ -29,13 +29,17 @@ type Tree struct{}
 
 func (v Tree) Code() string { return "tree" }
 
-func CreateInventoryMaterial(plantType PlantType) (InventoryMaterial, error) {
+func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMaterial, error) {
 	err := validatePlantType(plantType)
 	if err != nil {
 		return InventoryMaterial{}, err
 	}
 
-	return InventoryMaterial{PlantType: plantType}, nil
+	if variety == "" {
+		return InventoryMaterial{}, InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
+	}
+
+	return InventoryMaterial{PlantType: plantType, Variety: variety}, nil
 }
 
 func CreateInventoryTools() {}
