@@ -1,6 +1,9 @@
 package domain
 
+import uuid "github.com/satori/go.uuid"
+
 type InventoryMaterial struct {
+	UID       uuid.UUID
 	PlantType PlantType
 	Variety   string
 }
@@ -39,7 +42,16 @@ func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMate
 		return InventoryMaterial{}, InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
 	}
 
-	return InventoryMaterial{PlantType: plantType, Variety: variety}, nil
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return InventoryMaterial{}, err
+	}
+
+	return InventoryMaterial{
+		UID:       uid,
+		PlantType: plantType,
+		Variety:   variety,
+	}, nil
 }
 
 func CreateInventoryTools() {}

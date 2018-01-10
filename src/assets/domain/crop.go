@@ -60,7 +60,13 @@ func CreateCropBatch(area Area) (Crop, error) {
 		return Crop{}, CropError{Code: CropErrorInvalidArea}
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return Crop{}, err
+	}
+
 	return Crop{
+		UID:         uid,
 		InitialArea: area,
 		CurrentArea: area,
 		CreatedDate: time.Now(),
