@@ -35,20 +35,17 @@
 
 
 <script>
-import stub from '@/stores/stubs/reservoir'
-import stubMessage from '@/stores/stubs/message'
+import { ReservoirTypes } from '@/stores/helpers/farms/reservoir'
+import { StubReservoir, StubMessage } from '@/stores/stubs'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'ReservoirIntro',
   data () {
     return {
-      message: Object.assign({}, stubMessage),
-      reservoir: Object.assign({}, stub),
-      options: [
-        { key: "tap", label: "Tap / Well" },
-        { key: "bucket", label: "Water Tank / Cistern" }
-      ]
+      message: Object.assign({}, StubMessage),
+      reservoir: Object.assign({}, StubReservoir),
+      options: Array.from(ReservoirTypes)
     }
   },
 

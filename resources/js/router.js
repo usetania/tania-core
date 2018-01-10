@@ -17,7 +17,12 @@ const router = new VueRouter({
     { path: '/intro/area', name: 'IntroAreaCreate', meta: { requiresAuth: true }, component: () => import('./pages/intro/area.vue') },
 
     // Farm
-    { path: '/farm-add', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create') },
+    { path: '/farms/create', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create') },
+    { path: '/reservoirs', name: 'FarmReservoirs', meta: {requiresAuth: true }, component: () => import('./pages/farms/reservoirs.vue') },
+    { path: '/reservoirs/create', name: 'FarmReservoirsCreate', meta: {requiresAuth: true }, component: () => import('./pages/farms/reservoirs-create.vue') },
+    { path: '/areas', name: 'FarmAreas', meta: {requiresAuth: true }, component: () => import('./pages/farms/areas.vue') },
+    { path: '/areas/create', name: 'FarmAreasCreate', meta: {requiresAuth: true }, component: () => import('./pages/farms/areas-create.vue') },
+    { path: '/areas/:id', name: 'FarmArea', meta: {requiresAuth: true }, component: () => import('./pages/farms/area.vue') },
     { path: '/task', name: 'Task', meta: { requiresAuth: true }, component: () => import('./pages/tasks/task') }
   ]
 })

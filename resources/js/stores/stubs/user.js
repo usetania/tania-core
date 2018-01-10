@@ -1,5 +1,5 @@
 export default {
-  id: 0,
+  uid: '',
   name: '',
   email: '',
   intro: true

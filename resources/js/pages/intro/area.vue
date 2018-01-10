@@ -29,23 +29,20 @@
                         span.help-block.text-danger(v-show="errors.has('area.size')") {{ errors.first('area.size') }}
                       .col-xs-6
                         select.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.size_unit') }" v-model="area.size_unit" name="area.size_unit")
-                          option(value="Ha") hectare
-                          option(value="m2") meter square
+                          option(v-for="size_unit in options.size_units" :value="size_unit.key") {{ size_unit.label }}
                         span.help-block.text-danger(v-show="errors.has('area.size_unit')") {{ errors.first('area.size_unit') }}
               .row
                 .col-xs-6
                   .form-group
                     label(for="type") Type
                     select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.type') }" v-model="area.type" name="area.type")
-                      option(value="nursery") Nursery / Seeding
-                      option(value="growing") Growing Area
+                      option(v-for="type in options.types" :value="type.key") {{ type.label }}
                     span.help-block.text-danger(v-show="errors.has('area.type')") {{ errors.first('area.type') }}
                 .col-xs-6
                   .form-group
                     label(for="locations") Locations
                     select.form-control#locations(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.location') }" v-model="area.location" name="area.location")
-                      option(value="outdoor") Field (Outdoor)
-                      option(value="indoor") Greenhouse (Indoor)
+                      option(v-for="location in options.locations" :value="location.key") {{ location.label }}
                     span.help-block.text-danger(v-show="errors.has('area.location')") {{ errors.first('area.location') }}
               .row
                 .col-xs-6
@@ -70,15 +67,20 @@
 </template>
 
 <script>
-import stub from '@/stores/stubs/area'
-import stubMessage from '@/stores/stubs/message'
+import { AreaTypes, AreaLocations, AreaSizeUnits } from '@/stores/helpers/farms/area'
+import { StubArea, StubMessage } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'AreaIntro',
   data () {
     return {
-      message: Object.assign({}, stubMessage),
-      area: Object.assign({}, stub)
+      message: Object.assign({}, StubMessage),
+      area: Object.assign({}, StubArea),
+      options: {
+        types: Array.from(AreaTypes),
+        locations: Array.from(AreaLocations),
+        size_units: Array.from(AreaSizeUnits)
+      }
     }
   },
   computed: {

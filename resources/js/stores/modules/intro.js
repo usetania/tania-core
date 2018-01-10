@@ -43,37 +43,37 @@ const actions = {
   introCreateFarm ({ commit, state }) {
     NProgress.start()
     return new Promise((resolve, reject) => {
-      if (state.farm.id !== '') {
+      if (state.farm.uid !== '') {
         resolve(state.farm)
       } else {
         Api.ApiCreateFarm(state.farm, ({ data }) => {
-          let farm = Object.assign({}, state.farm, {id: data.data})
+          let farm = Object.assign({}, state.farm, {uid: data.data})
           commit(types.INTRO_SET_FARM, farm)
           resolve(farm)
-        }, err => reject(err))
+        }, err => reject(err.response))
       }
     })
   },
   introCreateReservoir ({ commit, state }) {
     NProgress.start()
     return new Promise((resolve, reject) => {
-      if (state.reservoir.id !== '') {
+      if (state.reservoir.uid !== '') {
         resolve(state.reservoir)
       } else {
-        Api.ApiCreateReservoir(state.farm.id, state.reservoir, ({ data }) => {
-          let reservoir = Object.assign({}, state.reservoir, {id: data.data})
-          let area = Object.assign({}, state.area, {reservoir_id: data.data, farm_id: state.farm.id})
+        Api.ApiCreateReservoir(state.farm.uid, state.reservoir, ({ data }) => {
+          let reservoir = Object.assign({}, state.reservoir, {uid: data.data})
+          let area = Object.assign({}, state.area, {reservoir_id: data.data, farm_id: state.farm.uid})
           commit(types.INTRO_SET_RESERVOIR, reservoir)
           commit(types.INTRO_SET_AREA, area)
           resolve(reservoir)
-        }, err => reject(err))
+        }, err => reject(err.response))
       }
     })
   },
   introCreateArea ({ commit, state }) {
     NProgress.start()
     return new Promise((resolve, reject) => {
-      if (state.area.id !== '') {
+      if (state.area.uid !== '') {
         resolve(state.area)
       } else {
         const formData = new FormData()
@@ -85,10 +85,10 @@ const actions = {
         formData.set('reservoir_id', state.area.reservoir_id)
         formData.set('photo', state.area.photo)
 
-        Api.ApiCreateArea(state.farm.id, formData, ({ data }) => {
+        Api.ApiCreateArea(state.farm.uid, formData, ({ data }) => {
           let area = Object.assign({}, state.area, {
-            id: data.data,
-            photo: '/api/farms/' + state.farm.id + '/areas/' + data.data + '/photos'
+            uid: data.data,
+            photo: '/api/farms/' + state.farm.uid + '/areas/' + data.data + '/photos'
           })
           // COMMIT
           commit(types.CREATE_FARM, state.farm)
@@ -107,7 +107,7 @@ const actions = {
 
           // resolve
           resolve(area)
-        }, err => reject(err))
+        }, err => reject(err.response))
       }
     })
   },

@@ -1,5 +1,5 @@
 export default {
-  id: '',
+  uid: '',
   name: '',
   size: '',
   size_unit: '',

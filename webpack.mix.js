@@ -36,6 +36,7 @@ mix.webpackConfig({
       name: 'manifest',
       chunks: ['vendor']
     }),
+    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|en|id/),
     new PurifyCSSPlugin({
       paths: glob.sync([
         path.join(__dirname, 'resources/js/**/*.pug'),

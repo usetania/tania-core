@@ -17,9 +17,9 @@
                 span Production
               slot(name="item")
                 ul.nav.nav-sub.dk
-                  li <a><span>Areas</span></a>
+                  li <router-link :to="{ name: 'FarmAreas'}"><span>Areas</span></router-link>
                   li <a><span>Crops</span></a>
-                  li <a><span>Reservoir</span></a>
+                  li <router-link :to="{ name: 'FarmReservoirs'}"><span>Reservoir</span></router-link>
             aside-item-component
               router-link(:to="{name: 'Task'}")
                 i.fa.fa-clipboard
