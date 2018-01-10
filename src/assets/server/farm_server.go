@@ -47,6 +47,7 @@ func NewFarmServer() (*FarmServer, error) {
 // Mount defines the FarmServer's endpoints with its handlers
 func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
+	g.GET("/plant_types", s.GetPlantTypes)
 
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
@@ -453,4 +454,14 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	srcPath := stringhelper.Join(*config.Config.UploadPathArea, "/", area.Photo.Filename)
 
 	return c.File(srcPath)
+}
+
+func (s *FarmServer) GetPlantTypes(c echo.Context) error {
+	data := make(map[string][]PlantType)
+
+	types := MapToPlantType(domain.GetPlantTypes())
+
+	data["data"] = types
+
+	return c.JSON(http.StatusOK, data)
 }

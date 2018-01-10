@@ -9,11 +9,6 @@ type AreaQuery interface {
 	FindAreasByReservoirID(reservoirID string) <-chan QueryResult
 }
 
-type QueryResult struct {
-	Result interface{}
-	Error  error
-}
-
 type AreaQueryInMemory struct {
 	Storage *storage.AreaStorage
 }

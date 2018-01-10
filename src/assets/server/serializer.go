@@ -30,6 +30,10 @@ type ReservoirTap struct {
 	domain.Tap
 }
 
+type PlantType struct {
+	domain.PlantType
+}
+
 func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))
 
@@ -130,6 +134,16 @@ func MapToDetailArea(area domain.Area) DetailArea {
 	}
 
 	return DetailArea(area)
+}
+
+func MapToPlantType(plantTypes []domain.PlantType) []PlantType {
+	pt := make([]PlantType, len(plantTypes))
+
+	for i, v := range plantTypes {
+		pt[i] = PlantType{PlantType: v}
+	}
+
+	return pt
 }
 
 func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
@@ -235,5 +249,13 @@ func (rt ReservoirTap) MarshalJSON() ([]byte, error) {
 		Type string `json:"type"`
 	}{
 		Type: rt.Type(),
+	})
+}
+
+func (pt PlantType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Code string `json:"code"`
+	}{
+		Code: pt.PlantType.Code(),
 	})
 }

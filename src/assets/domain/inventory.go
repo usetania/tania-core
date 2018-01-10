@@ -56,6 +56,16 @@ func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMate
 
 func CreateInventoryTools() {}
 
+func GetPlantTypes() []PlantType {
+	return []PlantType{
+		Vegetable{},
+		Fruit{},
+		Herb{},
+		Flower{},
+		Tree{},
+	}
+}
+
 func validatePlantType(plantType PlantType) error {
 	switch plantType.(type) {
 	case Vegetable:
