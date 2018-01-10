@@ -26,3 +26,8 @@ type InventoryMaterialStorage struct {
 	Lock                 sync.RWMutex
 	InventoryMaterialMap map[uuid.UUID]domain.InventoryMaterial
 }
+
+type CropStorage struct {
+	Lock    sync.RWMutex
+	CropMap map[uuid.UUID]domain.Crop
+}

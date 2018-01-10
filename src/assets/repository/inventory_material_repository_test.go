@@ -33,8 +33,8 @@ func TestInventoryMaterialInMemorySave(t *testing.T) {
 	assert.Nil(t, invErr1)
 	assert.Nil(t, invErr2)
 
-	assert.NotNil(t, saveResult1)
-	assert.NotNil(t, saveResult2)
+	assert.Nil(t, saveResult1.Error)
+	assert.Nil(t, saveResult2.Error)
 }
 
 func TestInventoryMaterialInMemoryFindAll(t *testing.T) {
@@ -84,18 +84,15 @@ func TestInventoryMaterialInMemoryFindByID(t *testing.T) {
 	inv1, invErr1 := domain.CreateInventoryMaterial(domain.Vegetable{}, "Sawi Putih")
 	inv2, invErr2 := domain.CreateInventoryMaterial(domain.Fruit{}, "Apple")
 
-	var result1, result2, found1, found2 RepositoryResult
+	var found1, found2 RepositoryResult
 	go func() {
 		// Given
-		result1 = <-repo.Save(&inv1)
-		result2 = <-repo.Save(&inv2)
+		<-repo.Save(&inv1)
+		<-repo.Save(&inv2)
 
 		// When
-		uid1, _ := result1.Result.(uuid.UUID)
-		found1 = <-repo.FindByID(uid1.String())
-
-		uid2, _ := result2.Result.(uuid.UUID)
-		found2 = <-repo.FindByID(uid2.String())
+		found1 = <-repo.FindByID(inv1.UID.String())
+		found2 = <-repo.FindByID(inv2.UID.String())
 
 		done <- true
 	}()

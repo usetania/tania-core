@@ -51,7 +51,7 @@ func (f *InventoryMaterialRepositoryInMemory) Save(val *domain.InventoryMaterial
 
 		f.Storage.InventoryMaterialMap[val.UID] = *val
 
-		result <- RepositoryResult{Result: val.UID}
+		result <- RepositoryResult{Error: nil}
 
 		close(result)
 	}()
