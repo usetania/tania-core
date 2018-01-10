@@ -22,10 +22,10 @@ type CropType interface {
 	Code() string
 }
 
-// Seeding implements CropType
-type Seeding struct{}
+// Nursery implements CropType
+type Nursery struct{}
 
-func (s Seeding) Code() string { return "seeding" }
+func (s Nursery) Code() string { return "nursery" }
 
 // Growing implements CropType
 type Growing struct{}
@@ -109,7 +109,7 @@ func generateBatchID(plantType PlantType) (string, error) {
 
 func validateCropType(cropType CropType) error {
 	switch cropType.(type) {
-	case Seeding:
+	case Nursery:
 	case Growing:
 	default:
 		return CropError{Code: CropErrorInvalidCropType}
