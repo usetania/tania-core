@@ -4,7 +4,7 @@ package routing
 import (
 	"net/http"
 
-	"github.com/Tanibox/tania-server/location"
+	"github.com/Tanibox/tania-server/src/location"
 	"github.com/labstack/echo"
 )
 

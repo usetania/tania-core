@@ -6,9 +6,8 @@ import (
 	"os"
 
 	"github.com/Tanibox/tania-server/config"
-
-	"github.com/Tanibox/tania-server/farm/server"
 	"github.com/Tanibox/tania-server/routing"
+	"github.com/Tanibox/tania-server/src/assets/server"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
