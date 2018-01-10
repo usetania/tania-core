@@ -21,3 +21,8 @@ type ReservoirStorage struct {
 	Lock         sync.RWMutex
 	ReservoirMap map[uuid.UUID]domain.Reservoir
 }
+
+type InventoryMaterialStorage struct {
+	Lock                 sync.RWMutex
+	InventoryMaterialMap map[uuid.UUID]domain.InventoryMaterial
+}
