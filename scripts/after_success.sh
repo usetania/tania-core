@@ -8,7 +8,7 @@ echo -n "Archiving..."
 
 tar cvJf tania-server-${TIMESTAMP}-linux-arm.txz terra.linux.arm public
 tar cvJf tania-server-${TIMESTAMP}-linux-amd64.txz terra.linux.amd64 public
-7za a -r -t7z tania-server-${TIMESTAMP}-windows-amd64.7z terra.windows.amd64.exe public
+7za a -t7z -mx=9 tania-server-${TIMESTAMP}-windows-amd64.7z terra.windows.amd64.exe public
 
 
 if  [ "x$TRAVIS_PULL_REQUEST" == "xfalse" ] 
