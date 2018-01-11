@@ -51,7 +51,7 @@ func (f *FarmRepositoryInMemory) Save(val *domain.Farm) <-chan RepositoryResult 
 
 		f.Storage.FarmMap[val.UID] = *val
 
-		result <- RepositoryResult{Result: val.UID}
+		result <- RepositoryResult{Error: nil}
 
 		close(result)
 	}()

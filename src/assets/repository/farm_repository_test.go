@@ -93,11 +93,8 @@ func TestFarmInMemoryFindByID(t *testing.T) {
 		result2 = <-repo.Save(&farm2)
 
 		// When
-		uid1, _ := result1.Result.(uuid.UUID)
-		found1 = <-repo.FindByID(uid1.String())
-
-		uid2, _ := result2.Result.(uuid.UUID)
-		found2 = <-repo.FindByID(uid2.String())
+		found1 = <-repo.FindByID(farm1.UID.String())
+		found2 = <-repo.FindByID(farm2.UID.String())
 
 		done <- true
 	}()

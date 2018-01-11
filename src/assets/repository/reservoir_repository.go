@@ -72,7 +72,7 @@ func (r *ReservoirRepositoryInMemory) Save(val *domain.Reservoir) <-chan Reposit
 
 		r.Storage.ReservoirMap[val.UID] = *val
 
-		result <- RepositoryResult{Result: val.UID}
+		result <- RepositoryResult{Error: nil}
 
 		close(result)
 	}()

@@ -110,11 +110,8 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 		result2 = <-repo.Save(&area2)
 
 		// When
-		uid1, _ := result1.Result.(uuid.UUID)
-		found1 = <-repo.FindByID(uid1.String())
-
-		uid2, _ := result2.Result.(uuid.UUID)
-		found2 = <-repo.FindByID(uid2.String())
+		found1 = <-repo.FindByID(area1.UID.String())
+		found2 = <-repo.FindByID(area2.UID.String())
 
 		done <- true
 	}()

@@ -72,7 +72,7 @@ func (r *AreaRepositoryInMemory) Save(val *domain.Area) <-chan RepositoryResult 
 
 		r.Storage.AreaMap[val.UID] = *val
 
-		result <- RepositoryResult{Result: val.UID}
+		result <- RepositoryResult{Error: nil}
 
 		close(result)
 	}()
