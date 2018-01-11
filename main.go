@@ -28,6 +28,7 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(headerNoCache)
 
 	// Bootstraping Database
 	pwd, _ := os.Getwd()
@@ -120,4 +121,13 @@ func initConfig() {
 	conf.Parse()
 
 	config.Config = configuration
+}
+
+func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+		c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
+		c.Response().Header().Set("Expires", "0")                                         // Proxies.
+		return next(c)
+	}
 }
