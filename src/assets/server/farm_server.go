@@ -100,7 +100,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 
 // SaveFarm is a FarmServer's handler to save new Farm
 func (s *FarmServer) SaveFarm(c echo.Context) error {
-	data := make(map[string]string)
+	data := make(map[string]domain.Farm)
 
 	farm, err := domain.CreateFarm(c.FormValue("name"), c.FormValue("farm_type"))
 	if err != nil {
@@ -120,16 +120,10 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 	result := <-s.FarmRepo.Save(&farm)
 
 	if result.Error != nil {
-		return result.Error
+		return Error(c, result.Error)
 	}
 
-	uid, ok := result.Result.(uuid.UUID)
-
-	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	data["data"] = uid.String()
+	data["data"] = farm
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -154,7 +148,7 @@ func (s *FarmServer) FindFarmByID(c echo.Context) error {
 
 // SaveReservoir is a FarmServer's handler to save new Reservoir and place it to a Farm
 func (s *FarmServer) SaveReservoir(c echo.Context) error {
-	data := make(map[string]string)
+	data := make(map[string]DetailReservoir)
 	validation := RequestValidation{}
 
 	// Validate requests //
@@ -208,20 +202,20 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 	// Persists //
 	reservoirResult := <-s.ReservoirRepo.Save(&r)
 	if reservoirResult.Error != nil {
-		return reservoirResult.Error
-	}
-
-	uid, ok := reservoirResult.Result.(uuid.UUID)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+		return Error(c, reservoirResult.Error)
 	}
 
 	farmResult := <-s.FarmRepo.Save(&farm)
 	if farmResult.Error != nil {
-		return farmResult.Error
+		return Error(c, farmResult.Error)
 	}
 
-	data["data"] = uid.String()
+	detailReservoir, err := MapToDetailReservoir(s, r)
+	if err != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = detailReservoir
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -287,7 +281,7 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 }
 
 func (s *FarmServer) SaveArea(c echo.Context) error {
-	data := make(map[string]string)
+	data := make(map[string]DetailArea)
 	validation := RequestValidation{}
 
 	// Validation //
@@ -371,17 +365,12 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, areaResult.Error)
 	}
 
-	uid, ok := areaResult.Result.(uuid.UUID)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
 	farmResult := <-s.FarmRepo.Save(&farm)
 	if farmResult.Error != nil {
 		return Error(c, farmResult.Error)
 	}
 
-	data["data"] = uid.String()
+	data["data"] = MapToDetailArea(area)
 
 	return c.JSON(http.StatusOK, data)
 }

@@ -138,6 +138,13 @@ func MapToDetailArea(area domain.Area) DetailArea {
 		area.Size = AreaHectare{Hectare: v}
 	}
 
+	switch v := area.Reservoir.WaterSource.(type) {
+	case domain.Bucket:
+		area.Reservoir.WaterSource = ReservoirBucket{Bucket: v}
+	case domain.Tap:
+		area.Reservoir.WaterSource = ReservoirTap{Tap: v}
+	}
+
 	return DetailArea(area)
 }
 
