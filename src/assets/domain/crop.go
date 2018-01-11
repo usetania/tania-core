@@ -114,7 +114,7 @@ func generateBatchID(inventory InventoryMaterial) (string, error) {
 }
 
 func validateInventory(inventory InventoryMaterial) error {
-	err := validatePlantType(inventory.PlantType)
+	err := validateInventory(inventory)
 	if err != nil {
 		return err
 	}

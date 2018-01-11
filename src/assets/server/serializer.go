@@ -34,6 +34,11 @@ type PlantType struct {
 	domain.PlantType
 }
 
+type AvailableInventory struct {
+	PlantType PlantType `json:"plant_type"`
+	Varieties []string  `json:"varieties"`
+}
+
 func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))
 
@@ -144,6 +149,28 @@ func MapToPlantType(plantTypes []domain.PlantType) []PlantType {
 	}
 
 	return pt
+}
+
+func MapToAvailableInventories(inventories []domain.InventoryMaterial) []AvailableInventory {
+	ai := make(map[string]AvailableInventory, 0)
+
+	// Convert domain.InventoryMaterial to AvailableInventory first with Map
+	for _, v := range inventories {
+		inv := AvailableInventory{
+			PlantType: PlantType{PlantType: v.PlantType},
+			Varieties: append(ai[v.PlantType.Code()].Varieties, v.Variety),
+		}
+
+		ai[v.PlantType.Code()] = inv
+	}
+
+	// From Map, we need to change it to slice for the json response purpose
+	aiSlice := []AvailableInventory{}
+	for _, v := range ai {
+		aiSlice = append(aiSlice, v)
+	}
+
+	return aiSlice
 }
 
 func (sf SimpleFarm) MarshalJSON() ([]byte, error) {

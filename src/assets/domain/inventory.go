@@ -3,9 +3,9 @@ package domain
 import uuid "github.com/satori/go.uuid"
 
 type InventoryMaterial struct {
-	UID       uuid.UUID
-	PlantType PlantType
-	Variety   string
+	UID       uuid.UUID `json:"uid"`
+	PlantType PlantType `json:"plant_type"`
+	Variety   string    `json:"variety"`
 }
 
 type PlantType interface {
