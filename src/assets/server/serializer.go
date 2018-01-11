@@ -7,37 +7,55 @@ import (
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/labstack/echo"
+	uuid "github.com/satori/go.uuid"
 )
 
 type SimpleFarm domain.Farm
-type SimpleArea domain.Area
+type SimpleArea struct {
+	UID  uuid.UUID
+	Name string
+	Type string
+}
 type DetailArea domain.Area
 type DetailReservoir struct {
 	domain.Reservoir
 	InstalledToAreas []SimpleArea
 }
 
-type AreaSquareMeter struct {
-	domain.SquareMeter
-}
-type AreaHectare struct {
-	domain.Hectare
-}
-type ReservoirBucket struct {
-	domain.Bucket
-}
-type ReservoirTap struct {
-	domain.Tap
-}
+type AreaSquareMeter struct{ domain.SquareMeter }
+type AreaHectare struct{ domain.Hectare }
+type ReservoirBucket struct{ domain.Bucket }
+type ReservoirTap struct{ domain.Tap }
+type PlantType struct{ domain.PlantType }
 
-type PlantType struct {
-	domain.PlantType
+type InventoryMaterial struct {
+	UID       uuid.UUID `json:"uid"`
+	PlantType PlantType `json:"plant_type"`
+	Variety   string    `json:"variety"`
 }
 
 type AvailableInventory struct {
 	PlantType PlantType `json:"plant_type"`
 	Varieties []string  `json:"varieties"`
 }
+
+type CropBatch struct {
+	UID         uuid.UUID         `json:"uid"`
+	BatchID     string            `json:"batch_id"`
+	InitialArea SimpleArea        `json:"initial_area"`
+	CurrentArea SimpleArea        `json:"current_area"`
+	Type        CropType          `json:"type"`
+	Inventory   InventoryMaterial `json:"inventory"`
+	Container   CropContainer     `json:"container"`
+	CreatedDate time.Time         `json:"created_date"`
+}
+
+type CropType struct{ domain.CropType }
+type CropContainer struct {
+	Quantity int               `json:"quantity"`
+	Type     CropContainerType `json:"type"`
+}
+type CropContainerType struct{ domain.CropContainerType }
 
 func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))
@@ -70,7 +88,11 @@ func MapToSimpleArea(areas []domain.Area) []SimpleArea {
 	installedAreaList := make([]SimpleArea, len(areas))
 
 	for i, area := range areas {
-		installedAreaList[i] = SimpleArea(area)
+		installedAreaList[i] = SimpleArea{
+			UID:  area.UID,
+			Name: area.Name,
+			Type: area.Type,
+		}
 	}
 
 	return installedAreaList
@@ -178,6 +200,35 @@ func MapToAvailableInventories(inventories []domain.InventoryMaterial) []Availab
 	}
 
 	return aiSlice
+}
+
+func MapToCropBatch(cropBatch domain.Crop) CropBatch {
+	cb := CropBatch{}
+	cb.UID = cropBatch.UID
+	cb.BatchID = cropBatch.BatchID
+	cb.InitialArea = SimpleArea{
+		UID:  cropBatch.InitialArea.UID,
+		Name: cropBatch.InitialArea.Name,
+		Type: cropBatch.InitialArea.Type,
+	}
+	cb.CurrentArea = SimpleArea{
+		UID:  cropBatch.CurrentArea.UID,
+		Name: cropBatch.CurrentArea.Name,
+		Type: cropBatch.CurrentArea.Type,
+	}
+	cb.Type = CropType{CropType: cropBatch.Type}
+	cb.Inventory = InventoryMaterial{
+		UID:       cropBatch.Inventory.UID,
+		PlantType: PlantType{PlantType: cropBatch.Inventory.PlantType},
+		Variety:   cropBatch.Inventory.Variety,
+	}
+	cb.Container = CropContainer{
+		Quantity: cropBatch.Container.Quantity,
+		Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
+	}
+	cb.CreatedDate = cropBatch.CreatedDate
+
+	return cb
 }
 
 func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
@@ -291,5 +342,31 @@ func (pt PlantType) MarshalJSON() ([]byte, error) {
 		Code string `json:"code"`
 	}{
 		Code: pt.PlantType.Code(),
+	})
+}
+
+func (cct CropContainerType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Code string `json:"code"`
+	}{
+		Code: cct.Code(),
+	})
+}
+
+func (cc CropContainer) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Quantity int               `json:"quantity"`
+		Type     CropContainerType `json:"type"`
+	}{
+		Quantity: cc.Quantity,
+		Type:     CropContainerType{CropContainerType: cc.Type},
+	})
+}
+
+func (ct CropType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Code string `json:"code"`
+	}{
+		Code: ct.Code(),
 	})
 }

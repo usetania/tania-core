@@ -537,12 +537,12 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 	}
 
 	// Validate //
-	repoResult := <-s.AreaRepo.FindByID(areaID)
-	if repoResult.Error != nil {
-		return Error(c, repoResult.Error)
+	areaResult := <-s.AreaRepo.FindByID(areaID)
+	if areaResult.Error != nil {
+		return Error(c, areaResult.Error)
 	}
 
-	area, ok := repoResult.Result.(domain.Area)
+	area, ok := areaResult.Result.(domain.Area)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -619,5 +619,5 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	return c.JSON(http.StatusOK, cropBatch)
+	return c.JSON(http.StatusOK, MapToCropBatch(cropBatch))
 }

@@ -104,6 +104,8 @@ func (c *Crop) ChangeContainer(container CropContainer) error {
 		return err
 	}
 
+	c.Container = container
+
 	return nil
 }
 
