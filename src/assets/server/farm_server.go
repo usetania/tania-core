@@ -117,10 +117,9 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	result := <-s.FarmRepo.Save(&farm)
-
-	if result.Error != nil {
-		return Error(c, result.Error)
+	err = <-s.FarmRepo.Save(&farm)
+	if err != nil {
+		return Error(c, err)
 	}
 
 	data["data"] = farm
@@ -200,14 +199,14 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 	}
 
 	// Persists //
-	reservoirResult := <-s.ReservoirRepo.Save(&r)
-	if reservoirResult.Error != nil {
-		return Error(c, reservoirResult.Error)
+	err = <-s.ReservoirRepo.Save(&r)
+	if err != nil {
+		return Error(c, err)
 	}
 
-	farmResult := <-s.FarmRepo.Save(&farm)
-	if farmResult.Error != nil {
-		return Error(c, farmResult.Error)
+	err = <-s.FarmRepo.Save(&farm)
+	if err != nil {
+		return Error(c, err)
 	}
 
 	detailReservoir, err := MapToDetailReservoir(s, r)
@@ -355,19 +354,19 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	// Persists //
-	reservoirResult := <-s.ReservoirRepo.Save(&reservoir)
-	if reservoirResult.Error != nil {
-		return Error(c, reservoirResult.Error)
+	err = <-s.ReservoirRepo.Save(&reservoir)
+	if err != nil {
+		return Error(c, err)
 	}
 
-	areaResult := <-s.AreaRepo.Save(&area)
-	if areaResult.Error != nil {
-		return Error(c, areaResult.Error)
+	err = <-s.AreaRepo.Save(&area)
+	if err != nil {
+		return Error(c, err)
 	}
 
-	farmResult := <-s.FarmRepo.Save(&farm)
-	if farmResult.Error != nil {
-		return Error(c, farmResult.Error)
+	err = <-s.FarmRepo.Save(&farm)
+	if err != nil {
+		return Error(c, err)
 	}
 
 	data["data"] = MapToDetailArea(area)
@@ -493,8 +492,8 @@ func (s *FarmServer) SaveInventory(c echo.Context) error {
 	}
 
 	// Persist //
-	result := <-s.InventoryMaterialRepo.Save(&inventoryMaterial)
-	if result.Error != nil {
+	err = <-s.InventoryMaterialRepo.Save(&inventoryMaterial)
+	if err != nil {
 		return Error(c, err)
 	}
 
