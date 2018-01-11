@@ -114,11 +114,6 @@ func generateBatchID(inventory InventoryMaterial) (string, error) {
 }
 
 func validateInventory(inventory InventoryMaterial) error {
-	err := validateInventory(inventory)
-	if err != nil {
-		return err
-	}
-
 	if inventory.Variety == "" {
 		return InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
 	}

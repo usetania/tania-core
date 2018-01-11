@@ -7,6 +7,7 @@ import (
 
 type InventoryMaterialQuery interface {
 	FindAllInventoryByPlantType(plantType domain.PlantType) <-chan QueryResult
+	FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan QueryResult
 }
 
 type InventoryMaterialQueryInMemory struct {
@@ -32,6 +33,28 @@ func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType d
 		}
 
 		result <- QueryResult{Result: inventories}
+
+		close(result)
+	}()
+
+	return result
+}
+
+func (q *InventoryMaterialQueryInMemory) FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan QueryResult {
+	result := make(chan QueryResult)
+
+	go func() {
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
+
+		inventory := domain.InventoryMaterial{}
+		for _, val := range q.Storage.InventoryMaterialMap {
+			if val.PlantType == plantType && val.Variety == variety {
+				inventory = val
+			}
+		}
+
+		result <- QueryResult{Result: inventory}
 
 		close(result)
 	}()

@@ -1,6 +1,8 @@
 package domain
 
-import uuid "github.com/satori/go.uuid"
+import (
+	uuid "github.com/satori/go.uuid"
+)
 
 type InventoryMaterial struct {
 	UID       uuid.UUID `json:"uid"`

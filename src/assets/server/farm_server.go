@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -67,6 +68,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
 	g.GET("/:id/areas", s.GetFarmAreas)
+	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
@@ -467,7 +469,9 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 }
 
 func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
-	return c.JSON(http.StatusOK, []string{})
+	plantTypes := MapToPlantType(domain.GetPlantTypes())
+
+	return c.JSON(http.StatusOK, plantTypes)
 }
 
 func (s *FarmServer) SaveInventory(c echo.Context) error {
@@ -524,4 +528,108 @@ func (s *FarmServer) GetAvailableInventories(c echo.Context) error {
 	data["data"] = MapToAvailableInventories(inventories)
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
+	// Form Value
+	areaID := c.Param("id")
+	cropType := c.FormValue("crop_type")
+	plantType := c.FormValue("plant_type")
+	variety := c.FormValue("variety")
+
+	containerQuantity, err := strconv.Atoi(c.FormValue("container_quantity"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	containerType := c.FormValue("container_type")
+	containerCell, err := strconv.Atoi(c.FormValue("container_cell"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Validate //
+	repoResult := <-s.AreaRepo.FindByID(areaID)
+	if repoResult.Error != nil {
+		return Error(c, repoResult.Error)
+	}
+
+	area, ok := repoResult.Result.(domain.Area)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	var cropT domain.CropType
+	switch cropType {
+	case "nursery":
+		cropT = domain.Nursery{}
+	case "growing":
+		cropT = domain.Growing{}
+	default:
+		return Error(c, NewRequestValidationError(INVALID_OPTION, "crop_type"))
+	}
+
+	var plantT domain.PlantType
+	switch plantType {
+	case "vegetable":
+		plantT = domain.Vegetable{}
+	case "fruit":
+		plantT = domain.Fruit{}
+	case "herb":
+		plantT = domain.Herb{}
+	case "flower":
+		plantT = domain.Flower{}
+	case "tree":
+		plantT = domain.Tree{}
+	default:
+		return Error(c, NewRequestValidationError(NOT_FOUND, "plant_type"))
+	}
+
+	queryResult := <-s.InventoryMaterialQuery.FindInventoryByPlantTypeAndVariety(plantT, variety)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	inventoryMaterial, ok := queryResult.Result.(domain.InventoryMaterial)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	var containerT domain.CropContainerType
+	switch containerType {
+	case "tray":
+		containerT = domain.Tray{Cell: containerCell}
+	case "pot":
+		containerT = domain.Pot{}
+	default:
+		return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))
+	}
+
+	cropContainer := domain.CropContainer{
+		Quantity: containerQuantity,
+		Type:     containerT,
+	}
+
+	// Process //
+	cropBatch, err := domain.CreateCropBatch(area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = cropBatch.ChangeCropType(cropT)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = cropBatch.ChangeInventory(inventoryMaterial)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = cropBatch.ChangeContainer(cropContainer)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	return c.JSON(http.StatusOK, cropBatch)
 }
