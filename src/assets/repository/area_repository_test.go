@@ -25,10 +25,10 @@ func TestAreaInMemorySave(t *testing.T) {
 	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
 
 	// When
-	var saveResult1, saveResult2 RepositoryResult
+	var err1, err2 error
 	go func() {
-		saveResult1 = <-repo.Save(&area1)
-		saveResult2 = <-repo.Save(&area2)
+		err1 = <-repo.Save(&area1)
+		err2 = <-repo.Save(&area2)
 
 		done <- true
 	}()
@@ -38,8 +38,8 @@ func TestAreaInMemorySave(t *testing.T) {
 	assert.Nil(t, areaErr1)
 	assert.Nil(t, areaErr2)
 
-	assert.NotNil(t, saveResult1)
-	assert.NotNil(t, saveResult2)
+	assert.Nil(t, err1)
+	assert.Nil(t, err2)
 }
 
 func TestAreaInMemoryFindAll(t *testing.T) {
@@ -103,11 +103,11 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "nursery")
 	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
 
-	var result1, result2, found1, found2 RepositoryResult
+	var found1, found2 RepositoryResult
 	go func() {
 		// Given
-		result1 = <-repo.Save(&area1)
-		result2 = <-repo.Save(&area2)
+		<-repo.Save(&area1)
+		<-repo.Save(&area2)
 
 		// When
 		found1 = <-repo.FindByID(area1.UID.String())

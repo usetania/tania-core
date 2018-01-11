@@ -8,7 +8,7 @@ import (
 
 // ReservoirRepository is a repository
 type ReservoirRepository interface {
-	Save(val *domain.Reservoir) <-chan RepositoryResult
+	Save(val *domain.Reservoir) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
@@ -63,8 +63,8 @@ func (r *ReservoirRepositoryInMemory) FindByID(uid string) <-chan RepositoryResu
 }
 
 // Save is to save
-func (r *ReservoirRepositoryInMemory) Save(val *domain.Reservoir) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
+func (r *ReservoirRepositoryInMemory) Save(val *domain.Reservoir) <-chan error {
+	result := make(chan error)
 
 	go func() {
 		r.Storage.Lock.Lock()
@@ -72,7 +72,7 @@ func (r *ReservoirRepositoryInMemory) Save(val *domain.Reservoir) <-chan Reposit
 
 		r.Storage.ReservoirMap[val.UID] = *val
 
-		result <- RepositoryResult{Error: nil}
+		result <- nil
 
 		close(result)
 	}()

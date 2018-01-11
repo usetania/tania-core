@@ -22,10 +22,10 @@ func TestCropInMemorySave(t *testing.T) {
 	crop2, cropErr2 := domain.CreateCropBatch(area)
 
 	// When
-	var saveResult1, saveResult2 RepositoryResult
+	var err1, err2 error
 	go func() {
-		<-repo.Save(&crop1)
-		<-repo.Save(&crop2)
+		err1 = <-repo.Save(&crop1)
+		err2 = <-repo.Save(&crop2)
 
 		done <- true
 	}()
@@ -37,8 +37,8 @@ func TestCropInMemorySave(t *testing.T) {
 	assert.Nil(t, cropErr1)
 	assert.Nil(t, cropErr2)
 
-	assert.Nil(t, saveResult1.Error)
-	assert.Nil(t, saveResult2.Error)
+	assert.Nil(t, err1)
+	assert.Nil(t, err2)
 }
 
 func TestCropInMemoryFindAll(t *testing.T) {

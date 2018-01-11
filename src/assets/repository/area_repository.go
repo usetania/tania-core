@@ -8,7 +8,7 @@ import (
 
 // AreaRepository is a repository
 type AreaRepository interface {
-	Save(val *domain.Area) <-chan RepositoryResult
+	Save(val *domain.Area) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
@@ -63,8 +63,8 @@ func (r *AreaRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
 }
 
 // Save is to save
-func (r *AreaRepositoryInMemory) Save(val *domain.Area) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
+func (r *AreaRepositoryInMemory) Save(val *domain.Area) <-chan error {
+	result := make(chan error)
 
 	go func() {
 		r.Storage.Lock.Lock()
@@ -72,7 +72,7 @@ func (r *AreaRepositoryInMemory) Save(val *domain.Area) <-chan RepositoryResult 
 
 		r.Storage.AreaMap[val.UID] = *val
 
-		result <- RepositoryResult{Error: nil}
+		result <- nil
 
 		close(result)
 	}()

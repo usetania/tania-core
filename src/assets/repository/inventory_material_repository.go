@@ -7,7 +7,7 @@ import (
 )
 
 type InventoryMaterialRepository interface {
-	Save(val *domain.InventoryMaterial) <-chan RepositoryResult
+	Save(val *domain.InventoryMaterial) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
@@ -42,8 +42,8 @@ func (f *InventoryMaterialRepositoryInMemory) FindAll() <-chan RepositoryResult 
 }
 
 // Save is to save
-func (f *InventoryMaterialRepositoryInMemory) Save(val *domain.InventoryMaterial) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
+func (f *InventoryMaterialRepositoryInMemory) Save(val *domain.InventoryMaterial) <-chan error {
+	result := make(chan error)
 
 	go func() {
 		f.Storage.Lock.Lock()
@@ -51,7 +51,7 @@ func (f *InventoryMaterialRepositoryInMemory) Save(val *domain.InventoryMaterial
 
 		f.Storage.InventoryMaterialMap[val.UID] = *val
 
-		result <- RepositoryResult{Error: nil}
+		result <- nil
 
 		close(result)
 	}()

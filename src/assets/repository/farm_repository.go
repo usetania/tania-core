@@ -7,7 +7,7 @@ import (
 )
 
 type FarmRepository interface {
-	Save(val *domain.Farm) <-chan RepositoryResult
+	Save(val *domain.Farm) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
@@ -42,8 +42,8 @@ func (f *FarmRepositoryInMemory) FindAll() <-chan RepositoryResult {
 }
 
 // Save is to save
-func (f *FarmRepositoryInMemory) Save(val *domain.Farm) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
+func (f *FarmRepositoryInMemory) Save(val *domain.Farm) <-chan error {
+	result := make(chan error)
 
 	go func() {
 		f.Storage.Lock.Lock()
@@ -51,7 +51,7 @@ func (f *FarmRepositoryInMemory) Save(val *domain.Farm) <-chan RepositoryResult 
 
 		f.Storage.FarmMap[val.UID] = *val
 
-		result <- RepositoryResult{Error: nil}
+		result <- nil
 
 		close(result)
 	}()

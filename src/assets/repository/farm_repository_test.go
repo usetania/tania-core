@@ -20,10 +20,10 @@ func TestFarmInMemorySave(t *testing.T) {
 	farm2, farmErr2 := domain.CreateFarm("MySecondFarm", "organic")
 
 	// When
-	var saveResult1, saveResult2 RepositoryResult
+	var err1, err2 error
 	go func() {
-		saveResult1 = <-repo.Save(&farm1)
-		saveResult2 = <-repo.Save(&farm2)
+		err1 = <-repo.Save(&farm1)
+		err2 = <-repo.Save(&farm2)
 
 		done <- true
 	}()
@@ -33,8 +33,8 @@ func TestFarmInMemorySave(t *testing.T) {
 	assert.Nil(t, farmErr1)
 	assert.Nil(t, farmErr2)
 
-	assert.NotNil(t, saveResult1)
-	assert.NotNil(t, saveResult2)
+	assert.Nil(t, err1)
+	assert.Nil(t, err2)
 }
 
 func TestFarmInMemoryFindAll(t *testing.T) {
@@ -86,11 +86,11 @@ func TestFarmInMemoryFindByID(t *testing.T) {
 	farm1, farmErr1 := domain.CreateFarm("Farm1", domain.FarmTypeOrganic)
 	farm2, farmErr2 := domain.CreateFarm("Farm2", domain.FarmTypeOrganic)
 
-	var result1, result2, found1, found2 RepositoryResult
+	var found1, found2 RepositoryResult
 	go func() {
 		// Given
-		result1 = <-repo.Save(&farm1)
-		result2 = <-repo.Save(&farm2)
+		<-repo.Save(&farm1)
+		<-repo.Save(&farm2)
 
 		// When
 		found1 = <-repo.FindByID(farm1.UID.String())

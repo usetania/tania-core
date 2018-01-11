@@ -20,10 +20,10 @@ func TestInventoryMaterialInMemorySave(t *testing.T) {
 	inv2, invErr2 := domain.CreateInventoryMaterial(domain.Fruit{}, "Apple")
 
 	// When
-	var saveResult1, saveResult2 RepositoryResult
+	var err1, err2 error
 	go func() {
-		saveResult1 = <-repo.Save(&inv1)
-		saveResult2 = <-repo.Save(&inv2)
+		err1 = <-repo.Save(&inv1)
+		err2 = <-repo.Save(&inv2)
 
 		done <- true
 	}()
@@ -33,8 +33,8 @@ func TestInventoryMaterialInMemorySave(t *testing.T) {
 	assert.Nil(t, invErr1)
 	assert.Nil(t, invErr2)
 
-	assert.Nil(t, saveResult1.Error)
-	assert.Nil(t, saveResult2.Error)
+	assert.Nil(t, err1)
+	assert.Nil(t, err2)
 }
 
 func TestInventoryMaterialInMemoryFindAll(t *testing.T) {

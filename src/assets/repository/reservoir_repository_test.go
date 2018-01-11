@@ -29,11 +29,11 @@ func TestReservoirInMemorySave(t *testing.T) {
 	reservoir3.AttachTap(tap3)
 
 	// When
-	var saveResult1, saveResult2, saveResult3 RepositoryResult
+	var err1, err2, err3 error
 	go func() {
-		saveResult1 = <-repo.Save(&reservoir1)
-		saveResult2 = <-repo.Save(&reservoir2)
-		saveResult3 = <-repo.Save(&reservoir3)
+		err1 = <-repo.Save(&reservoir1)
+		err2 = <-repo.Save(&reservoir2)
+		err3 = <-repo.Save(&reservoir3)
 
 		done <- true
 	}()
@@ -42,9 +42,9 @@ func TestReservoirInMemorySave(t *testing.T) {
 	<-done
 	assert.Nil(t, farmErr)
 
-	assert.NotNil(t, saveResult1)
-	assert.NotNil(t, saveResult2)
-	assert.NotNil(t, saveResult3)
+	assert.Nil(t, err1)
+	assert.Nil(t, err2)
+	assert.Nil(t, err3)
 }
 
 func TestReservoirInMemoryFindAll(t *testing.T) {

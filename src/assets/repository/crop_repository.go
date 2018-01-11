@@ -7,7 +7,7 @@ import (
 )
 
 type CropRepository interface {
-	Save(val *domain.Crop) <-chan RepositoryResult
+	Save(val *domain.Crop) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
@@ -42,8 +42,8 @@ func (f *CropRepositoryInMemory) FindAll() <-chan RepositoryResult {
 }
 
 // Save is to save
-func (f *CropRepositoryInMemory) Save(val *domain.Crop) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
+func (f *CropRepositoryInMemory) Save(val *domain.Crop) <-chan error {
+	result := make(chan error)
 
 	go func() {
 		f.Storage.Lock.Lock()
@@ -51,7 +51,7 @@ func (f *CropRepositoryInMemory) Save(val *domain.Crop) <-chan RepositoryResult 
 
 		f.Storage.CropMap[val.UID] = *val
 
-		result <- RepositoryResult{Error: nil}
+		result <- nil
 
 		close(result)
 	}()
