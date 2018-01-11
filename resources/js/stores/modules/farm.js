@@ -33,7 +33,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       FarmApi
         .ApiCreateFarm(payload, ({ data }) => {
-          payload.ui = data.data
+          payload.uid = data.data
           commit(types.CREATE_FARM, payload)
           commit(types.SET_FARM, payload)
           resolve(payload)
