@@ -676,5 +676,37 @@ func (s *FarmServer) FindAllCrops(c echo.Context) error {
 }
 
 func (s *FarmServer) FindAllCropsByArea(c echo.Context) error {
-	return nil
+	data := make(map[string][]CropBatch)
+
+	// Params //
+	areaID := c.Param("id")
+
+	// Validate //
+	result := <-s.AreaRepo.FindByID(areaID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	area, ok := result.Result.(domain.Area)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	resultQuery := <-s.CropQuery.FindAllCropsByArea(area)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
+	}
+
+	crops, ok := resultQuery.Result.([]domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = []CropBatch{}
+	for _, v := range crops {
+		data["data"] = append(data["data"], MapToCropBatch(v))
+	}
+
+	return c.JSON(http.StatusOK, data)
 }
