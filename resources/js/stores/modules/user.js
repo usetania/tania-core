@@ -9,7 +9,7 @@ const state = {
 
 const getters = {
   getCurrentUser: state => state.current,
-  IsUserAuthenticated: state => state.current.id !== 0,
+  IsUserAuthenticated: state => state.current.uid != '',
   IsNewUser: state => state.current.intro === true,
   IsUserAllowSeeNavigator: (state, getters) => {
     return getters.IsUserAuthenticated && state.current.intro === false
@@ -21,7 +21,7 @@ const actions = {
     NProgress.start()
     return new Promise(( resolve, reject ) => {
       commit(types.USER_LOGIN, {
-        id: 1001,
+        uid: 1001,
         username: payload.username,
         email: 'hello@tanibox.com',
         intro: payload.username === 'user' ? false: true

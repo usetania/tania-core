@@ -41,6 +41,13 @@ export default {
     })
   },
 
+  mounted () {
+    // redirect if the user already auntenticated
+    if (this.user.uid !== '') {
+      this.$router.push({ name: 'Home' })
+    }
+  },
+
   methods: {
     ...mapActions({
       loginUser: 'userLogin'

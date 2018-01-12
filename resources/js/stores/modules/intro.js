@@ -47,7 +47,7 @@ const actions = {
         resolve(state.farm)
       } else {
         Api.ApiCreateFarm(state.farm, ({ data }) => {
-          let farm = Object.assign({}, state.farm, {uid: data.data})
+          let farm = data.data
           commit(types.INTRO_SET_FARM, farm)
           resolve(farm)
         }, err => reject(err.response))
@@ -61,8 +61,8 @@ const actions = {
         resolve(state.reservoir)
       } else {
         Api.ApiCreateReservoir(state.farm.uid, state.reservoir, ({ data }) => {
-          let reservoir = Object.assign({}, state.reservoir, {uid: data.data})
-          let area = Object.assign({}, state.area, {reservoir_id: data.data, farm_id: state.farm.uid})
+          let reservoir = data.data
+          let area = Object.assign({}, state.area, {reservoir_id: reservoir.uid, farm_id: state.farm.uid})
           commit(types.INTRO_SET_RESERVOIR, reservoir)
           commit(types.INTRO_SET_AREA, area)
           resolve(reservoir)
@@ -86,10 +86,10 @@ const actions = {
         formData.set('photo', state.area.photo)
 
         Api.ApiCreateArea(state.farm.uid, formData, ({ data }) => {
-          let area = Object.assign({}, state.area, {
-            uid: data.data,
-            photo: '/api/farms/' + state.farm.uid + '/areas/' + data.data + '/photos'
-          })
+          let area = {
+            ...data.data,
+            photo: '/api/farms/' + state.farm.uid + '/areas/' + data.data.uid + '/photos'
+          }
           // COMMIT
           commit(types.CREATE_FARM, state.farm)
           commit(types.SET_FARM, state.farm)

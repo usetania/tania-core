@@ -115,19 +115,25 @@ export default {
       this.introCreateFarm()
         .then(data => {
           this.toCreateReservoir()
-        }, err => this.$router.push({ name: 'IntroFarmCreate' }))
+        }).catch(error => {
+          this.$router.push({ name: 'IntroFarmCreate' })
+        })
     },
     toCreateReservoir () {
       this.introCreateReservoir()
         .then(data => {
           this.toCreateArea()
-        }, err => this.$router.push({ name: 'IntroReservoirCreate' }))
+        }).catch(error => {
+          this.$router.push({ name: 'IntroReservoirCreate' })
+        })
     },
     toCreateArea () {
       this.introCreateArea()
         .then(data => {
           this.$router.push({ name: 'Home' })
-        }, ({ data }) => this.message = data)
+        }).catch(error => {
+          this.message = error
+        })
     },
     processFile (event) {
       this.area.photo = event.target.files[0]

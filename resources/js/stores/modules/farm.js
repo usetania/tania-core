@@ -33,10 +33,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       FarmApi
         .ApiCreateFarm(payload, ({ data }) => {
-          payload.uid = data.data
-          commit(types.CREATE_FARM, payload)
-          commit(types.SET_FARM, payload)
-          resolve(payload)
+          commit(types.CREATE_FARM, data.data)
+          commit(types.SET_FARM, data.data)
+          resolve(data.data)
         }, error => reject(error.response))
     })
   },
@@ -56,7 +55,7 @@ const actions = {
       const farmId = state.farm.uid
       FarmApi
         .ApiCreateReservoir(farmId, payload, ({ data }) => {
-          payload.uid = data
+          payload = data.data
           payload.farm_id = farmId
           commit(types.CREATE_RESERVOIR, payload)
           resolve(payload)
@@ -77,7 +76,10 @@ const actions = {
     NProgress.start()
     return new Promise((resolve, reject) => {
       FarmApi.ApiFetchReservoir(farmId, ({ data }) => {
-        commit(types.CREATE_AREA, payload)
+        commit(types.CREATE_AREA, {
+          ...data.data,
+          photo: '/api/farms/' + farmId + '/areas/' + data.data.uid + '/photos'
+        })
         resolve(payload)
       }, error => reject(error.response))
     })
