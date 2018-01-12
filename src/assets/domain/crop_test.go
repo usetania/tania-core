@@ -2,6 +2,7 @@ package domain
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -49,4 +50,31 @@ func TestCreateCropBatch(t *testing.T) {
 
 	assert.Nil(t, errContainer1)
 	assert.Nil(t, errContainer2)
+}
+
+func TestBatchID(t *testing.T) {
+	// Given
+	time, timeErr := time.Parse(time.RFC3339, "2018-01-25T22:08:41+07:00")
+
+	farm, farmErr := CreateFarm("MyFarm1", "organic")
+	area, areaErr := CreateArea(farm, "AreaNursery", "nursery")
+
+	cropBatch, cropErr := CreateCropBatch(area)
+	cropBatch.CreatedDate = time
+
+	inventory := InventoryMaterial{PlantType: Vegetable{}, Variety: "Sawi Putih Super"}
+	plantTypeErr := cropBatch.ChangeInventory(inventory)
+
+	// When
+	batchID, batchErr := cropBatch.generateBatchID()
+
+	// Then
+	assert.Nil(t, timeErr)
+	assert.Nil(t, farmErr)
+	assert.Nil(t, areaErr)
+	assert.Nil(t, cropErr)
+	assert.Nil(t, plantTypeErr)
+	assert.Nil(t, batchErr)
+
+	assert.Equal(t, "saw-put-sup-25jan", batchID)
 }
