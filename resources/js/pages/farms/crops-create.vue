@@ -18,7 +18,7 @@
                   .form-group
                     label.col-xs-12.control-label Select activity type of this crop batch
                     .row
-                      .col-sm-6(v-for="type in options.types")
+                      .col-sm-6(v-for="type in options.areaTypes")
                         .radio.m-l
                           label.i-checks
                             input(type="radio" name="activityType" v-bind:value="type.key")
@@ -30,31 +30,20 @@
                       label Area
                       select.form-control(name="arealist")
                         option - select area to grow -
-                        option Florania (Nursery / Seeding)
-                        option Leafy Veggie (Growing Area)
+                        option(v-for="area in areas" v-bind:value="area.uid") {{ area.name }}
                 .row
                   .col-xs-6
                     .form-group
                       label Plant Type
                       select.form-control(name="planttype")
                         option - select plant type -
-                        option Vegetable
-                        option Fruit
-                        option Herb
-                        option Flower
-                        option Tree &amp; Shrub
-                        option Other
+                        option(v-for="type in options.plantTypes" v-bind:value="type.key") {{ type.label }}
                   .col-xs-6
                     .form-group
                       label.control-label Crop Variety
                       select.form-control(name="cropvariety")
                         option - select crop variety -
-                        option(value="BSG") Broccoli Super Green
-                        option(value="KNT") Kale Nero Toscana
-                        option(value="LAR") Lettuce Abby Red
-                        option(value="BLH") Bayam Lu Hsien
-                        option(value="TAC") Tomato Ailsa Craig
-                        option(value="ZP") Zucchini Philip
+                        option(v-for="variety in options.cropVarities" v-bind:value="variety.key") {{ variety.label }}
                 .row
                   .col-xs-6
                     .form-group
@@ -77,17 +66,32 @@
 
 <script>
 import { AreaTypes } from '@/stores/helpers/farms/area'
-import { mapActions } from 'vuex'
+import { PlantTypes } from '@/stores/helpers/farms/plant'
+import { CropVarieties } from '@/stores/helpers/farms/crop'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: "FarmCropCreate",
+  computed: {
+    ...mapGetters({
+      areas: 'getAllAreas'
+    })
+  },
   data () {
     return {
       options: {
-        types: Array.from(AreaTypes)
+        areaTypes: Array.from(AreaTypes),
+        plantTypes: Array.from(PlantTypes),
+        cropVarities: Array.from(CropVarieties),
       }
     }
   },
+  mounted () {
+    this.fetchAreas()
+  },
   methods: {
+    ...mapActions([
+      'fetchAreas'
+    ])
   }
 }
 </script>
