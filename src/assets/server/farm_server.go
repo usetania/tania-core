@@ -21,6 +21,8 @@ type FarmServer struct {
 	ReservoirRepo          repository.ReservoirRepository
 	AreaRepo               repository.AreaRepository
 	AreaQuery              query.AreaQuery
+	CropRepo               repository.CropRepository
+	CropQuery              query.CropQuery
 	InventoryMaterialRepo  repository.InventoryMaterialRepository
 	InventoryMaterialQuery query.InventoryMaterialQuery
 	File                   File
@@ -38,6 +40,10 @@ func NewFarmServer() (*FarmServer, error) {
 	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
 
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
+	cropRepo := repository.NewCropRepositoryInMemory(&cropStorage)
+	cropQuery := query.NewCropQueryInMemory(&cropStorage)
+
 	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
 	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(&inventoryMaterialStorage)
@@ -47,6 +53,8 @@ func NewFarmServer() (*FarmServer, error) {
 		ReservoirRepo:          reservoirRepo,
 		AreaRepo:               areaRepo,
 		AreaQuery:              areaQuery,
+		CropRepo:               cropRepo,
+		CropQuery:              cropQuery,
 		InventoryMaterialRepo:  inventoryMaterialRepo,
 		InventoryMaterialQuery: inventoryMaterialQuery,
 		File: LocalFile{},
@@ -68,6 +76,8 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
 	g.GET("/:id/areas", s.GetFarmAreas)
+	g.GET("/:id/crops", s.FindAllCrops)
+	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
@@ -619,5 +629,52 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	// Persists //
+	err = <-s.CropRepo.Save(&cropBatch)
+	if err != nil {
+		return Error(c, err)
+	}
+
 	return c.JSON(http.StatusOK, MapToCropBatch(cropBatch))
+}
+
+// TODO: The crops should be found by its Farm
+func (s *FarmServer) FindAllCrops(c echo.Context) error {
+	data := make(map[string][]CropBatch)
+
+	// Params //
+	farmID := c.Param("id")
+
+	// Validate //
+	result := <-s.FarmRepo.FindByID(farmID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	_, ok := result.Result.(domain.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	result = <-s.CropRepo.FindAll()
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crops, ok := result.Result.([]domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = []CropBatch{}
+	for _, v := range crops {
+		data["data"] = append(data["data"], MapToCropBatch(v))
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) FindAllCropsByArea(c echo.Context) error {
+	return nil
 }
