@@ -18,18 +18,12 @@
                   .form-group
                     label.col-xs-12.control-label Select activity type of this crop batch
                     .row
-                      .col-sm-6
+                      .col-sm-6(v-for="type in options.types")
                         .radio.m-l
                           label.i-checks
-                            input(type="radio" name="activityType" value="seeding")
+                            input(type="radio" name="activityType" v-bind:value="type.key")
                             i
-                            | Seeding
-                      .col-sm-6
-                        .radio.m-l
-                          label.i-checks
-                            input(type="radio" name="activityType" value="growing")
-                            i
-                            | Growing
+                            | {{ type.label }}
                 .row
                   .col-xs-12
                     .form-group
@@ -80,3 +74,20 @@
                       button.btn.btn-default CANCEL
                       button.btn.btn-success.pull-right SAVE
 </template>
+
+<script>
+import { AreaTypes } from '@/stores/helpers/farms/area'
+import { mapActions } from 'vuex'
+export default {
+  name: "FarmCropCreate",
+  data () {
+    return {
+      options: {
+        types: Array.from(AreaTypes)
+      }
+    }
+  },
+  methods: {
+  }
+}
+</script>
