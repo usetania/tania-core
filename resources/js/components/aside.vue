@@ -18,7 +18,7 @@
               slot(name="item")
                 ul.nav.nav-sub.dk
                   li <router-link :to="{ name: 'FarmAreas'}"><span>Areas</span></router-link>
-                  li <a><span>Crops</span></a>
+                  li <router-link :to="{ name: 'FarmCrops'}"><span>Crops</span></router-link>
                   li <router-link :to="{ name: 'FarmReservoirs'}"><span>Reservoir</span></router-link>
             aside-item-component
               router-link(:to="{name: 'Task'}")
