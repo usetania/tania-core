@@ -44,6 +44,6 @@ func (e AreaError) Error() string {
 	case AreaErrorInvalidAreaLocationCode:
 		return "Area location is invalid"
 	default:
-		return "Unrecognized Reservoir Error Code"
+		return "Unrecognized Area Error Code"
 	}
 }
