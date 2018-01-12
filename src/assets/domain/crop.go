@@ -7,14 +7,14 @@ import (
 )
 
 type Crop struct {
-	UID         uuid.UUID
-	BatchID     string
-	InitialArea Area
-	CurrentArea Area
-	Type        CropType
-	Inventory   InventoryMaterial
-	Container   CropContainer
-	CreatedDate time.Time
+	UID          uuid.UUID
+	BatchID      string
+	InitialArea  Area
+	CurrentAreas []Area
+	Type         CropType
+	Inventory    InventoryMaterial
+	Container    CropContainer
+	CreatedDate  time.Time
 }
 
 // CropType defines type of crop
@@ -66,10 +66,10 @@ func CreateCropBatch(area Area) (Crop, error) {
 	}
 
 	return Crop{
-		UID:         uid,
-		InitialArea: area,
-		CurrentArea: area,
-		CreatedDate: time.Now(),
+		UID:          uid,
+		InitialArea:  area,
+		CurrentAreas: []Area{area},
+		CreatedDate:  time.Now(),
 	}, nil
 }
 

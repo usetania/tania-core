@@ -40,14 +40,14 @@ type AvailableInventory struct {
 }
 
 type CropBatch struct {
-	UID         uuid.UUID         `json:"uid"`
-	BatchID     string            `json:"batch_id"`
-	InitialArea SimpleArea        `json:"initial_area"`
-	CurrentArea SimpleArea        `json:"current_area"`
-	Type        CropType          `json:"type"`
-	Inventory   InventoryMaterial `json:"inventory"`
-	Container   CropContainer     `json:"container"`
-	CreatedDate time.Time         `json:"created_date"`
+	UID          uuid.UUID         `json:"uid"`
+	BatchID      string            `json:"batch_id"`
+	InitialArea  SimpleArea        `json:"initial_area"`
+	CurrentAreas []SimpleArea      `json:"current_area"`
+	Type         CropType          `json:"type"`
+	Inventory    InventoryMaterial `json:"inventory"`
+	Container    CropContainer     `json:"container"`
+	CreatedDate  time.Time         `json:"created_date"`
 }
 
 type CropType struct{ domain.CropType }
@@ -211,11 +211,16 @@ func MapToCropBatch(cropBatch domain.Crop) CropBatch {
 		Name: cropBatch.InitialArea.Name,
 		Type: cropBatch.InitialArea.Type,
 	}
-	cb.CurrentArea = SimpleArea{
-		UID:  cropBatch.CurrentArea.UID,
-		Name: cropBatch.CurrentArea.Name,
-		Type: cropBatch.CurrentArea.Type,
+
+	cb.CurrentAreas = make([]SimpleArea, len(cropBatch.CurrentAreas))
+	for i, v := range cropBatch.CurrentAreas {
+		cb.CurrentAreas[i] = SimpleArea{
+			UID:  v.UID,
+			Name: v.Name,
+			Type: v.Type,
+		}
 	}
+
 	cb.Type = CropType{CropType: cropBatch.Type}
 	cb.Inventory = InventoryMaterial{
 		UID:       cropBatch.Inventory.UID,
