@@ -49,6 +49,17 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  setCurrentFarm({ commit, state }, farmId) {
+    return new Promise((resolve, reject) => {
+      let farm = state.farms.find(item => item.uid === farmId)
+      if (farm) {
+        commit(types.SET_FARM, farm)
+        resolve(farm)
+      } else {
+        reject()
+      }
+    }, error => reject(error))
+  },
   createReservoir ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
