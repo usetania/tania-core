@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/repository"
+	"github.com/Tanibox/tania-server/src/assets/service"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
@@ -23,6 +24,7 @@ type FarmServer struct {
 	AreaQuery              query.AreaQuery
 	CropRepo               repository.CropRepository
 	CropQuery              query.CropQuery
+	CropService            service.CropService
 	InventoryMaterialRepo  repository.InventoryMaterialRepository
 	InventoryMaterialQuery query.InventoryMaterialQuery
 	File                   File
@@ -43,6 +45,7 @@ func NewFarmServer() (*FarmServer, error) {
 	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
 	cropRepo := repository.NewCropRepositoryInMemory(&cropStorage)
 	cropQuery := query.NewCropQueryInMemory(&cropStorage)
+	cropService := service.CropService{CropQuery: cropQuery}
 
 	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
@@ -55,6 +58,7 @@ func NewFarmServer() (*FarmServer, error) {
 		AreaQuery:              areaQuery,
 		CropRepo:               cropRepo,
 		CropQuery:              cropQuery,
+		CropService:            cropService,
 		InventoryMaterialRepo:  inventoryMaterialRepo,
 		InventoryMaterialQuery: inventoryMaterialQuery,
 		File: LocalFile{},
@@ -619,7 +623,7 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	err = cropBatch.ChangeInventory(inventoryMaterial)
+	err = s.CropService.ChangeInventory(&cropBatch, inventoryMaterial)
 	if err != nil {
 		return Error(c, err)
 	}

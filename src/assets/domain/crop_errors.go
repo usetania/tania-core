@@ -4,6 +4,9 @@ const (
 	CropErrorInvalidArea = iota
 	CropErrorInvalidCropType
 
+	CropErrorInvalidBatchID
+	CropErrorBatchIDAlreadyCreated
+
 	CropContainerErrorInvalidType
 )
 
@@ -18,6 +21,10 @@ func (e CropError) Error() string {
 		return "Invalid area"
 	case CropErrorInvalidCropType:
 		return "Invalid crop type"
+	case CropErrorInvalidBatchID:
+		return "Invalid crop batch ID"
+	case CropErrorBatchIDAlreadyCreated:
+		return "Crop batch ID already created"
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"
 	default:

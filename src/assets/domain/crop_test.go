@@ -1,9 +1,14 @@
-package domain
+package domain_test
 
 import (
 	"testing"
 	"time"
 
+	. "github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/query"
+	"github.com/Tanibox/tania-server/src/assets/service"
+	"github.com/Tanibox/tania-server/src/assets/storage"
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,6 +22,10 @@ func TestCreateCropBatch(t *testing.T) {
 	areaNursery, err1 := CreateArea(farm, "AreaNursery", "nursery")
 	areaGrowing, err2 := CreateArea(farm, "AreaGrowing", "growing")
 
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]Crop)}
+	cropQuery := query.NewCropQueryInMemory(&cropStorage)
+	cropService := service.CropService{CropQuery: cropQuery}
+
 	// When
 	cropBatch1, errCrop1 := CreateCropBatch(areaNursery)
 	cropBatch2, errCrop2 := CreateCropBatch(areaGrowing)
@@ -25,8 +34,8 @@ func TestCreateCropBatch(t *testing.T) {
 	errType2 := cropBatch2.ChangeCropType(Growing{})
 
 	inventory1 := InventoryMaterial{PlantType: Vegetable{}, Variety: "Sawi"}
-	errPlantType1 := cropBatch1.ChangeInventory(inventory1)
-	errPlantType2 := cropBatch2.ChangeInventory(inventory1)
+	errPlantType1 := cropService.ChangeInventory(&cropBatch1, inventory1)
+	errPlantType2 := cropService.ChangeInventory(&cropBatch2, inventory1)
 
 	tray := CropContainer{Quantity: 10, Type: Tray{Cell: 20}}
 	pot := CropContainer{Quantity: 50, Type: Pot{}}
@@ -52,7 +61,7 @@ func TestCreateCropBatch(t *testing.T) {
 	assert.Nil(t, errContainer2)
 }
 
-func TestBatchID(t *testing.T) {
+func TestChangeInventoryWithBatchID(t *testing.T) {
 	// Given
 	time, timeErr := time.Parse(time.RFC3339, "2018-01-25T22:08:41+07:00")
 
@@ -63,18 +72,21 @@ func TestBatchID(t *testing.T) {
 	cropBatch.CreatedDate = time
 
 	inventory := InventoryMaterial{PlantType: Vegetable{}, Variety: "Sawi Putih Super"}
-	plantTypeErr := cropBatch.ChangeInventory(inventory)
+
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]Crop)}
+	cropQuery := query.NewCropQueryInMemory(&cropStorage)
+	cropService := service.CropService{CropQuery: cropQuery}
 
 	// When
-	batchID, batchErr := cropBatch.generateBatchID()
+	err := cropService.ChangeInventory(&cropBatch, inventory)
 
 	// Then
 	assert.Nil(t, timeErr)
 	assert.Nil(t, farmErr)
 	assert.Nil(t, areaErr)
 	assert.Nil(t, cropErr)
-	assert.Nil(t, plantTypeErr)
-	assert.Nil(t, batchErr)
+	assert.Nil(t, err)
 
-	assert.Equal(t, "saw-put-sup-25jan", batchID)
+	assert.Equal(t, "Sawi Putih Super", cropBatch.Inventory.Variety)
+	assert.Equal(t, "saw-put-sup-25jan", cropBatch.BatchID)
 }

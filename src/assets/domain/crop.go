@@ -1,10 +1,8 @@
 package domain
 
 import (
-	"strings"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -86,20 +84,6 @@ func (c *Crop) ChangeCropType(cropType CropType) error {
 	return nil
 }
 
-func (c *Crop) ChangeInventory(inventory InventoryMaterial) error {
-	err := validateInventory(inventory)
-	if err != nil {
-		return err
-	}
-
-	batchID, err := c.generateBatchID()
-
-	c.Inventory = inventory
-	c.BatchID = batchID
-
-	return nil
-}
-
 func (c *Crop) ChangeContainer(container CropContainer) error {
 	err := validateCropContainer(container)
 	if err != nil {
@@ -107,32 +91,6 @@ func (c *Crop) ChangeContainer(container CropContainer) error {
 	}
 
 	c.Container = container
-
-	return nil
-}
-
-func (c Crop) generateBatchID() (string, error) {
-	// Format the date to become daymonth format like 25jan
-	dateFormat := strings.ToLower(c.CreatedDate.Format("2Jan"))
-
-	// Get variety name and split it to array
-	varietyArr := strings.Fields(c.Inventory.Variety)
-	varietyFormat := ""
-	for _, v := range varietyArr {
-		// For every value, get only the first three characters
-		varietyFormat = stringhelper.Join(varietyFormat, strings.ToLower(string(v[0:3])), "-")
-	}
-
-	// Join that variety and date
-	batchID := stringhelper.Join(varietyFormat, dateFormat)
-
-	return batchID, nil
-}
-
-func validateInventory(inventory InventoryMaterial) error {
-	if inventory.Variety == "" {
-		return InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
-	}
 
 	return nil
 }

@@ -7,6 +7,7 @@ import (
 
 type CropQuery interface {
 	FindAllCropsByArea(area domain.Area) <-chan QueryResult
+	FindByBatchID(batchID string) <-chan QueryResult
 }
 
 type CropQueryInMemory struct {
@@ -34,6 +35,28 @@ func (s CropQueryInMemory) FindAllCropsByArea(area domain.Area) <-chan QueryResu
 		}
 
 		result <- QueryResult{Result: crops}
+
+		close(result)
+	}()
+
+	return result
+}
+
+func (s CropQueryInMemory) FindByBatchID(batchID string) <-chan QueryResult {
+	result := make(chan QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		crop := domain.Crop{}
+		for _, val := range s.Storage.CropMap {
+			if val.BatchID == batchID {
+				crop = val
+			}
+		}
+
+		result <- QueryResult{Result: crop}
 
 		close(result)
 	}()
