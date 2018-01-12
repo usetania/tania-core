@@ -356,22 +356,29 @@ a.list-group-item.hover {
 }
 
 .nav-tabs {
-  border-color: #dee5e7;
+  border-bottom: transparent !important;
 }
 
 .nav-tabs > li > a {
-  border-bottom-color: #dee5e7;
-  border-radius: 2px 2px 0 0;
+  color: #98a6ad;
+}
+
+.nav-tabs > li:hover > a:hover {
+  background-color: transparent;
 }
 
 .nav-tabs > li:hover > a,
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover {
-  border-color: #dee5e7;
+  border: none;
+  background-color: transparent;
 }
 
 .nav-tabs > li.active > a {
-  border-bottom-color: #fff !important;
+  color: #46B7A9;
+  background-color: transparent;
+  border-bottom: 2px solid #46B7A9;
+  font-weight: bold;
 }
 
 .nav-tabs-alt .nav-tabs.nav-justified > li {
