@@ -1,10 +1,13 @@
 <template lang="pug">
   .crops.col
     .wrapper-md
-      h1.m-t.font-thin.h3.text-black Crops
-      ul.nav.nav-tabs.h4.pull-right
-        li Batch
-        li Schedules
+      .row
+        .col-sm-6.col-xs-12
+          h1.m-t.font-thin.h3.text-black Crops
+        .col-sm-6
+          ul.nav.nav-tabs.h4.pull-right
+            li(role="presentation" class="active"): a(href="#") Batch
+            li: a(href="#") Schedules
     .wrapper
       .panel.no-border
         .panel-heading.wrapper
