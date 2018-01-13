@@ -8,14 +8,14 @@
         span.hidden-folded.m-l.xs Tania
     .collapse.pos-rlt.navbar-collapse.box-shadow.bg-white-only
       ul.nav.navbar-nav.hidden-xs
-        li.dropdown.farmswitch(@click.prevent="dropdownToggle" :class="dropdown === true ? 'open': ''")
-          a(href="" )
+        li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
+          a.farm-current(href="#" @click.prevent="dropdownToggle")
             span {{ farm.name }}
             span.caret
           ul.dropdown-menu
             li.m-l.m-r.text-muted Switch Farm
             li(v-for="f in farms" :class="f.uid === farm.uid ? 'active': ''")
-              a(href="#" @click.prevent="setFarm(f.uid)")
+              a(href="#" @click.prevent="setFarm(f.uid)" :id="f.name")
                 span
                   i.fa.fa-leaf(:class="f.uid === farm.uid ? 'text-success': ''")
                   | {{ f.name }}
@@ -42,7 +42,7 @@ export default {
     ]),
     setFarm (farmId) {
       this.setCurrentFarm(farmId)
-        .then(data => {})
+        .then(data => this.dropdownToggle())
         .catch(error => console.log('Farm '+farmId+' is not found in the data'))
     },
     dropdownToggle() {
