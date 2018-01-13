@@ -41,7 +41,7 @@ export default {
     event.on({
       'tanibox:ready': () => {
         this.appReady = true
-        console.log('tanibox is ready')
+        // console.log('tanibox is ready')
       }
     })
   },

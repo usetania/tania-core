@@ -1,33 +1,57 @@
-import Vue from 'vue/dist/vue.common.js'
+import { shallow, createLocalVue } from 'vue-test-utils'
+import Vuex from 'vuex'
 import AppComponent from '@/components/app.vue'
-import VuexFactory from '../factory'
+
+const routerView = {
+  name: 'router-view',
+  render: h => h('div'),
+};
+const localVue = createLocalVue()
+localVue.use(Vuex)
+localVue.component('router-view', routerView)
 
 describe('components/app', () => {
-  it ('should load initial rendering', done => {
-
-    // mock component
-    const routerView = {
-      name: 'router-view',
-      render: h => h('div'),
-    };
-
-    // register mock component
-    Vue.component('router-view', routerView);
-
-    const vm = new Vue({
-      template: '<AppComponent></AppComponent>',
-      store: VuexFactory,
-      components: {
-        AppComponent
+  it ('should have "app-content" class if user already authenticated', () => {
+    const getters = {
+      IsUserAllowSeeNavigator: state => true
+    }
+    const actions = {
+      fetchCountries () {
+        return new Promise((resolve, reject) => resolve())
+      },
+      fetchFarmTypes () {
+        return new Promise((resolve, reject) => resolve())
       }
-    }).$mount()
+    }
 
-    Vue.nextTick()
-      .then(() => {
-        expect(vm.$el.querySelector('#footer')).toBe(null)
-        done()
-      })
-      .catch(done)
+    const VuexFactory = new Vuex.Store({getters, actions})
+    const wrapper = shallow(AppComponent, {
+      mocks: { $store: VuexFactory },
+      localVue
+    })
 
+    expect(wrapper.find('#content').classes()).toContain('app-content')
+  })
+
+  it ('should not have "app-content" class if user not authenticated', () => {
+    const getters = {
+      IsUserAllowSeeNavigator: state => false
+    }
+    const actions = {
+      fetchCountries () {
+        return new Promise((resolve, reject) => resolve())
+      },
+      fetchFarmTypes () {
+        return new Promise((resolve, reject) => resolve())
+      }
+    }
+
+    const VuexFactory = new Vuex.Store({getters, actions})
+    const wrapper = shallow(AppComponent, {
+      mocks: { $store: VuexFactory },
+      localVue
+    })
+
+    expect(wrapper.find('#content.app-content').exists()).toBe(false)
   })
 })

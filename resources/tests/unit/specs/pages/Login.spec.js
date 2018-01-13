@@ -1,21 +1,37 @@
-import Vue from 'vue/dist/vue.common.js'
 import VeeValidate from 'vee-validate'
+import Vuex from 'vuex'
 import Login from '@/pages/auth/login.vue'
+import { shallow, createLocalVue } from 'vue-test-utils'
+import userStore from '@/stores/modules/user'
 
-Vue.use(VeeValidate)
+const localVue = createLocalVue()
+localVue.use(Vuex)
+localVue.use(VeeValidate)
 
 describe('pages/auth/login', () => {
-  it('should render username label', () => {
-    const Constructor = Vue.extend(Login);
-    const vm = new Constructor().$mount();
-    expect(vm.$el.querySelector('#label-username').textContent)
-    .toEqual('Username');
+
+  const VuexStore = new Vuex.Store({
+    state: userStore.state,
+    actions: userStore.actions,
+    getters: userStore.getters,
+    mutations: userStore.mutations
   })
 
-  it('should render password label', () => {
-    const Constructor = Vue.extend(Login);
-    const vm = new Constructor().$mount();
-    expect(vm.$el.querySelector('#label-username').textContent)
-    .toEqual('Username');
+  const Router = {
+    push() {
+
+    }
+  }
+
+  it('should render username and password label', () => {
+    const wrapper = shallow(Login, {
+      mocks: {
+        $store: VuexStore,
+        $router: Router
+      },
+      localVue
+    })
+    expect(wrapper.find('#label-username').text().trim()).toEqual('Username')
+    expect(wrapper.find('#label-password').text().trim()).toEqual('Password')
   })
 })
