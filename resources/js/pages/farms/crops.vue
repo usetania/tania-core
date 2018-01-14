@@ -4,11 +4,23 @@
       .row
         .col-sm-6.col-xs-12
           h1.m-t.font-thin.h3.text-black Crops
-        .col-sm-6
-          ul.nav.nav-tabs.h4.pull-right
+      .row
+        .col-sm-3.m-t
+          .hbox.bg-white-only.wrapper(style="min-height: 100px;")
+            small.text-muted Harvested Produce This Month 
+            a.pull-right(href=""): i.fa.fa-question-circle
+            .h3.m-b.m-t 12.25 kilograms
+        .col-sm-3.m-t
+          .hbox.bg-white-only.wrapper(style="min-height: 100px;")
+            small.text-muted Planted Varieties
+            a.pull-right(href=""): i.fa.fa-question-circle
+            .h3.m-b.m-t 7
+    .wrapper
+      .row
+        .col-sm-12.m-b
+          ul.nav.nav-tabs.h4
             li(role="presentation" class="active"): a(href="#") Batch
             li: a(href="#") Schedules
-    .wrapper
       .row
         .col-sm-12
           .panel.no-border
