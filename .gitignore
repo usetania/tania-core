@@ -26,7 +26,8 @@ notes.md
 conf.json
 
 /resources/tests/unit/coverage/
-/resources/tests/e2e/reports/
+/resources/tests/assets/screenshots/
+/resources/tests/assets/videos/
 selenium-debug.log
 
 # frontend error log

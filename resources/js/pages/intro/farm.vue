@@ -12,14 +12,14 @@
             .panel-body
               error-message(:message="message.error_message")
               .form-group
-                label(for="name") Farm Name
+                label#label-name(for="name") Farm Name
                 input.form-control#name(type="text" v-validate="'required|alpha_num|min:5|max:100'" :class="{'input': true, 'text-danger': errors.has('farm.name') }" placeholder="" v-model="farm.name" name="farm.name")
                 span.help-block.text-danger(v-show="errors.has('farm.name')") {{ errors.first('farm.name') }}
               .form-group
-                label(for="description") Farm Description
+                label#label-description(for="description") Farm Description
                 textarea.form-control#description(placeholder="" rows="3" v-model="farm.description")
               .form-group
-                label(for="type") Farm Type
+                label#label-type(for="type") Farm Type
                 select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('farm.farm_type') }" v-model="farm.farm_type" name="farm.farm_type")
                   option(value="") Please select type
                   option(v-for="type in types" :value="type.code") {{ type.name }}
@@ -37,13 +37,13 @@
               .form-group
                 .row
                   .col-xs-6
-                    label(for="country") Country
+                    label#label-country(for="country") Country
                     select.form-control#country(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('farm.country_code') }" v-model="farm.country_code" name="farm.country_code" @change="countryChanged($event.target.value)")
                       option(value="") Please select country
                       option(v-for="country in countries" :value="country.ID") {{ country.Name }}
                     span.help-block.text-danger(v-show="errors.has('farm.country_code')") {{ errors.first('farm.country_code') }}
                   .col-xs-6
-                    label City
+                    label#label-city City
                     select.form-control#city(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('farm.city_code') }" v-model="farm.city_code" name="farm.city_code")
                       option(value="") Please select city
                       option(v-for="city in cities" :value="city.ID") {{ city.Name }}

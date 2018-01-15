@@ -86,7 +86,8 @@ export default {
   computed: {
     ...mapGetters({
       reservoir: 'introGetReservoir',
-      currentArea: 'introGetArea'
+      currentArea: 'introGetArea',
+      currentFarm: 'introGetFarm',
     })
   },
 
@@ -94,6 +95,15 @@ export default {
     if (this.currentArea) {
       this.area = Object.assign({}, this.currentArea)
     }
+
+    if (this.reservoir.name === '') {
+      this.$router.push({ name: 'IntroReservoirCreate' })
+    }
+
+    if (this.currentFarm.name === '') {
+      this.$router.push({ name: 'IntroFarmCreate' })
+    }
+
   },
 
   methods: {

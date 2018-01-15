@@ -51,13 +51,18 @@ export default {
 
   computed: {
     ...mapGetters({
-      currentReservoir: 'introGetReservoir'
+      currentReservoir: 'introGetReservoir',
+      currentFarm: 'introGetFarm',
     })
   },
 
   mounted () {
     if (this.currentReservoir) {
       this.reservoir = Object.assign({}, this.currentReservoir)
+    }
+
+    if (this.currentFarm.name === '') {
+      this.$router.push({ name: 'IntroFarmCreate' })
     }
   },
 
