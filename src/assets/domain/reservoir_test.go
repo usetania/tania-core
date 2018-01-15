@@ -80,9 +80,9 @@ func TestAttachWaterSource(t *testing.T) {
 func TestInvalidAttachWaterSource(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
-	reservoir, _ := CreateReservoir(farm, "My Reservoir")
-	bucket1, _ := CreateBucket(100, 50)
-	bucket2, _ := CreateBucket(200, 150)
+	reservoir, reservoirErr := CreateReservoir(farm, "MyReservoir")
+	bucket1, bucket1Err := CreateBucket(100, 50)
+	bucket2, bucket2Err := CreateBucket(200, 150)
 	tap, _ := CreateTap()
 
 	// When
@@ -92,6 +92,9 @@ func TestInvalidAttachWaterSource(t *testing.T) {
 
 	// Then
 	assert.Nil(t, farmErr)
+	assert.Nil(t, reservoirErr)
+	assert.Nil(t, bucket1Err)
+	assert.Nil(t, bucket2Err)
 	assert.Equal(t, err1, ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode})
 	assert.Equal(t, err2, ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode})
 }
@@ -100,12 +103,12 @@ func TestMeasureCondition(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
 
-	reservoir1, _ := CreateReservoir(farm, "My Reservoir 1")
-	bucket, _ := CreateBucket(100, 50)
+	reservoir1, reservoir1Err := CreateReservoir(farm, "MyReservoir1")
+	bucket, bucketErr := CreateBucket(100, 50)
 	reservoir1.AttachBucket(bucket)
 
-	reservoir2, _ := CreateReservoir(farm, "My Reservoir 2")
-	tap, _ := CreateTap()
+	reservoir2, reservoir2Err := CreateReservoir(farm, "MyReservoir2")
+	tap, tapErr := CreateTap()
 	reservoir2.AttachTap(tap)
 
 	// When
@@ -114,6 +117,10 @@ func TestMeasureCondition(t *testing.T) {
 
 	// Then
 	assert.Nil(t, farmErr)
+	assert.Nil(t, reservoir1Err)
+	assert.Nil(t, reservoir2Err)
+	assert.Nil(t, bucketErr)
+	assert.Nil(t, tapErr)
 	assert.Equal(t, val1, float32(1))
 	assert.Equal(t, val2, float32(0))
 }
@@ -121,7 +128,7 @@ func TestMeasureCondition(t *testing.T) {
 func TestChangeTemperature(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
-	reservoir, _ := CreateReservoir(farm, "My Reservoir")
+	reservoir, reservoirErr := CreateReservoir(farm, "MyReservoir")
 	temperature := float32(32)
 	ph := float32(4.3)
 	ec := float32(23.5)
@@ -131,6 +138,7 @@ func TestChangeTemperature(t *testing.T) {
 
 	// Then
 	assert.Nil(t, farmErr)
+	assert.Nil(t, reservoirErr)
 	assert.Equal(t, reservoir.Temperature, temperature)
 	assert.Equal(t, reservoir.PH, ph)
 	assert.Equal(t, reservoir.EC, ec)
@@ -139,7 +147,7 @@ func TestChangeTemperature(t *testing.T) {
 func TestInvalidChangeTemperature(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
-	reservoir, _ := CreateReservoir(farm, "My Reservoir")
+	reservoir, reservoirErr := CreateReservoir(farm, "MyReservoir")
 	temperature := float32(32)
 	ph1 := float32(-10)
 	ec1 := float32(23.5)
@@ -152,6 +160,29 @@ func TestInvalidChangeTemperature(t *testing.T) {
 
 	// Then
 	assert.Nil(t, farmErr)
+	assert.Nil(t, reservoirErr)
 	assert.Equal(t, err1, ReservoirError{ReservoirErrorPHInvalidCode})
 	assert.Equal(t, err2, ReservoirError{ReservoirErrorECInvalidCode})
+}
+
+func TestReservoirCreateRemoveNote(t *testing.T) {
+	// Given
+	farm, farmErr := CreateFarm("Farm1", FarmTypeOrganic)
+	reservoir, reservoirErr := CreateReservoir(farm, "MyReservoir")
+
+	// When
+	reservoir.AddNewNote("This is my new note")
+
+	// Then
+	assert.Nil(t, farmErr)
+	assert.Nil(t, reservoirErr)
+
+	assert.Equal(t, 1, len(reservoir.Notes))
+	assert.Equal(t, "This is my new note", reservoir.Notes[0].Content)
+	assert.NotNil(t, reservoir.Notes[0].CreatedDate)
+
+	// When
+	reservoir.RemoveNote("This is my new note")
+
+	assert.Equal(t, 0, len(reservoir.Notes))
 }

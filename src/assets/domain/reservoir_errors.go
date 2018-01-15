@@ -14,6 +14,8 @@ const (
 	ReservoirErrorBucketVolumeInvalidCode
 
 	ReservoirErrorWaterSourceAlreadyAttachedCode
+
+	ReservoirNoteErrorInvalidContent
 )
 
 // ReservoirError is a custom error from Go built-in error
@@ -41,6 +43,8 @@ func (e ReservoirError) Error() string {
 		return "Reservoir water source is already attached."
 	case ReservoirErrorBucketVolumeInvalidCode:
 		return "Reservoir bucket volume is invalid."
+	case ReservoirNoteErrorInvalidContent:
+		return "Invalid reservoir notes content"
 	default:
 		return "Unrecognized Reservoir Error Code"
 	}
