@@ -15,6 +15,8 @@ export const FETCH_RESERVOIR = 'FETCH_RESERVOIR'
 export const CREATE_AREA = 'CREATE_AREA'
 export const SET_AREA = 'SET_AREA'
 export const FETCH_AREA = 'FETCH_AREA'
+export const SET_CROP= 'SET_CROP'
+export const FETCH_CROP = 'FETCH_CROP'
 
 export const USER_LOGIN = 'USER_LOGIN'
 export const USER_COMPLETED_INTRO = 'USER_COMPLETED_INTRO'

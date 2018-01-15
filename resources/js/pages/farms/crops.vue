@@ -43,10 +43,8 @@
                   td crop1
                   td {{ crop.batch_id }}
                   td {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss') }}
-                  td
-                    span(v-for="activity in crop.activity_type") {{ activity.name }}
-                  td
-                  td {{ crop.initial_area }}
+                  td {{ crop.type.code }}
+                  td {{ crop.initial_area.name }}
                   td
                     span(v-for="area in crop.current_area") {{ area.name }}
                   td

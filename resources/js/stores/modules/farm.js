@@ -122,7 +122,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       const farmId = state.farm.uid
       FarmApi.ApiFetchCrop(farmId, ({ data }) => {
-        commit(types.FETCH_AREA, data.data)
+        commit(types.FETCH_CROP, data.data)
         resolve(data)
       }, error => reject(error.response))
     })
@@ -165,6 +165,12 @@ const mutations = {
   },
   [types.FETCH_AREA] (state, payload) {
     state.areas = payload
+  },
+  [types.SET_CROP] (state, payload) {
+    state.crops = payload
+  },
+  [types.FETCH_CROP] (state, payload) {
+    state.crops = payload
   },
 }
 
