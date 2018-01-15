@@ -52,7 +52,7 @@ func TestCreateArea(t *testing.T) {
 	}
 }
 
-func TestCreateRemoveNote(t *testing.T) {
+func TestAreaCreateRemoveNote(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("MyFarm1", "organic")
 	area, areaErr := CreateArea(farm, "Area1", "nursery")

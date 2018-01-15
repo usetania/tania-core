@@ -45,6 +45,8 @@ func (e AreaError) Error() string {
 		return "Area location cannot be empty"
 	case AreaErrorInvalidAreaLocationCode:
 		return "Area location is invalid"
+	case AreaNoteErrorInvalidContent:
+		return "Invalid crop note content"
 	default:
 		return "Unrecognized Area Error Code"
 	}
