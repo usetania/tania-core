@@ -90,3 +90,27 @@ func TestChangeInventoryWithBatchID(t *testing.T) {
 	assert.Equal(t, "Sawi Putih Super", cropBatch.Inventory.Variety)
 	assert.Equal(t, "saw-put-sup-25jan", cropBatch.BatchID)
 }
+
+func TestCropCreateRemoveNote(t *testing.T) {
+	// Given
+	farm, farmErr := CreateFarm("MyFarm1", "organic")
+	area, areaErr := CreateArea(farm, "Area1", "nursery")
+	crop, cropErr := CreateCropBatch(area)
+
+	// When
+	crop.AddNewNote("This is my new note")
+
+	// Then
+	assert.Nil(t, farmErr)
+	assert.Nil(t, areaErr)
+	assert.Nil(t, cropErr)
+
+	assert.Equal(t, 1, len(crop.Notes))
+	assert.Equal(t, "This is my new note", crop.Notes[0].Content)
+	assert.NotNil(t, crop.Notes[0].CreatedDate)
+
+	// When
+	crop.RemoveNote("This is my new note")
+
+	assert.Equal(t, 0, len(crop.Notes))
+}

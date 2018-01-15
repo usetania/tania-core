@@ -8,6 +8,8 @@ const (
 	CropErrorBatchIDAlreadyCreated
 
 	CropContainerErrorInvalidType
+
+	CropNoteErrorInvalidContent
 )
 
 // CropError is a custom error from Go built-in error
@@ -27,6 +29,8 @@ func (e CropError) Error() string {
 		return "Crop batch ID already created"
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"
+	case CropNoteErrorInvalidContent:
+		return "Invalid crop note content"
 	default:
 		return "Unrecognized Crop Error Code"
 	}

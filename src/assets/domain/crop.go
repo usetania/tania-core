@@ -14,6 +14,7 @@ type Crop struct {
 	Type         CropType
 	Inventory    InventoryMaterial
 	Container    CropContainer
+	Notes        []CropNote
 	CreatedDate  time.Time
 }
 
@@ -55,6 +56,11 @@ type Pot struct{}
 
 func (p Pot) Code() string { return "pot" }
 
+type CropNote struct {
+	Content     string    `json:"content"`
+	CreatedDate time.Time `json:"created_date"`
+}
+
 func CreateCropBatch(area Area) (Crop, error) {
 	if area.UID == (uuid.UUID{}) {
 		return Crop{}, CropError{Code: CropErrorInvalidArea}
@@ -91,6 +97,37 @@ func (c *Crop) ChangeContainer(container CropContainer) error {
 	}
 
 	c.Container = container
+
+	return nil
+}
+
+func (c *Crop) AddNewNote(content string) error {
+	if content == "" {
+		return CropError{Code: CropNoteErrorInvalidContent}
+	}
+
+	cropNote := CropNote{
+		Content:     content,
+		CreatedDate: time.Now(),
+	}
+
+	c.Notes = append(c.Notes, cropNote)
+
+	return nil
+}
+
+func (c *Crop) RemoveNote(content string) error {
+	if content == "" {
+		return CropError{Code: CropNoteErrorInvalidContent}
+	}
+
+	for i, v := range c.Notes {
+		if v.Content == content {
+			copy(c.Notes[i:], c.Notes[i+1:])
+			c.Notes[len(c.Notes)-1] = CropNote{}
+			c.Notes = c.Notes[:len(c.Notes)-1]
+		}
+	}
 
 	return nil
 }
