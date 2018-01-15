@@ -40,13 +40,13 @@
                   th(style="width: 10%") Current Area
               tbody
                 tr(v-for="crop in crops")
-                  td crop1
-                  td {{ crop.batch_id }}
-                  td {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss') }}
+                  td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.variety }}
+                  td: span.identifier {{ crop.batch_id }}
+                  td {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                   td {{ crop.type.code }}
-                  td {{ crop.initial_area.name }}
+                  td: span.areatag {{ crop.initial_area.name }}
                   td
-                    span(v-for="area in crop.current_area") {{ area.name }}
+                    span.areatag(v-for="area in crop.current_area") {{ area.name }}
                   td
 </template>
 
