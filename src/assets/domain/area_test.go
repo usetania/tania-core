@@ -51,3 +51,25 @@ func TestCreateArea(t *testing.T) {
 		}
 	}
 }
+
+func TestCreateRemoveNote(t *testing.T) {
+	// Given
+	farm, farmErr := CreateFarm("MyFarm1", "organic")
+	area, areaErr := CreateArea(farm, "Area1", "nursery")
+
+	// When
+	area.AddNewNote("This is my new note")
+
+	// Then
+	assert.Nil(t, farmErr)
+	assert.Nil(t, areaErr)
+
+	assert.Equal(t, 1, len(area.Notes))
+	assert.Equal(t, "This is my new note", area.Notes[0].Content)
+	assert.NotNil(t, area.Notes[0].CreatedDate)
+
+	// When
+	area.RemoveNote("This is my new note")
+
+	assert.Equal(t, 0, len(area.Notes))
+}

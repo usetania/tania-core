@@ -1,19 +1,22 @@
 package domain
 
 import (
+	"time"
+
 	"github.com/Tanibox/tania-server/src/helper/validationhelper"
 	uuid "github.com/satori/go.uuid"
 )
 
 type Area struct {
-	UID       uuid.UUID `json:"uid"`
-	Name      string    `json:"name"`
-	Size      AreaUnit  `json:"size"`
-	Type      string    `json:"type"`
-	Location  string    `json:"location"`
-	Photo     AreaPhoto `json:"photo"`
-	Reservoir Reservoir `json:"-"`
-	Farm      Farm      `json:"-"`
+	UID       uuid.UUID  `json:"uid"`
+	Name      string     `json:"name"`
+	Size      AreaUnit   `json:"size"`
+	Type      string     `json:"type"`
+	Location  string     `json:"location"`
+	Photo     AreaPhoto  `json:"photo"`
+	Notes     []AreaNote `json:"-"`
+	Reservoir Reservoir  `json:"-"`
+	Farm      Farm       `json:"-"`
 }
 
 type AreaUnit interface {
@@ -42,6 +45,11 @@ type AreaPhoto struct {
 	Size     int    `json:"size"`
 	Width    int    `json:"width"`
 	Height   int    `json:"height"`
+}
+
+type AreaNote struct {
+	Content     string    `json:"content"`
+	CreatedDate time.Time `json:"created_date"`
 }
 
 // CreateArea registers a new area to a farm
@@ -89,6 +97,37 @@ func (a *Area) ChangeLocation(location string) error {
 	}
 
 	a.Location = location
+
+	return nil
+}
+
+func (a *Area) AddNewNote(content string) error {
+	if content == "" {
+		return AreaError{Code: AreaNoteErrorInvalidContent}
+	}
+
+	areaNote := AreaNote{
+		Content:     content,
+		CreatedDate: time.Now(),
+	}
+
+	a.Notes = append(a.Notes, areaNote)
+
+	return nil
+}
+
+func (a *Area) RemoveNote(content string) error {
+	if content == "" {
+		return AreaError{Code: AreaNoteErrorInvalidContent}
+	}
+
+	for i, v := range a.Notes {
+		if v.Content == content {
+			copy(a.Notes[i:], a.Notes[i+1:])
+			a.Notes[len(a.Notes)-1] = AreaNote{}
+			a.Notes = a.Notes[:len(a.Notes)-1]
+		}
+	}
 
 	return nil
 }

@@ -14,6 +14,8 @@ const (
 
 	AreaErrorLocationEmptyCode
 	AreaErrorInvalidAreaLocationCode
+
+	AreaNoteErrorInvalidContent
 )
 
 // AreaError is a custom error from Go built-in error
