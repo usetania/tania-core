@@ -121,12 +121,18 @@ func (a *Area) RemoveNote(content string) error {
 		return AreaError{Code: AreaNoteErrorInvalidContent}
 	}
 
+	found := false
 	for i, v := range a.Notes {
 		if v.Content == content {
 			copy(a.Notes[i:], a.Notes[i+1:])
 			a.Notes[len(a.Notes)-1] = AreaNote{}
 			a.Notes = a.Notes[:len(a.Notes)-1]
+			found = true
 		}
+	}
+
+	if !found {
+		return AreaError{Code: AreaNoteErrorNotFound}
 	}
 
 	return nil

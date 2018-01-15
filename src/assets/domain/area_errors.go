@@ -16,6 +16,7 @@ const (
 	AreaErrorInvalidAreaLocationCode
 
 	AreaNoteErrorInvalidContent
+	AreaNoteErrorNotFound
 )
 
 // AreaError is a custom error from Go built-in error
@@ -47,6 +48,8 @@ func (e AreaError) Error() string {
 		return "Area location is invalid"
 	case AreaNoteErrorInvalidContent:
 		return "Invalid crop note content"
+	case AreaNoteErrorNotFound:
+		return "Area note not found"
 	default:
 		return "Unrecognized Area Error Code"
 	}

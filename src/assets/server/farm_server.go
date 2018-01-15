@@ -81,7 +81,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
-	g.DELETE("/areas/notes/:content", s.SaveAreaNotes)
+	g.DELETE("/areas/:id/notes/:content", s.RemoveAreaNotes)
 	g.GET("/:id/areas", s.GetFarmAreas)
 	g.GET("/:id/crops", s.FindAllCrops)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
@@ -455,6 +455,40 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 
 	// Process //
 	area.AddNewNote(content)
+
+	// Persists //
+	resultSave := <-s.AreaRepo.Save(&area)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = MapToDetailArea(area)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
+	data := make(map[string]DetailArea)
+
+	areaID := c.Param("id")
+	content := c.Param("content")
+
+	// Validate //
+	result := <-s.AreaRepo.FindByID(areaID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	area, ok := result.Result.(domain.Area)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	err := area.RemoveNote(content)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Persists //
 	resultSave := <-s.AreaRepo.Save(&area)
