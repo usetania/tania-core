@@ -76,13 +76,17 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("", s.FindAllFarm)
 	g.GET("/:id", s.FindFarmByID)
 	g.POST("/:id/reservoirs", s.SaveReservoir)
+	g.POST("/reservoirs/:id/notes", s.SaveReservoirNotes)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
+	g.POST("/areas/:id/notes", s.SaveAreaNotes)
+	g.DELETE("/areas/notes/:content", s.SaveAreaNotes)
 	g.GET("/:id/areas", s.GetFarmAreas)
 	g.GET("/:id/crops", s.FindAllCrops)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
+	g.POST("/crops/:id/notes", s.SaveCropNotes)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
@@ -224,6 +228,46 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 	}
 
 	detailReservoir, err := MapToDetailReservoir(s, r)
+	if err != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = detailReservoir
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
+	data := make(map[string]DetailReservoir)
+
+	reservoirID := c.Param("id")
+	content := c.FormValue("content")
+
+	// Validate //
+	result := <-s.ReservoirRepo.FindByID(reservoirID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	reservoir, ok := result.Result.(domain.Reservoir)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if content == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+	}
+
+	// Process //
+	reservoir.AddNewNote(content)
+
+	// Persists //
+	resultSave := <-s.ReservoirRepo.Save(&reservoir)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	detailReservoir, err := MapToDetailReservoir(s, reservoir)
 	if err != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
@@ -381,6 +425,41 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	err = <-s.FarmRepo.Save(&farm)
 	if err != nil {
 		return Error(c, err)
+	}
+
+	data["data"] = MapToDetailArea(area)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
+	data := make(map[string]DetailArea)
+
+	areaID := c.Param("id")
+	content := c.FormValue("content")
+
+	// Validate //
+	result := <-s.AreaRepo.FindByID(areaID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	area, ok := result.Result.(domain.Area)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if content == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+	}
+
+	// Process //
+	area.AddNewNote(content)
+
+	// Persists //
+	resultSave := <-s.AreaRepo.Save(&area)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
 	data["data"] = MapToDetailArea(area)
@@ -639,7 +718,45 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	return c.JSON(http.StatusOK, MapToCropBatch(cropBatch))
+	data := make(map[string]CropBatch)
+	data["data"] = MapToCropBatch(cropBatch)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) SaveCropNotes(c echo.Context) error {
+	data := make(map[string]CropBatch)
+
+	cropID := c.Param("id")
+	content := c.FormValue("content")
+
+	// Validate //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if content == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+	}
+
+	// Process //
+	crop.AddNewNote(content)
+
+	// Persists //
+	resultSave := <-s.CropRepo.Save(&crop)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = MapToCropBatch(crop)
+
+	return c.JSON(http.StatusOK, data)
 }
 
 // TODO: The crops should be found by its Farm

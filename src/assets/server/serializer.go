@@ -47,6 +47,7 @@ type CropBatch struct {
 	Type         CropType          `json:"type"`
 	Inventory    InventoryMaterial `json:"inventory"`
 	Container    CropContainer     `json:"container"`
+	Notes        []domain.CropNote `json:"notes"`
 	CreatedDate  time.Time         `json:"created_date"`
 }
 
@@ -231,6 +232,7 @@ func MapToCropBatch(cropBatch domain.Crop) CropBatch {
 		Quantity: cropBatch.Container.Quantity,
 		Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
 	}
+	cb.Notes = cropBatch.Notes
 	cb.CreatedDate = cropBatch.CreatedDate
 
 	return cb
@@ -262,13 +264,14 @@ func (sa SimpleArea) MarshalJSON() ([]byte, error) {
 
 func (da DetailArea) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		UID       string           `json:"uid"`
-		Name      string           `json:"name"`
-		Size      domain.AreaUnit  `json:"size"`
-		Type      string           `json:"type"`
-		Location  string           `json:"location"`
-		Photo     domain.AreaPhoto `json:"photo"`
-		Reservoir domain.Reservoir `json:"reservoir"`
+		UID       string            `json:"uid"`
+		Name      string            `json:"name"`
+		Size      domain.AreaUnit   `json:"size"`
+		Type      string            `json:"type"`
+		Location  string            `json:"location"`
+		Photo     domain.AreaPhoto  `json:"photo"`
+		Reservoir domain.Reservoir  `json:"reservoir"`
+		Notes     []domain.AreaNote `json:"notes"`
 	}{
 		UID:       da.UID.String(),
 		Name:      da.Name,
@@ -277,19 +280,21 @@ func (da DetailArea) MarshalJSON() ([]byte, error) {
 		Location:  da.Location,
 		Photo:     da.Photo,
 		Reservoir: da.Reservoir,
+		Notes:     da.Notes,
 	})
 }
 
 func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		UID              string             `json:"uid"`
-		Name             string             `json:"name"`
-		PH               float32            `json:"ph"`
-		EC               float32            `json:"ec"`
-		Temperature      float32            `json:"temperature"`
-		WaterSource      domain.WaterSource `json:"water_source"`
-		CreatedDate      time.Time          `json:"created_date"`
-		InstalledToAreas []SimpleArea       `json:"installed_to_areas"`
+		UID              string                 `json:"uid"`
+		Name             string                 `json:"name"`
+		PH               float32                `json:"ph"`
+		EC               float32                `json:"ec"`
+		Temperature      float32                `json:"temperature"`
+		WaterSource      domain.WaterSource     `json:"water_source"`
+		Notes            []domain.ReservoirNote `json:"notes"`
+		CreatedDate      time.Time              `json:"created_date"`
+		InstalledToAreas []SimpleArea           `json:"installed_to_areas"`
 	}{
 		UID:              dr.UID.String(),
 		Name:             dr.Name,
@@ -297,6 +302,7 @@ func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
 		EC:               dr.EC,
 		Temperature:      dr.Temperature,
 		WaterSource:      dr.WaterSource,
+		Notes:            dr.Notes,
 		CreatedDate:      dr.CreatedDate,
 		InstalledToAreas: dr.InstalledToAreas,
 	})

@@ -17,7 +17,7 @@ type Reservoir struct {
 	Temperature float32         `json:"temperature"`
 	WaterSource WaterSource     `json:"water_source"`
 	Farm        Farm            `json:"-"`
-	Notes       []ReservoirNote `json:"notes"`
+	Notes       []ReservoirNote `json:"-"`
 	CreatedDate time.Time       `json:"created_date"`
 
 	// This is for serialization purposes
