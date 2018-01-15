@@ -4,6 +4,7 @@ import * as types from '@/stores/mutation-types'
 import FarmApi from '@/stores/api/farm'
 import stubFarm from '@/stores/stubs/farm'
 import stubReservoir from '@/stores/stubs/reservoir'
+import stubCrop from '@/stores/stubs/crop'
 import stub from '@/stores/stubs/farm'
 
 const state = {
@@ -13,7 +14,8 @@ const state = {
   reservoirs: [],
   area: {},
   areas: [],
-  types: []
+  types: [],
+  crops: []
 }
 
 const getters = {
@@ -24,6 +26,7 @@ const getters = {
   getAllReservoirs: state => state.reservoirs,
   getAllAreas: state => state.areas,
   getAllFarmTypes: state => state.types,
+  getAllCrops: state => state.crops,
   haveFarms: state => state.farms.length > 0 ? true : false
 }
 
@@ -110,6 +113,25 @@ const actions = {
     return new Promise((resolve, reject) => {
       const farmId = state.farm.uid
       FarmApi.ApiFindAreaByUid(farmId, areaId, ({ data }) => {
+        resolve(data)
+      }, error => reject(error.response))
+    })
+  },
+  fetchCrops ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      const farmId = state.farm.uid
+      FarmApi.ApiFetchCrop(farmId, ({ data }) => {
+        commit(types.FETCH_AREA, data.data)
+        resolve(data)
+      }, error => reject(error.response))
+    })
+  },
+  getCropByUid ({ commit, state }, cropId) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      const farmId = state.farm.uid
+      FarmApi.ApiFindCropByUid(farmId, cropId, ({ data }) => {
         resolve(data)
       }, error => reject(error.response))
     })

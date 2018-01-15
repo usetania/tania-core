@@ -20,7 +20,7 @@
         .col-sm-12.m-b
           ul.nav.nav-tabs.h4
             li(role="presentation" class="active"): a(href="#") Batch
-            li: a(href="#") Schedules
+            li: a(href="#") Archives
       .row
         .col-sm-12
           .panel.no-border
@@ -40,7 +40,7 @@
                   th(style="width: 10%") Current Area
               tbody
                 tr(v-for="crop in crops")
-                  td {{ crop.crop_type }}
+                  td crop1
                   td {{ crop.batch_id }}
                   td {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss') }}
                   td
@@ -51,3 +51,23 @@
                     span(v-for="area in crop.current_area") {{ area.name }}
                   td
 </template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex'
+export default {
+  name: "FarmCrops",
+  computed: {
+    ...mapGetters({
+      crops: 'getAllCrops'
+    })
+  },
+  mounted () {
+    this.fetchCrops()
+  },
+  methods: {
+    ...mapActions([
+      'fetchCrops'
+    ])
+  }
+}
+</script>

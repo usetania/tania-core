@@ -50,7 +50,7 @@
                     label Select Reservoir
                     select.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.reservoir') }" v-model="area.reservoir_id" name="area.reservoir")
                       option Please select reservoir
-                      option(:value="reservoir.id ? reservoir.id : reservoir.name") {{ reservoir.name }}
+                      option(:value="reservoir.uid ? reservoir.uid : reservoir.name") {{ reservoir.name }}
                     span.help-block.text-danger(v-show="errors.has('area.reservoir')") {{ errors.first('area.reservoir') }}
                 .col-xs-6
                   .form-group
