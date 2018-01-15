@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -33,21 +34,32 @@ type FarmServer struct {
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer() (*FarmServer, error) {
 	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm)}
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
+	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
+
+	if *config.Config.DemoMode {
+		initData(
+			&farmStorage,
+			&areaStorage,
+			&reservoirStorage,
+			&cropStorage,
+			&inventoryMaterialStorage,
+		)
+	}
+
 	farmRepo := repository.NewFarmRepositoryInMemory(&farmStorage)
 
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
 	areaRepo := repository.NewAreaRepositoryInMemory(&areaStorage)
 	areaQuery := query.NewAreaQueryInMemory(&areaStorage)
 
-	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
 
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
 	cropRepo := repository.NewCropRepositoryInMemory(&cropStorage)
 	cropQuery := query.NewCropQueryInMemory(&cropStorage)
 	cropService := service.CropService{CropQuery: cropQuery}
 
-	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
 	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(&inventoryMaterialStorage)
 
@@ -91,6 +103,59 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
+}
+
+func initData(
+	farmStorage *storage.FarmStorage,
+	areaStorage *storage.AreaStorage,
+	reservoirStorage *storage.ReservoirStorage,
+	cropStorage *storage.CropStorage,
+	inventoryMaterialStorage *storage.InventoryMaterialStorage,
+) {
+	uid, _ := uuid.NewV4()
+	farm1 := domain.Farm{
+		UID:         uid,
+		Name:        "MyFarm",
+		Type:        "organic",
+		Latitude:    "10.00",
+		Longitude:   "11.00",
+		CountryCode: "ID",
+		CityCode:    "JK",
+		IsActive:    true,
+	}
+
+	farmStorage.FarmMap[uid] = farm1
+
+	uid, _ = uuid.NewV4()
+	reservoir1 := domain.Reservoir{
+		UID:         uid,
+		Name:        "MyBucketReservoir",
+		PH:          8,
+		EC:          12.5,
+		Temperature: 29,
+		WaterSource: domain.Bucket{Capacity: 100, Volume: 10},
+		Farm:        farm1,
+		Notes: []domain.ReservoirNote{
+			domain.ReservoirNote{Content: "Don't forget to close the bucket after using", CreatedDate: time.Now()},
+		},
+		CreatedDate: time.Now(),
+	}
+
+	uid, _ = uuid.NewV4()
+	reservoir2 := domain.Reservoir{
+		UID:         uid,
+		Name:        "MyTapReservoir",
+		PH:          8,
+		EC:          12.5,
+		Temperature: 29,
+		WaterSource: domain.Tap{},
+		Farm:        farm1,
+		Notes:       []domain.ReservoirNote{},
+		CreatedDate: time.Now(),
+	}
+
+	reservoirStorage.ReservoirMap[uid] = reservoir1
+	reservoirStorage.ReservoirMap[uid] = reservoir2
 }
 
 // GetTypes is a FarmServer's handle to get farm types

@@ -1,3 +1,4 @@
 {
+    "DemoMode": false,
     "UploadPathArea": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas"
 }

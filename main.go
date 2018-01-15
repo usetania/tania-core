@@ -110,6 +110,7 @@ func initConfig() {
 
 	configuration := config.Configuration{
 		UploadPathArea: conf.String("UploadPathArea", "/home/tania/uploads", "Upload path for the Area photo"),
+		DemoMode:       conf.Bool("DemoMode", true, "Switch for the demo mode"),
 	}
 
 	// This config will read the first configuration.
