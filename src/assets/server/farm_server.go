@@ -34,36 +34,25 @@ type FarmServer struct {
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer() (*FarmServer, error) {
 	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm)}
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
-	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
-	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
-
-	if *config.Config.DemoMode {
-		initData(
-			&farmStorage,
-			&areaStorage,
-			&reservoirStorage,
-			&cropStorage,
-			&inventoryMaterialStorage,
-		)
-	}
-
 	farmRepo := repository.NewFarmRepositoryInMemory(&farmStorage)
 
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
 	areaRepo := repository.NewAreaRepositoryInMemory(&areaStorage)
 	areaQuery := query.NewAreaQueryInMemory(&areaStorage)
 
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
 
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
 	cropRepo := repository.NewCropRepositoryInMemory(&cropStorage)
 	cropQuery := query.NewCropQueryInMemory(&cropStorage)
 	cropService := service.CropService{CropQuery: cropQuery}
 
+	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
 	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(&inventoryMaterialStorage)
 
-	return &FarmServer{
+	farmServer := FarmServer{
 		FarmRepo:               farmRepo,
 		ReservoirRepo:          reservoirRepo,
 		AreaRepo:               areaRepo,
@@ -74,7 +63,20 @@ func NewFarmServer() (*FarmServer, error) {
 		InventoryMaterialRepo:  inventoryMaterialRepo,
 		InventoryMaterialQuery: inventoryMaterialQuery,
 		File: LocalFile{},
-	}, nil
+	}
+
+	if *config.Config.DemoMode {
+		initDataDemo(
+			&farmServer,
+			&farmStorage,
+			&areaStorage,
+			&reservoirStorage,
+			&cropStorage,
+			&inventoryMaterialStorage,
+		)
+	}
+
+	return &farmServer, nil
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -103,59 +105,6 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
-}
-
-func initData(
-	farmStorage *storage.FarmStorage,
-	areaStorage *storage.AreaStorage,
-	reservoirStorage *storage.ReservoirStorage,
-	cropStorage *storage.CropStorage,
-	inventoryMaterialStorage *storage.InventoryMaterialStorage,
-) {
-	uid, _ := uuid.NewV4()
-	farm1 := domain.Farm{
-		UID:         uid,
-		Name:        "MyFarm",
-		Type:        "organic",
-		Latitude:    "10.00",
-		Longitude:   "11.00",
-		CountryCode: "ID",
-		CityCode:    "JK",
-		IsActive:    true,
-	}
-
-	farmStorage.FarmMap[uid] = farm1
-
-	uid, _ = uuid.NewV4()
-	reservoir1 := domain.Reservoir{
-		UID:         uid,
-		Name:        "MyBucketReservoir",
-		PH:          8,
-		EC:          12.5,
-		Temperature: 29,
-		WaterSource: domain.Bucket{Capacity: 100, Volume: 10},
-		Farm:        farm1,
-		Notes: []domain.ReservoirNote{
-			domain.ReservoirNote{Content: "Don't forget to close the bucket after using", CreatedDate: time.Now()},
-		},
-		CreatedDate: time.Now(),
-	}
-
-	uid, _ = uuid.NewV4()
-	reservoir2 := domain.Reservoir{
-		UID:         uid,
-		Name:        "MyTapReservoir",
-		PH:          8,
-		EC:          12.5,
-		Temperature: 29,
-		WaterSource: domain.Tap{},
-		Farm:        farm1,
-		Notes:       []domain.ReservoirNote{},
-		CreatedDate: time.Now(),
-	}
-
-	reservoirStorage.ReservoirMap[uid] = reservoir1
-	reservoirStorage.ReservoirMap[uid] = reservoir2
 }
 
 // GetTypes is a FarmServer's handle to get farm types
@@ -1076,4 +1025,174 @@ func (s *FarmServer) FindAllCropsByArea(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func initDataDemo(
+	server *FarmServer,
+	farmStorage *storage.FarmStorage,
+	areaStorage *storage.AreaStorage,
+	reservoirStorage *storage.ReservoirStorage,
+	cropStorage *storage.CropStorage,
+	inventoryMaterialStorage *storage.InventoryMaterialStorage,
+) {
+	farmUID, _ := uuid.NewV4()
+	farm1 := domain.Farm{
+		UID:         farmUID,
+		Name:        "MyFarm",
+		Type:        "organic",
+		Latitude:    "10.00",
+		Longitude:   "11.00",
+		CountryCode: "ID",
+		CityCode:    "JK",
+		IsActive:    true,
+	}
+
+	farmStorage.FarmMap[farmUID] = farm1
+
+	uid, _ := uuid.NewV4()
+	reservoir1 := domain.Reservoir{
+		UID:         uid,
+		Name:        "MyBucketReservoir",
+		PH:          8,
+		EC:          12.5,
+		Temperature: 29,
+		WaterSource: domain.Bucket{Capacity: 100, Volume: 10},
+		Farm:        farm1,
+		Notes: []domain.ReservoirNote{
+			domain.ReservoirNote{
+				Content:     "Don't forget to close the bucket after using",
+				CreatedDate: time.Now(),
+			},
+		},
+		CreatedDate: time.Now(),
+	}
+
+	farm1.AddReservoir(&reservoir1)
+	farmStorage.FarmMap[farmUID] = farm1
+	reservoirStorage.ReservoirMap[uid] = reservoir1
+
+	uid, _ = uuid.NewV4()
+	reservoir2 := domain.Reservoir{
+		UID:         uid,
+		Name:        "MyTapReservoir",
+		PH:          8,
+		EC:          12.5,
+		Temperature: 29,
+		WaterSource: domain.Tap{},
+		Farm:        farm1,
+		Notes:       []domain.ReservoirNote{},
+		CreatedDate: time.Now(),
+	}
+
+	farm1.AddReservoir(&reservoir2)
+	farmStorage.FarmMap[farmUID] = farm1
+	reservoirStorage.ReservoirMap[uid] = reservoir2
+
+	uid, _ = uuid.NewV4()
+	area1 := domain.Area{
+		UID:       uid,
+		Name:      "MySeedingArea",
+		Size:      domain.SquareMeter{Value: 10},
+		Type:      "nursery",
+		Location:  "indoor",
+		Photo:     domain.AreaPhoto{},
+		Notes:     []domain.AreaNote{},
+		Reservoir: reservoir2,
+		Farm:      farm1,
+	}
+
+	farm1.AddArea(&area1)
+	farmStorage.FarmMap[farmUID] = farm1
+	areaStorage.AreaMap[uid] = area1
+
+	uid, _ = uuid.NewV4()
+	area2 := domain.Area{
+		UID:       uid,
+		Name:      "MyGrowingArea",
+		Size:      domain.SquareMeter{Value: 100},
+		Type:      "growing",
+		Location:  "outdoor",
+		Photo:     domain.AreaPhoto{},
+		Notes:     []domain.AreaNote{},
+		Reservoir: reservoir1,
+		Farm:      farm1,
+	}
+
+	farm1.AddArea(&area2)
+	farmStorage.FarmMap[farmUID] = farm1
+	areaStorage.AreaMap[uid] = area2
+
+	uid, _ = uuid.NewV4()
+	inventory1 := domain.InventoryMaterial{
+		UID:       uid,
+		PlantType: domain.Vegetable{},
+		Variety:   "Bayam Lu Hsieh",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory1
+
+	uid, _ = uuid.NewV4()
+	inventory2 := domain.InventoryMaterial{
+		UID:       uid,
+		PlantType: domain.Fruit{},
+		Variety:   "Tomat Super One",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory2
+
+	uid, _ = uuid.NewV4()
+	inventory3 := domain.InventoryMaterial{
+		UID:       uid,
+		PlantType: domain.Fruit{},
+		Variety:   "Apple Rome Beauty",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory3
+
+	uid, _ = uuid.NewV4()
+	inventory4 := domain.InventoryMaterial{
+		UID:       uid,
+		PlantType: domain.Vegetable{},
+		Variety:   "Orange Sweet Mandarin",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
+
+	uid, _ = uuid.NewV4()
+	crop1 := domain.Crop{
+		UID:          uid,
+		InitialArea:  area1,
+		CurrentAreas: []domain.Area{area1},
+		Type:         domain.Nursery{},
+		Container:    domain.CropContainer{Quantity: 5, Type: domain.Tray{Cell: 10}},
+		CreatedDate:  time.Now(),
+	}
+
+	server.CropService.ChangeInventory(&crop1, inventory1)
+	cropStorage.CropMap[uid] = crop1
+
+	uid, _ = uuid.NewV4()
+	crop2 := domain.Crop{
+		UID:          uid,
+		InitialArea:  area1,
+		CurrentAreas: []domain.Area{area1},
+		Type:         domain.Nursery{},
+		Container:    domain.CropContainer{Quantity: 10, Type: domain.Pot{}},
+		CreatedDate:  time.Now(),
+	}
+
+	server.CropService.ChangeInventory(&crop2, inventory2)
+	cropStorage.CropMap[uid] = crop2
+
+	uid, _ = uuid.NewV4()
+	crop3 := domain.Crop{
+		UID:          uid,
+		InitialArea:  area1,
+		CurrentAreas: []domain.Area{area2},
+		Type:         domain.Growing{},
+		CreatedDate:  time.Now(),
+	}
+
+	server.CropService.ChangeInventory(&crop3, inventory3)
+	cropStorage.CropMap[uid] = crop3
 }

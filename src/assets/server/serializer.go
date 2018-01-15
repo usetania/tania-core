@@ -228,9 +228,12 @@ func MapToCropBatch(cropBatch domain.Crop) CropBatch {
 		PlantType: PlantType{PlantType: cropBatch.Inventory.PlantType},
 		Variety:   cropBatch.Inventory.Variety,
 	}
-	cb.Container = CropContainer{
-		Quantity: cropBatch.Container.Quantity,
-		Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
+
+	if cropBatch.Container != (domain.CropContainer{}) {
+		cb.Container = CropContainer{
+			Quantity: cropBatch.Container.Quantity,
+			Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
+		}
 	}
 
 	notes := make([]domain.CropNote, 0, len(cropBatch.Notes))
@@ -373,10 +376,15 @@ func (pt PlantType) MarshalJSON() ([]byte, error) {
 }
 
 func (cct CropContainerType) MarshalJSON() ([]byte, error) {
+	code := ""
+	if cct.CropContainerType != (CropContainerType{}) {
+		code = cct.Code()
+	}
+
 	return json.Marshal(struct {
 		Code string `json:"code"`
 	}{
-		Code: cct.Code(),
+		Code: code,
 	})
 }
 
