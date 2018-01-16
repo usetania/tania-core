@@ -525,15 +525,31 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	result = <-s.FarmRepo.FindByID(area.Farm.UID.String())
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(domain.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
 	if content == "" {
 		return Error(c, NewRequestValidationError(REQUIRED, "content"))
 	}
 
 	// Process //
 	area.AddNewNote(content)
+	farm.ChangeAreaInformation(area)
 
 	// Persists //
 	resultSave := <-s.AreaRepo.Save(&area)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	resultSave = <-s.FarmRepo.Save(&farm)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
@@ -560,14 +576,34 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	result = <-s.FarmRepo.FindByID(area.Farm.UID.String())
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(domain.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
 	// Process //
 	err := area.RemoveNote(noteID)
 	if err != nil {
 		return Error(c, err)
 	}
 
+	err = farm.ChangeAreaInformation(area)
+	if err != nil {
+		return Error(c, err)
+	}
+
 	// Persists //
 	resultSave := <-s.AreaRepo.Save(&area)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	resultSave = <-s.FarmRepo.Save(&farm)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}

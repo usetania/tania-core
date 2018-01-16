@@ -138,6 +138,21 @@ func (f *Farm) AddArea(res *Area) error {
 	return nil
 }
 
+// ChangeAreaInformation changes existing reservoir information
+func (f *Farm) ChangeAreaInformation(res Area) error {
+	if !f.IsAreaAdded(res.Name) {
+		return FarmError{FarmErrorAreaNotFound}
+	}
+
+	for i, v := range f.Areas {
+		if v.UID == res.UID {
+			f.Areas[i] = res
+		}
+	}
+
+	return nil
+}
+
 // IsAreaAdded is to check whether a area is already added.
 // It knows by matching the area's name
 func (f Farm) IsAreaAdded(name string) bool {
