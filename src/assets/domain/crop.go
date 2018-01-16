@@ -57,6 +57,7 @@ type Pot struct{}
 func (p Pot) Code() string { return "pot" }
 
 type CropNote struct {
+	UID         uuid.UUID `json:"uid"`
 	Content     string    `json:"content"`
 	CreatedDate time.Time `json:"created_date"`
 }
@@ -106,7 +107,13 @@ func (c *Crop) AddNewNote(content string) error {
 		return CropError{Code: CropNoteErrorInvalidContent}
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
 	cropNote := CropNote{
+		UID:         uid,
 		Content:     content,
 		CreatedDate: time.Now(),
 	}
@@ -116,17 +123,29 @@ func (c *Crop) AddNewNote(content string) error {
 	return nil
 }
 
-func (c *Crop) RemoveNote(content string) error {
-	if content == "" {
-		return CropError{Code: CropNoteErrorInvalidContent}
+func (c *Crop) RemoveNote(uid string) error {
+	if uid == "" {
+		return CropError{Code: CropNoteErrorNotFound}
 	}
 
+	uuid, err := uuid.FromString(uid)
+	if err != nil {
+		return AreaError{Code: AreaNoteErrorNotFound}
+	}
+
+	found := false
 	for i, v := range c.Notes {
-		if v.Content == content {
+		if v.UID == uuid {
 			copy(c.Notes[i:], c.Notes[i+1:])
 			c.Notes[len(c.Notes)-1] = CropNote{}
 			c.Notes = c.Notes[:len(c.Notes)-1]
+
+			found = true
 		}
+	}
+
+	if !found {
+		return CropError{Code: CropNoteErrorNotFound}
 	}
 
 	return nil

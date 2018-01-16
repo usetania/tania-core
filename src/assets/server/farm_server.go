@@ -88,6 +88,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
 	g.POST("/crops/:id/notes", s.SaveCropNotes)
+	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
@@ -893,6 +894,40 @@ func (s *FarmServer) SaveCropNotes(c echo.Context) error {
 
 	// Process //
 	crop.AddNewNote(content)
+
+	// Persists //
+	resultSave := <-s.CropRepo.Save(&crop)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = MapToCropBatch(crop)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) RemoveCropNotes(c echo.Context) error {
+	data := make(map[string]CropBatch)
+
+	cropID := c.Param("crop_id")
+	noteID := c.Param("note_id")
+
+	// Validate //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	err := crop.RemoveNote(noteID)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Persists //
 	resultSave := <-s.CropRepo.Save(&crop)

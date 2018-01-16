@@ -10,6 +10,7 @@ const (
 	CropContainerErrorInvalidType
 
 	CropNoteErrorInvalidContent
+	CropNoteErrorNotFound
 )
 
 // CropError is a custom error from Go built-in error
@@ -31,6 +32,8 @@ func (e CropError) Error() string {
 		return "Invalid crop container type"
 	case CropNoteErrorInvalidContent:
 		return "Invalid crop note content"
+	case CropNoteErrorNotFound:
+		return "Crop note not found"
 	default:
 		return "Unrecognized Crop Error Code"
 	}
