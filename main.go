@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
 	"github.com/Tanibox/tania-server/src/assets/server"
+	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
@@ -22,6 +23,12 @@ func main() {
 	e := echo.New()
 
 	farmServer, err := server.NewFarmServer()
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
+
+	taskServer, err := taskserver.NewTaskServer()
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -43,6 +50,9 @@ func main() {
 
 	farmGroup := API.Group("/farms")
 	farmServer.Mount(farmGroup)
+
+	taskGroup := API.Group("/tasks")
+	taskServer.Mount(taskGroup)
 
 	e.Static("/", "public")
 	e.Logger.Fatal(e.Start(":8080"))
