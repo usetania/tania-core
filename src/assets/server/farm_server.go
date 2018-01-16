@@ -77,6 +77,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id", s.FindFarmByID)
 	g.POST("/:id/reservoirs", s.SaveReservoir)
 	g.POST("/reservoirs/:id/notes", s.SaveReservoirNotes)
+	g.DELETE("/reservoirs/:reservoir_id/notes/:note_id", s.RemoveReservoirNotes)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
@@ -254,15 +255,90 @@ func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	result = <-s.FarmRepo.FindByID(reservoir.Farm.UID.String())
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(domain.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
 	if content == "" {
 		return Error(c, NewRequestValidationError(REQUIRED, "content"))
 	}
 
 	// Process //
 	reservoir.AddNewNote(content)
+	farm.ChangeReservoirInformation(reservoir)
 
 	// Persists //
 	resultSave := <-s.ReservoirRepo.Save(&reservoir)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	resultSave = <-s.FarmRepo.Save(&farm)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	detailReservoir, err := MapToDetailReservoir(s, reservoir)
+	if err != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = detailReservoir
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
+	data := make(map[string]DetailReservoir)
+
+	reservoirID := c.Param("reservoir_id")
+	noteID := c.Param("note_id")
+
+	// Validate //
+	result := <-s.ReservoirRepo.FindByID(reservoirID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	reservoir, ok := result.Result.(domain.Reservoir)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	result = <-s.FarmRepo.FindByID(reservoir.Farm.UID.String())
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(domain.Farm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	err := reservoir.RemoveNote(noteID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = farm.ChangeReservoirInformation(reservoir)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Persists //
+	resultSave := <-s.ReservoirRepo.Save(&reservoir)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	resultSave = <-s.FarmRepo.Save(&farm)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}

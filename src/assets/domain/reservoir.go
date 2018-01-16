@@ -25,6 +25,7 @@ type Reservoir struct {
 }
 
 type ReservoirNote struct {
+	UID         uuid.UUID `json:"uid"`
 	Content     string    `json:"content"`
 	CreatedDate time.Time `json:"created_date"`
 }
@@ -139,7 +140,13 @@ func (r *Reservoir) AddNewNote(content string) error {
 		return ReservoirError{Code: ReservoirNoteErrorInvalidContent}
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
 	reservoirNote := ReservoirNote{
+		UID:         uid,
 		Content:     content,
 		CreatedDate: time.Now(),
 	}
@@ -149,17 +156,30 @@ func (r *Reservoir) AddNewNote(content string) error {
 	return nil
 }
 
-func (r *Reservoir) RemoveNote(content string) error {
-	if content == "" {
+func (r *Reservoir) RemoveNote(uid string) error {
+	if uid == "" {
 		return ReservoirError{Code: ReservoirNoteErrorInvalidContent}
 	}
 
+	uuid, err := uuid.FromString(uid)
+	if err != nil {
+		return ReservoirError{Code: ReservoirNoteErrorNotFound}
+	}
+
+	found := false
 	for i, v := range r.Notes {
-		if v.Content == content {
+		if v.UID == uuid {
+			// This remove a note from slice and maintain its order
 			copy(r.Notes[i:], r.Notes[i+1:])
 			r.Notes[len(r.Notes)-1] = ReservoirNote{}
 			r.Notes = r.Notes[:len(r.Notes)-1]
+
+			found = true
 		}
+	}
+
+	if !found {
+		return ReservoirError{Code: ReservoirNoteErrorNotFound}
 	}
 
 	return nil

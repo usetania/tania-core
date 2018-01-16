@@ -2,7 +2,9 @@
 // to their farm
 package domain
 
-import uuid "github.com/satori/go.uuid"
+import (
+	uuid "github.com/satori/go.uuid"
+)
 
 type Farm struct {
 	UID         uuid.UUID `json:"uid"`
@@ -85,6 +87,21 @@ func (f *Farm) AddReservoir(res *Reservoir) error {
 	}
 
 	f.Reservoirs = append(f.Reservoirs, *res)
+
+	return nil
+}
+
+// ChangeReservoirInformation changes existing reservoir information
+func (f *Farm) ChangeReservoirInformation(res Reservoir) error {
+	if !f.IsReservoirAdded(res.Name) {
+		return FarmError{FarmErrorReservoirNotFound}
+	}
+
+	for i, v := range f.Reservoirs {
+		if v.UID == res.UID {
+			f.Reservoirs[i] = res
+		}
+	}
 
 	return nil
 }

@@ -16,6 +16,7 @@ const (
 	ReservoirErrorWaterSourceAlreadyAttachedCode
 
 	ReservoirNoteErrorInvalidContent
+	ReservoirNoteErrorNotFound
 )
 
 // ReservoirError is a custom error from Go built-in error

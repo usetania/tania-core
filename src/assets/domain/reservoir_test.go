@@ -182,7 +182,7 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 	assert.NotNil(t, reservoir.Notes[0].CreatedDate)
 
 	// When
-	reservoir.RemoveNote("This is my new note")
+	reservoir.RemoveNote(reservoir.Notes[0].UID.String())
 
 	assert.Equal(t, 0, len(reservoir.Notes))
 }
