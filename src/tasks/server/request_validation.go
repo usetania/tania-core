@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Tanibox/tania-server/src/tasks/domain"
+	domain "github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/labstack/echo"
 )
 
@@ -86,22 +86,12 @@ func Error(c echo.Context, err error) error {
 		"error_message": "",
 	}
 
-	if re, ok := err.(domain.ReservoirError); ok {
+	if re, ok := err.(domain.TaskError); ok {
 		errorResponse["error_code"] = strconv.Itoa(re.Code)
 		errorResponse["error_message"] = re.Error()
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if re, ok := err.(domain.FarmError); ok {
-		errorResponse["error_code"] = strconv.Itoa(re.Code)
-		errorResponse["error_message"] = re.Error()
-
-		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if re, ok := err.(domain.AreaError); ok {
-		errorResponse["error_code"] = strconv.Itoa(re.Code)
-		errorResponse["error_message"] = re.Error()
-
-		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if rve, ok := err.(RequestValidationError); ok {
+	}  else if rve, ok := err.(RequestValidationError); ok {
 		errorResponse["field_name"] = rve.FieldName
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage
