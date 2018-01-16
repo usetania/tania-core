@@ -1050,6 +1050,15 @@ func initDataDemo(
 	farmStorage.FarmMap[farmUID] = farm1
 
 	uid, _ := uuid.NewV4()
+
+	noteUID, _ := uuid.NewV4()
+	reservoirNotes := make(map[uuid.UUID]domain.ReservoirNote, 0)
+	reservoirNotes[noteUID] = domain.ReservoirNote{
+		UID:         noteUID,
+		Content:     "Don't forget to close the bucket after using",
+		CreatedDate: time.Now(),
+	}
+
 	reservoir1 := domain.Reservoir{
 		UID:         uid,
 		Name:        "MyBucketReservoir",
@@ -1058,12 +1067,7 @@ func initDataDemo(
 		Temperature: 29,
 		WaterSource: domain.Bucket{Capacity: 100, Volume: 10},
 		Farm:        farm1,
-		Notes: []domain.ReservoirNote{
-			domain.ReservoirNote{
-				Content:     "Don't forget to close the bucket after using",
-				CreatedDate: time.Now(),
-			},
-		},
+		Notes:       reservoirNotes,
 		CreatedDate: time.Now(),
 	}
 
@@ -1080,7 +1084,7 @@ func initDataDemo(
 		Temperature: 29,
 		WaterSource: domain.Tap{},
 		Farm:        farm1,
-		Notes:       []domain.ReservoirNote{},
+		Notes:       make(map[uuid.UUID]domain.ReservoirNote),
 		CreatedDate: time.Now(),
 	}
 
@@ -1089,6 +1093,15 @@ func initDataDemo(
 	reservoirStorage.ReservoirMap[uid] = reservoir2
 
 	uid, _ = uuid.NewV4()
+
+	noteUID, _ = uuid.NewV4()
+	areaNotes := make(map[uuid.UUID]domain.AreaNote, 0)
+	areaNotes[noteUID] = domain.AreaNote{
+		UID:         noteUID,
+		Content:     "This area should only be used for seeding.",
+		CreatedDate: time.Now(),
+	}
+
 	area1 := domain.Area{
 		UID:       uid,
 		Name:      "MySeedingArea",
@@ -1096,7 +1109,7 @@ func initDataDemo(
 		Type:      "nursery",
 		Location:  "indoor",
 		Photo:     domain.AreaPhoto{},
-		Notes:     []domain.AreaNote{},
+		Notes:     areaNotes,
 		Reservoir: reservoir2,
 		Farm:      farm1,
 	}
@@ -1113,7 +1126,7 @@ func initDataDemo(
 		Type:      "growing",
 		Location:  "outdoor",
 		Photo:     domain.AreaPhoto{},
-		Notes:     []domain.AreaNote{},
+		Notes:     make(map[uuid.UUID]domain.AreaNote),
 		Reservoir: reservoir1,
 		Farm:      farm1,
 	}
@@ -1134,7 +1147,7 @@ func initDataDemo(
 	uid, _ = uuid.NewV4()
 	inventory2 := domain.InventoryMaterial{
 		UID:       uid,
-		PlantType: domain.Fruit{},
+		PlantType: domain.Vegetable{},
 		Variety:   "Tomat Super One",
 	}
 
@@ -1152,19 +1165,29 @@ func initDataDemo(
 	uid, _ = uuid.NewV4()
 	inventory4 := domain.InventoryMaterial{
 		UID:       uid,
-		PlantType: domain.Vegetable{},
+		PlantType: domain.Fruit{},
 		Variety:   "Orange Sweet Mandarin",
 	}
 
 	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
 
 	uid, _ = uuid.NewV4()
+
+	noteUID, _ = uuid.NewV4()
+	cropNotes := make(map[uuid.UUID]domain.CropNote, 0)
+	cropNotes[noteUID] = domain.CropNote{
+		UID:         noteUID,
+		Content:     "This crop must be intensely watched because its expensive af",
+		CreatedDate: time.Now(),
+	}
+
 	crop1 := domain.Crop{
 		UID:          uid,
 		InitialArea:  area1,
 		CurrentAreas: []domain.Area{area1},
 		Type:         domain.Nursery{},
 		Container:    domain.CropContainer{Quantity: 5, Type: domain.Tray{Cell: 10}},
+		Notes:        cropNotes,
 		CreatedDate:  time.Now(),
 	}
 
