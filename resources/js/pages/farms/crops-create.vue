@@ -1,9 +1,7 @@
 <template lang="pug">
   .crops-create.col
     .wrapper-md
-      .row
-        .col-sm-12.col-xs-12
-          h1.m-n.font-thin.h3.text-black Crops
+      h1.m-n.font-thin.h3.text-black Crops
     .wrapper.md
       .row
         .col-sm-6.col-sm-offset-3
@@ -11,26 +9,24 @@
             .panel-heading
               span.h4.font-bold Add a New Batch
             .panel-body
-              small.text-muted Crop Batch is lorem ipsum
+              p.text-muted
+                | Crop Batch is a quantity or consignment of crops done at one time.
               form(@submit.prevent="validateBeforeSubmit")
                 .line.line-dashed.b-b.line-lg
-                .row
-                  .form-group
-                    label.col-xs-12.control-label Select activity type of this crop batch
-                    .row
-                      .col-sm-6(v-for="type in options.areaTypes")
-                        .radio.m-l
-                          label.i-checks
-                            input(type="radio" name="activityType" v-bind:value="type.key")
-                            i
-                            | {{ type.label }}
-                .row
-                  .col-xs-12
-                    .form-group
-                      label Area
-                      select.form-control(name="arealist")
-                        option - select area to grow -
-                        option(v-for="area in areas" v-bind:value="area.uid") {{ area.name }}
+                .form-group
+                  label.control-label Select activity type of this crop batch
+                  .row
+                    .col-sm-6(v-for="type in options.areaTypes")
+                      .radio
+                        label.i-checks
+                          input(type="radio" name="activityType" v-bind:value="type.key")
+                          i
+                          | {{ type.label }}
+                .form-group
+                  label Area
+                  select.form-control(name="arealist")
+                    option - select area to grow -
+                    option(v-for="area in areas" v-bind:value="area.uid") {{ area.name }}
                 .row
                   .col-xs-6
                     .form-group
@@ -56,12 +52,14 @@
                         option - select unit -
                         option(value="trays") Trays
                         option(value="pots") Pots
-                    input.form-control(type="text" placeholder="How many cells your tray has?" name="cells")
                 .row
-                  .form-group
-                    .col-md-12.m-t
-                      button.btn.btn-default CANCEL
-                      button.btn.btn-success.pull-right SAVE
+                  .col-xs-6.pull-right
+                    .form-group
+                      input.form-control(type="text" placeholder="How many cells your tray has?" name="cells")
+                .form-group
+                  button.btn.btn-addon.btn-success.pull-right(type="submit") Save
+                    i.fa.fa-long-arrow-right
+                  router-link.btn.btn-addon.btn-default(:to="{name: 'FarmCrops'}") Cancel
 </template>
 
 <script>
