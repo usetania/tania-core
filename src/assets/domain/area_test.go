@@ -69,7 +69,7 @@ func TestAreaCreateRemoveNote(t *testing.T) {
 	assert.NotNil(t, area.Notes[0].CreatedDate)
 
 	// When
-	area.RemoveNote("This is my new note")
+	area.RemoveNote(area.Notes[0].UID.String())
 
 	assert.Equal(t, 0, len(area.Notes))
 }

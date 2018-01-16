@@ -81,7 +81,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 	g.POST("/:id/areas", s.SaveArea)
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
-	g.DELETE("/areas/:id/notes/:content", s.RemoveAreaNotes)
+	g.DELETE("/areas/:area_id/notes/:note_id", s.RemoveAreaNotes)
 	g.GET("/:id/areas", s.GetFarmAreas)
 	g.GET("/:id/crops", s.FindAllCrops)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
@@ -470,8 +470,8 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	data := make(map[string]DetailArea)
 
-	areaID := c.Param("id")
-	content := c.Param("content")
+	areaID := c.Param("area_id")
+	noteID := c.Param("note_id")
 
 	// Validate //
 	result := <-s.AreaRepo.FindByID(areaID)
@@ -485,7 +485,7 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	}
 
 	// Process //
-	err := area.RemoveNote(content)
+	err := area.RemoveNote(noteID)
 	if err != nil {
 		return Error(c, err)
 	}

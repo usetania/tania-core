@@ -48,6 +48,7 @@ type AreaPhoto struct {
 }
 
 type AreaNote struct {
+	UID         uuid.UUID `json:"uid"`
 	Content     string    `json:"content"`
 	CreatedDate time.Time `json:"created_date"`
 }
@@ -106,7 +107,13 @@ func (a *Area) AddNewNote(content string) error {
 		return AreaError{Code: AreaNoteErrorInvalidContent}
 	}
 
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
 	areaNote := AreaNote{
+		UID:         uid,
 		Content:     content,
 		CreatedDate: time.Now(),
 	}
@@ -116,17 +123,24 @@ func (a *Area) AddNewNote(content string) error {
 	return nil
 }
 
-func (a *Area) RemoveNote(content string) error {
-	if content == "" {
-		return AreaError{Code: AreaNoteErrorInvalidContent}
+func (a *Area) RemoveNote(uid string) error {
+	if uid == "" {
+		return AreaError{Code: AreaNoteErrorNotFound}
+	}
+
+	uuid, err := uuid.FromString(uid)
+	if err != nil {
+		return AreaError{Code: AreaNoteErrorNotFound}
 	}
 
 	found := false
 	for i, v := range a.Notes {
-		if v.Content == content {
+		if v.UID == uuid {
+			// This remove the a note from slice and maintain its order
 			copy(a.Notes[i:], a.Notes[i+1:])
 			a.Notes[len(a.Notes)-1] = AreaNote{}
 			a.Notes = a.Notes[:len(a.Notes)-1]
+
 			found = true
 		}
 	}
