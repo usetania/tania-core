@@ -14,7 +14,7 @@ type Crop struct {
 	Type         CropType
 	Inventory    InventoryMaterial
 	Container    CropContainer
-	Notes        []CropNote
+	Notes        map[uuid.UUID]CropNote
 	CreatedDate  time.Time
 }
 
@@ -118,7 +118,11 @@ func (c *Crop) AddNewNote(content string) error {
 		CreatedDate: time.Now(),
 	}
 
-	c.Notes = append(c.Notes, cropNote)
+	if len(c.Notes) == 0 {
+		c.Notes = make(map[uuid.UUID]CropNote)
+	}
+
+	c.Notes[uid] = cropNote
 
 	return nil
 }
@@ -134,12 +138,9 @@ func (c *Crop) RemoveNote(uid string) error {
 	}
 
 	found := false
-	for i, v := range c.Notes {
+	for _, v := range c.Notes {
 		if v.UID == uuid {
-			copy(c.Notes[i:], c.Notes[i+1:])
-			c.Notes[len(c.Notes)-1] = CropNote{}
-			c.Notes = c.Notes[:len(c.Notes)-1]
-
+			delete(c.Notes, uuid)
 			found = true
 		}
 	}

@@ -8,15 +8,15 @@ import (
 )
 
 type Area struct {
-	UID       uuid.UUID  `json:"uid"`
-	Name      string     `json:"name"`
-	Size      AreaUnit   `json:"size"`
-	Type      string     `json:"type"`
-	Location  string     `json:"location"`
-	Photo     AreaPhoto  `json:"photo"`
-	Notes     []AreaNote `json:"-"`
-	Reservoir Reservoir  `json:"-"`
-	Farm      Farm       `json:"-"`
+	UID       uuid.UUID              `json:"uid"`
+	Name      string                 `json:"name"`
+	Size      AreaUnit               `json:"size"`
+	Type      string                 `json:"type"`
+	Location  string                 `json:"location"`
+	Photo     AreaPhoto              `json:"photo"`
+	Notes     map[uuid.UUID]AreaNote `json:"-"`
+	Reservoir Reservoir              `json:"-"`
+	Farm      Farm                   `json:"-"`
 }
 
 type AreaUnit interface {
@@ -118,7 +118,11 @@ func (a *Area) AddNewNote(content string) error {
 		CreatedDate: time.Now(),
 	}
 
-	a.Notes = append(a.Notes, areaNote)
+	if len(a.Notes) == 0 {
+		a.Notes = make(map[uuid.UUID]AreaNote)
+	}
+
+	a.Notes[uid] = areaNote
 
 	return nil
 }
@@ -134,13 +138,9 @@ func (a *Area) RemoveNote(uid string) error {
 	}
 
 	found := false
-	for i, v := range a.Notes {
+	for _, v := range a.Notes {
 		if v.UID == uuid {
-			// This remove the a note from slice and maintain its order
-			copy(a.Notes[i:], a.Notes[i+1:])
-			a.Notes[len(a.Notes)-1] = AreaNote{}
-			a.Notes = a.Notes[:len(a.Notes)-1]
-
+			delete(a.Notes, uuid)
 			found = true
 		}
 	}

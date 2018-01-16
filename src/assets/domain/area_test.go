@@ -3,6 +3,7 @@ package domain
 import (
 	"testing"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -65,11 +66,16 @@ func TestAreaCreateRemoveNote(t *testing.T) {
 	assert.Nil(t, areaErr)
 
 	assert.Equal(t, 1, len(area.Notes))
-	assert.Equal(t, "This is my new note", area.Notes[0].Content)
-	assert.NotNil(t, area.Notes[0].CreatedDate)
+
+	uid := uuid.UUID{}
+	for k, v := range area.Notes {
+		assert.Equal(t, "This is my new note", v.Content)
+		assert.NotNil(t, v.CreatedDate)
+		uid = k
+	}
 
 	// When
-	area.RemoveNote(area.Notes[0].UID.String())
+	area.RemoveNote(uid.String())
 
 	assert.Equal(t, 0, len(area.Notes))
 }

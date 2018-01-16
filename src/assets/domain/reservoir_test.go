@@ -3,6 +3,7 @@ package domain
 import (
 	"testing"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -178,11 +179,17 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 	assert.Nil(t, reservoirErr)
 
 	assert.Equal(t, 1, len(reservoir.Notes))
-	assert.Equal(t, "This is my new note", reservoir.Notes[0].Content)
-	assert.NotNil(t, reservoir.Notes[0].CreatedDate)
+
+	uid := uuid.UUID{}
+	for k, v := range reservoir.Notes {
+		assert.Equal(t, "This is my new note", v.Content)
+		assert.NotNil(t, v.CreatedDate)
+		uid = k
+	}
 
 	// When
-	reservoir.RemoveNote(reservoir.Notes[0].UID.String())
+	reservoir.RemoveNote(uid.String())
 
+	// Then
 	assert.Equal(t, 0, len(reservoir.Notes))
 }

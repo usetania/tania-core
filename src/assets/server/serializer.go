@@ -232,7 +232,13 @@ func MapToCropBatch(cropBatch domain.Crop) CropBatch {
 		Quantity: cropBatch.Container.Quantity,
 		Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
 	}
-	cb.Notes = cropBatch.Notes
+
+	notes := make([]domain.CropNote, 0, len(cropBatch.Notes))
+	for _, v := range cropBatch.Notes {
+		notes = append(notes, v)
+	}
+	cb.Notes = notes
+
 	cb.CreatedDate = cropBatch.CreatedDate
 
 	return cb
@@ -263,6 +269,11 @@ func (sa SimpleArea) MarshalJSON() ([]byte, error) {
 }
 
 func (da DetailArea) MarshalJSON() ([]byte, error) {
+	notes := make([]domain.AreaNote, 0, len(da.Notes))
+	for _, v := range da.Notes {
+		notes = append(notes, v)
+	}
+
 	return json.Marshal(struct {
 		UID       string            `json:"uid"`
 		Name      string            `json:"name"`
@@ -280,11 +291,16 @@ func (da DetailArea) MarshalJSON() ([]byte, error) {
 		Location:  da.Location,
 		Photo:     da.Photo,
 		Reservoir: da.Reservoir,
-		Notes:     da.Notes,
+		Notes:     notes,
 	})
 }
 
 func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
+	notes := make([]domain.ReservoirNote, 0, len(dr.Notes))
+	for _, v := range dr.Notes {
+		notes = append(notes, v)
+	}
+
 	return json.Marshal(struct {
 		UID              string                 `json:"uid"`
 		Name             string                 `json:"name"`
@@ -302,7 +318,7 @@ func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
 		EC:               dr.EC,
 		Temperature:      dr.Temperature,
 		WaterSource:      dr.WaterSource,
-		Notes:            dr.Notes,
+		Notes:            notes,
 		CreatedDate:      dr.CreatedDate,
 		InstalledToAreas: dr.InstalledToAreas,
 	})

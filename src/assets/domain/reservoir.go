@@ -10,15 +10,15 @@ import (
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm.
 type Reservoir struct {
-	UID         uuid.UUID       `json:"uid"`
-	Name        string          `json:"name"`
-	PH          float32         `json:"ph"`
-	EC          float32         `json:"ec"`
-	Temperature float32         `json:"temperature"`
-	WaterSource WaterSource     `json:"water_source"`
-	Farm        Farm            `json:"-"`
-	Notes       []ReservoirNote `json:"-"`
-	CreatedDate time.Time       `json:"created_date"`
+	UID         uuid.UUID                   `json:"uid"`
+	Name        string                      `json:"name"`
+	PH          float32                     `json:"ph"`
+	EC          float32                     `json:"ec"`
+	Temperature float32                     `json:"temperature"`
+	WaterSource WaterSource                 `json:"water_source"`
+	Farm        Farm                        `json:"-"`
+	Notes       map[uuid.UUID]ReservoirNote `json:"-"`
+	CreatedDate time.Time                   `json:"created_date"`
 
 	// This is for serialization purposes
 	InstalledToArea []Area `json:"-"`
@@ -151,7 +151,11 @@ func (r *Reservoir) AddNewNote(content string) error {
 		CreatedDate: time.Now(),
 	}
 
-	r.Notes = append(r.Notes, reservoirNote)
+	if len(r.Notes) == 0 {
+		r.Notes = make(map[uuid.UUID]ReservoirNote)
+	}
+
+	r.Notes[uid] = reservoirNote
 
 	return nil
 }
@@ -167,13 +171,9 @@ func (r *Reservoir) RemoveNote(uid string) error {
 	}
 
 	found := false
-	for i, v := range r.Notes {
+	for _, v := range r.Notes {
 		if v.UID == uuid {
-			// This remove a note from slice and maintain its order
-			copy(r.Notes[i:], r.Notes[i+1:])
-			r.Notes[len(r.Notes)-1] = ReservoirNote{}
-			r.Notes = r.Notes[:len(r.Notes)-1]
-
+			delete(r.Notes, uuid)
 			found = true
 		}
 	}

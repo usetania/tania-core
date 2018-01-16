@@ -106,11 +106,16 @@ func TestCropCreateRemoveNote(t *testing.T) {
 	assert.Nil(t, cropErr)
 
 	assert.Equal(t, 1, len(crop.Notes))
-	assert.Equal(t, "This is my new note", crop.Notes[0].Content)
-	assert.NotNil(t, crop.Notes[0].CreatedDate)
+
+	uid := uuid.UUID{}
+	for k, v := range crop.Notes {
+		assert.Equal(t, "This is my new note", v.Content)
+		assert.NotNil(t, v.CreatedDate)
+		uid = k
+	}
 
 	// When
-	crop.RemoveNote("This is my new note")
+	crop.RemoveNote(uid.String())
 
 	assert.Equal(t, 0, len(crop.Notes))
 }
