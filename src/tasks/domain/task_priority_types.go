@@ -2,7 +2,7 @@ package domain
 
 const (
 	TaskPriorityUrgent = "urgent"
-	TaskPriorityMedium = "medium"
+	TaskPriorityNormal = "normal"
 )
 
 type TaskPriority struct {
@@ -13,7 +13,7 @@ type TaskPriority struct {
 func FindAllTaskPriority() []TaskPriority {
 	return []TaskPriority{
 		TaskPriority{Code: TaskPriorityUrgent, Name: "Urgent"},
-		TaskPriority{Code: TaskPriorityMedium, Name: "Medium"},
+		TaskPriority{Code: TaskPriorityNormal, Name: "Normal"},
 	}
 }
 
