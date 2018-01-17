@@ -30,6 +30,7 @@
                     label Location
                     button.btn.btn-default.pull-right(@click="findMe" type="button")
                       i.fa.fa-crosshairs
+                mapbox
               .form-group
                 .row
                   .col-xs-6
@@ -60,16 +61,20 @@
 </template>
 
 <script>
-import stubFarm from '@/stores/stubs/farm'
-import stubMessage from '@/stores/stubs/message'
+import Mapbox from '@/components/mapbox'
+import { StubFarm, StubMessage } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   data () {
     return {
-      message: Object.assign({}, stubMessage),
-      farm: Object.assign({}, stubFarm)
+      message: Object.assign({}, StubMessage),
+      farm: Object.assign({}, StubFarm),
+      mapbox: {}
     }
+  },
+  components : {
+    Mapbox
   },
 
   computed: {
@@ -123,3 +128,10 @@ export default {
 
 </script>
 
+
+<style lang="scss" scoped>
+ #map {
+  width: 100%;
+  height: 500px;
+}
+</style>

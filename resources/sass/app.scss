@@ -4,7 +4,8 @@
 @import "vendors/angulr";
 @import "vendors/nprogress";
 
-@import "./node_modules/font-awesome/scss/font-awesome";
+@import "~font-awesome/scss/font-awesome";
+@import "~leaflet/dist/leaflet.css";
 @import "fonts/material-icons";
 @import "fonts/source-sans";
 
