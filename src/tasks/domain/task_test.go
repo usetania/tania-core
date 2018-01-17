@@ -26,8 +26,6 @@ func TestCreateFarm(t *testing.T) {
 		//{"MyDescription", "2019-01-23T17:37:39.697328206+01:00", "urgent", "inprogress", "area", "46b054ab-a080-4c0b-ada9-ce920b585512", nil},
 		//empty description
 		{"", "2019-01-23T17:37:39.697328206+01:00", "urgent", "inprogress", "area", "46b054ab-a080-4c0b-ada9-ce920b585512", TaskError{TaskErrorDescriptionEmptyCode}},
-		//invalid description
-		{"!#@$MyDescription", "2019-01-23T17:37:39.697328206+01:00", "urgent", "inprogress", "area", "46b054ab-a080-4c0b-ada9-ce920b585512", TaskError{TaskErrorDescriptionAlphanumericOnlyCode}},
 		//emptyduedate
 		{"MyDescription", "", "urgent", "inprogress", "area", "46b054ab-a080-4c0b-ada9-ce920b585512", TaskError{TaskErrorDueDateEmptyCode}},
 		//duedatepassed

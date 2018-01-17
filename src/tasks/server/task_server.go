@@ -53,14 +53,8 @@ func (s TaskServer) FindAllTask(c echo.Context) error {
 // SaveTask is a TaskServer's handler to save new Task
 func (s *TaskServer) SaveTask(c echo.Context) error {
 	data := make(map[string]domain.Task)
-	//fmt.Printf(c.FormValue("description"))
-	//fmt.Printf(c.FormValue("duedate"))
-	//fmt.Printf(c.FormValue("priority"))
-	//fmt.Printf(c.FormValue("status"))
-	//fmt.Printf(c.FormValue("type"))
-	//fmt.Printf(c.FormValue("assetid"))
 
-	duedate, err := time.Parse(time.RFC3339, c.FormValue("duedate"))
+	due_date, err := time.Parse(time.RFC3339, c.FormValue("due_date"))
 
 	if err != nil {
 		return Error(c, err)
@@ -69,11 +63,11 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 
 	task, err := domain.CreateTask(
 		c.FormValue("description"),
-		duedate,
+		due_date,
 		c.FormValue("priority"),
 		c.FormValue("status"),
 		c.FormValue("type"),
-		c.FormValue("assetid"))
+		c.FormValue("asset_id"))
 
 	if err != nil {
 		return Error(c, err)

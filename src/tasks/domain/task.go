@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/Tanibox/tania-server/src/helper/validationhelper"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )
@@ -9,16 +8,16 @@ import (
 type Task struct {
 	UID			uuid.UUID 	`json:"uid"`
 	Description	string		`json:"description"`
-	CreatedDate	time.Time	`json:"createddate"`
-	DueDate		time.Time	`json:"duedate"`
+	CreatedDate	time.Time	`json:"created_date"`
+	DueDate		time.Time	`json:"due_date"`
 	Priority	string		`json:"priority"`
 	Status		string		`json:"status"`
 	TaskType	string		`json:"type"`
-	AssetID		uuid.UUID	`json:"assetid"`
+	AssetID		uuid.UUID	`json:"asset_id"`
 }
 
 // CreateTask
-func CreateTask(description string, duedate time.Time, priority string, status string, tasktype string, assetid string) (Task, error) {
+func CreateTask(description string, due_date time.Time, priority string, status string, tasktype string, asset_id string) (Task, error) {
 	// add validation
 
 	err := validateTaskDescription(description)
@@ -26,7 +25,7 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 		return Task{}, err
 	}
 
-	err = validateTaskDueDate(duedate)
+	err = validateTaskDueDate(due_date)
 	if err != nil {
 		return Task{}, err
 	}
@@ -46,7 +45,7 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 		return Task{}, err
 	}
 	
-	err = validateAssetID(assetid)
+	err = validateAssetID(asset_id)
 	if err != nil {
 		return Task{}, err
 	}
@@ -55,7 +54,7 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 	if err != nil {
 		return Task{}, err
 	}
-	asset, err := uuid.FromString(assetid)
+	asset, err := uuid.FromString(asset_id)
 	if err != nil {
 		return Task{}, err
 	}
@@ -64,7 +63,7 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 		UID:			uid,
 		Description:	description,
 		CreatedDate:	time.Now(),
-		DueDate:		duedate,
+		DueDate:		due_date,
 		Priority:		priority,
 		Status:			status,
 		TaskType:		tasktype,
@@ -141,9 +140,6 @@ func validateTaskDescription (description string) error {
 	if description == "" {
 		return TaskError{TaskErrorDescriptionEmptyCode}
 	}
-	if !validationhelper.IsAlphanumeric(description) {
-		return TaskError{TaskErrorDescriptionAlphanumericOnlyCode}
-	}
 	return nil
 }
 
@@ -189,8 +185,8 @@ func validateTaskType (tasktype string) error {
 }
 
 // validateAssetID
-func validateAssetID (assetid string) error {
-	if assetid == "" {
+func validateAssetID (asset_id string) error {
+	if asset_id == "" {
 		return TaskError{TaskErrorAssetIDEmptyCode}
 	}
 
