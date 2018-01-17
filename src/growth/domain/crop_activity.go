@@ -30,11 +30,23 @@ func (m Move) Status() string {
 	return "MOVE"
 }
 
+// CheckArea checks if the source and destination area is valid based on business rules
 func (m Move) CheckArea(sourceAreaType string, destinationAreaType string) error {
-	return nil
+	if sourceAreaType == "seeding" && destinationAreaType == "growing" {
+		return nil
+	}
+	if sourceAreaType == destinationAreaType {
+		return nil
+	}
+
+	return CropActivityError{Code: CropActivityMoveErrorInvalidArea}
 }
 
-func (m Move) CheckQuantity(CurrentSourceAreaQuantity int, quantityToBeMoved int) error {
+func (m Move) CheckQuantity(currentSourceAreaQuantity int, quantityToBeMoved int) error {
+	if currentSourceAreaQuantity < quantityToBeMoved {
+		return CropActivityError{Code: CropActivityMoveErrorInvalidQuantity}
+	}
+
 	return nil
 }
 
