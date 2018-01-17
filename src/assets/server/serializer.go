@@ -203,6 +203,14 @@ func MapToAvailableInventories(inventories []domain.InventoryMaterial) []Availab
 	return aiSlice
 }
 
+func MapToInventoryMaterial(inventoryMaterial domain.InventoryMaterial) InventoryMaterial {
+	return InventoryMaterial{
+		UID:       inventoryMaterial.UID,
+		PlantType: PlantType{PlantType: inventoryMaterial.PlantType},
+		Variety:   inventoryMaterial.Variety,
+	}
+}
+
 func MapToCropBatch(cropBatch domain.Crop) CropBatch {
 	cb := CropBatch{}
 	cb.UID = cropBatch.UID
