@@ -1,0 +1,879 @@
+{
+	"info": {
+		"name": "Farm",
+		"_postman_id": "4249e317-a1ec-8300-cac2-f02ac7068544",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Farms",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "1c570736-c2d7-4522-8772-f226d32949aa",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "82f8c89a-7360-46bd-8948-c3df92a3b992",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms"
+					]
+				},
+				"description": "Get all available farms"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Farm",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1357b0da-b965-460b-b1aa-8e3acabfa2da",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"FARM_ID\", data.data.uid);   ",
+							"}"
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e209025f-8988-4097-893a-34bf382171e7",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "MyFarm",
+							"type": "text",
+							"description": "Required, alphanumeric, min 5 char, max 100 char"
+						},
+						{
+							"key": "description",
+							"value": "",
+							"type": "text",
+							"description": "Optional"
+						},
+						{
+							"key": "latitude",
+							"value": "10.00",
+							"type": "text",
+							"description": "Required"
+						},
+						{
+							"key": "longitude",
+							"value": "11.00",
+							"type": "text",
+							"description": "Required"
+						},
+						{
+							"key": "farm_type",
+							"value": "organic",
+							"type": "text",
+							"description": "Required. options: organic, hidroponic"
+						},
+						{
+							"key": "country_code",
+							"value": "ID",
+							"type": "text",
+							"description": "Required: options example: ID. This should be got from backend."
+						},
+						{
+							"key": "city_code",
+							"value": "JK",
+							"type": "text",
+							"description": "Required: options example: JK. This should be got from backend."
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Farm's Reservoir",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2421cd3f-6610-498c-a636-8cda3846dcad",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"RESERVOIR_ID\", data.data.uid);   ",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "MyReservoir1",
+							"type": "text",
+							"description": "Required, alphanumeric, min 5 char, max 100 char"
+						},
+						{
+							"key": "type",
+							"value": "tap",
+							"type": "text",
+							"description": "Requred. Options: bucket, tap.\nIf bucket then `capacity` is required\nif tap then `capacity` is not required"
+						},
+						{
+							"key": "capacity",
+							"value": "100",
+							"type": "text",
+							"description": "Required. \nIf bucket then `capacity` is required.\nif tap then `capacity` is not required."
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/reservoirs",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"reservoirs"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Farm's Area",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aef81abf-0d42-4c5f-a9ab-67aed079e7fc",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"AREA_ID\", data.data.uid);   ",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "MyArea",
+							"description": "Required, alphanumeric, min 5 char, max 100 char",
+							"type": "text"
+						},
+						{
+							"key": "size",
+							"value": "10",
+							"description": "Required, number, size cannot be <= 0",
+							"type": "text"
+						},
+						{
+							"key": "size_unit",
+							"value": "hectare",
+							"description": "Required, alpha. options: hectare, m2",
+							"type": "text"
+						},
+						{
+							"key": "type",
+							"value": "seeding",
+							"description": "Required, alpha. options: seeding, growing",
+							"type": "text"
+						},
+						{
+							"key": "location",
+							"value": "outdoor",
+							"description": "Required, alpha. options: indoor, outdoor",
+							"type": "text"
+						},
+						{
+							"key": "reservoir_id",
+							"value": "{{RESERVOIR_ID}}",
+							"description": "Required, number",
+							"type": "text"
+						},
+						{
+							"key": "photo",
+							"description": "Optional",
+							"type": "file",
+							"src": "Screen Shot 2018-01-16 at 3.38.56 PM.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"areas"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Reservoirs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8a2747a7-337b-42f5-9a33-454290e1b747",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/reservoirs",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"reservoirs"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm Types",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/types",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"types"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/4953522730235874220",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"4953522730235874220"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Areas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"areas"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm Area File",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/{{AREA_ID}}/photos",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"areas",
+						"{{AREA_ID}}",
+						"photos"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Areas By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/{{AREA_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"areas",
+						"{{AREA_ID}}"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Reservoirs By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/reservoirs/{{RESERVOIR_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"reservoirs",
+						"{{RESERVOIR_ID}}"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Farm Inventory",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "plant_type",
+							"value": "vegetable",
+							"type": "text",
+							"description": "required. options: vegetable, fruit, herb, flower, tree. Options can be obtained from Get Plant Types endpoint"
+						},
+						{
+							"key": "variety",
+							"value": "Brocolli Super Green 2",
+							"type": "text",
+							"description": "required. string."
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/inventories",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"inventories"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Available Inventories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/inventories",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"inventories"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Plant Types",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/inventories/plant_types",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"inventories",
+						"plant_types"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Area's Crop Batch",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f0e01112-16be-48be-9534-4ea885663591",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"CROP_ID\", data.data.uid);   ",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "crop_type",
+							"value": "seeding",
+							"description": "required. options: seeding, growing",
+							"type": "text"
+						},
+						{
+							"key": "plant_type",
+							"value": "vegetable",
+							"description": "required. options: vegetable, fruit, herb, flower, tree. Options should be obtained from Get Inventories endpoint",
+							"type": "text"
+						},
+						{
+							"key": "variety",
+							"value": "Brocolli Super Green 2",
+							"description": "required. string. Value should be obtained from Get Inventories endpoint",
+							"type": "text"
+						},
+						{
+							"key": "container_quantity",
+							"value": "10",
+							"description": "required. number",
+							"type": "text"
+						},
+						{
+							"key": "container_type",
+							"value": "pot",
+							"description": "required. options: tray, pot",
+							"type": "text"
+						},
+						{
+							"key": "container_cell",
+							"value": "15",
+							"description": "required if `container_type` == tray. ",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/crops",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"areas",
+						"{{AREA_ID}}",
+						"crops"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Crops",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/crops",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}",
+						"crops"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Farm's Crops By Area",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/crops",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"areas",
+						"{{AREA_ID}}",
+						"crops"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Area's Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "431ee28c-2902-43a7-95e0-79c4657905f2",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"AREA_NOTE_ID\", data.data.notes[data.data.notes.length-1].uid);   ",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "content",
+							"value": "This should be my first notes and i want this to be somewhat lengthful. I think this is lengthly enough.",
+							"description": "required. string.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/notes",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"areas",
+						"{{AREA_ID}}",
+						"notes"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Reservoir's Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fef2b74b-5bf1-4a40-8d8d-31bff57692fd",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"RESERVOIR_NOTE_ID\", data.data.notes[data.data.notes.length-1].uid);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "content",
+							"value": "This should be my first notes and i want this to be somewhat lengthful. I think this is lengthly enough.",
+							"description": "required. string.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/reservoirs/{{RESERVOIR_ID}}/notes",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"reservoirs",
+						"{{RESERVOIR_ID}}",
+						"notes"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Crop's Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4490da8f-0f3e-44d5-a88b-2296daffdb41",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"CROP_NOTE_ID\", data.data.notes[data.data.notes.length-1].uid);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "content",
+							"value": "This should be my first notes and i want this to be somewhat lengthful. I think this is lengthly enough.",
+							"description": "required. string",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/notes",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}",
+						"notes"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Area's Notes",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/notes/{{AREA_NOTE_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"areas",
+						"{{AREA_ID}}",
+						"notes",
+						"{{AREA_NOTE_ID}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Reservoir's Notes",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/reservoirs/{{RESERVOIR_ID}}/notes/{{RESERVOIR_NOTE_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"reservoirs",
+						"{{RESERVOIR_ID}}",
+						"notes",
+						"{{RESERVOIR_NOTE_ID}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Remove Crop's Notes",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/notes/{{CROP_NOTE_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}",
+						"notes",
+						"{{CROP_NOTE_ID}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
