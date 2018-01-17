@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/Tanibox/tania-server/src/helper/validationhelper"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 )
@@ -60,7 +61,7 @@ func (rv *RequestValidation) ValidateFarm(s FarmServer, farmId string) (domain.F
 	result := <-s.FarmRepo.FindByID(farmId)
 	farm, _ := result.Result.(domain.Farm)
 
-	if farm.UID.String() == "" {
+	if farm.UID == (uuid.UUID{}) {
 		return domain.Farm{}, NewRequestValidationError(NOT_FOUND, "farm_id")
 	}
 
