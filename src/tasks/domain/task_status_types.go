@@ -1,4 +1,4 @@
-package entity
+package domain
 
 const (
 	TaskStatusInProgress = "inprogress"

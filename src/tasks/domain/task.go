@@ -1,4 +1,4 @@
-package entity
+package domain
 
 import (
 	"github.com/Tanibox/tania-server/src/helper/validationhelper"
