@@ -4,13 +4,14 @@ import (
 	"strconv"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	uuid "github.com/satori/go.uuid"
 )
 
 func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirId string) (domain.Reservoir, error) {
 	result := <-s.ReservoirRepo.FindByID(reservoirId)
 	reservoir, _ := result.Result.(domain.Reservoir)
 
-	if reservoir.UID.String() == "" {
+	if reservoir.UID == (uuid.UUID{}) {
 		return reservoir, NewRequestValidationError(NOT_FOUND, "reservoir_id")
 	}
 
