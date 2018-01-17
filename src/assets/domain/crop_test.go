@@ -119,3 +119,24 @@ func TestCropCreateRemoveNote(t *testing.T) {
 
 	assert.Equal(t, 0, len(crop.Notes))
 }
+
+func TestCropDaysSinceSeeding(t *testing.T) {
+	// Given
+	farm, farmErr := CreateFarm("MyFarm1", "organic")
+	area, areaErr := CreateArea(farm, "Area1", "seeding")
+	crop, cropErr := CreateCropBatch(area)
+	seedingDate, timeErr1 := time.Parse(time.RFC3339, "2018-01-10T16:08:41+07:00")
+
+	// When
+	crop.CreatedDate = seedingDate
+	days := crop.CalculateDaysSinceSeeding()
+
+	// Then
+	assert.Nil(t, farmErr)
+	assert.Nil(t, areaErr)
+	assert.Nil(t, cropErr)
+	assert.Nil(t, timeErr1)
+
+	expectedDays := int(time.Now().Sub(seedingDate).Hours()) / 24
+	assert.Equal(t, expectedDays, days)
+}

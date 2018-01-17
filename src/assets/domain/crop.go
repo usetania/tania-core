@@ -152,6 +152,18 @@ func (c *Crop) RemoveNote(uid string) error {
 	return nil
 }
 
+// CalculateDaysSinceSeeding will find how long since its been seeded
+// It basically tell use the days since this crop is created.
+func (c Crop) CalculateDaysSinceSeeding() int {
+	now := time.Now()
+
+	diff := now.Sub(c.CreatedDate)
+
+	days := int(diff.Hours()) / 24
+
+	return days
+}
+
 func validateCropType(cropType CropType) error {
 	switch cropType.(type) {
 	case Seeding:

@@ -40,15 +40,16 @@ type AvailableInventory struct {
 }
 
 type CropBatch struct {
-	UID          uuid.UUID         `json:"uid"`
-	BatchID      string            `json:"batch_id"`
-	InitialArea  SimpleArea        `json:"initial_area"`
-	CurrentAreas []SimpleArea      `json:"current_area"`
-	Type         CropType          `json:"type"`
-	Inventory    InventoryMaterial `json:"inventory"`
-	Container    CropContainer     `json:"container"`
-	Notes        []domain.CropNote `json:"notes"`
-	CreatedDate  time.Time         `json:"created_date"`
+	UID              uuid.UUID         `json:"uid"`
+	BatchID          string            `json:"batch_id"`
+	InitialArea      SimpleArea        `json:"initial_area"`
+	CurrentAreas     []SimpleArea      `json:"current_area"`
+	Type             CropType          `json:"type"`
+	Inventory        InventoryMaterial `json:"inventory"`
+	Container        CropContainer     `json:"container"`
+	DaysSinceSeeding int               `json:"days_since_seeding"`
+	Notes            []domain.CropNote `json:"notes"`
+	CreatedDate      time.Time         `json:"created_date"`
 }
 
 type CropType struct{ domain.CropType }
@@ -243,6 +244,8 @@ func MapToCropBatch(cropBatch domain.Crop) CropBatch {
 			Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
 		}
 	}
+
+	cb.DaysSinceSeeding = cropBatch.CalculateDaysSinceSeeding()
 
 	notes := make([]domain.CropNote, 0, len(cropBatch.Notes))
 	for _, v := range cropBatch.Notes {
