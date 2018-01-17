@@ -28,7 +28,7 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		Priority	string		`json:"priority"`
 		Status		string		`json:"status"`
 		TaskType	string		`json:"type"`
-		ParentUID	string	`json:"parentuid"`
+		AssetID		string		`json:"assetid"`
 	}{
 		UID:  st.UID.String(),
 		Description: st.Description,
@@ -37,6 +37,6 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		Priority: st.Priority,
 		Status: st.Status,
 		TaskType: st.TaskType,
-		ParentUID: st.ParentUID.String(),
+		AssetID: st.AssetID.String(),
 	})
 }

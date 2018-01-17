@@ -58,7 +58,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	//fmt.Printf(c.FormValue("priority"))
 	//fmt.Printf(c.FormValue("status"))
 	//fmt.Printf(c.FormValue("type"))
-	//fmt.Printf(c.FormValue("parentuid"))
+	//fmt.Printf(c.FormValue("assetid"))
 
 	duedate, err := time.Parse(time.RFC3339, c.FormValue("duedate"))
 
@@ -73,7 +73,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		c.FormValue("priority"),
 		c.FormValue("status"),
 		c.FormValue("type"),
-		c.FormValue("parentuid"))
+		c.FormValue("assetid"))
 
 	if err != nil {
 		return Error(c, err)

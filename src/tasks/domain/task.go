@@ -14,11 +14,11 @@ type Task struct {
 	Priority	string		`json:"priority"`
 	Status		string		`json:"status"`
 	TaskType	string		`json:"type"`
-	ParentUID	uuid.UUID	`json:"parentuid"`
+	AssetID		uuid.UUID	`json:"assetid"`
 }
 
 // CreateTask
-func CreateTask(description string, duedate time.Time, priority string, status string, tasktype string, parentuid string) (Task, error) {
+func CreateTask(description string, duedate time.Time, priority string, status string, tasktype string, assetid string) (Task, error) {
 	// add validation
 
 	err := validateTaskDescription(description)
@@ -46,7 +46,7 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 		return Task{}, err
 	}
 	
-	err = validateParentUID(parentuid)
+	err = validateAssetID(assetid)
 	if err != nil {
 		return Task{}, err
 	}
@@ -55,9 +55,9 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 	if err != nil {
 		return Task{}, err
 	}
-	parent, err := uuid.FromString(parentuid)
+	asset, err := uuid.FromString(assetid)
 	if err != nil {
-		// throw error
+		return Task{}, err
 	}
 
 	return Task {
@@ -68,7 +68,7 @@ func CreateTask(description string, duedate time.Time, priority string, status s
 		Priority:		priority,
 		Status:			status,
 		TaskType:		tasktype,
-		ParentUID:		parent,
+		AssetID:		asset,
 	}, nil
 }
 
@@ -139,10 +139,10 @@ func (t *Task) ChangeTaskType (newtasktype string) error {
 // validateTaskDescription
 func validateTaskDescription (description string) error {
 	if description == "" {
-		// return error
+		return TaskError{TaskErrorDescriptionEmptyCode}
 	}
 	if !validationhelper.IsAlphanumeric(description) {
-		// return error
+		return TaskError{TaskErrorDescriptionAlphanumericOnlyCode}
 	}
 	return nil
 }
@@ -150,7 +150,7 @@ func validateTaskDescription (description string) error {
 // validateTaskDueDate
 func validateTaskDueDate (newdate time.Time) error {
 	if newdate.Before(time.Now()) {
-		//return error
+		return TaskError{TaskErrorDueDateInvalidCode}
 	}
 	return nil
 }
@@ -188,13 +188,13 @@ func validateTaskType (tasktype string) error {
 	return nil
 }
 
-// validateParentUID
-func validateParentUID (parentuid string) error {
-	if parentuid == "" {
-		// return error
+// validateAssetID
+func validateAssetID (assetid string) error {
+	if assetid == "" {
+		return TaskError{TaskErrorAssetIDEmptyCode}
 	}
 
-	//Find parent in repository
+	//Find asset in repository
 	// if not found return error
 
 	return nil
