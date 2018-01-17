@@ -1,7 +1,7 @@
 package domain
 
 const (
-	AreaTypeNursery = "nursery"
+	AreaTypeSeeding = "seeding"
 	AreaTypeGrowing = "growing"
 )
 
@@ -12,7 +12,7 @@ type AreaType struct {
 
 func FindAllAreaTypes() []AreaType {
 	return []AreaType{
-		AreaType{Code: AreaTypeNursery, Name: "Nursery"},
+		AreaType{Code: AreaTypeSeeding, Name: "Seeding"},
 		AreaType{Code: AreaTypeGrowing, Name: "Growing"},
 	}
 }

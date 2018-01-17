@@ -23,10 +23,10 @@ type CropType interface {
 	Code() string
 }
 
-// Nursery implements CropType
-type Nursery struct{}
+// Seeding implements CropType
+type Seeding struct{}
 
-func (s Nursery) Code() string { return "nursery" }
+func (s Seeding) Code() string { return "seeding" }
 
 // Growing implements CropType
 type Growing struct{}
@@ -154,7 +154,7 @@ func (c *Crop) RemoveNote(uid string) error {
 
 func validateCropType(cropType CropType) error {
 	switch cropType.(type) {
-	case Nursery:
+	case Seeding:
 	case Growing:
 	default:
 		return CropError{Code: CropErrorInvalidCropType}

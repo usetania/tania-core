@@ -19,7 +19,7 @@ func TestCreateCropBatch(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	areaNursery, err1 := CreateArea(farm, "AreaNursery", "nursery")
+	areaSeeding, err1 := CreateArea(farm, "AreaSeeding", "seeding")
 	areaGrowing, err2 := CreateArea(farm, "AreaGrowing", "growing")
 
 	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]Crop)}
@@ -27,10 +27,10 @@ func TestCreateCropBatch(t *testing.T) {
 	cropService := service.CropService{CropQuery: cropQuery}
 
 	// When
-	cropBatch1, errCrop1 := CreateCropBatch(areaNursery)
+	cropBatch1, errCrop1 := CreateCropBatch(areaSeeding)
 	cropBatch2, errCrop2 := CreateCropBatch(areaGrowing)
 
-	errType1 := cropBatch1.ChangeCropType(Nursery{})
+	errType1 := cropBatch1.ChangeCropType(Seeding{})
 	errType2 := cropBatch2.ChangeCropType(Growing{})
 
 	inventory1 := InventoryMaterial{PlantType: Vegetable{}, Variety: "Sawi"}
@@ -66,7 +66,7 @@ func TestChangeInventoryWithBatchID(t *testing.T) {
 	time, timeErr := time.Parse(time.RFC3339, "2018-01-25T22:08:41+07:00")
 
 	farm, farmErr := CreateFarm("MyFarm1", "organic")
-	area, areaErr := CreateArea(farm, "AreaNursery", "nursery")
+	area, areaErr := CreateArea(farm, "AreaNursery", "seeding")
 
 	cropBatch, cropErr := CreateCropBatch(area)
 	cropBatch.CreatedDate = time
@@ -94,7 +94,7 @@ func TestChangeInventoryWithBatchID(t *testing.T) {
 func TestCropCreateRemoveNote(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("MyFarm1", "organic")
-	area, areaErr := CreateArea(farm, "Area1", "nursery")
+	area, areaErr := CreateArea(farm, "Area1", "seeding")
 	crop, cropErr := CreateCropBatch(area)
 
 	// When

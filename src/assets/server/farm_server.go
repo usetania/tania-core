@@ -803,8 +803,8 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 
 	var cropT domain.CropType
 	switch cropType {
-	case "nursery":
-		cropT = domain.Nursery{}
+	case "seeding":
+		cropT = domain.Seeding{}
 	case "growing":
 		cropT = domain.Growing{}
 	default:
@@ -1185,7 +1185,7 @@ func initDataDemo(
 		UID:          uid,
 		InitialArea:  area1,
 		CurrentAreas: []domain.Area{area1},
-		Type:         domain.Nursery{},
+		Type:         domain.Seeding{},
 		Container:    domain.CropContainer{Quantity: 5, Type: domain.Tray{Cell: 10}},
 		Notes:        cropNotes,
 		CreatedDate:  time.Now(),
@@ -1199,7 +1199,7 @@ func initDataDemo(
 		UID:          uid,
 		InitialArea:  area1,
 		CurrentAreas: []domain.Area{area1},
-		Type:         domain.Nursery{},
+		Type:         domain.Seeding{},
 		Container:    domain.CropContainer{Quantity: 10, Type: domain.Pot{}},
 		CreatedDate:  time.Now(),
 	}
