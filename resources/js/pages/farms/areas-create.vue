@@ -28,24 +28,21 @@
                           input.form-control#size(type="text" v-validate="'required|numeric'" :class="{'input': true, 'text-danger': errors.has('area.size') }" v-model="area.size" name="area.size")
                           span.help-block.text-danger(v-show="errors.has('area.size')") {{ errors.first('area.size') }}
                         .col-xs-6
-                          select.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.unit') }" v-model="area.unit" name="area.unit")
-                            option hectare
-                            option meter square
-                          span.help-block.text-danger(v-show="errors.has('area.unit')") {{ errors.first('area.unit') }}
+                          select.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.size_unit') }" v-model="area.size_unit" name="area.size_unit")
+                            option(v-for="size_unit in options.size_units" :value="size_unit.key") {{ size_unit.label }}
+                          span.help-block.text-danger(v-show="errors.has('area.size_unit')") {{ errors.first('area.size_unit') }}
                 .row
                   .col-xs-6
                     .form-group
                       label(for="type") Type
                       select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.type') }" v-model="area.type" name="area.type")
-                        option Nursery / Seeding
-                        option Growing Area
+                        option(v-for="type in options.types" :value="type.key") {{ type.label }}
                       span.help-block.text-danger(v-show="errors.has('area.type')") {{ errors.first('area.type') }}
                   .col-xs-6
                     .form-group
                       label(for="locations") Locations
                       select.form-control#locations(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.location') }" v-model="area.location" name="area.location")
-                        option Field (Outdoor)
-                        option Greenhouse (Indoor)
+                        option(v-for="location in options.locations" :value="location.key") {{ location.label }}
                       span.help-block.text-danger(v-show="errors.has('area.location')") {{ errors.first('area.location') }}
                 .row
                   .col-xs-6
@@ -53,12 +50,12 @@
                       label Select Reservoir
                       select.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area.reservoir') }" v-model="area.reservoir_id" name="area.reservoir")
                         option Please select reservoir
-                        option(v-for="reservoir in reservoirs") {{ reservoir.name }}
+                        option(v-for="reservoir in reservoirs" :value="reservoir.uid") {{ reservoir.name }}
                       span.help-block.text-danger(v-show="errors.has('area.reservoir')") {{ errors.first('area.reservoir') }}
                   .col-xs-6
                     .form-group
                       label Select photo <small class="text-muted">(if any)</small>
-                      input(type="file")
+                      input(type="file" @change="processFile($event)")
                 .form-group
                   button.btn.btn-addon.btn-success.pull-right(type="submit") Save
                     i.fa.fa-long-arrow-right
@@ -102,6 +99,9 @@ export default {
       this.createArea(this.area)
         .then(data => this.$router.push({ name: 'FarmAreas' }))
         .catch(({ data }) => this.message = data)
+    },
+    processFile (event) {
+      this.area.photo = event.target.files[0]
     }
   }
 }

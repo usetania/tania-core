@@ -36,8 +36,8 @@ const actions = {
 }
 
 const mutations = {
-  [types.USER_LOGIN] (state, { id, username, email, intro }) {
-    state.current = { id, username, email, intro }
+  [types.USER_LOGIN] (state, { uid, username, email, intro }) {
+    state.current = { uid, username, email, intro }
   },
   [types.USER_COMPLETED_INTRO] (state) {
     state.current.intro = false

@@ -1,5 +1,5 @@
 export const AreaTypes = [
-  { key: 'nursery',  label: 'Nursery / Seeding' },
+  { key: 'seeding',  label: 'Seeding' },
   { key: 'growing', label: 'Growing Area' }
 ]
 
@@ -9,7 +9,7 @@ export const AreaLocations = [
 ]
 
 export const AreaSizeUnits = [
-  { key: 'Ha',  label: 'hectare' },
+  { key: 'hectare',  label: 'Ha' },
   { key: 'm2', label: 'meter square' }
 ]
 

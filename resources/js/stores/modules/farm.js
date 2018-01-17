@@ -89,10 +89,19 @@ const actions = {
   createArea ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi.ApiFetchReservoir(farmId, ({ data }) => {
+      const formData = new FormData()
+      formData.set('name', payload.name)
+      formData.set('size', payload.size)
+      formData.set('size_unit', payload.size_unit)
+      formData.set('type', payload.type)
+      formData.set('location', payload.location)
+      formData.set('reservoir_id', payload.reservoir_id)
+      formData.set('photo', payload.photo)
+
+      FarmApi.ApiCreateArea(state.farm.uid, formData, ({ data }) => {
         commit(types.CREATE_AREA, {
           ...data.data,
-          photo: '/api/farms/' + farmId + '/areas/' + data.data.uid + '/photos'
+          photo: '/api/farms/' + state.farm.uid + '/areas/' + data.data.uid + '/photos'
         })
         resolve(payload)
       }, error => reject(error.response))

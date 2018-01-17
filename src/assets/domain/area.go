@@ -36,7 +36,7 @@ type Hectare struct {
 }
 
 func (h Hectare) Symbol() string {
-	return "Ha"
+	return "hectare"
 }
 
 type AreaPhoto struct {
