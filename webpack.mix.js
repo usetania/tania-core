@@ -37,12 +37,12 @@ mix.webpackConfig({
       chunks: ['vendor']
     }),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|en|id/),
-    // new PurifyCSSPlugin({
-    //   paths: glob.sync([
-    //     path.join(__dirname, 'resources/js/**/*.pug'),
-    //     path.join(__dirname, 'resources/js/**/**/*.vue')
-    //   ]),
-    // }),
+    new PurifyCSSPlugin({
+      paths: glob.sync([
+        path.join(__dirname, 'resources/js/**/*.pug'),
+        path.join(__dirname, 'resources/js/**/**/*.vue')
+      ]),
+    }),
     new SWPrecacheWebpackPlugin({
       cacheId: 'tanibox',
       filename: 'service-worker.js',

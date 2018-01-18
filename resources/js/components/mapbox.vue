@@ -1,6 +1,10 @@
 <template lang="pug">
-  .map
-    v-map(:zoom="13" ref="map" :center="location")
+  .mapbox
+    .mapbox-button
+      label Location
+      button.btn.btn-default.pull-right(@click="findMe" type="button")
+        i.fa.fa-crosshairs
+    v-map.map(:zoom="13" ref="map" :center="location")
       v-tile-layer(url="http://{s}.tile.osm.org/{z}/{x}/{y}.png" v-on:click="onMapClick")
       v-marker(:lat-lng="location")
 </template>
@@ -29,20 +33,62 @@ export default {
     'v-tile-layer': Vue2Leaflet.TileLayer,
     'v-marker': Vue2Leaflet.Marker
   },
-  // props: {
-  //   lat: { default:'-8.4960936'},
-  //   lng: { default: '115.2485298'}
-  // },
-  mounted () {
-    this.$refs.map.mapObject.on('click', (e) => {
-      this.location = [e.latlng.lat, e.latlng.lng]
-      // this.centerLatLong = this.$refs.map.mapObject.getCenter()
-      // console.log('map was moved')
-    })
+  props: {
+    latitude: {
+      default:-8.4960936,
+    },
+    longitude: {
+      default: 115.2485298
+    }
   },
+  // watcher props if the props value is not equal location state
+  // whe need to change the location data from the props
+  watch : {
+    latitude (value, before) {
+      if (value && value !== this.location[0]) {
+        this.location = [value, this.location[1]]
+      }
+    },
+    longitude (value, before) {
+      if (value && value !== this.location[1]) {
+        this.location = [this.location[0], value]
+      }
+    }
+  },
+  created () {
+    this.location = Array.from([
+      this.latitude !== 0 ? parseFloat(this.latitude) : -8.4960936,
+      this.longitude !== 0 ? parseFloat(this.longitude) : 115.2485298
+    ])
+  },
+  mounted () {
+    this.$refs.map.mapObject.on('click', this.onMapClick)
+  },
+
   methods: {
-    onMapClick (data) {
-      console.log(data)
+    onMapClick (e) {
+      this.location = [e.latlng.lat, e.latlng.lng]
+      this.publish()
+    },
+
+    // publish the change event, so the parent component can trigger and catch the data
+    publish () {
+      this.$emit('change', {
+        latitude: this.location[0],
+        longitude: this.location[1]
+      })
+    },
+
+    findMe () {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          this.location = [
+            position.coords.latitude,
+            position.coords.longitude
+          ]
+          this.publish()
+        }, error => console.log(error))
+      }
     }
   }
 }
@@ -50,8 +96,12 @@ export default {
 
 
 <style lang="scss" scoped>
+  .mapbox-button {
+    margin-bottom: 15px;
+  }
   .map {
-    height: 500px;
+    margin-top: 10px;
+    height: 400px;
     width: 100%;
   }
 </style>

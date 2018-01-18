@@ -24,13 +24,8 @@
                   option(value="") Please select type
                   option(v-for="type in types" :value="type.code") {{ type.name }}
                 span.help-block.text-danger(v-show="errors.has('farm.farm_type')") {{ errors.first('farm.farm_type') }}
-              .row
-                .col-xs-12
-                  .form-group
-                    label Location
-                    button.btn.btn-default.pull-right(@click="findMe" type="button")
-                      i.fa.fa-crosshairs
-                mapbox
+              .form-group
+                mapbox(:latitude="farm.latitude" :longitude="farm.longitude" @change="onLocationChange")
               .form-group
                 .row
                   .col-xs-6
@@ -111,13 +106,9 @@ export default {
       this.$router.push({ name: 'IntroReservoirCreate' })
     },
 
-    findMe () {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-          this.farm.latitude = position.coords.latitude
-          this.farm.longitude = position.coords.longitude
-        }, error => console.log(error))
-      }
+    onLocationChange (location) {
+      this.farm.latitude = location.latitude
+      this.farm.longitude = location.longitude
     },
 
     countryChanged (countryCode) {
