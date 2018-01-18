@@ -976,18 +976,18 @@ func (s *FarmServer) FindAllCrops(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	_, ok := result.Result.(domain.Farm)
+	farm, ok := result.Result.(domain.Farm)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
 	// Process //
-	result = <-s.CropRepo.FindAll()
-	if result.Error != nil {
-		return Error(c, result.Error)
+	resultQuery := <-s.CropQuery.FindAllCropsByFarm(farm)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
 	}
 
-	crops, ok := result.Result.([]domain.Crop)
+	crops, ok := resultQuery.Result.([]domain.Crop)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}

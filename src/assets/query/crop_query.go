@@ -6,6 +6,7 @@ import (
 )
 
 type CropQuery interface {
+	FindAllCropsByFarm(farm domain.Farm) <-chan QueryResult
 	FindAllCropsByArea(area domain.Area) <-chan QueryResult
 	FindByBatchID(batchID string) <-chan QueryResult
 }
@@ -16,6 +17,30 @@ type CropQueryInMemory struct {
 
 func NewCropQueryInMemory(s *storage.CropStorage) CropQuery {
 	return CropQueryInMemory{Storage: s}
+}
+
+func (s CropQueryInMemory) FindAllCropsByFarm(farm domain.Farm) <-chan QueryResult {
+	result := make(chan QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		crops := []domain.Crop{}
+		for _, val := range s.Storage.CropMap {
+			for _, currArea := range val.CurrentAreas {
+				if currArea.Farm.UID == farm.UID {
+					crops = append(crops, val)
+				}
+			}
+		}
+
+		result <- QueryResult{Result: crops}
+
+		close(result)
+	}()
+
+	return result
 }
 
 func (s CropQueryInMemory) FindAllCropsByArea(area domain.Area) <-chan QueryResult {
