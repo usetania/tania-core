@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	deadlock "github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
@@ -13,7 +14,9 @@ import (
 func TestReservoirInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
+
+	rwMutex := deadlock.RWMutex{}
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
 	repo := NewReservoirRepositoryInMemory(&reservoirStorage)
 
 	farm, farmErr := domain.CreateFarm("Farm1", domain.FarmTypeOrganic)
@@ -50,7 +53,9 @@ func TestReservoirInMemorySave(t *testing.T) {
 func TestReservoirInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
+
+	rwMutex := deadlock.RWMutex{}
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
 	repo := NewReservoirRepositoryInMemory(&reservoirStorage)
 
 	farm, farmErr1 := domain.CreateFarm("Farm1", domain.FarmTypeOrganic)

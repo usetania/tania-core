@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	deadlock "github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
@@ -13,7 +14,8 @@ import (
 func TestAreaInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
+	rwMutex := deadlock.RWMutex{}
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
 	repo := NewAreaRepositoryInMemory(&areaStorage)
 
 	farm, err := domain.CreateFarm("MyFarm1", "organic")
@@ -21,7 +23,7 @@ func TestAreaInMemorySave(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "nursery")
+	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "seeding")
 	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
 
 	// When
@@ -46,7 +48,8 @@ func TestAreaInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
+	rwMutex := deadlock.RWMutex{}
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
 	repo := NewAreaRepositoryInMemory(&areaStorage)
 
 	farm, err := domain.CreateFarm("MyFarm1", "organic")
@@ -54,7 +57,7 @@ func TestAreaInMemoryFindAll(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "nursery")
+	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "seeding")
 	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
 
 	var result, foundOne RepositoryResult
@@ -92,7 +95,8 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
+	rwMutex := deadlock.RWMutex{}
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
 	repo := NewAreaRepositoryInMemory(&areaStorage)
 
 	farm, err := domain.CreateFarm("MyFarm1", "organic")
@@ -100,7 +104,7 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "nursery")
+	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "seeding")
 	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
 
 	var found1, found2 RepositoryResult

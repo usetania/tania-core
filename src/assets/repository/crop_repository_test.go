@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	deadlock "github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
@@ -13,11 +14,13 @@ import (
 func TestCropInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
+
+	rwMutex := deadlock.RWMutex{}
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
 	repo := NewCropRepositoryInMemory(&cropStorage)
 
 	farm, farmErr := domain.CreateFarm("MyFarm", "organic")
-	area, areaErr := domain.CreateArea(farm, "MyArea", "nursery")
+	area, areaErr := domain.CreateArea(farm, "MyArea", "seeding")
 	crop1, cropErr1 := domain.CreateCropBatch(area)
 	crop2, cropErr2 := domain.CreateCropBatch(area)
 
@@ -44,11 +47,13 @@ func TestCropInMemorySave(t *testing.T) {
 func TestCropInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
+
+	rwMutex := deadlock.RWMutex{}
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
 	repo := NewCropRepositoryInMemory(&cropStorage)
 
 	farm, farmErr := domain.CreateFarm("MyFarm", "organic")
-	area, areaErr := domain.CreateArea(farm, "MyArea", "nursery")
+	area, areaErr := domain.CreateArea(farm, "MyArea", "seeding")
 	crop1, cropErr1 := domain.CreateCropBatch(area)
 	crop2, cropErr2 := domain.CreateCropBatch(area)
 
@@ -86,11 +91,13 @@ func TestCropInMemoryFindAll(t *testing.T) {
 func TestCropInMemoryFindByID(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
+
+	rwMutex := deadlock.RWMutex{}
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
 	repo := NewCropRepositoryInMemory(&cropStorage)
 
 	farm, farmErr := domain.CreateFarm("MyFarm", "organic")
-	area, areaErr := domain.CreateArea(farm, "MyArea", "nursery")
+	area, areaErr := domain.CreateArea(farm, "MyArea", "seeding")
 	crop1, cropErr1 := domain.CreateCropBatch(area)
 	crop2, cropErr2 := domain.CreateCropBatch(area)
 

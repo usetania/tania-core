@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	deadlock "github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
@@ -13,7 +14,9 @@ import (
 func TestInventoryMaterialInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	inventoryStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
+
+	rwMutex := deadlock.RWMutex{}
+	inventoryStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
 	repo := NewInventoryMaterialRepositoryInMemory(&inventoryStorage)
 
 	inv1, invErr1 := domain.CreateInventoryMaterial(domain.Vegetable{}, "Sawi Putih")
@@ -40,7 +43,9 @@ func TestInventoryMaterialInMemorySave(t *testing.T) {
 func TestInventoryMaterialInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	inventoryStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
+
+	rwMutex := deadlock.RWMutex{}
+	inventoryStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
 	repo := NewInventoryMaterialRepositoryInMemory(&inventoryStorage)
 
 	inv1, invErr1 := domain.CreateInventoryMaterial(domain.Vegetable{}, "Sawi Putih")
@@ -78,7 +83,9 @@ func TestInventoryMaterialInMemoryFindAll(t *testing.T) {
 func TestInventoryMaterialInMemoryFindByID(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	inventoryStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
+
+	rwMutex := deadlock.RWMutex{}
+	inventoryStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
 	repo := NewInventoryMaterialRepositoryInMemory(&inventoryStorage)
 
 	inv1, invErr1 := domain.CreateInventoryMaterial(domain.Vegetable{}, "Sawi Putih")

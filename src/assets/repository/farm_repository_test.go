@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	deadlock "github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
@@ -13,7 +14,9 @@ import (
 func TestFarmInMemorySave(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm)}
+
+	rwMutex := deadlock.RWMutex{}
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
 	repo := NewFarmRepositoryInMemory(&farmStorage)
 
 	farm1, farmErr1 := domain.CreateFarm("MyFarmFamily", "organic")
@@ -40,7 +43,9 @@ func TestFarmInMemorySave(t *testing.T) {
 func TestFarmInMemoryFindAll(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm)}
+
+	rwMutex := deadlock.RWMutex{}
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
 	repo := NewFarmRepositoryInMemory(&farmStorage)
 
 	farm1, farmErr1 := domain.CreateFarm("Farm1", domain.FarmTypeOrganic)
@@ -80,7 +85,9 @@ func TestFarmInMemoryFindAll(t *testing.T) {
 func TestFarmInMemoryFindByID(t *testing.T) {
 	// Given
 	done := make(chan bool)
-	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm)}
+
+	rwMutex := deadlock.RWMutex{}
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
 	repo := NewFarmRepositoryInMemory(&farmStorage)
 
 	farm1, farmErr1 := domain.CreateFarm("Farm1", domain.FarmTypeOrganic)
