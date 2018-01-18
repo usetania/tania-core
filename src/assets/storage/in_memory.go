@@ -1,33 +1,32 @@
 package storage
 
 import (
-	"sync"
-
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	deadlock "github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
 )
 
 type FarmStorage struct {
-	Lock    sync.RWMutex
+	Lock    *deadlock.RWMutex
 	FarmMap map[uuid.UUID]domain.Farm
 }
 
 type AreaStorage struct {
-	Lock    sync.RWMutex
+	Lock    *deadlock.RWMutex
 	AreaMap map[uuid.UUID]domain.Area
 }
 
 type ReservoirStorage struct {
-	Lock         sync.RWMutex
+	Lock         *deadlock.RWMutex
 	ReservoirMap map[uuid.UUID]domain.Reservoir
 }
 
 type InventoryMaterialStorage struct {
-	Lock                 sync.RWMutex
+	Lock                 *deadlock.RWMutex
 	InventoryMaterialMap map[uuid.UUID]domain.InventoryMaterial
 }
 
 type CropStorage struct {
-	Lock    sync.RWMutex
+	Lock    *deadlock.RWMutex
 	CropMap map[uuid.UUID]domain.Crop
 }

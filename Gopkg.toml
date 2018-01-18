@@ -35,3 +35,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/paked/configure"
+
+[[constraint]]
+  name = "github.com/sasha-s/go-deadlock"
+  version = "0.2.0"

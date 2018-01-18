@@ -62,10 +62,22 @@
   version = "0.1.3"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/petermattis/goid"
+  packages = ["."]
+  revision = "176e84a949d354dcef722e602b312b1a75bacddc"
+
+[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/sasha-s/go-deadlock"
+  packages = ["."]
+  revision = "03d40e5dbd5488667a13b3c2600b2f7c2886f02f"
+  version = "v0.2.0"
 
 [[projects]]
   name = "github.com/satori/go.uuid"
@@ -117,6 +129,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "77854dbc6e2df2892adce4fa0ccfde22abf87e9635772c50d49677d2b678aa15"
+  inputs-digest = "0e9d26c2c12f8faf3e57e0a6ccf876d9d7af52c156b24105a5d8e8b722214f2b"
   solver-name = "gps-cdcl"
   solver-version = 1

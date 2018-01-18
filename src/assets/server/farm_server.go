@@ -1,9 +1,12 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -33,22 +36,28 @@ type FarmServer struct {
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer() (*FarmServer, error) {
-	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm)}
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("DEADLOCK!")
+	}
+
+	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
 	farmRepo := repository.NewFarmRepositoryInMemory(&farmStorage)
 
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area)}
+	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
 	areaRepo := repository.NewAreaRepositoryInMemory(&areaStorage)
 	areaQuery := query.NewAreaQueryInMemory(&areaStorage)
 
-	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir)}
+	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
 
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop)}
+	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
 	cropRepo := repository.NewCropRepositoryInMemory(&cropStorage)
 	cropQuery := query.NewCropQueryInMemory(&cropStorage)
 	cropService := service.CropService{CropQuery: cropQuery}
 
-	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial)}
+	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
 	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(&inventoryMaterialStorage)
 
