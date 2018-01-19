@@ -25,8 +25,3 @@ type InventoryMaterialStorage struct {
 	Lock                 *deadlock.RWMutex
 	InventoryMaterialMap map[uuid.UUID]domain.InventoryMaterial
 }
-
-type CropStorage struct {
-	Lock    *deadlock.RWMutex
-	CropMap map[uuid.UUID]domain.Crop
-}

@@ -39,26 +39,6 @@ type AvailableInventory struct {
 	Varieties []string  `json:"varieties"`
 }
 
-type CropBatch struct {
-	UID              uuid.UUID         `json:"uid"`
-	BatchID          string            `json:"batch_id"`
-	InitialArea      SimpleArea        `json:"initial_area"`
-	CurrentAreas     []SimpleArea      `json:"current_area"`
-	Type             CropType          `json:"type"`
-	Inventory        InventoryMaterial `json:"inventory"`
-	Container        CropContainer     `json:"container"`
-	DaysSinceSeeding int               `json:"days_since_seeding"`
-	Notes            []domain.CropNote `json:"notes"`
-	CreatedDate      time.Time         `json:"created_date"`
-}
-
-type CropType struct{ domain.CropType }
-type CropContainer struct {
-	Quantity int               `json:"quantity"`
-	Type     CropContainerType `json:"type"`
-}
-type CropContainerType struct{ domain.CropContainerType }
-
 func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))
 
@@ -212,52 +192,6 @@ func MapToInventoryMaterial(inventoryMaterial domain.InventoryMaterial) Inventor
 	}
 }
 
-func MapToCropBatch(cropBatch domain.Crop) CropBatch {
-	cb := CropBatch{}
-	cb.UID = cropBatch.UID
-	cb.BatchID = cropBatch.BatchID
-	cb.InitialArea = SimpleArea{
-		UID:  cropBatch.InitialArea.UID,
-		Name: cropBatch.InitialArea.Name,
-		Type: cropBatch.InitialArea.Type,
-	}
-
-	cb.CurrentAreas = make([]SimpleArea, len(cropBatch.CurrentAreas))
-	for i, v := range cropBatch.CurrentAreas {
-		cb.CurrentAreas[i] = SimpleArea{
-			UID:  v.UID,
-			Name: v.Name,
-			Type: v.Type,
-		}
-	}
-
-	cb.Type = CropType{CropType: cropBatch.Type}
-	cb.Inventory = InventoryMaterial{
-		UID:       cropBatch.Inventory.UID,
-		PlantType: PlantType{PlantType: cropBatch.Inventory.PlantType},
-		Variety:   cropBatch.Inventory.Variety,
-	}
-
-	if cropBatch.Container != (domain.CropContainer{}) {
-		cb.Container = CropContainer{
-			Quantity: cropBatch.Container.Quantity,
-			Type:     CropContainerType{CropContainerType: cropBatch.Container.Type},
-		}
-	}
-
-	cb.DaysSinceSeeding = cropBatch.CalculateDaysSinceSeeding()
-
-	notes := make([]domain.CropNote, 0, len(cropBatch.Notes))
-	for _, v := range cropBatch.Notes {
-		notes = append(notes, v)
-	}
-	cb.Notes = notes
-
-	cb.CreatedDate = cropBatch.CreatedDate
-
-	return cb
-}
-
 func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		UID  string `json:"uid"`
@@ -375,44 +309,5 @@ func (rt ReservoirTap) MarshalJSON() ([]byte, error) {
 		Type string `json:"type"`
 	}{
 		Type: rt.Type(),
-	})
-}
-
-func (pt PlantType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Code string `json:"code"`
-	}{
-		Code: pt.PlantType.Code(),
-	})
-}
-
-func (cct CropContainerType) MarshalJSON() ([]byte, error) {
-	code := ""
-	if cct.CropContainerType != (CropContainerType{}) {
-		code = cct.Code()
-	}
-
-	return json.Marshal(struct {
-		Code string `json:"code"`
-	}{
-		Code: code,
-	})
-}
-
-func (cc CropContainer) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Quantity int               `json:"quantity"`
-		Type     CropContainerType `json:"type"`
-	}{
-		Quantity: cc.Quantity,
-		Type:     CropContainerType{CropContainerType: cc.Type},
-	})
-}
-
-func (ct CropType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Code string `json:"code"`
-	}{
-		Code: ct.Code(),
 	})
 }

@@ -3,7 +3,6 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/sasha-s/go-deadlock"
@@ -12,7 +11,6 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/repository"
-	"github.com/Tanibox/tania-server/src/assets/service"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
@@ -26,9 +24,6 @@ type FarmServer struct {
 	ReservoirRepo          repository.ReservoirRepository
 	AreaRepo               repository.AreaRepository
 	AreaQuery              query.AreaQuery
-	CropRepo               repository.CropRepository
-	CropQuery              query.CropQuery
-	CropService            service.CropService
 	InventoryMaterialRepo  repository.InventoryMaterialRepository
 	InventoryMaterialQuery query.InventoryMaterialQuery
 	File                   File
@@ -52,11 +47,6 @@ func NewFarmServer() (*FarmServer, error) {
 	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
 
-	cropStorage := storage.CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
-	cropRepo := repository.NewCropRepositoryInMemory(&cropStorage)
-	cropQuery := query.NewCropQueryInMemory(&cropStorage)
-	cropService := service.CropService{CropQuery: cropQuery}
-
 	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
 	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(&inventoryMaterialStorage)
@@ -66,9 +56,6 @@ func NewFarmServer() (*FarmServer, error) {
 		ReservoirRepo:          reservoirRepo,
 		AreaRepo:               areaRepo,
 		AreaQuery:              areaQuery,
-		CropRepo:               cropRepo,
-		CropQuery:              cropQuery,
-		CropService:            cropService,
 		InventoryMaterialRepo:  inventoryMaterialRepo,
 		InventoryMaterialQuery: inventoryMaterialQuery,
 		File: LocalFile{},
@@ -80,7 +67,6 @@ func NewFarmServer() (*FarmServer, error) {
 			&farmStorage,
 			&areaStorage,
 			&reservoirStorage,
-			&cropStorage,
 			&inventoryMaterialStorage,
 		)
 	}
@@ -107,12 +93,6 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
 	g.DELETE("/areas/:area_id/notes/:note_id", s.RemoveAreaNotes)
 	g.GET("/:id/areas", s.GetFarmAreas)
-	g.GET("/:id/crops", s.FindAllCrops)
-	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
-	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
-	g.GET("/crops/:id", s.FindCropByID)
-	g.POST("/crops/:id/notes", s.SaveCropNotes)
-	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
@@ -782,290 +762,11 @@ func (s *FarmServer) GetAvailableInventories(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
-	// Form Value
-	areaID := c.Param("id")
-	cropType := c.FormValue("crop_type")
-	plantType := c.FormValue("plant_type")
-	variety := c.FormValue("variety")
-
-	containerQuantity, err := strconv.Atoi(c.FormValue("container_quantity"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	containerType := c.FormValue("container_type")
-	containerCell, err := strconv.Atoi(c.FormValue("container_cell"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	// Validate //
-	areaResult := <-s.AreaRepo.FindByID(areaID)
-	if areaResult.Error != nil {
-		return Error(c, areaResult.Error)
-	}
-
-	area, ok := areaResult.Result.(domain.Area)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
-	}
-
-	var cropT domain.CropType
-	switch cropType {
-	case "seeding":
-		cropT = domain.Seeding{}
-	case "growing":
-		cropT = domain.Growing{}
-	default:
-		return Error(c, NewRequestValidationError(INVALID_OPTION, "crop_type"))
-	}
-
-	var plantT domain.PlantType
-	switch plantType {
-	case "vegetable":
-		plantT = domain.Vegetable{}
-	case "fruit":
-		plantT = domain.Fruit{}
-	case "herb":
-		plantT = domain.Herb{}
-	case "flower":
-		plantT = domain.Flower{}
-	case "tree":
-		plantT = domain.Tree{}
-	default:
-		return Error(c, NewRequestValidationError(NOT_FOUND, "plant_type"))
-	}
-
-	queryResult := <-s.InventoryMaterialQuery.FindInventoryByPlantTypeAndVariety(plantT, variety)
-	if queryResult.Error != nil {
-		return Error(c, queryResult.Error)
-	}
-
-	inventoryMaterial, ok := queryResult.Result.(domain.InventoryMaterial)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
-	}
-
-	var containerT domain.CropContainerType
-	switch containerType {
-	case "tray":
-		containerT = domain.Tray{Cell: containerCell}
-	case "pot":
-		containerT = domain.Pot{}
-	default:
-		return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))
-	}
-
-	cropContainer := domain.CropContainer{
-		Quantity: containerQuantity,
-		Type:     containerT,
-	}
-
-	// Process //
-	cropBatch, err := domain.CreateCropBatch(area)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = cropBatch.ChangeCropType(cropT)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = s.CropService.ChangeInventory(&cropBatch, inventoryMaterial)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = cropBatch.ChangeContainer(cropContainer)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	// Persists //
-	err = <-s.CropRepo.Save(&cropBatch)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	data := make(map[string]CropBatch)
-	data["data"] = MapToCropBatch(cropBatch)
-
-	return c.JSON(http.StatusOK, data)
-}
-
-func (s *FarmServer) FindCropByID(c echo.Context) error {
-	data := make(map[string]CropBatch)
-
-	// Validate //
-	result := <-s.CropRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	crop, ok := result.Result.(domain.Crop)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
-	}
-
-	if crop.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
-	}
-
-	data["data"] = MapToCropBatch(crop)
-
-	return c.JSON(http.StatusOK, data)
-}
-
-func (s *FarmServer) SaveCropNotes(c echo.Context) error {
-	data := make(map[string]CropBatch)
-
-	cropID := c.Param("id")
-	content := c.FormValue("content")
-
-	// Validate //
-	result := <-s.CropRepo.FindByID(cropID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	crop, ok := result.Result.(domain.Crop)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	if content == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "content"))
-	}
-
-	// Process //
-	crop.AddNewNote(content)
-
-	// Persists //
-	resultSave := <-s.CropRepo.Save(&crop)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	data["data"] = MapToCropBatch(crop)
-
-	return c.JSON(http.StatusOK, data)
-}
-
-func (s *FarmServer) RemoveCropNotes(c echo.Context) error {
-	data := make(map[string]CropBatch)
-
-	cropID := c.Param("crop_id")
-	noteID := c.Param("note_id")
-
-	// Validate //
-	result := <-s.CropRepo.FindByID(cropID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	crop, ok := result.Result.(domain.Crop)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	// Process //
-	err := crop.RemoveNote(noteID)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	// Persists //
-	resultSave := <-s.CropRepo.Save(&crop)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	data["data"] = MapToCropBatch(crop)
-
-	return c.JSON(http.StatusOK, data)
-}
-
-// TODO: The crops should be found by its Farm
-func (s *FarmServer) FindAllCrops(c echo.Context) error {
-	data := make(map[string][]CropBatch)
-
-	// Params //
-	farmID := c.Param("id")
-
-	// Validate //
-	result := <-s.FarmRepo.FindByID(farmID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	farm, ok := result.Result.(domain.Farm)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	// Process //
-	resultQuery := <-s.CropQuery.FindAllCropsByFarm(farm)
-	if resultQuery.Error != nil {
-		return Error(c, resultQuery.Error)
-	}
-
-	crops, ok := resultQuery.Result.([]domain.Crop)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	data["data"] = []CropBatch{}
-	for _, v := range crops {
-		data["data"] = append(data["data"], MapToCropBatch(v))
-	}
-
-	return c.JSON(http.StatusOK, data)
-}
-
-func (s *FarmServer) FindAllCropsByArea(c echo.Context) error {
-	data := make(map[string][]CropBatch)
-
-	// Params //
-	areaID := c.Param("id")
-
-	// Validate //
-	result := <-s.AreaRepo.FindByID(areaID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	area, ok := result.Result.(domain.Area)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	// Process //
-	resultQuery := <-s.CropQuery.FindAllCropsByArea(area)
-	if resultQuery.Error != nil {
-		return Error(c, resultQuery.Error)
-	}
-
-	crops, ok := resultQuery.Result.([]domain.Crop)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	data["data"] = []CropBatch{}
-	for _, v := range crops {
-		data["data"] = append(data["data"], MapToCropBatch(v))
-	}
-
-	return c.JSON(http.StatusOK, data)
-}
-
 func initDataDemo(
 	server *FarmServer,
 	farmStorage *storage.FarmStorage,
 	areaStorage *storage.AreaStorage,
 	reservoirStorage *storage.ReservoirStorage,
-	cropStorage *storage.CropStorage,
 	inventoryMaterialStorage *storage.InventoryMaterialStorage,
 ) {
 	farmUID, _ := uuid.NewV4()
@@ -1203,52 +904,4 @@ func initDataDemo(
 	}
 
 	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
-
-	uid, _ = uuid.NewV4()
-
-	noteUID, _ = uuid.NewV4()
-	cropNotes := make(map[uuid.UUID]domain.CropNote, 0)
-	cropNotes[noteUID] = domain.CropNote{
-		UID:         noteUID,
-		Content:     "This crop must be intensely watched because its expensive af",
-		CreatedDate: time.Now(),
-	}
-
-	crop1 := domain.Crop{
-		UID:          uid,
-		InitialArea:  area1,
-		CurrentAreas: []domain.Area{area1},
-		Type:         domain.Seeding{},
-		Container:    domain.CropContainer{Quantity: 5, Type: domain.Tray{Cell: 10}},
-		Notes:        cropNotes,
-		CreatedDate:  time.Now(),
-	}
-
-	server.CropService.ChangeInventory(&crop1, inventory1)
-	cropStorage.CropMap[uid] = crop1
-
-	uid, _ = uuid.NewV4()
-	crop2 := domain.Crop{
-		UID:          uid,
-		InitialArea:  area1,
-		CurrentAreas: []domain.Area{area1},
-		Type:         domain.Seeding{},
-		Container:    domain.CropContainer{Quantity: 10, Type: domain.Pot{}},
-		CreatedDate:  time.Now(),
-	}
-
-	server.CropService.ChangeInventory(&crop2, inventory2)
-	cropStorage.CropMap[uid] = crop2
-
-	uid, _ = uuid.NewV4()
-	crop3 := domain.Crop{
-		UID:          uid,
-		InitialArea:  area1,
-		CurrentAreas: []domain.Area{area2},
-		Type:         domain.Growing{},
-		CreatedDate:  time.Now(),
-	}
-
-	server.CropService.ChangeInventory(&crop3, inventory3)
-	cropStorage.CropMap[uid] = crop3
 }
