@@ -110,6 +110,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id/crops", s.FindAllCrops)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
+	g.GET("/crops/:id", s.FindCropByID)
 	g.POST("/crops/:id/notes", s.SaveCropNotes)
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
@@ -890,6 +891,29 @@ func (s *FarmServer) SaveAreaCropBatch(c echo.Context) error {
 
 	data := make(map[string]CropBatch)
 	data["data"] = MapToCropBatch(cropBatch)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) FindCropByID(c echo.Context) error {
+	data := make(map[string]CropBatch)
+
+	// Validate //
+	result := <-s.CropRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	data["data"] = MapToCropBatch(crop)
 
 	return c.JSON(http.StatusOK, data)
 }
