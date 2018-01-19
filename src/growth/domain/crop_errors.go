@@ -5,8 +5,18 @@ const (
 	CropErrorInvalidCropType
 	CropErrorInvalidCropStatus
 
+	CropMoveToAreaErrorInvalidQuantity
+	CropMoveToAreaErrorInvalidArea
+	CropMoveToAreaErrorInvalidExistingSourceArea
+	CropMoveToAreaErrorCannotBeSame
+
 	CropErrorInvalidBatchID
 	CropErrorBatchIDAlreadyCreated
+
+	CropAreaErrorInvalidSourceArea
+	CropAreaErrorSourceAreaNotFound
+	CropAreaErrorInvalidDestinationArea
+	CropAreaErrorDestinationAreaNotFound
 
 	CropContainerErrorInvalidType
 	CropContainerErrorInvalidQuantity
@@ -36,6 +46,24 @@ func (e CropError) Error() string {
 		return "Invalid crop batch ID"
 	case CropErrorBatchIDAlreadyCreated:
 		return "Crop batch ID already created"
+
+	case CropMoveToAreaErrorInvalidQuantity:
+		return "Invalid quantity. Make sure your quantity is not zero and enough to be moved"
+	case CropMoveToAreaErrorInvalidArea:
+		return "Invalid move crop to area. Crop can only be moved from Seeding to Growing, Seeding to Seeding or Growing to Growing"
+	case CropMoveToAreaErrorInvalidExistingSourceArea:
+		return "Invalid existing source area"
+	case CropMoveToAreaErrorCannotBeSame:
+		return "Invalid move crop to area. Area source and destination cannot be same"
+
+	case CropAreaErrorInvalidSourceArea:
+		return "Crop source area is invalid"
+	case CropAreaErrorSourceAreaNotFound:
+		return "Crop source area not found"
+	case CropAreaErrorInvalidDestinationArea:
+		return "Crop destination area is invalid"
+	case CropAreaErrorDestinationAreaNotFound:
+		return "Crop destination not found"
 
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"

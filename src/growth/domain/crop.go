@@ -52,7 +52,7 @@ func CropStatuses() []CropStatus {
 }
 
 func GetCropStatus(code string) CropStatus {
-	for i, v := range CropStatuses() {
+	for _, v := range CropStatuses() {
 		if code == v.Code {
 			return v
 		}
@@ -79,7 +79,7 @@ func CropTypes() []CropType {
 }
 
 func GetCropType(code string) CropType {
-	for i, v := range CropTypes() {
+	for _, v := range CropTypes() {
 		if code == v.Code {
 			return v
 		}
@@ -155,18 +155,6 @@ func CreateCropBatch() (Crop, error) {
 	return Crop{}, nil
 }
 
-func (c *Crop) MoveToArea(sourceAreaUID uuid.UUID, destinationAreaUID uuid.UUID, quantity int) error {
-	return nil
-}
-
-func (c *Crop) Harvest(sourceAreaUID uuid.UUID, quantity int) error {
-	return nil
-}
-
-func (c *Crop) Dump(sourceAreaUID uuid.UUID, quantity int) error {
-	return nil
-}
-
 func (c *Crop) Fertilize() error {
 	c.LastFertilized = time.Now()
 
@@ -213,7 +201,7 @@ func (c *Crop) ChangeContainer(quantity int, cell int, containerType CropContain
 	}
 
 	var t CropContainerType
-	switch v := containerType.(type) {
+	switch containerType.(type) {
 	case Tray:
 		if cell <= 0 {
 			return CropError{Code: CropContainerErrorInvalidTrayCell}

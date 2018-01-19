@@ -10,6 +10,7 @@ import (
 )
 
 type CropService struct {
+	AreaQuery              query.AreaQuery
 	CropQuery              query.CropQuery
 	InventoryMaterialQuery query.InventoryMaterialQuery
 }
@@ -17,7 +18,7 @@ type CropService struct {
 func (s CropService) ChangeInventory(crop *domain.Crop, inventoryUID uuid.UUID) error {
 	result := s.InventoryMaterialQuery.FindByID(inventoryUID)
 
-	inv, ok := <-result.Result.(service.CropInventory)
+	inv, ok := <-result.Result.(query.CropInventory)
 	if !ok {
 		return CropError{Code: CropInventoryErrorInvalidInventory}
 	}
@@ -65,5 +66,128 @@ func (s CropService) ChangeInventory(crop *domain.Crop, inventoryUID uuid.UUID) 
 	crop.Inventory = inventory
 	crop.BatchID = batchID
 
+	return nil
+}
+
+func (s CropService) MoveToArea(crop *domain.Crop, sourceAreaUID uuid.UUID, destinationAreaUID uuid.UUID, quantity int) error {
+	// Validate //
+	// Check if source area is exist in DB
+	result := s.AreaQuery.FindByID(sourceAreaUID)
+	srcArea, ok := result.Result.(query.CropArea)
+	if !ok {
+		return CropError{Code: CropAreaErrorInvalidSourceArea}
+	}
+
+	if srcArea == (query.CropArea{}) {
+		return CropError{Code: CropAreaErrorSourceAreaNotFound}
+	}
+
+	// Check if destination area is exist in DB
+	result = s.AreaQuery.FindByID(destinationAreaUID)
+	dstArea, ok  result.Result.(query.CropArea)
+	if !ok {
+		return Croperror{Code: CropAreaErrorInvalidDestinationArea}
+	}
+
+	dstArea, ok = result.Result.(query.CropArea)
+	if !ok {
+		return CropError{Code: CropAreaErrorInvalidDestinationArea}
+	}
+
+	if dstArea == (query.CropArea{}) {
+		return CropError{Code: CropAreaErrorDestinationAreaNotFound}
+	}
+
+	// Check if movement rules for area type is valid
+	isValidMoveRules = false
+	if srcArea.Type == "seeding" && dstArea.Type == "growing" {
+		isValidMoveRules = true
+	} else if srcArea.Type == "seeding" && dstArea.Type == "seeding" {
+		isValidMoveRules = true
+	} else if srcArea.Type == "growing" && dstArea.Type == "growing" {
+		isValidMoveRules = true
+	}
+
+	if !isValidMoveRules {
+		return CropError{Code: CropMoveToAreaErrorInvalidArea}
+	}
+
+	// source and destination area cannot be the same
+	if srcArea.UID == dstArea.UID {
+		return CropError{Code: CropMoveToAreaErrorCannotBeSame}
+	}
+
+	// Quantity to be moved cannot be empty
+	if quantity <= 0 {
+		return CropError{Code: CropMoveToAreaErrorInvalidQuantity}
+	}
+
+	// Check validity of the source area input and the quantity to the existing crop source area.
+	isValidSrcArea = false
+	isValidQuantity = false
+	if crop.InitialArea.AreaUID == srcArea.UID {
+		isValidSrcArea = true
+		isValidQuantity = (crop.InitialArea.CurrentQuantity - quantity) >= 0
+	}
+
+	for i, v := range crop.MovedArea {
+		if v.AreaUID == srcArea.UID {
+			isValidSrcArea = true
+			isValidQuantity = (v.CurrentQuantity - quantity) >= 0
+		}
+	}
+
+	if !isValidSrcArea {
+		return CropError{Code: CropMoveToAreaErrorInvalidExistingArea}
+	}
+	if !isValidQuantity {
+		return CropError{Code: CropMoveToAreaErrorInvalidQuantity}
+	}
+
+	// Check existance of the destination area input to the existing crop destination area.
+	isDstExist = false
+	existingDst := MovedArea{}
+	for i, v := range crop.MovedArea {
+		if v.AreaUID == dstArea.UID {
+			isDstExist = true
+			existingDst = v
+		}
+	}
+
+	// Process //
+	if crop.InitialArea.AreaUID == srcArea.UID {
+		crop.InitialArea.CurrentQuantity -= quantity
+	}
+
+	for i, v := range crop.MovedArea {
+		if v.AreaUID == srcArea.UID {
+			crop.MovedArea[i].CurrentQuantity -= quantity
+		}
+	}
+
+	if isDstExist {
+		for i, v := range crop.MovedArea {
+			if v.AreaUID == dstArea.UID {
+				crop.MovedArea[i].CurrentQuantity += quantity
+			}
+		}
+	} else {
+		crop.MovedArea = append(crop.MovedArea, MovedArea{
+			AreaUID: dstArea.UID,
+			SourceAreaUID: srcArea.UID,
+			InitialQuantity: quantity,
+			CurrentQuantity: quantity,
+			Date: time.Now(),
+		})
+	}
+
+	return nil
+}
+
+func (c *Crop) Harvest(sourceAreaUID uuid.UUID, quantity int) error {
+	return nil
+}
+
+func (c *Crop) Dump(sourceAreaUID uuid.UUID, quantity int) error {
 	return nil
 }
