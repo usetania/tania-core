@@ -180,7 +180,21 @@ func (s CropService) MoveToArea(crop *domain.Crop, sourceAreaUID uuid.UUID, dest
 }
 
 func (c *Crop) Harvest(sourceAreaUID uuid.UUID, quantity int) error {
-	return nil
+	// Validate //
+	// Check if source area is exist in DB
+	result := s.AreaQuery.FindByID(sourceAreaUID)
+	srcArea, ok := result.Result.(query.CropArea)
+	if !ok {
+		return CropError{Code: CropAreaErrorInvalidSourceArea}
+	}
+
+	if srcArea == (query.CropArea{}) {
+		return CropError{Code: CropAreaErrorSourceAreaNotFound}
+	}
+
+	if quantity <= 0 {
+		return CropError{Code: CropHarvestErrorInvalidQuantity}
+	}
 }
 
 func (c *Crop) Dump(sourceAreaUID uuid.UUID, quantity int) error {

@@ -15,6 +15,11 @@ const (
 	CropMoveToAreaErrorInvalidExistingSourceArea
 	CropMoveToAreaErrorCannotBeSame
 
+	// Crop harvest errors
+	CropHarvestErrorInvalidSourceArea
+	CropHarvestErrorSourceAreaNotFound
+	CropHarvestErrorInvalidQuantity
+
 	// Crop Batch ID errors
 	CropErrorInvalidBatchID
 	CropErrorBatchIDAlreadyCreated
@@ -64,6 +69,13 @@ func (e CropError) Error() string {
 		return "Invalid existing source area"
 	case CropMoveToAreaErrorCannotBeSame:
 		return "Invalid move crop to area. Area source and destination cannot be same"
+
+	case CropHarvestErrorInvalidSourceArea:
+		return "Invalid source area"
+	case CropHarvestErrorSourceAreaNotFound:
+		return "Source area not found"
+	case CropHarvestErrorInvalidQuantity:
+		return "Invalid quantity"
 
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"
