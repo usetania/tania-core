@@ -1,0 +1,51 @@
+package domain
+
+const (
+	CropErrorInvalidArea = iota
+	CropErrorInvalidCropType
+	CropErrorInvalidCropStatus
+
+	CropErrorInvalidBatchID
+	CropErrorBatchIDAlreadyCreated
+
+	CropContainerErrorInvalidType
+	CropContainerErrorInvalidQuantity
+	CropContainerErrorInvalidTrayCell
+
+	CropNoteErrorInvalidContent
+	CropNoteErrorNotFound
+)
+
+// CropError is a custom error from Go built-in error
+type CropError struct {
+	Code int
+}
+
+func (e CropError) Error() string {
+	switch e.Code {
+	case CropErrorInvalidArea:
+		return "Invalid area"
+	case CropErrorInvalidCropType:
+		return "Invalid crop type"
+	case CropErrorInvalidCropStatus:
+		return "Invalid crop status"
+	case CropErrorInvalidBatchID:
+		return "Invalid crop batch ID"
+	case CropErrorBatchIDAlreadyCreated:
+		return "Crop batch ID already created"
+
+	case CropContainerErrorInvalidType:
+		return "Invalid crop container type"
+	case CropContainerErrorInvalidQuantity:
+		return "Invalid crop container quantity"
+	case CropContainerErrorInvalidTrayCell:
+		return "Invalid crop container tray cell"
+
+	case CropNoteErrorInvalidContent:
+		return "Invalid crop note content"
+	case CropNoteErrorNotFound:
+		return "Crop note not found"
+	default:
+		return "Unrecognized Crop Error Code"
+	}
+}
