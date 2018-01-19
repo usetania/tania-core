@@ -75,27 +75,22 @@ func (s CropService) MoveToArea(crop *domain.Crop, sourceAreaUID uuid.UUID, dest
 	result := s.AreaQuery.FindByID(sourceAreaUID)
 	srcArea, ok := result.Result.(query.CropArea)
 	if !ok {
-		return CropError{Code: CropAreaErrorInvalidSourceArea}
+		return CropError{Code: CropMoveToAreaErrorInvalidSourceArea}
 	}
 
 	if srcArea == (query.CropArea{}) {
-		return CropError{Code: CropAreaErrorSourceAreaNotFound}
+		return CropError{Code: CropMoveToAreaErrorSourceAreaNotFound}
 	}
 
 	// Check if destination area is exist in DB
 	result = s.AreaQuery.FindByID(destinationAreaUID)
 	dstArea, ok  result.Result.(query.CropArea)
 	if !ok {
-		return Croperror{Code: CropAreaErrorInvalidDestinationArea}
-	}
-
-	dstArea, ok = result.Result.(query.CropArea)
-	if !ok {
-		return CropError{Code: CropAreaErrorInvalidDestinationArea}
+		return Croperror{Code: CropMoveToAreaErrorInvalidDestinationArea}
 	}
 
 	if dstArea == (query.CropArea{}) {
-		return CropError{Code: CropAreaErrorDestinationAreaNotFound}
+		return CropError{Code: CropMoveToAreaErrorDestinationAreaNotFound}
 	}
 
 	// Check if movement rules for area type is valid
@@ -109,7 +104,7 @@ func (s CropService) MoveToArea(crop *domain.Crop, sourceAreaUID uuid.UUID, dest
 	}
 
 	if !isValidMoveRules {
-		return CropError{Code: CropMoveToAreaErrorInvalidArea}
+		return CropError{Code: CropMoveToAreaErrorInvalidAreaRules}
 	}
 
 	// source and destination area cannot be the same

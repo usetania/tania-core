@@ -5,18 +5,19 @@ const (
 	CropErrorInvalidCropType
 	CropErrorInvalidCropStatus
 
+	// Crop move to area errors
+	CropMoveToAreaErrorInvalidSourceArea
+	CropMoveToAreaErrorSourceAreaNotFound
+	CropMoveToAreaErrorInvalidDestinationArea
+	CropMoveToAreaErrorDestinationAreaNotFound
 	CropMoveToAreaErrorInvalidQuantity
-	CropMoveToAreaErrorInvalidArea
+	CropMoveToAreaErrorInvalidAreaRules
 	CropMoveToAreaErrorInvalidExistingSourceArea
 	CropMoveToAreaErrorCannotBeSame
 
+	// Crop Batch ID errors
 	CropErrorInvalidBatchID
 	CropErrorBatchIDAlreadyCreated
-
-	CropAreaErrorInvalidSourceArea
-	CropAreaErrorSourceAreaNotFound
-	CropAreaErrorInvalidDestinationArea
-	CropAreaErrorDestinationAreaNotFound
 
 	CropContainerErrorInvalidType
 	CropContainerErrorInvalidQuantity
@@ -47,23 +48,22 @@ func (e CropError) Error() string {
 	case CropErrorBatchIDAlreadyCreated:
 		return "Crop batch ID already created"
 
+	case CropMoveToAreaErrorInvalidSourceArea:
+		return "Crop source area is invalid"
+	case CropMoveToAreaErrorSourceAreaNotFound:
+		return "Crop source area not found"
+	case CropMoveToAreaErrorInvalidDestinationArea:
+		return "Crop destination area is invalid"
+	case CropMoveToAreaErrorDestinationAreaNotFound:
+		return "Crop destination not found"
 	case CropMoveToAreaErrorInvalidQuantity:
 		return "Invalid quantity. Make sure your quantity is not zero and enough to be moved"
-	case CropMoveToAreaErrorInvalidArea:
+	case CropMoveToAreaErrorInvalidAreaRules:
 		return "Invalid move crop to area. Crop can only be moved from Seeding to Growing, Seeding to Seeding or Growing to Growing"
 	case CropMoveToAreaErrorInvalidExistingSourceArea:
 		return "Invalid existing source area"
 	case CropMoveToAreaErrorCannotBeSame:
 		return "Invalid move crop to area. Area source and destination cannot be same"
-
-	case CropAreaErrorInvalidSourceArea:
-		return "Crop source area is invalid"
-	case CropAreaErrorSourceAreaNotFound:
-		return "Crop source area not found"
-	case CropAreaErrorInvalidDestinationArea:
-		return "Crop destination area is invalid"
-	case CropAreaErrorDestinationAreaNotFound:
-		return "Crop destination not found"
 
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"
