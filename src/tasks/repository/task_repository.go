@@ -41,6 +41,25 @@ func (f *TaskRepositoryInMemory) FindAll() <-chan RepositoryResult {
 	return result
 }
 
+// FindByID is to find by ID
+func (r *TaskRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
+	result := make(chan RepositoryResult)
+
+	go func() {
+		r.Storage.Lock.RLock()
+		defer r.Storage.Lock.RUnlock()
+
+		uid, err := uuid.FromString(uid)
+		if err != nil {
+			result <- RepositoryResult{Error: err}
+		}
+
+		result <- RepositoryResult{Result: r.Storage.TaskMap[uid]}
+	}()
+
+	return result
+}
+
 // Save is to save
 func (r *TaskRepositoryInMemory) Save(val *domain.Task) <-chan error {
 	result := make(chan error)
@@ -59,21 +78,3 @@ func (r *TaskRepositoryInMemory) Save(val *domain.Task) <-chan error {
 	return result
 }
 
-// FindByID is to find by ID
-func (f *TaskRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
-	result := make(chan RepositoryResult)
-
-	go func() {
-		f.Storage.Lock.RLock()
-		defer f.Storage.Lock.RUnlock()
-
-		uid, err := uuid.FromString(uid)
-		if err != nil {
-			result <- RepositoryResult{Error: err}
-		}
-
-		result <- RepositoryResult{Result: f.Storage.TaskMap[uid]}
-	}()
-
-	return result
-}

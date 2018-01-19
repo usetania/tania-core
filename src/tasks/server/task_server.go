@@ -30,6 +30,7 @@ func NewTaskServer() (*TaskServer, error) {
 func (s *TaskServer) Mount(g *echo.Group) {
 	g.POST("", s.SaveTask)
 	g.GET("", s.FindAllTask)
+	g.GET("/:id", s.FindTaskByID)
 }
 
 func (s TaskServer) FindAllTask(c echo.Context) error {
@@ -76,6 +77,24 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	err = <-s.TaskRepo.Save(&task)
 	if err != nil {
 		return Error(c, err)
+	}
+
+	data["data"] = task
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) FindTaskByID(c echo.Context) error {
+	data := make(map[string]domain.Task)
+
+	result := <-s.TaskRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	task, ok := result.Result.(domain.Task)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
 	data["data"] = task
