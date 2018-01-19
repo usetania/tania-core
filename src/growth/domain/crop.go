@@ -121,19 +121,22 @@ type MovedArea struct {
 	SourceAreaUID   uuid.UUID
 	InitialQuantity int
 	CurrentQuantity int
-	Date            time.Time
+	CreatedDate     time.Time
+	LastUpdated     time.Time
 }
 
 type HarvestedStorage struct {
 	Quantity      int
 	SourceAreaUID uuid.UUID
-	Date          time.Time
+	CreatedDate   time.Time
+	LastUpdated   time.Time
 }
 
 type Trash struct {
 	Quantity      int
 	SourceAreaUID uuid.UUID
-	Date          time.Time
+	CreatedDate   time.Time
+	LastUpdated   time.Time
 }
 
 type CropNote struct {

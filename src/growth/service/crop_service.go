@@ -164,6 +164,7 @@ func (s CropService) MoveToArea(crop *domain.Crop, sourceAreaUID uuid.UUID, dest
 		for i, v := range crop.MovedArea {
 			if v.AreaUID == dstArea.UID {
 				crop.MovedArea[i].CurrentQuantity += quantity
+				crop.MovedArea[i].LastUpdated = time.Now()
 			}
 		}
 	} else {
@@ -172,7 +173,8 @@ func (s CropService) MoveToArea(crop *domain.Crop, sourceAreaUID uuid.UUID, dest
 			SourceAreaUID: srcArea.UID,
 			InitialQuantity: quantity,
 			CurrentQuantity: quantity,
-			Date: time.Now(),
+			CreatedDate: time.Now(),
+			LastUpdated: time.Now(),
 		})
 	}
 
@@ -185,18 +187,78 @@ func (c *Crop) Harvest(sourceAreaUID uuid.UUID, quantity int) error {
 	result := s.AreaQuery.FindByID(sourceAreaUID)
 	srcArea, ok := result.Result.(query.CropArea)
 	if !ok {
-		return CropError{Code: CropAreaErrorInvalidSourceArea}
+		return CropError{Code: CropHarvestErrorInvalidSourceArea}
 	}
 
 	if srcArea == (query.CropArea{}) {
-		return CropError{Code: CropAreaErrorSourceAreaNotFound}
+		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
 	}
 
 	if quantity <= 0 {
 		return CropError{Code: CropHarvestErrorInvalidQuantity}
 	}
+
+	// Process //
+	// Check source area existance. If already exist, then just update it
+	isExist = false
+	for i, v := range c.HarvestedStorage {
+		if v.AreaUID == srcArea.UID {
+			c.HarvestedStorage[i].Quantity += quantity
+			c.HarvestedStorage[i].LastUpdated = time.Now()
+			isExist = true
+		}
+	}
+
+	if !isExist {
+		hs := HarvestedStorage{
+			Quantity: quantity,
+			sourceAreaUID: srcArea.UID,
+			Date: time.Now(),
+			LastUpdated: time.Now(),
+		}
+		c.HarvestedStorage = append(c.HarvestedStorage, hs)
+	}
+
+	return nil
 }
 
 func (c *Crop) Dump(sourceAreaUID uuid.UUID, quantity int) error {
+	// Validate //
+	// Check if source area is exist in DB
+	result := s.AreaQuery.FindByID(sourceAreaUID)
+	srcArea, ok := result.Result.(query.CropArea)
+	if !ok {
+		return CropError{Code: CropDumpErrorInvalidSourceArea}
+	}
+
+	if srcArea == (query.CropArea{}) {
+		return CropError{Code: CropDumpErrorSourceAreaNotFound}
+	}
+
+	if quantity <= 0 {
+		return CropError{Code: CropDumpErrorInvalidQuantity}
+	}
+
+	// Process //
+	// Check source area existance. If already exist, then just update it
+	isExist = false
+	for i, v := range c.Trash {
+		if v.AreaUID == srcArea.UID {
+			c.Trash[i].Quantity += quantity
+			c.Trash[i].LastUpdated = time.Now()
+			isExist = true
+		}
+	}
+
+	if !isExist {
+		t := Trash{
+			Quantity: quantity,
+			sourceAreaUID: srcArea.UID,
+			Date: time.Now(),
+			LastUpdated: time.Now(),
+		}
+		c.Trash = append(c.Trash, t)
+	}
+
 	return nil
 }
