@@ -230,7 +230,7 @@
 					"formdata": [
 						{
 							"key": "name",
-							"value": "MyArea",
+							"value": "MyAreax",
 							"description": "Required, alphanumeric, min 5 char, max 100 char",
 							"type": "text"
 						},
@@ -549,45 +549,50 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
 				"body": {
-					"mode": "formdata",
-					"formdata": [
+					"mode": "urlencoded",
+					"urlencoded": [
 						{
 							"key": "crop_type",
 							"value": "seeding",
-							"description": "required. options: seeding, growing",
-							"type": "text"
+							"type": "text",
+							"description": ""
 						},
 						{
 							"key": "plant_type",
 							"value": "vegetable",
-							"description": "required. options: vegetable, fruit, herb, flower, tree. Options should be obtained from Get Inventories endpoint",
-							"type": "text"
+							"type": "text",
+							"description": ""
 						},
 						{
 							"key": "variety",
 							"value": "Brocolli Super Green 2",
-							"description": "required. string. Value should be obtained from Get Inventories endpoint",
-							"type": "text"
+							"type": "text",
+							"description": ""
 						},
 						{
 							"key": "container_quantity",
 							"value": "10",
-							"description": "required. number",
-							"type": "text"
+							"type": "text",
+							"description": ""
 						},
 						{
 							"key": "container_type",
 							"value": "pot",
-							"description": "required. options: tray, pot",
-							"type": "text"
+							"type": "text",
+							"description": ""
 						},
 						{
 							"key": "container_cell",
 							"value": "15",
-							"description": "required if `container_type` == tray. ",
-							"type": "text"
+							"type": "text",
+							"description": ""
 						}
 					]
 				},
@@ -644,6 +649,27 @@
 						"areas",
 						"{{AREA_ID}}",
 						"crops"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Crops By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}"
 					]
 				},
 				"description": ""
@@ -872,6 +898,88 @@
 					]
 				},
 				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Create Task",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "Weeding",
+							"type": "text",
+							"description": "required string"
+						},
+						{
+							"key": "due_date",
+							"value": "2019-01-23T17:37:39.697328206+01:00",
+							"type": "text",
+							"description": "required time equal to or later than current time"
+						},
+						{
+							"key": "priority",
+							"value": "normal",
+							"type": "text",
+							"description": "required string. Options: normal, urgent"
+						},
+						{
+							"key": "status",
+							"value": "inprogress",
+							"type": "text",
+							"description": "required string. Options: inprogress, complete"
+						},
+						{
+							"key": "asset_id",
+							"value": "{{AREA_ID}}",
+							"type": "text",
+							"description": "required asset uid"
+						},
+						{
+							"key": "type",
+							"value": "area",
+							"type": "text",
+							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/tasks",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/tasks",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks"
+					]
+				}
 			},
 			"response": []
 		}
