@@ -19,6 +19,7 @@ public/report.html
 public/mix-manifest.json
 public/service-worker.js
 node_modules/
+cypress/
 vendor/
 storage.db
 notes.md

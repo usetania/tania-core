@@ -12,23 +12,23 @@
             error-message(:message="message.error_message")
             form(@submit.prevent="validateBeforeSubmit")
               .form-group
-                label(for="name") Reservoir Name
+                label#label-name(for="name") Reservoir Name
                 input.form-control#name(type="text" v-validate="'required|alpha_num|min:5|max:100'" :class="{'input': true, 'text-danger': errors.has('reservoir.name') }" v-model="reservoir.name" name="reservoir.name")
                 span.help-block.text-danger(v-show="errors.has('reservoir.name')") {{ errors.first('reservoir.name') }}
               .form-group
-                label(for="type") Source
+                label#label-source(for="type") Source
                 select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('reservoir.type') }" v-model="reservoir.type" name="reservoir.type" @change="typeChanged($event.target.value)")
                   option(value="") Please select source
                   option(v-for="option in options" :value="option.key") {{ option.label }}
                 span.help-block.text-danger(v-show="errors.has('reservoir.type')") {{ errors.first('reservoir.type') }}
               .form-group(v-if="reservoir.type == 'bucket'")
-                input.form-control(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('reservoir.capacity') }" v-model="reservoir.capacity" placeholder="Capacity (litre)" name="reservoir.capacity")
+                input#capacity.form-control(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('reservoir.capacity') }" v-model="reservoir.capacity" placeholder="Capacity (litre)" name="reservoir.capacity")
                 span.help-block.text-danger(v-show="errors.has('reservoir.capacity')") {{ errors.first('reservoir.capacity') }}
               .form-group
                 button.btn.btn-addon.btn-primary.pull-right(type="submit")
                   | Continue
                   i.fa.fa-long-arrow-right
-                router-link.btn.btn-addon.btn-default(:to="{name: 'IntroFarmCreate'}")
+                router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroFarmCreate'}")
                   i.fa.fa-long-arrow-left
                   | Back
 </template>
