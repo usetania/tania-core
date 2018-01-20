@@ -1,7 +1,7 @@
 <template lang="pug">
   .mapbox
     .mapbox-button
-      label Location
+      label#label-location Location
       button.btn.btn-default.pull-right(@click="findMe" type="button")
         i.fa.fa-crosshairs
     v-map.map(:zoom="13" ref="map" :center="location")
@@ -46,19 +46,19 @@ export default {
   watch : {
     latitude (value, before) {
       if (value && value !== this.location[0]) {
-        this.location = [value, this.location[1]]
+        this.location = [parseFloat(value), this.location[1]]
       }
     },
     longitude (value, before) {
       if (value && value !== this.location[1]) {
-        this.location = [this.location[0], value]
+        this.location = [this.location[0], parseFloat(value)]
       }
     }
   },
   created () {
     this.location = Array.from([
-      this.latitude !== 0 ? parseFloat(this.latitude) : -8.4960936,
-      this.longitude !== 0 ? parseFloat(this.longitude) : 115.2485298
+      this.latitude !== '' ? parseFloat(this.latitude) : -8.4960936,
+      this.longitude !== '' ? parseFloat(this.longitude) : 115.2485298
     ])
   },
   mounted () {
