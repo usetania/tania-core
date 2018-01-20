@@ -242,6 +242,19 @@
   margin-top: 1px;
 }
 
+.areatag-sm {
+  display: inline;
+  white-space: nowrap;
+  vertical-align: baseline;
+  background-color: #EDE0CC;
+  border-radius: 2px;
+  color: #94661F;
+  font-size: 11px;
+  padding: 2px 5px;
+  margin-left: 0px;
+  margin-top: 1px;
+}
+
 
 /* CROPS */
 
@@ -254,5 +267,24 @@
   font-size: 18px;
 }
 
+.cropactivity {
+}
+
+.cropempty {
+}
+
+.cropactivity ul {
+  margin-left: -20px;
+}
+
+.cropactivity li {
+  list-style-type: none;
+}
+
+/* List Group */
+
+.list-group-item {
+  border: 1px solid transparent !important;
+}
 
 

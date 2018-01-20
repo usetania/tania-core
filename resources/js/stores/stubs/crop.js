@@ -1,10 +1,15 @@
 export default {
   uid: '',
   batch_id: '',
-  initial_area: {},
+  crop_type: '',
+  initial_area: '',
+  plant_type: '',
   current_area: [],
-  type: '',
   inventory: '',
-  container: '',
-  created_date: ''
+  variety: '',
+  container_quantity: '',
+  container_type: '',
+  created_date: '',
+  container_cell: '',
+  notes: []
 }

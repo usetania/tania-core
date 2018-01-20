@@ -15,6 +15,7 @@ const state = {
   area: {},
   areas: [],
   types: [],
+  inventories: [],
   crops: []
 }
 
@@ -26,6 +27,7 @@ const getters = {
   getAllReservoirs: state => state.reservoirs,
   getAllAreas: state => state.areas,
   getAllFarmTypes: state => state.types,
+  getAllFarmInventories: state => state.inventories,
   getAllCrops: state => state.crops,
   haveFarms: state => state.farms.length > 0 ? true : false
 }
@@ -48,6 +50,16 @@ const actions = {
       FarmApi
         .ApiGetFarmTypes(({ data }) => {
           commit(types.FETCH_FARM_TYPES, data)
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
+  fetchFarmInventories ({ commit, state }) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiFetchFarmInventories(({ data }) => {
+          commit(types.FETCH_FARM_INVENTORIES, data.data)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -97,6 +109,7 @@ const actions = {
       formData.set('location', payload.location)
       formData.set('reservoir_id', payload.reservoir_id)
       formData.set('photo', payload.photo)
+      formData.set('farm_id', state.farm.uid)
 
       FarmApi.ApiCreateArea(state.farm.uid, formData, ({ data }) => {
         commit(types.CREATE_AREA, {
@@ -126,6 +139,20 @@ const actions = {
       }, error => reject(error.response))
     })
   },
+  createCrop ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      const farmId = state.farm.uid
+      let areaId = payload.initial_area
+      FarmApi
+        .ApiCreateCrop(areaId, payload, ({ data }) => {
+          payload = data.data
+          payload.farm_id = farmId
+          commit(types.CREATE_CROP, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
   fetchCrops ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
@@ -151,6 +178,9 @@ const mutations = {
   [types.FETCH_FARM_TYPES] (state, payload) {
     state.types = payload
   },
+  [types.FETCH_FARM_INVENTORIES] (state, payload) {
+    state.inventories = payload
+  },
   [types.CREATE_FARM] (state, payload) {
     state.farms.push(payload)
   },
@@ -174,6 +204,9 @@ const mutations = {
   },
   [types.FETCH_AREA] (state, payload) {
     state.areas = payload
+  },
+  [types.CREATE_CROP] (state, payload) {
+    state.crops.push(payload)
   },
   [types.SET_CROP] (state, payload) {
     state.crops = payload
