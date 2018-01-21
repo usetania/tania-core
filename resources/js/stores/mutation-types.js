@@ -19,6 +19,7 @@ export const FETCH_AREA = 'FETCH_AREA'
 export const CREATE_CROP = 'CREATE_CROP'
 export const SET_CROP= 'SET_CROP'
 export const FETCH_CROP = 'FETCH_CROP'
+export const CREATE_CROP_NOTES = 'CREATE_CROP_NOTES'
 
 export const USER_LOGIN = 'USER_LOGIN'
 export const USER_COMPLETED_INTRO = 'USER_COMPLETED_INTRO'

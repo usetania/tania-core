@@ -35,5 +35,8 @@ export default {
   },
   ApiFindCropByUid: (farmid, cropid, cbSuccess, cbError) => {
     http.get('farms/crops/' + cropid, cbSuccess, cbError)
-  }
+  },
+  ApiCreateCropNotes: (cropId, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/' + cropId + '/notes' , payload, cbSuccess, cbError)
+  },
 }

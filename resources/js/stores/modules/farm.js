@@ -16,7 +16,8 @@ const state = {
   areas: [],
   types: [],
   inventories: [],
-  crops: []
+  crops: [],
+  cropnotes: [],
 }
 
 const getters = {
@@ -171,7 +172,19 @@ const actions = {
         resolve(data)
       }, error => reject(error.response))
     })
-  }
+  },
+  createCropNotes ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiCreateCropNotes(cropId, payload, ({ data }) => {
+          payload = data.data
+          commit(types.CREATE_CROP_NOTES, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
@@ -213,6 +226,9 @@ const mutations = {
   },
   [types.FETCH_CROP] (state, payload) {
     state.crops = payload
+  },
+  [types.CREATE_CROP_NOTES] (state, payload) {
+    state.cropnotes.push(payload)
   },
 }
 

@@ -35,8 +35,10 @@
                         .col-sm-7
                           .m-b
                             .h4.font-bold.m-b Notes
-                            textarea.form-control.m-b(placeholder="Leave a note here..." rows="2")
-                            button.btn.btn-xs.btn-success.m-b Add Notes
+                            form(@submit.prevent="validateBeforeSubmit")
+                              textarea.form-control.m-b#content(placeholder="Leave a note here..." rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                              span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
+                              button.btn.btn-xs.btn-success.m-b(type="submit") Add Note
                             ul.list-group.list-group-lg.no-bg.auto
                               li.list-group-item.row
                                 .pull-left.m-r
@@ -134,13 +136,14 @@
 <script>
 import { FindCropContainer } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
-import { StubCrop } from '@/stores/stubs'
+import { StubCrop, StubNote } from '@/stores/stubs'
 export default {
   name: 'FarmCrop',
   data () {
     return {
       loading: true,
-      crop: Object.assign({}, StubCrop)
+      crop: Object.assign({}, StubCrop),
+      note: Object.assign({}, StubNote),
     }
   },
   created () {
@@ -153,11 +156,24 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getCropByUid'
+      'getCropByUid',
+      'createCropNotes'
     ]),
     getCropContainer(key, count) {
       return FindCropContainer(key).label + ((count != 1)? 's':'')
-    }
+    },
+    validateBeforeSubmit () {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.create()
+        }
+      })
+    },
+    create () {
+      this.note.obj_uid = this.$route.params.id
+      this.createCropNotes(this.note)
+        .catch(({ data }) => this.message = data)
+    },
   }
 }
 </script>
