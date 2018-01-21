@@ -4,7 +4,7 @@ const (
 	TaskStatusCreated = "created"
 	TaskStatusInProgress = "inprogress"
 	TaskStatusCancelled = "cancelled"
-	TaskStatusComplete = "complete"
+	TaskStatusComplete = "completed"
 )
 
 type TaskStatus struct {
@@ -16,8 +16,8 @@ func FindAllTaskStatus() []TaskStatus {
 	return []TaskStatus{
 		TaskStatus{Code: TaskStatusCreated, Name: "Created"},
 		TaskStatus{Code: TaskStatusInProgress, Name: "In Progress"},
-		TaskStatus{Code: TaskStatusCancelled, Name: "cancelled"},
-		TaskStatus{Code: TaskStatusComplete, Name: "Complete"},
+		TaskStatus{Code: TaskStatusCancelled, Name: "Cancelled"},
+		TaskStatus{Code: TaskStatusComplete, Name: "Completed"},
 	}
 }
 

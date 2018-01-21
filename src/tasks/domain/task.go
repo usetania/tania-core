@@ -105,7 +105,7 @@ func (t *Task) ChangeTaskPriority(newpriority string) error {
 // ChangeStatus
 func (t *Task) ChangeTaskStatus(newstatus string) error {
 
-	err := validateTaskPriority(newstatus)
+	err := validateTaskStatus(newstatus)
 	if err != nil {
 		return err
 	}
