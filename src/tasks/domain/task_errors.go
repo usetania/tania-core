@@ -24,6 +24,9 @@ const (
 	//Parent UID Errors
 	TaskErrorAssetIDEmptyCode
 	TaskErrorInvalidAssetIDCode
+
+	//Task General Errors
+	TaskErrorTaskNotFound
 )
 
 // TaskError is a custom error from Go built-in error
@@ -57,6 +60,8 @@ func (e TaskError) Error() string {
 		return "Task must have a referenced asset."
 	case TaskErrorInvalidAssetIDCode:
 		return "Task asset reference is invalid."
+	case TaskErrorTaskNotFound:
+		return "Task not found"
 	default:
 		return "Unrecognized Task Error Code"
 	}

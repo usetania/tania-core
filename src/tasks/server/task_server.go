@@ -85,6 +85,10 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 
 func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	data := make(map[string]domain.Task)
+	uid, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error (c, err)
+	}
 
 	result := <-s.TaskRepo.FindByID(c.Param("id"))
 	if result.Error != nil {
@@ -92,6 +96,11 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	}
 
 	task, ok := result.Result.(domain.Task)
+
+	if task.UID != uid {
+		//return domain.TaskError{domain.TaskErrorTaskNotFound}
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
