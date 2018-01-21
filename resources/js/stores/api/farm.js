@@ -34,6 +34,6 @@ export default {
     http.get('farms/' + farmid + '/crops', cbSuccess, cbError)
   },
   ApiFindCropByUid: (farmid, cropid, cbSuccess, cbError) => {
-    http.get('farms/' + farmid + '/crops/' + cropid, cbSuccess, cbError)
+    http.get('farms/crops/' + cropid, cbSuccess, cbError)
   }
 }
