@@ -1,8 +1,10 @@
 package domain
 
 import (
+	"strings"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -28,6 +30,19 @@ type Crop struct {
 
 	// Notes
 	Notes map[uuid.UUID]CropNote
+}
+
+// CropService handles crop behaviours that needs external interaction to be worked
+type CropService interface {
+	FindInventoryMaterialByID(uid uuid.UUID) ServiceResult
+	FindByBatchID(batchID string) ServiceResult
+	FindAreaByID(uid uuid.UUID) ServiceResult
+}
+
+// ServiceResult is the container for service result
+type ServiceResult struct {
+	Result interface{}
+	Error  error
 }
 
 // We just recorded two crop status
@@ -145,6 +160,25 @@ type CropNote struct {
 	CreatedDate time.Time
 }
 
+type CropInventory struct {
+	UID           uuid.UUID
+	PlantTypeCode string
+	Variety       string
+}
+
+type CropArea struct {
+	UID      uuid.UUID
+	Name     string
+	Size     CropAreaUnit
+	Type     string
+	Location string
+}
+
+type CropAreaUnit struct {
+	Value  float32
+	Symbol string
+}
+
 func CreateCropBatch() (Crop, error) {
 	uid, err := uuid.NewV4()
 	if err != nil {
@@ -156,6 +190,202 @@ func CreateCropBatch() (Crop, error) {
 		CreatedDate: time.Now(),
 	}, nil
 	return Crop{}, nil
+}
+
+func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, destinationAreaUID uuid.UUID, quantity int) error {
+	// Validate //
+	// Check if source area is exist in DB
+	serviceResult := cropService.FindAreaByID(sourceAreaUID)
+	if serviceResult.Error != nil {
+		return CropError{Code: CropMoveToAreaErrorInvalidSourceArea}
+	}
+
+	srcArea, ok := serviceResult.Result.(CropArea)
+	if !ok {
+		return CropError{Code: CropMoveToAreaErrorInvalidSourceArea}
+	}
+
+	if srcArea.UID == (uuid.UUID{}) {
+		return CropError{Code: CropMoveToAreaErrorSourceAreaNotFound}
+	}
+
+	// Check if destination area is exist in DB
+	serviceResult = cropService.FindAreaByID(destinationAreaUID)
+	dstArea, ok := serviceResult.Result.(CropArea)
+	if !ok {
+		return CropError{Code: CropMoveToAreaErrorInvalidDestinationArea}
+	}
+
+	if dstArea.UID == (uuid.UUID{}) {
+		return CropError{Code: CropMoveToAreaErrorDestinationAreaNotFound}
+	}
+
+	// Check if movement rules for area type is valid
+	isValidMoveRules := false
+	if srcArea.Type == "seeding" && dstArea.Type == "growing" {
+		isValidMoveRules = true
+	} else if srcArea.Type == "seeding" && dstArea.Type == "seeding" {
+		isValidMoveRules = true
+	} else if srcArea.Type == "growing" && dstArea.Type == "growing" {
+		isValidMoveRules = true
+	}
+
+	if !isValidMoveRules {
+		return CropError{Code: CropMoveToAreaErrorInvalidAreaRules}
+	}
+
+	// source and destination area cannot be the same
+	if srcArea.UID == dstArea.UID {
+		return CropError{Code: CropMoveToAreaErrorCannotBeSame}
+	}
+
+	// Quantity to be moved cannot be empty
+	if quantity <= 0 {
+		return CropError{Code: CropMoveToAreaErrorInvalidQuantity}
+	}
+
+	// Check validity of the source area input and the quantity to the existing crop source area.
+	isValidSrcArea := false
+	isValidQuantity := false
+	if c.InitialArea.AreaUID == srcArea.UID {
+		isValidSrcArea = true
+		isValidQuantity = (c.InitialArea.CurrentQuantity - quantity) >= 0
+	}
+
+	for _, v := range c.MovedArea {
+		if v.AreaUID == srcArea.UID {
+			isValidSrcArea = true
+			isValidQuantity = (v.CurrentQuantity - quantity) >= 0
+		}
+	}
+
+	if !isValidSrcArea {
+		return CropError{Code: CropMoveToAreaErrorInvalidExistingArea}
+	}
+	if !isValidQuantity {
+		return CropError{Code: CropMoveToAreaErrorInvalidQuantity}
+	}
+
+	// Check existance of the destination area input to the existing crop destination area.
+	isDstExist := false
+	for _, v := range c.MovedArea {
+		if v.AreaUID == dstArea.UID {
+			isDstExist = true
+		}
+	}
+
+	// Process //
+	if c.InitialArea.AreaUID == srcArea.UID {
+		c.InitialArea.CurrentQuantity -= quantity
+	}
+
+	for i, v := range c.MovedArea {
+		if v.AreaUID == srcArea.UID {
+			c.MovedArea[i].CurrentQuantity -= quantity
+		}
+	}
+
+	if isDstExist {
+		for i, v := range c.MovedArea {
+			if v.AreaUID == dstArea.UID {
+				c.MovedArea[i].CurrentQuantity += quantity
+				c.MovedArea[i].LastUpdated = time.Now()
+			}
+		}
+	} else {
+		c.MovedArea = append(c.MovedArea, MovedArea{
+			AreaUID:         dstArea.UID,
+			SourceAreaUID:   srcArea.UID,
+			InitialQuantity: quantity,
+			CurrentQuantity: quantity,
+			CreatedDate:     time.Now(),
+			LastUpdated:     time.Now(),
+		})
+	}
+
+	return nil
+}
+
+func (c *Crop) Harvest(cropService CropService, sourceAreaUID uuid.UUID, quantity int) error {
+	// Validate //
+	// Check if source area is exist in DB
+	serviceResult := cropService.FindAreaByID(sourceAreaUID)
+	srcArea, ok := serviceResult.Result.(CropArea)
+	if !ok {
+		return CropError{Code: CropHarvestErrorInvalidSourceArea}
+	}
+
+	if srcArea == (CropArea{}) {
+		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
+	}
+
+	if quantity <= 0 {
+		return CropError{Code: CropHarvestErrorInvalidQuantity}
+	}
+
+	// Process //
+	// Check source area existance. If already exist, then just update it
+	isExist := false
+	for i, v := range c.HarvestedStorage {
+		if v.SourceAreaUID == srcArea.UID {
+			c.HarvestedStorage[i].Quantity += quantity
+			c.HarvestedStorage[i].LastUpdated = time.Now()
+			isExist = true
+		}
+	}
+
+	if !isExist {
+		hs := HarvestedStorage{
+			Quantity:      quantity,
+			SourceAreaUID: srcArea.UID,
+			CreatedDate:   time.Now(),
+			LastUpdated:   time.Now(),
+		}
+		c.HarvestedStorage = append(c.HarvestedStorage, hs)
+	}
+
+	return nil
+}
+
+func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity int) error {
+	// Validate //
+	// Check if source area is exist in DB
+	serviceResult := cropService.FindAreaByID(sourceAreaUID)
+	srcArea, ok := serviceResult.Result.(CropArea)
+	if !ok {
+		return CropError{Code: CropDumpErrorInvalidSourceArea}
+	}
+
+	if srcArea == (CropArea{}) {
+		return CropError{Code: CropDumpErrorSourceAreaNotFound}
+	}
+
+	if quantity <= 0 {
+		return CropError{Code: CropDumpErrorInvalidQuantity}
+	}
+
+	// Process //
+	// Check source area existance. If already exist, then just update it
+	isExist := false
+	for i, v := range c.Trash {
+		if v.SourceAreaUID == srcArea.UID {
+			c.Trash[i].Quantity += quantity
+			c.Trash[i].LastUpdated = time.Now()
+			isExist = true
+		}
+	}
+
+	if !isExist {
+		t := Trash{
+			Quantity:      quantity,
+			SourceAreaUID: srcArea.UID,
+			CreatedDate:   time.Now(),
+			LastUpdated:   time.Now(),
+		}
+		c.Trash = append(c.Trash, t)
+	}
+
+	return nil
 }
 
 func (c *Crop) Fertilize() error {
@@ -225,10 +455,45 @@ func (c *Crop) ChangeContainer(quantity int, cell int, containerType CropContain
 	return nil
 }
 
-// ChangeInventory needs to be validated with external (ie: query to Inventory in Assets domain).
-// BatchID will only be generated after inventory is assigned.
-func (c *Crop) ChangeInventory(inventoryUID uuid.UUID) error {
-	// Generate batchID from the inventory here
+func (c *Crop) ChangeInventory(cropService CropService, inventoryUID uuid.UUID) error {
+	serviceResult := cropService.FindInventoryMaterialByID(inventoryUID)
+
+	if serviceResult.Error != nil {
+		return serviceResult.Error
+	}
+
+	inventory := serviceResult.Result.(CropInventory)
+
+	// Generate Batch ID
+	// Format the date to become daymonth format like 25jan
+	dateFormat := strings.ToLower(c.CreatedDate.Format("2Jan"))
+
+	// Get variety name and split it to slice
+	varietySlice := strings.Fields(inventory.Variety)
+	varietyFormat := ""
+	for _, v := range varietySlice {
+		// 	// For every value, get only the first three characters
+		format := ""
+		if len(v) > 3 {
+			format = strings.ToLower(string(v[0:3]))
+		} else {
+			format = strings.ToLower(string(v))
+		}
+
+		varietyFormat = stringhelper.Join(varietyFormat, format, "-")
+	}
+
+	// Join that variety and date
+	batchID := stringhelper.Join(varietyFormat, dateFormat)
+
+	// Validate Uniqueness of Batch ID.
+	serviceResult = cropService.FindByBatchID(batchID)
+	if serviceResult.Error != nil {
+		return serviceResult.Error
+	}
+
+	c.InventoryUID = inventory.UID
+	c.BatchID = batchID
 
 	return nil
 }

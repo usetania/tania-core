@@ -2,6 +2,7 @@ package query
 
 import (
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/growth/domain"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -11,12 +12,6 @@ type InventoryMaterialQuery interface {
 
 type InventoryMaterialQueryInMemory struct {
 	Storage *storage.InventoryMaterialStorage
-}
-
-type CropInventory struct {
-	UID       uuid.UUID
-	PlantType string
-	Variety   string
 }
 
 func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) InventoryMaterialQuery {
@@ -30,11 +25,11 @@ func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan 
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		ci := CropInventory{}
+		ci := domain.CropInventory{}
 		for _, val := range s.Storage.InventoryMaterialMap {
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
-				ci.PlantType = val.PlantType.Code()
+				ci.PlantTypeCode = val.PlantType.Code()
 				ci.Variety = val.Variety
 			}
 		}

@@ -14,6 +14,7 @@ const (
 	CropMoveToAreaErrorInvalidAreaRules
 	CropMoveToAreaErrorInvalidExistingSourceArea
 	CropMoveToAreaErrorCannotBeSame
+	CropMoveToAreaErrorInvalidExistingArea
 
 	// Crop harvest errors
 	CropHarvestErrorInvalidSourceArea
@@ -74,6 +75,8 @@ func (e CropError) Error() string {
 		return "Invalid existing source area"
 	case CropMoveToAreaErrorCannotBeSame:
 		return "Invalid move crop to area. Area source and destination cannot be same"
+	case CropMoveToAreaErrorInvalidExistingArea:
+		return "invalid existing area. Make sure your existing area is there"
 
 	case CropHarvestErrorInvalidSourceArea:
 		return "Invalid source area"
