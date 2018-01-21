@@ -1,5 +1,5 @@
 <template lang="pug">
-  .hbox
+  .crop-detail.hbox(v-if="loading === false")
     .col
       .vbox
         .row-row
