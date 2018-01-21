@@ -40,11 +40,11 @@
                               span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
                               button.btn.btn-xs.btn-success.m-b(type="submit") Add Note
                             ul.list-group.list-group-lg.no-bg.auto
-                              li.list-group-item.row
+                              li.list-group-item.row(v-for="cropNote in crop.notes")
                                 .pull-left.m-r
                                   i.fa.fa-file.block.m-b.m-t
-                                span If there's any wilted or damaged seedling, just dump it right away
-                                small.text-muted.clear.text-ellipsis 05/11/2017
+                                span {{ cropNote.content }}
+                                small.text-muted.clear.text-ellipsis {{ cropNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                           .cropactivity
                             .h4.font-bold.m-b.clearfix Activity
                             ul.list-group.no-bg.no-borders.pull-in
@@ -144,6 +144,7 @@ export default {
       loading: true,
       crop: Object.assign({}, StubCrop),
       note: Object.assign({}, StubNote),
+      cropNotes: [],
     }
   },
   created () {
@@ -172,6 +173,7 @@ export default {
     create () {
       this.note.obj_uid = this.$route.params.id
       this.createCropNotes(this.note)
+        .then(data => this.crop = data)
         .catch(({ data }) => this.message = data)
     },
   }
