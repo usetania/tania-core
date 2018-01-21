@@ -17,7 +17,7 @@ type Task struct {
 }
 
 // CreateTask
-func CreateTask(description string, due_date time.Time, priority string, status string, tasktype string, asset_id string) (Task, error) {
+func CreateTask(description string, due_date time.Time, priority string, tasktype string, asset_id string) (Task, error) {
 	// add validation
 
 	err := validateTaskDescription(description)
@@ -31,11 +31,6 @@ func CreateTask(description string, due_date time.Time, priority string, status 
 	}
 
 	err = validateTaskPriority(priority)
-	if err != nil {
-		return Task{}, err
-	}
-
-	err = validateTaskStatus(status)
 	if err != nil {
 		return Task{}, err
 	}
@@ -59,15 +54,15 @@ func CreateTask(description string, due_date time.Time, priority string, status 
 		return Task{}, err
 	}
 
-	return Task{
-		UID:         uid,
-		Description: description,
-		CreatedDate: time.Now(),
-		DueDate:     due_date,
-		Priority:    priority,
-		Status:      status,
-		TaskType:    tasktype,
-		AssetID:     asset,
+	return Task {
+		UID:			uid,
+		Description:	description,
+		CreatedDate:	time.Now(),
+		DueDate:		due_date,
+		Priority:		priority,
+		Status:			TaskStatusCreated,
+		TaskType:		tasktype,
+		AssetID:		asset,
 	}, nil
 }
 
@@ -123,7 +118,7 @@ func (t *Task) ChangeTaskStatus(newstatus string) error {
 // ChangeCategory
 func (t *Task) ChangeTaskType(newtasktype string) error {
 
-	err := validateTaskPriority(newtasktype)
+	err := validateTaskType(newtasktype)
 	if err != nil {
 		return err
 	}

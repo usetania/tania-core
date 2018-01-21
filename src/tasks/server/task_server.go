@@ -66,7 +66,6 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		c.FormValue("description"),
 		due_date,
 		c.FormValue("priority"),
-		c.FormValue("status"),
 		c.FormValue("type"),
 		c.FormValue("asset_id"))
 
