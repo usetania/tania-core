@@ -12,7 +12,7 @@
           .hbox.bg-white-only.wrapper(style="min-height: 100px;")
             small.text-muted Planted Varieties
             a.pull-right(href=""): i.fa.fa-question-circle
-            .h3.m-b.m-t 7
+            .h3.m-b.m-t {{ crops.length }}
     .wrapper
       .m-b
         ul.nav.nav-tabs.h4

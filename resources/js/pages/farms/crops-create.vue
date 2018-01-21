@@ -54,8 +54,7 @@
                       label.control-label Container Type
                       select.form-control#container_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop.container_type') }" v-model="crop.container_type" name="crop.container_type" @change="typeChanged($event.target.value)" value="")
                         option(value="") - select unit -
-                        option(value="tray") Trays
-                        option(value="pot") Pots
+                        option(v-for="container in options.cropContainers" v-bind:value="container.key") {{ container.label }}s
                       span.help-block.text-danger(v-show="errors.has('crop.container_type')") {{ errors.first('crop.container_type') }}
                 .row(v-if="crop.container_type == 'tray'")
                   .col-xs-6.pull-right
@@ -70,8 +69,7 @@
 
 <script>
 import { AreaTypes } from '@/stores/helpers/farms/area'
-import { PlantTypes } from '@/stores/helpers/farms/plant'
-import { CropVarieties } from '@/stores/helpers/farms/crop'
+import { CropContainers } from '@/stores/helpers/farms/crop'
 import { StubCrop } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 export default {
@@ -101,7 +99,8 @@ export default {
     return {
       crop: Object.assign({}, StubCrop),
       options: {
-        areaTypes: Array.from(AreaTypes)
+        areaTypes: Array.from(AreaTypes),
+        cropContainers: Array.from(CropContainers)
       }
     }
   },

@@ -1,5 +1,4 @@
 <template lang="pug">
-//-
   .hbox
     .col
       .vbox
@@ -16,21 +15,21 @@
                     .panel-heading.b-b.b-light.wrapper
                       .row
                         .col-sm-7
-                          .h3.m-b Tomato Ailsa Craig
-                          .identifier tom-ail-cra-3nov
+                          .h3.m-b {{ crop.inventory.variety }}
+                          .identifier {{ crop.batch_id }}
                         .col-sm-5
                           small.text-muted Activity Type
-                          .h4.m-b.m-t 12 Seeding, 13 Growing
+                          .h4.m-b.m-t {{ crop.type.code }}
                     .panel-body.bg-light.lter.b-b.b-light.m-l-n-xxs.m-r-n-xxs
                       .row
                         .col-sm-6.h5
                           | Seeded on 
-                          b 03/11/2017
+                          b {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                           |  at 
-                          u Florania
+                          u {{ crop.initial_area.name }}
                         .col-sm-6.text-right.h5
                           | Initial Qty: 
-                          b 30 Pots
+                          b {{ crop.container.quantity }} {{ getCropContainer(crop.container.type.code, crop.container.quantity) }}
                     .panel-body.bg-white-only
                       .row.m-t
                         .col-sm-7
@@ -133,6 +132,7 @@
             | Other Task
 </template>
 <script>
+import { FindCropContainer } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop } from '@/stores/stubs'
 export default {
@@ -154,7 +154,10 @@ export default {
   methods: {
     ...mapActions([
       'getCropByUid'
-    ])
+    ]),
+    getCropContainer(key, count) {
+      return FindCropContainer(key).label + ((count != 1)? 's':'')
+    }
   }
 }
 </script>
