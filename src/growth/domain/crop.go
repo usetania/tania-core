@@ -17,13 +17,13 @@ type Crop struct {
 	InventoryUID uuid.UUID
 	CreatedDate  time.Time
 
-	// Fields to maintain crop's movement
+	// Fields to track crop's movement
 	InitialArea      InitialArea
 	MovedArea        []MovedArea
 	HarvestedStorage []HarvestedStorage
 	Trash            []Trash
 
-	// Fields to maintain care crop
+	// Fields to track care crop
 	LastFertilized time.Time
 	LastPruned     time.Time
 	LastPesticided time.Time
@@ -179,17 +179,60 @@ type CropAreaUnit struct {
 	Symbol string
 }
 
-func CreateCropBatch() (Crop, error) {
+func CreateCropBatch(
+	cropService CropService,
+	areaUID uuid.UUID,
+	cropType string,
+	inventoryUID uuid.UUID,
+	quantity int, containerType CropContainerType) (Crop, error) {
+
+	serviceResult := cropService.FindAreaByID(areaUID)
+	if serviceResult.Error != nil {
+		return Crop{}, serviceResult.Error
+	}
+
+	area := serviceResult.Result.(CropArea)
+
+	ct := GetCropType(cropType)
+	if ct == (CropType{}) {
+		return Crop{}, CropError{Code: CropErrorInvalidCropType}
+	}
+
+	serviceResult = cropService.FindInventoryMaterialByID(inventoryUID)
+	if serviceResult.Error != nil {
+		return Crop{}, serviceResult.Error
+	}
+
+	inv := serviceResult.Result.(CropInventory)
+
+	err := validateContainer(quantity, containerType)
+	if err != nil {
+		return Crop{}, err
+	}
+
+	cropContainer := CropContainer{
+		Quantity: quantity,
+		Type:     containerType,
+	}
+
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return Crop{}, err
 	}
 
 	return Crop{
-		UID:         uid,
-		CreatedDate: time.Now(),
+		UID:          uid,
+		Status:       GetCropStatus(CropActive),
+		Type:         ct,
+		Container:    cropContainer,
+		InventoryUID: inv.UID,
+		CreatedDate:  time.Now(),
+		InitialArea: InitialArea{
+			AreaUID:         area.UID,
+			InitialQuantity: quantity,
+			CurrentQuantity: quantity,
+		},
 	}, nil
-	return Crop{}, nil
 }
 
 func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, destinationAreaUID uuid.UUID, quantity int) error {
@@ -344,6 +387,16 @@ func (c *Crop) Harvest(cropService CropService, sourceAreaUID uuid.UUID, quantit
 		c.HarvestedStorage = append(c.HarvestedStorage, hs)
 	}
 
+	// Reduce the quantity in the area because it has been harvested
+	if c.InitialArea.AreaUID == sourceAreaUID {
+		c.InitialArea.CurrentQuantity -= quantity
+	}
+	for i, v := range c.MovedArea {
+		if v.AreaUID == sourceAreaUID {
+			c.MovedArea[i].CurrentQuantity -= quantity
+		}
+	}
+
 	return nil
 }
 
@@ -383,6 +436,16 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 			LastUpdated:   time.Now(),
 		}
 		c.Trash = append(c.Trash, t)
+	}
+
+	// Reduce the quantity in the area because it has been dumped
+	if c.InitialArea.AreaUID == sourceAreaUID {
+		c.InitialArea.CurrentQuantity -= quantity
+	}
+	for i, v := range c.MovedArea {
+		if v.AreaUID == sourceAreaUID {
+			c.MovedArea[i].CurrentQuantity -= quantity
+		}
 	}
 
 	return nil
@@ -428,28 +491,15 @@ func (c *Crop) ChangeCropStatus(cropStatus string) error {
 	return nil
 }
 
-func (c *Crop) ChangeContainer(quantity int, cell int, containerType CropContainerType) error {
-	if quantity <= 0 {
-		return CropError{Code: CropContainerErrorInvalidQuantity}
-	}
-
-	var t CropContainerType
-	switch containerType.(type) {
-	case Tray:
-		if cell <= 0 {
-			return CropError{Code: CropContainerErrorInvalidTrayCell}
-		}
-
-		t = Tray{Cell: cell}
-	case Pot:
-		t = Pot{}
-	default:
-		return CropError{Code: CropContainerErrorInvalidType}
+func (c *Crop) ChangeContainer(quantity int, containerType CropContainerType) error {
+	err := validateContainer(quantity, containerType)
+	if err != nil {
+		return err
 	}
 
 	c.Container = CropContainer{
 		Quantity: quantity,
-		Type:     t,
+		Type:     containerType,
 	}
 
 	return nil
@@ -553,4 +603,22 @@ func (c Crop) CalculateDaysSinceSeeding() int {
 	days := int(diff.Hours()) / 24
 
 	return days
+}
+
+func validateContainer(quantity int, containerType CropContainerType) error {
+	if quantity <= 0 {
+		return CropError{Code: CropContainerErrorInvalidQuantity}
+	}
+
+	switch v := containerType.(type) {
+	case Tray:
+		if v.Cell <= 0 {
+			return CropError{Code: CropContainerErrorInvalidTrayCell}
+		}
+	case Pot:
+	default:
+		return CropError{Code: CropContainerErrorInvalidType}
+	}
+
+	return nil
 }
