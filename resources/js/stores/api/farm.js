@@ -1,6 +1,9 @@
 import { http } from '@/services'
 
 export default {
+  ApiFetchFarm: (cbSuccess, cbError) => {
+    http.get('farms', cbSuccess, cbError)
+  },
   ApiCreateFarm: (payload, cbSuccess, cbError) => {
     http.post('farms', payload, cbSuccess, cbError)
   },

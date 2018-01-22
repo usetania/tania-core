@@ -49,9 +49,12 @@ export default {
   },
 
   methods: {
-    ...mapActions({
-      loginUser: 'userLogin'
-    }),
+    ...mapActions([
+      'userLogin',
+      'fetchCountries',
+      'fetchFarmTypes',
+      'fetchFarmInventories',
+    ]),
     validateBeforeSubmit() {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -60,17 +63,27 @@ export default {
       })
     },
     login () {
-      this.loginUser({
+      this.userLogin({
         username: this.username,
         password: this.password
       }).then(response => {
         Nprogres.done()
-        // if the current user is new user
-        if (this.user.intro === true) {
-          this.$router.push({ name: 'IntroFarmCreate' })
-        } else {
-          this.$router.push({ name: 'Home' })
-        }
+        // Just hack this logic before we have authentication endpoint
+        Promise.all([
+          this.fetchCountries(),
+          this.fetchFarm(),
+          this.fetchFarmTypes(),
+          this.fetchFarmInventories()
+        ]).then(response => {
+          // if the current user is new user
+          if (this.user.intro === true) {
+            this.$router.push({ name: 'IntroFarmCreate' })
+          } else {
+            this.$router.push({ name: 'Home' })
+          }
+        })
+
+
       }).catch(error => {})
     }
   }
