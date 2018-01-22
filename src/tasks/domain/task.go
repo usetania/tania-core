@@ -6,14 +6,15 @@ import (
 )
 
 type Task struct {
-	UID         uuid.UUID `json:"uid"`
-	Description string    `json:"description"`
-	CreatedDate time.Time `json:"created_date"`
-	DueDate     time.Time `json:"due_date"`
-	Priority    string    `json:"priority"`
-	Status      string    `json:"status"`
-	TaskType    string    `json:"type"`
-	AssetID     uuid.UUID `json:"asset_id"`
+	UID			uuid.UUID 	`json:"uid"`
+	Description	string		`json:"description"`
+	CreatedDate	time.Time	`json:"created_date"`
+	DueDate		time.Time	`json:"due_date"`
+	Priority	string		`json:"priority"`
+	Status		string		`json:"status"`
+	TaskType	string		`json:"type"`
+	IsDue		bool		`json:"is_due"`
+	AssetID		uuid.UUID	`json:"asset_id"`
 }
 
 // CreateTask
@@ -62,6 +63,7 @@ func CreateTask(description string, due_date time.Time, priority string, tasktyp
 		Priority:		priority,
 		Status:			TaskStatusInProgress,
 		TaskType:		tasktype,
+		IsDue:			false,
 		AssetID:		asset,
 	}, nil
 }
@@ -127,7 +129,15 @@ func (t *Task) ChangeTaskType(newtasktype string) error {
 	return nil
 }
 
-// Validation
+//ChangeDueStatus
+func (t *Task) ChangeDueStatus (duestatus bool) error {
+	t.IsDue = duestatus
+
+	return nil
+}
+
+
+// Validation 
 
 // validateTaskDescription
 func validateTaskDescription(description string) error {

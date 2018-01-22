@@ -31,7 +31,7 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	g.POST("", s.SaveTask)
 	g.GET("", s.FindAllTask)
 	g.GET("/:id", s.FindTaskByID)
-	g.PUT("/:id/start", s.StartTask)
+	//g.PUT("/:id/start", s.StartTask)
 	g.PUT("/:id/cancel", s.CancelTask)
 	g.PUT("/:id/complete", s.CompleteTask)
 }
