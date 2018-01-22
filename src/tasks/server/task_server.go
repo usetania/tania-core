@@ -34,6 +34,9 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	//g.PUT("/:id/start", s.StartTask)
 	g.PUT("/:id/cancel", s.CancelTask)
 	g.PUT("/:id/complete", s.CompleteTask)
+	// As we don't have an async task right now to check for Due state,
+	// I'm adding a rest call to be able to manually do that. We can remove it in the future
+	g.PUT("/:id/due", s.SetTaskAsDue)
 }
 
 func (s TaskServer) FindAllTask(c echo.Context) error {
@@ -203,6 +206,41 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	}
 
 	task.ChangeTaskStatus(domain.TaskStatusComplete)
+
+	err = <-s.TaskRepo.Save(&task)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = task
+
+	return c.JSON(http.StatusOK, data)
+}
+
+
+func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
+
+	data := make(map[string]domain.Task)
+	uid, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error (c, err)
+	}
+
+	result := <-s.TaskRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	task, ok := result.Result.(domain.Task)
+
+	if task.UID != uid {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+	}
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	task.SetTaskAsDue()
 
 	err = <-s.TaskRepo.Save(&task)
 	if err != nil {

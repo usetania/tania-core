@@ -5,6 +5,7 @@ import (
 	"time"
 
 	domain "github.com/Tanibox/tania-server/src/tasks/domain"
+	uuid "github.com/satori/go.uuid"
 )
 
 type SimpleTask domain.Task
@@ -21,22 +22,24 @@ func MapToSimpleTask(Tasks []domain.Task) []SimpleTask {
 
 func (st SimpleTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		UID			string 	`json:"uid"`
+		UID			uuid.UUID 	`json:"uid"`
 		Description	string		`json:"description"`
-		CreatedDate	time.Time	`json:"createddate"`
-		DueDate		time.Time	`json:"duedate"`
+		CreatedDate	time.Time	`json:"created_date"`
+		DueDate		time.Time	`json:"due_date"`
 		Priority	string		`json:"priority"`
 		Status		string		`json:"status"`
 		TaskType	string		`json:"type"`
-		AssetID		string		`json:"assetid"`
+		IsDue		bool		`json:"is_due"`
+		AssetID		uuid.UUID	`json:"asset_id"`
 	}{
-		UID:  st.UID.String(),
+		UID:  st.UID,
 		Description: st.Description,
 		CreatedDate: st.CreatedDate,
 		DueDate: st.DueDate,
 		Priority: st.Priority,
 		Status: st.Status,
 		TaskType: st.TaskType,
-		AssetID: st.AssetID.String(),
+		IsDue: st.IsDue,
+		AssetID: st.AssetID,
 	})
 }

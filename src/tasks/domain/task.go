@@ -129,11 +129,9 @@ func (t *Task) ChangeTaskType(newtasktype string) error {
 	return nil
 }
 
-//ChangeDueStatus
-func (t *Task) ChangeDueStatus (duestatus bool) error {
-	t.IsDue = duestatus
-
-	return nil
+//SetTaskAsDue
+func (t *Task) SetTaskAsDue () {
+	t.IsDue = true
 }
 
 

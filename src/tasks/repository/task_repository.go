@@ -21,15 +21,15 @@ func NewTaskRepositoryInMemory(s *storage.TaskStorage) TaskRepository {
 	return &TaskRepositoryInMemory{Storage: s}
 }
 
-func (f *TaskRepositoryInMemory) FindAll() <-chan RepositoryResult {
+func (r *TaskRepositoryInMemory) FindAll() <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
-		f.Storage.Lock.RLock()
-		defer f.Storage.Lock.RUnlock()
+		r.Storage.Lock.RLock()
+		defer r.Storage.Lock.RUnlock()
 
 		Tasks := []domain.Task{}
-		for _, val := range f.Storage.TaskMap {
+		for _, val := range r.Storage.TaskMap {
 			Tasks = append(Tasks, val)
 		}
 
