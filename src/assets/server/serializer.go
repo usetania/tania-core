@@ -311,3 +311,11 @@ func (rt ReservoirTap) MarshalJSON() ([]byte, error) {
 		Type: rt.Type(),
 	})
 }
+
+func (pt PlantType) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Code string `json:"code"`
+	}{
+		Code: pt.PlantType.Code(),
+	})
+}

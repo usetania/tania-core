@@ -1,11 +1,8 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"time"
-
-	"github.com/sasha-s/go-deadlock"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -30,26 +27,21 @@ type FarmServer struct {
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
-func NewFarmServer() (*FarmServer, error) {
-	rwMutex := deadlock.RWMutex{}
-	deadlock.Opts.DeadlockTimeout = time.Second * 10
-	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("DEADLOCK!")
-	}
+func NewFarmServer(
+	farmStorage *storage.FarmStorage,
+	areaStorage *storage.AreaStorage,
+	reservoirStorage *storage.ReservoirStorage,
+	inventoryMaterialStorage *storage.InventoryMaterialStorage,
+) (*FarmServer, error) {
+	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
 
-	farmStorage := storage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
-	farmRepo := repository.NewFarmRepositoryInMemory(&farmStorage)
+	areaRepo := repository.NewAreaRepositoryInMemory(areaStorage)
+	areaQuery := query.NewAreaQueryInMemory(areaStorage)
 
-	areaStorage := storage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
-	areaRepo := repository.NewAreaRepositoryInMemory(&areaStorage)
-	areaQuery := query.NewAreaQueryInMemory(&areaStorage)
+	reservoirRepo := repository.NewReservoirRepositoryInMemory(reservoirStorage)
 
-	reservoirStorage := storage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
-	reservoirRepo := repository.NewReservoirRepositoryInMemory(&reservoirStorage)
-
-	inventoryMaterialStorage := storage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
-	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(&inventoryMaterialStorage)
-	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(&inventoryMaterialStorage)
+	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(inventoryMaterialStorage)
+	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
 
 	farmServer := FarmServer{
 		FarmRepo:               farmRepo,
@@ -64,10 +56,10 @@ func NewFarmServer() (*FarmServer, error) {
 	if *config.Config.DemoMode {
 		initDataDemo(
 			&farmServer,
-			&farmStorage,
-			&areaStorage,
-			&reservoirStorage,
-			&inventoryMaterialStorage,
+			farmStorage,
+			areaStorage,
+			reservoirStorage,
+			inventoryMaterialStorage,
 		)
 	}
 
