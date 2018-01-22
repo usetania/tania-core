@@ -362,6 +362,21 @@ func (c *Crop) Harvest(cropService CropService, sourceAreaUID uuid.UUID, quantit
 		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
 	}
 
+	// Check if area is already set in the crop
+	isAreaValid := false
+	if c.InitialArea.AreaUID == sourceAreaUID {
+		isAreaValid = true
+	}
+	for _, v := range c.MovedArea {
+		if v.AreaUID == sourceAreaUID {
+			isAreaValid = true
+		}
+	}
+
+	if !isAreaValid {
+		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
+	}
+
 	if quantity <= 0 {
 		return CropError{Code: CropHarvestErrorInvalidQuantity}
 	}
@@ -411,6 +426,21 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 
 	if srcArea == (CropArea{}) {
 		return CropError{Code: CropDumpErrorSourceAreaNotFound}
+	}
+
+	// Check if area is already set in the crop
+	isAreaValid := false
+	if c.InitialArea.AreaUID == sourceAreaUID {
+		isAreaValid = true
+	}
+	for _, v := range c.MovedArea {
+		if v.AreaUID == sourceAreaUID {
+			isAreaValid = true
+		}
+	}
+
+	if !isAreaValid {
+		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
 	}
 
 	if quantity <= 0 {

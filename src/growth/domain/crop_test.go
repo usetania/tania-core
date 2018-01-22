@@ -30,13 +30,16 @@ func TestCreateCropBatch(t *testing.T) {
 	// Given
 	cropServiceMock := new(CropServiceMock)
 
-	areaUID, _ := uuid.NewV4()
-	areaServiceResult := ServiceResult{
-		Result: CropArea{
-			UID: areaUID,
-		},
+	areaAUID, _ := uuid.NewV4()
+	areaBUID, _ := uuid.NewV4()
+	areaAServiceResult := ServiceResult{
+		Result: CropArea{UID: areaAUID, Type: "seeding"},
 	}
-	cropServiceMock.On("FindAreaByID", areaUID).Return(areaServiceResult)
+	areaBServiceResult := ServiceResult{
+		Result: CropArea{UID: areaBUID, Type: "growing"},
+	}
+	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
+	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := ServiceResult{
@@ -49,23 +52,24 @@ func TestCreateCropBatch(t *testing.T) {
 	containerType := Tray{Cell: 15}
 
 	// When
-	crop, _ := CreateCropBatch(cropServiceMock, areaUID, "SEEDING", inventoryUID, 10, containerType)
-	crop.Harvest(cropServiceMock, areaUID, 6)
-	crop.Dump(cropServiceMock, areaUID, 1)
+	crop, _ := CreateCropBatch(cropServiceMock, areaAUID, "SEEDING", inventoryUID, 20, containerType)
+	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
+	crop.Harvest(cropServiceMock, areaBUID, 6)
+	crop.Dump(cropServiceMock, areaBUID, 5)
 
 	// Then
 	cropServiceMock.AssertExpectations(t)
 
 	assert.Equal(t, CropActive, crop.Status.Code)
 	assert.Equal(t, CropTypeSeeding, crop.Type.Code)
-	assert.Equal(t, 3, crop.InitialArea.CurrentQuantity)
+	assert.Equal(t, 5, crop.InitialArea.CurrentQuantity)
 
 	// Harvest
-	assert.Equal(t, areaUID, crop.HarvestedStorage[0].SourceAreaUID)
+	assert.Equal(t, areaBUID, crop.HarvestedStorage[0].SourceAreaUID)
 	assert.Equal(t, 6, crop.HarvestedStorage[0].Quantity)
 
 	// Dump
-	assert.Equal(t, areaUID, crop.Trash[0].SourceAreaUID)
-	assert.Equal(t, 1, crop.Trash[0].Quantity)
+	assert.Equal(t, areaBUID, crop.Trash[0].SourceAreaUID)
+	assert.Equal(t, 5, crop.Trash[0].Quantity)
 
 }
