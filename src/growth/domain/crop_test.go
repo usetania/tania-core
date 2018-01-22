@@ -50,16 +50,22 @@ func TestCreateCropBatch(t *testing.T) {
 
 	// When
 	crop, _ := CreateCropBatch(cropServiceMock, areaUID, "SEEDING", inventoryUID, 10, containerType)
-	crop.Harvest(cropServiceMock, areaUID, 10)
+	crop.Harvest(cropServiceMock, areaUID, 6)
+	crop.Dump(cropServiceMock, areaUID, 1)
 
 	// Then
 	cropServiceMock.AssertExpectations(t)
 
 	assert.Equal(t, CropActive, crop.Status.Code)
 	assert.Equal(t, CropTypeSeeding, crop.Type.Code)
+	assert.Equal(t, 3, crop.InitialArea.CurrentQuantity)
 
 	// Harvest
 	assert.Equal(t, areaUID, crop.HarvestedStorage[0].SourceAreaUID)
-	assert.Equal(t, 10, crop.HarvestedStorage[0].Quantity)
+	assert.Equal(t, 6, crop.HarvestedStorage[0].Quantity)
+
+	// Dump
+	assert.Equal(t, areaUID, crop.Trash[0].SourceAreaUID)
+	assert.Equal(t, 1, crop.Trash[0].Quantity)
 
 }
