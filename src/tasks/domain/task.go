@@ -60,7 +60,7 @@ func CreateTask(description string, due_date time.Time, priority string, tasktyp
 		CreatedDate:	time.Now(),
 		DueDate:		due_date,
 		Priority:		priority,
-		Status:			TaskStatusCreated,
+		Status:			TaskStatusInProgress,
 		TaskType:		tasktype,
 		AssetID:		asset,
 	}, nil
