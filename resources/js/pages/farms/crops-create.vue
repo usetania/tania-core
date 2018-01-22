@@ -60,7 +60,7 @@
             .form-group
               button.btn.btn-addon.btn-success.pull-right(type="submit") Save
                 i.fa.fa-long-arrow-right
-              router-link.btn.btn-addon.btn-default(:to="{name: 'FarmCrops'}") Cancel
+              btn.btn-addon.btn-default(style="cursor: pointer;") Cancel
 </template>
 
 <script>
