@@ -33,6 +33,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan QueryResult {
 				// insert size here
 				area.Type = val.Type
 				area.Location = val.Location
+				area.FarmUID = val.Farm.UID
 			}
 		}
 

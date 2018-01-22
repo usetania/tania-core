@@ -15,6 +15,7 @@ type Crop struct {
 	Type         CropType
 	Container    CropContainer
 	InventoryUID uuid.UUID
+	FarmUID      uuid.UUID
 	CreatedDate  time.Time
 
 	// Fields to track crop's movement
@@ -55,8 +56,8 @@ const (
 )
 
 type CropStatus struct {
-	Code  string
-	Label string
+	Code  string `json:"code"`
+	Label string `json:"-"`
 }
 
 func CropStatuses() []CropStatus {
@@ -126,9 +127,9 @@ type CropContainer struct {
 }
 
 type InitialArea struct {
-	AreaUID         uuid.UUID
-	InitialQuantity int
-	CurrentQuantity int
+	AreaUID         uuid.UUID `json:"area_id"`
+	InitialQuantity int       `json:"initial_quantity"`
+	CurrentQuantity int       `json:"current_quantity"`
 }
 
 type MovedArea struct {
@@ -155,28 +156,34 @@ type Trash struct {
 }
 
 type CropNote struct {
-	UID         uuid.UUID
-	Content     string
-	CreatedDate time.Time
+	UID         uuid.UUID `json:"uid"`
+	Content     string    `json"content"`
+	CreatedDate time.Time `json"created_date"`
 }
 
 type CropInventory struct {
-	UID           uuid.UUID
-	PlantTypeCode string
-	Variety       string
+	UID           uuid.UUID `json:"uid"`
+	PlantTypeCode string    `json:"plant_type"`
+	Variety       string    `json:"variety"`
 }
 
 type CropArea struct {
-	UID      uuid.UUID
-	Name     string
-	Size     CropAreaUnit
-	Type     string
-	Location string
+	UID      uuid.UUID    `json:"uid"`
+	Name     string       `json:"name"`
+	Size     CropAreaUnit `json:"size"`
+	Type     string       `json:"type"`
+	Location string       `json:"location"`
+	FarmUID  uuid.UUID    `json:"farm_uid"`
 }
 
 type CropAreaUnit struct {
 	Value  float32
 	Symbol string
+}
+
+type CropFarm struct {
+	UID  uuid.UUID
+	Name string
 }
 
 func CreateCropBatch(
@@ -215,6 +222,13 @@ func CreateCropBatch(
 		Type:     containerType,
 	}
 
+	createdDate := time.Now()
+
+	batchID, err := generateBatchID(cropService, inv, createdDate)
+	if err != nil {
+		return Crop{}, err
+	}
+
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return Crop{}, err
@@ -222,16 +236,18 @@ func CreateCropBatch(
 
 	return Crop{
 		UID:          uid,
+		BatchID:      batchID,
 		Status:       GetCropStatus(CropActive),
 		Type:         ct,
 		Container:    cropContainer,
 		InventoryUID: inv.UID,
-		CreatedDate:  time.Now(),
+		CreatedDate:  createdDate,
 		InitialArea: InitialArea{
 			AreaUID:         area.UID,
 			InitialQuantity: quantity,
 			CurrentQuantity: quantity,
 		},
+		FarmUID: area.FarmUID,
 	}, nil
 }
 
@@ -544,32 +560,9 @@ func (c *Crop) ChangeInventory(cropService CropService, inventoryUID uuid.UUID) 
 
 	inventory := serviceResult.Result.(CropInventory)
 
-	// Generate Batch ID
-	// Format the date to become daymonth format like 25jan
-	dateFormat := strings.ToLower(c.CreatedDate.Format("2Jan"))
-
-	// Get variety name and split it to slice
-	varietySlice := strings.Fields(inventory.Variety)
-	varietyFormat := ""
-	for _, v := range varietySlice {
-		// 	// For every value, get only the first three characters
-		format := ""
-		if len(v) > 3 {
-			format = strings.ToLower(string(v[0:3]))
-		} else {
-			format = strings.ToLower(string(v))
-		}
-
-		varietyFormat = stringhelper.Join(varietyFormat, format, "-")
-	}
-
-	// Join that variety and date
-	batchID := stringhelper.Join(varietyFormat, dateFormat)
-
-	// Validate Uniqueness of Batch ID.
-	serviceResult = cropService.FindByBatchID(batchID)
-	if serviceResult.Error != nil {
-		return serviceResult.Error
+	batchID, err := generateBatchID(cropService, inventory, c.CreatedDate)
+	if err != nil {
+		return err
 	}
 
 	c.InventoryUID = inventory.UID
@@ -633,6 +626,38 @@ func (c Crop) CalculateDaysSinceSeeding() int {
 	days := int(diff.Hours()) / 24
 
 	return days
+}
+
+func generateBatchID(cropService CropService, inventory CropInventory, createdDate time.Time) (string, error) {
+	// Generate Batch ID
+	// Format the date to become daymonth format like 25jan
+	dateFormat := strings.ToLower(createdDate.Format("2Jan"))
+
+	// Get variety name and split it to slice
+	varietySlice := strings.Fields(inventory.Variety)
+	varietyFormat := ""
+	for _, v := range varietySlice {
+		// 	// For every value, get only the first three characters
+		format := ""
+		if len(v) > 3 {
+			format = strings.ToLower(string(v[0:3]))
+		} else {
+			format = strings.ToLower(string(v))
+		}
+
+		varietyFormat = stringhelper.Join(varietyFormat, format, "-")
+	}
+
+	// Join that variety and date
+	batchID := stringhelper.Join(varietyFormat, dateFormat)
+
+	// Validate Uniqueness of Batch ID.
+	serviceResult := cropService.FindByBatchID(batchID)
+	if serviceResult.Error != nil {
+		return "", serviceResult.Error
+	}
+
+	return batchID, nil
 }
 
 func validateContainer(quantity int, containerType CropContainerType) error {

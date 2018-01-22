@@ -21,7 +21,7 @@ func (s CropServiceInMemory) FindInventoryMaterialByID(uid uuid.UUID) domain.Ser
 		}
 	}
 
-	inv, ok := result.Result.(domain.CropArea)
+	inv, ok := result.Result.(domain.CropInventory)
 
 	if !ok {
 		return domain.ServiceResult{
@@ -29,7 +29,7 @@ func (s CropServiceInMemory) FindInventoryMaterialByID(uid uuid.UUID) domain.Ser
 		}
 	}
 
-	if inv == (domain.CropArea{}) {
+	if inv == (domain.CropInventory{}) {
 		return domain.ServiceResult{
 			Error: domain.CropError{Code: domain.CropInventoryErrorNotFound},
 		}

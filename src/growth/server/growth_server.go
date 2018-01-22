@@ -1,0 +1,348 @@
+package server
+
+import (
+	"net/http"
+	"strconv"
+
+	"github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-server/src/growth/domain/service"
+
+	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/growth/query"
+	"github.com/Tanibox/tania-server/src/growth/repository"
+	"github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/labstack/echo"
+	uuid "github.com/satori/go.uuid"
+)
+
+// GrowthServer ties the routes and handlers with injected dependencies
+type GrowthServer struct {
+	CropRepo               repository.CropRepository
+	CropQuery              query.CropQuery
+	CropService            domain.CropService
+	AreaQuery              query.AreaQuery
+	InventoryMaterialQuery query.InventoryMaterialQuery
+	FarmQuery              query.FarmQuery
+}
+
+// NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
+func NewGrowthServer(
+	cropStorage *storage.CropStorage,
+	areaStorage *assetsstorage.AreaStorage,
+	inventoryMaterialStorage *assetsstorage.InventoryMaterialStorage,
+	farmStorage *assetsstorage.FarmStorage,
+) (*GrowthServer, error) {
+	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
+	cropQuery := query.NewCropQueryInMemory(cropStorage)
+
+	areaQuery := query.NewAreaQueryInMemory(areaStorage)
+	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
+	farmQuery := query.NewFarmQueryInMemory(farmStorage)
+
+	cropService := service.CropServiceInMemory{
+		InventoryMaterialQuery: inventoryMaterialQuery,
+		CropQuery:              cropQuery,
+		AreaQuery:              areaQuery,
+	}
+
+	return &GrowthServer{
+		CropRepo:               cropRepo,
+		CropQuery:              cropQuery,
+		CropService:            cropService,
+		AreaQuery:              areaQuery,
+		InventoryMaterialQuery: inventoryMaterialQuery,
+		FarmQuery:              farmQuery,
+	}, nil
+}
+
+// Mount defines the GrowthServer's endpoints with its handlers
+func (s *GrowthServer) Mount(g *echo.Group) {
+	g.GET("/:id/crops", s.FindAllCrops)
+	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
+	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
+	g.GET("/crops/:id", s.FindCropByID)
+	g.POST("/crops/:id/notes", s.SaveCropNotes)
+	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
+
+}
+
+func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
+	// Form Value
+	areaID := c.Param("id")
+	cropType := c.FormValue("crop_type")
+	plantType := c.FormValue("plant_type")
+	variety := c.FormValue("variety")
+
+	containerQuantity, err := strconv.Atoi(c.FormValue("container_quantity"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	containerType := c.FormValue("container_type")
+	containerCell, err := strconv.Atoi(c.FormValue("container_cell"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Validate //
+	areaUID, err := uuid.FromString(areaID)
+	if err != nil {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	areaResult := <-s.AreaQuery.FindByID(areaUID)
+	if areaResult.Error != nil {
+		return Error(c, areaResult.Error)
+	}
+
+	area, ok := areaResult.Result.(domain.CropArea)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	queryResult := <-s.InventoryMaterialQuery.FindInventoryByPlantTypeCodeAndVariety(plantType, variety)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	inventoryMaterial, ok := queryResult.Result.(domain.CropInventory)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	var containerT domain.CropContainerType
+	switch containerType {
+	case "tray":
+		containerT = domain.Tray{Cell: containerCell}
+	case "pot":
+		containerT = domain.Pot{}
+	default:
+		return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))
+	}
+
+	// Process //
+	cropBatch, err := domain.CreateCropBatch(
+		s.CropService,
+		area.UID,
+		cropType,
+		inventoryMaterial.UID,
+		containerQuantity,
+		containerT,
+	)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Persists //
+	err = <-s.CropRepo.Save(&cropBatch)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string]CropBatch)
+	cb, err := MapToCropBatch(s, cropBatch)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cb
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) FindCropByID(c echo.Context) error {
+	// Validate //
+	result := <-s.CropRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
+	cropID := c.Param("id")
+	content := c.FormValue("content")
+
+	// Validate //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if content == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+	}
+
+	// Process //
+	crop.AddNewNote(content)
+
+	// Persists //
+	resultSave := <-s.CropRepo.Save(&crop)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
+	cropID := c.Param("crop_id")
+	noteID := c.Param("note_id")
+
+	// Validate //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	noteUID, err := uuid.FromString(noteID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = crop.RemoveNote(noteUID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Persists //
+	resultSave := <-s.CropRepo.Save(&crop)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+// TODO: The crops should be found by its Farm
+func (s *GrowthServer) FindAllCrops(c echo.Context) error {
+	data := make(map[string][]CropBatch)
+
+	// Params //
+	farmID := c.Param("id")
+
+	// Validate //
+	farmUID, err := uuid.FromString(farmID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.FarmQuery.FindByID(farmUID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(domain.CropFarm)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	resultQuery := <-s.CropQuery.FindAllCropsByFarm(farm.UID)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
+	}
+
+	crops, ok := resultQuery.Result.([]domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = []CropBatch{}
+	for _, v := range crops {
+		cropBatch, err := MapToCropBatch(s, v)
+		if err != nil {
+			return Error(c, err)
+		}
+		data["data"] = append(data["data"], cropBatch)
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
+	data := make(map[string][]CropBatch)
+
+	// Params //
+	areaID := c.Param("id")
+
+	// Validate //
+	areaUID, err := uuid.FromString(areaID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.AreaQuery.FindByID(areaUID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	area, ok := result.Result.(domain.CropArea)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	resultQuery := <-s.CropQuery.FindAllCropsByArea(area.UID)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
+	}
+
+	crops, ok := resultQuery.Result.([]domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = []CropBatch{}
+	for _, v := range crops {
+		cropBatch, err := MapToCropBatch(s, v)
+		if err != nil {
+			return Error(c, err)
+		}
+		data["data"] = append(data["data"], cropBatch)
+	}
+
+	return c.JSON(http.StatusOK, data)
+}

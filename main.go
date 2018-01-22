@@ -2,17 +2,26 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
+	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/server"
+	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
+	growthdomain "github.com/Tanibox/tania-server/src/growth/domain"
+	growthserver "github.com/Tanibox/tania-server/src/growth/server"
+	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
+	deadlock "github.com/sasha-s/go-deadlock"
+	uuid "github.com/satori/go.uuid"
 )
 
 func init() {
@@ -22,13 +31,39 @@ func init() {
 func main() {
 	e := echo.New()
 
-	farmServer, err := server.NewFarmServer()
+	// Initialize all In-memory storage, so it can be used in all server
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("DEADLOCK!")
+	}
+	farmStorage := assetsstorage.FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
+	areaStorage := assetsstorage.AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
+	reservoirStorage := assetsstorage.ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
+	inventoryMaterialStorage := assetsstorage.InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
+	cropStorage := growthstorage.CropStorage{CropMap: make(map[uuid.UUID]growthdomain.Crop), Lock: &rwMutex}
+
+	farmServer, err := server.NewFarmServer(
+		&farmStorage,
+		&areaStorage,
+		&reservoirStorage,
+		&inventoryMaterialStorage,
+	)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
 
-
 	taskServer, err := taskserver.NewTaskServer()
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
+	growthServer, err := growthserver.NewGrowthServer(
+		&cropStorage,
+		&areaStorage,
+		&inventoryMaterialStorage,
+		&farmStorage,
+	)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -50,6 +85,7 @@ func main() {
 
 	farmGroup := API.Group("/farms")
 	farmServer.Mount(farmGroup)
+	growthServer.Mount(farmGroup)
 
 	taskGroup := API.Group("/tasks")
 	taskServer.Mount(taskGroup)
