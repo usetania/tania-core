@@ -1,6 +1,7 @@
 <template lang="pug">
   .crops.col
-    FarmCropsCreate(v-if="showModal")
+    modal(v-if="showModal")
+      farmCropCreate
     .wrapper-md
       h1.m-t.font-thin.h3.text-black Crops
       .row
@@ -22,7 +23,7 @@
       .panel.no-border
         .panel-heading.wrapper.m-b
           span.h4.text-lt All Growing Batches on This Farm
-          btn.btn-sm.btn-primary.btn-addon.pull-right(v-on:click="openModal" style="cursor: pointer;")
+          btn.btn-sm.btn-primary.btn-addon.pull-right(v-on:click="openModal" style="cursor: pointer;" name="show-create-crop-modal")
             i.fa.fa-plus
             | Add a New Batch
         table.table.m-b
@@ -48,10 +49,12 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import Modal from '@/components/modal'
 export default {
   name: "FarmCrops",
   components: {
-    FarmCropsCreate: () => import('./crops-create.vue'),
+    FarmCropCreate: () => import('./crops-create.vue'),
+    Modal
   },
   computed: {
     ...mapGetters({
