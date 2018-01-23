@@ -18,7 +18,7 @@ func CreateFarmStorage() *FarmStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("DEADLOCK!")
+		fmt.Println("FARM STORAGE DEADLOCK!")
 	}
 
 	return &FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
@@ -33,7 +33,7 @@ func CreateAreaStorage() *AreaStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("DEADLOCK!")
+		fmt.Println("AREA STORAGE DEADLOCK!")
 	}
 
 	return &AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
@@ -48,7 +48,7 @@ func CreateReservoirStorage() *ReservoirStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("DEADLOCK!")
+		fmt.Println("RESERVOIR STORAGE DEADLOCK!")
 	}
 
 	return &ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
@@ -63,7 +63,7 @@ func CreateInventoryMaterialStorage() *InventoryMaterialStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("DEADLOCK!")
+		fmt.Println("INVENTORY MATERIAL STORAGE DEADLOCK!")
 	}
 
 	return &InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}

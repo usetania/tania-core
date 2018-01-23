@@ -18,7 +18,7 @@ func CreateCropStorage() *CropStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("DEADLOCK!")
+		fmt.Println("CROP STORAGE DEADLOCK!")
 	}
 
 	return &CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
