@@ -54,10 +54,6 @@ func (q InventoryMaterialQueryInMemory) FindInventoryByPlantTypeCodeAndVariety(p
 
 		ci := domain.CropInventory{}
 		for _, val := range q.Storage.InventoryMaterialMap {
-			fmt.Println(val.PlantType.Code())
-			fmt.Println(val.Variety)
-			fmt.Println(plantTypeCode)
-			fmt.Println("=====")
 			if val.PlantType.Code() == plantTypeCode && val.Variety == variety {
 				ci.UID = val.UID
 				ci.PlantTypeCode = val.PlantType.Code()

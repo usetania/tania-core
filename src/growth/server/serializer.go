@@ -23,9 +23,9 @@ type CropBatch struct {
 	MovedArea   []MovedArea `json:"moved_area"`
 
 	// Fields to track care crop
-	LastFertilized time.Time `json:"last_fertilized"`
-	LastPruned     time.Time `json:"last_pruned"`
-	LastPesticided time.Time `json:"last_pesticided"`
+	LastFertilized string `json:"last_fertilized"`
+	LastPruned     string `json:"last_pruned"`
+	LastPesticided string `json:"last_pesticided"`
 
 	Notes []domain.CropNote `json:"notes"`
 }
@@ -145,9 +145,18 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	}
 	cropBatch.MovedArea = movedAreas
 
-	cropBatch.LastFertilized = crop.LastFertilized
-	cropBatch.LastPesticided = crop.LastPesticided
-	cropBatch.LastPruned = crop.LastPruned
+	cropBatch.LastFertilized = ""
+	if !crop.LastFertilized.IsZero() {
+		cropBatch.LastFertilized = crop.LastFertilized.String()
+	}
+	cropBatch.LastPesticided = ""
+	if !crop.LastPesticided.IsZero() {
+		cropBatch.LastPesticided = crop.LastPesticided.String()
+	}
+	cropBatch.LastPruned = ""
+	if !crop.LastPruned.IsZero() {
+		cropBatch.LastPruned = crop.LastPruned.String()
+	}
 
 	notes := make([]domain.CropNote, 0, len(crop.Notes))
 	for _, v := range crop.Notes {
