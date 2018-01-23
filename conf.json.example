@@ -1,4 +1,5 @@
 {
     "DemoMode": false,
-    "UploadPathArea": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas"
+    "UploadPathArea": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas",
+    "UploadPathCrop": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/crops"
 }

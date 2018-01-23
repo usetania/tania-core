@@ -2,20 +2,28 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
+	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/server"
+	assetsserver "github.com/Tanibox/tania-server/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
+	growthdomain "github.com/Tanibox/tania-server/src/growth/domain"
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"github.com/labstack/gommon/log"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
+	uuid "github.com/satori/go.uuid"
 )
 
 func init() {
@@ -26,7 +34,6 @@ func main() {
 	e := echo.New()
 
 	// Initialize all In-memory storage, so it can be used in all server
-
 	farmStorage := assetsstorage.CreateFarmStorage()
 	areaStorage := assetsstorage.CreateAreaStorage()
 	reservoirStorage := assetsstorage.CreateReservoirStorage()
@@ -56,6 +63,13 @@ func main() {
 	)
 	if err != nil {
 		e.Logger.Fatal(err)
+	}
+
+	if *config.Config.DemoMode {
+		initDataDemo(
+			farmServer, growthServer,
+			farmStorage, areaStorage, reservoirStorage, inventoryMaterialStorage, cropStorage,
+		)
 	}
 
 	e.Use(middleware.Logger())
@@ -146,6 +160,7 @@ func initConfig() {
 
 	configuration := config.Configuration{
 		UploadPathArea: conf.String("UploadPathArea", "/home/tania/uploads", "Upload path for the Area photo"),
+		UploadPathCrop: conf.String("UploadPathCrop", "/home/tania/uploads", "Upload path for the Crop photo"),
 		DemoMode:       conf.Bool("DemoMode", true, "Switch for the demo mode"),
 	}
 
@@ -167,4 +182,221 @@ func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
 		c.Response().Header().Set("Expires", "0")                                         // Proxies.
 		return next(c)
 	}
+}
+
+func initDataDemo(
+	farmServer *assetsserver.FarmServer,
+	growthServer *growthserver.GrowthServer,
+	farmStorage *assetsstorage.FarmStorage,
+	areaStorage *assetsstorage.AreaStorage,
+	reservoirStorage *assetsstorage.ReservoirStorage,
+	inventoryMaterialStorage *assetsstorage.InventoryMaterialStorage,
+	cropStorage *growthstorage.CropStorage,
+) {
+	log.Info("==== DEMO DATA SEEDED ====")
+
+	farmUID, _ := uuid.NewV4()
+	farm1 := assetsdomain.Farm{
+		UID:         farmUID,
+		Name:        "MyFarm",
+		Type:        "organic",
+		Latitude:    "10.00",
+		Longitude:   "11.00",
+		CountryCode: "ID",
+		CityCode:    "JK",
+		IsActive:    true,
+	}
+
+	farmStorage.FarmMap[farmUID] = farm1
+
+	uid, _ := uuid.NewV4()
+
+	noteUID, _ := uuid.NewV4()
+	reservoirNotes := make(map[uuid.UUID]assetsdomain.ReservoirNote, 0)
+	reservoirNotes[noteUID] = assetsdomain.ReservoirNote{
+		UID:         noteUID,
+		Content:     "Don't forget to close the bucket after using",
+		CreatedDate: time.Now(),
+	}
+
+	reservoir1 := assetsdomain.Reservoir{
+		UID:         uid,
+		Name:        "MyBucketReservoir",
+		PH:          8,
+		EC:          12.5,
+		Temperature: 29,
+		WaterSource: assetsdomain.Bucket{Capacity: 100, Volume: 10},
+		Farm:        farm1,
+		Notes:       reservoirNotes,
+		CreatedDate: time.Now(),
+	}
+
+	farm1.AddReservoir(&reservoir1)
+	farmStorage.FarmMap[farmUID] = farm1
+	reservoirStorage.ReservoirMap[uid] = reservoir1
+
+	uid, _ = uuid.NewV4()
+	reservoir2 := assetsdomain.Reservoir{
+		UID:         uid,
+		Name:        "MyTapReservoir",
+		PH:          8,
+		EC:          12.5,
+		Temperature: 29,
+		WaterSource: assetsdomain.Tap{},
+		Farm:        farm1,
+		Notes:       make(map[uuid.UUID]assetsdomain.ReservoirNote),
+		CreatedDate: time.Now(),
+	}
+
+	farm1.AddReservoir(&reservoir2)
+	farmStorage.FarmMap[farmUID] = farm1
+	reservoirStorage.ReservoirMap[uid] = reservoir2
+
+	uid, _ = uuid.NewV4()
+
+	noteUID, _ = uuid.NewV4()
+	areaNotes := make(map[uuid.UUID]assetsdomain.AreaNote, 0)
+	areaNotes[noteUID] = assetsdomain.AreaNote{
+		UID:         noteUID,
+		Content:     "This area should only be used for seeding.",
+		CreatedDate: time.Now(),
+	}
+
+	areaSeeding := assetsdomain.Area{
+		UID:       uid,
+		Name:      "MySeedingArea",
+		Size:      assetsdomain.SquareMeter{Value: 10},
+		Type:      "nursery",
+		Location:  "indoor",
+		Photo:     assetsdomain.AreaPhoto{},
+		Notes:     areaNotes,
+		Reservoir: reservoir2,
+		Farm:      farm1,
+	}
+
+	farm1.AddArea(&areaSeeding)
+	farmStorage.FarmMap[farmUID] = farm1
+	areaStorage.AreaMap[uid] = areaSeeding
+
+	uid, _ = uuid.NewV4()
+	areaGrowing := assetsdomain.Area{
+		UID:       uid,
+		Name:      "MyGrowingArea",
+		Size:      assetsdomain.SquareMeter{Value: 100},
+		Type:      "growing",
+		Location:  "outdoor",
+		Photo:     assetsdomain.AreaPhoto{},
+		Notes:     make(map[uuid.UUID]assetsdomain.AreaNote),
+		Reservoir: reservoir1,
+		Farm:      farm1,
+	}
+
+	farm1.AddArea(&areaGrowing)
+	farmStorage.FarmMap[farmUID] = farm1
+	areaStorage.AreaMap[uid] = areaGrowing
+
+	uid, _ = uuid.NewV4()
+	inventory1 := assetsdomain.InventoryMaterial{
+		UID:       uid,
+		PlantType: assetsdomain.Vegetable{},
+		Variety:   "Bayam Lu Hsieh",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory1
+
+	uid, _ = uuid.NewV4()
+	inventory2 := assetsdomain.InventoryMaterial{
+		UID:       uid,
+		PlantType: assetsdomain.Vegetable{},
+		Variety:   "Tomat Super One",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory2
+
+	uid, _ = uuid.NewV4()
+	inventory3 := assetsdomain.InventoryMaterial{
+		UID:       uid,
+		PlantType: assetsdomain.Fruit{},
+		Variety:   "Apple Rome Beauty",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory3
+
+	uid, _ = uuid.NewV4()
+	inventory4 := assetsdomain.InventoryMaterial{
+		UID:       uid,
+		PlantType: assetsdomain.Fruit{},
+		Variety:   "Orange Sweet Mandarin",
+	}
+
+	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
+
+	/******************************
+	CROP
+	******************************/
+	now := strings.ToLower(time.Now().Format("2Jan"))
+
+	uid, _ = uuid.NewV4()
+
+	noteUID, _ = uuid.NewV4()
+	cropNotes := make(map[uuid.UUID]growthdomain.CropNote, 0)
+	cropNotes[noteUID] = growthdomain.CropNote{
+		UID:         noteUID,
+		Content:     "This crop must be intensely watched because its expensive",
+		CreatedDate: time.Now(),
+	}
+
+	crop1 := growthdomain.Crop{
+		UID:     uid,
+		BatchID: fmt.Sprintf("%s%s", "bay-lu-hsi-", now),
+		Status:  growthdomain.CropStatus{Code: growthdomain.CropActive},
+		Type:    growthdomain.CropType{Code: growthdomain.CropTypeSeeding},
+		Container: growthdomain.CropContainer{
+			Quantity: 10,
+			Type:     growthdomain.Tray{Cell: 15},
+		},
+		InventoryUID: inventory1.UID,
+		FarmUID:      farmUID,
+		CreatedDate:  time.Now(),
+		InitialArea: growthdomain.InitialArea{
+			AreaUID:         areaSeeding.UID,
+			InitialQuantity: 10,
+			CurrentQuantity: 10,
+		},
+		Notes: cropNotes,
+	}
+
+	cropStorage.CropMap[uid] = crop1
+
+	uid, _ = uuid.NewV4()
+
+	noteUID, _ = uuid.NewV4()
+	cropNotes = make(map[uuid.UUID]growthdomain.CropNote, 0)
+	cropNotes[noteUID] = growthdomain.CropNote{
+		UID:         noteUID,
+		Content:     "This crop must be intensely watched because its expensive",
+		CreatedDate: time.Now(),
+	}
+
+	crop2 := growthdomain.Crop{
+		UID:     uid,
+		BatchID: fmt.Sprintf("%s%s", "tom-sup-one-", now),
+		Status:  growthdomain.CropStatus{Code: growthdomain.CropActive},
+		Type:    growthdomain.CropType{Code: growthdomain.CropTypeSeeding},
+		Container: growthdomain.CropContainer{
+			Quantity: 50,
+			Type:     growthdomain.Pot{},
+		},
+		InventoryUID: inventory2.UID,
+		FarmUID:      farmUID,
+		CreatedDate:  time.Now(),
+		InitialArea: growthdomain.InitialArea{
+			AreaUID:         areaSeeding.UID,
+			InitialQuantity: 50,
+			CurrentQuantity: 50,
+		},
+		Notes: cropNotes,
+	}
+
+	cropStorage.CropMap[uid] = crop2
 }

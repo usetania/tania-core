@@ -4,8 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/domain/service"
+	"github.com/Tanibox/tania-server/src/helper/imagehelper"
+	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
@@ -23,6 +26,7 @@ type GrowthServer struct {
 	AreaQuery              query.AreaQuery
 	InventoryMaterialQuery query.InventoryMaterialQuery
 	FarmQuery              query.FarmQuery
+	File                   File
 }
 
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
@@ -52,6 +56,7 @@ func NewGrowthServer(
 		AreaQuery:              areaQuery,
 		InventoryMaterialQuery: inventoryMaterialQuery,
 		FarmQuery:              farmQuery,
+		File:                   LocalFile{},
 	}, nil
 }
 
@@ -63,6 +68,8 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/crops/:id", s.FindCropByID)
 	g.POST("/crops/:id/notes", s.SaveCropNotes)
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
+	g.POST("/crops/:id/photos", s.UploadCropPhotos)
+	g.GET("/crops/:id/photos", s.GetCropPhotos)
 
 }
 
@@ -345,4 +352,86 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
+	// Validate //
+	photo, err := c.FormFile("photo")
+	if err != nil {
+		return Error(c, NewRequestValidationError(REQUIRED, "photo"))
+	}
+
+	result := <-s.CropRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	// Process
+	destPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", photo.Filename)
+	err = s.File.Upload(photo, destPath)
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	width, height, err := imagehelper.GetImageDimension(destPath)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	cropPhoto := domain.CropPhoto{
+		Filename: photo.Filename,
+		MimeType: photo.Header["Content-Type"][0],
+		Size:     int(photo.Size),
+		Width:    width,
+		Height:   height,
+	}
+
+	crop.Photo = cropPhoto
+
+	// Persists //
+	resultSave := <-s.CropRepo.Save(&crop)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
+	// Validate //
+	result := <-s.CropRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.Photo.Filename == "" {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "photo"))
+	}
+
+	// Process //
+	srcPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", crop.Photo.Filename)
+
+	return c.File(srcPath)
 }

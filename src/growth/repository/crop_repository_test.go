@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"fmt"
+	"strings"
 	"testing"
+	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/storage"
@@ -52,10 +55,15 @@ func TestCropInMemorySave(t *testing.T) {
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
 		Result: domain.CropInventory{
-			UID: inventoryUID,
+			UID:     inventoryUID,
+			Variety: "Tomato Super One",
 		},
 	}
 	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(domain.ServiceResult{})
 
 	containerType := domain.Tray{Cell: 15}
 
@@ -106,10 +114,15 @@ func TestCropInMemoryFindAll(t *testing.T) {
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
 		Result: domain.CropInventory{
-			UID: inventoryUID,
+			UID:     inventoryUID,
+			Variety: "Tomato Super One",
 		},
 	}
 	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(domain.ServiceResult{})
 
 	containerType := domain.Tray{Cell: 15}
 
@@ -169,10 +182,15 @@ func TestCropInMemoryFindByID(t *testing.T) {
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
 		Result: domain.CropInventory{
-			UID: inventoryUID,
+			UID:     inventoryUID,
+			Variety: "Tomato Super One",
 		},
 	}
 	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(domain.ServiceResult{})
 
 	containerType := domain.Tray{Cell: 15}
 

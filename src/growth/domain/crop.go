@@ -17,6 +17,7 @@ type Crop struct {
 	InventoryUID uuid.UUID
 	FarmUID      uuid.UUID
 	CreatedDate  time.Time
+	Photo        CropPhoto
 
 	// Fields to track crop's movement
 	InitialArea      InitialArea
@@ -184,6 +185,14 @@ type CropAreaUnit struct {
 type CropFarm struct {
 	UID  uuid.UUID
 	Name string
+}
+
+type CropPhoto struct {
+	Filename string `json:"filename"`
+	MimeType string `json:"mime_type"`
+	Size     int    `json:"size"`
+	Width    int    `json:"width"`
+	Height   int    `json:"height"`
 }
 
 func CreateCropBatch(

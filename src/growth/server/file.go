@@ -1,0 +1,54 @@
+package server
+
+import (
+	"io"
+	"io/ioutil"
+	"mime/multipart"
+	"os"
+	"strings"
+)
+
+// File used to handle file path and file operation.
+// We use interface so we can swap it to other file storage easily
+type File interface {
+	GetFile(src string) ([]byte, error)
+	Upload(file *multipart.FileHeader, destPath string) error
+}
+
+type LocalFile struct {
+}
+
+func (f LocalFile) GetFile(srcPath string) ([]byte, error) {
+	file, err := ioutil.ReadFile(srcPath)
+
+	return file, err
+}
+
+// Upload saves uploaded file to the destined path
+func (f LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+
+	// Create all directory if not exists
+	s := strings.Split(destPath, "/")
+	s = s[:len(s)-1]
+	sJoin := strings.Join(s, "/")
+	os.MkdirAll(sJoin, os.ModePerm)
+
+	// Destination
+	dst, err := os.Create(destPath)
+	if err != nil {
+		return err
+	}
+	defer dst.Close()
+
+	// Copy
+	if _, err = io.Copy(dst, src); err != nil {
+		return err
+	}
+
+	return nil
+}

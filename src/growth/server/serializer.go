@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -18,6 +19,7 @@ type CropBatch struct {
 	Inventory        domain.CropInventory `json:"inventory"`
 	CreatedDate      time.Time            `json:"created_date"`
 	DaysSinceSeeding int                  `json:"days_since_seeding"`
+	Photo            domain.CropPhoto     `json:"photo"`
 
 	InitialArea InitialArea `json:"initial_area"`
 	MovedArea   []MovedArea `json:"moved_area"`
@@ -27,7 +29,7 @@ type CropBatch struct {
 	LastPruned     string `json:"last_pruned"`
 	LastPesticided string `json:"last_pesticided"`
 
-	Notes []domain.CropNote `json:"notes"`
+	Notes SortedCropNotes `json:"notes"`
 }
 
 type CropContainer struct {
@@ -53,6 +55,17 @@ type MovedArea struct {
 	CreatedDate     time.Time       `json:"created_date"`
 	LastUpdated     time.Time       `json:"last_updated"`
 }
+
+type SortedCropNotes []domain.CropNote
+
+// Len is part of sort.Interface.
+func (sn SortedCropNotes) Len() int { return len(sn) }
+
+// Swap is part of sort.Interface.
+func (sn SortedCropNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
+
+// Less is part of sort.Interface.
+func (sn SortedCropNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
 
 func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	queryResult := <-s.InventoryMaterialQuery.FindByID(crop.InventoryUID)
@@ -158,11 +171,16 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		cropBatch.LastPruned = crop.LastPruned.String()
 	}
 
-	notes := make([]domain.CropNote, 0, len(crop.Notes))
+	notes := make(SortedCropNotes, 0, len(crop.Notes))
 	for _, v := range crop.Notes {
 		notes = append(notes, v)
 	}
+
+	sort.Sort(notes)
+
 	cropBatch.Notes = notes
+
+	cropBatch.Photo = crop.Photo
 
 	return cropBatch, nil
 }

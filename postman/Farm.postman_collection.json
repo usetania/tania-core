@@ -677,6 +677,60 @@
 			"response": []
 		},
 		{
+			"name": "Create Crop's Photo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "photo",
+							"value": "",
+							"description": "",
+							"type": "file"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/photos",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}",
+						"photos"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Crop's Photo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/photos",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}",
+						"photos"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
 			"name": "Create Area's Notes",
 			"event": [
 				{

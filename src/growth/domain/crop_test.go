@@ -1,7 +1,10 @@
 package domain_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
+	"time"
 
 	. "github.com/Tanibox/tania-server/src/growth/domain"
 	uuid "github.com/satori/go.uuid"
@@ -44,10 +47,15 @@ func TestCreateCropBatch(t *testing.T) {
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := ServiceResult{
 		Result: CropInventory{
-			UID: inventoryUID,
+			UID:     inventoryUID,
+			Variety: "Tomato Super One",
 		},
 	}
 	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(ServiceResult{})
 
 	containerType := Tray{Cell: 15}
 
@@ -56,6 +64,9 @@ func TestCreateCropBatch(t *testing.T) {
 	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
 	crop.Harvest(cropServiceMock, areaBUID, 6)
 	crop.Dump(cropServiceMock, areaBUID, 5)
+	crop.Fertilize()
+	crop.Pesticide()
+	crop.Prune()
 
 	// Then
 	cropServiceMock.AssertExpectations(t)
@@ -72,4 +83,8 @@ func TestCreateCropBatch(t *testing.T) {
 	assert.Equal(t, areaBUID, crop.Trash[0].SourceAreaUID)
 	assert.Equal(t, 5, crop.Trash[0].Quantity)
 
+	// Care
+	assert.Equal(t, false, crop.LastFertilized.IsZero())
+	assert.Equal(t, false, crop.LastPesticided.IsZero())
+	assert.Equal(t, false, crop.LastPruned.IsZero())
 }

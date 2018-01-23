@@ -3,6 +3,7 @@ package server
 import (
 	"encoding/json"
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -38,6 +39,28 @@ type AvailableInventory struct {
 	PlantType PlantType `json:"plant_type"`
 	Varieties []string  `json:"varieties"`
 }
+
+type SortedAreaNotes []domain.AreaNote
+
+// Len is part of sort.Interface.
+func (sn SortedAreaNotes) Len() int { return len(sn) }
+
+// Swap is part of sort.Interface.
+func (sn SortedAreaNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
+
+// Less is part of sort.Interface.
+func (sn SortedAreaNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
+
+type SortedReservoirNotes []domain.ReservoirNote
+
+// Len is part of sort.Interface.
+func (sn SortedReservoirNotes) Len() int { return len(sn) }
+
+// Swap is part of sort.Interface.
+func (sn SortedReservoirNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
+
+// Less is part of sort.Interface.
+func (sn SortedReservoirNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
 
 func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))
@@ -217,20 +240,22 @@ func (sa SimpleArea) MarshalJSON() ([]byte, error) {
 }
 
 func (da DetailArea) MarshalJSON() ([]byte, error) {
-	notes := make([]domain.AreaNote, 0, len(da.Notes))
+	notes := make(SortedAreaNotes, 0, len(da.Notes))
 	for _, v := range da.Notes {
 		notes = append(notes, v)
 	}
 
+	sort.Sort(notes)
+
 	return json.Marshal(struct {
-		UID       string            `json:"uid"`
-		Name      string            `json:"name"`
-		Size      domain.AreaUnit   `json:"size"`
-		Type      string            `json:"type"`
-		Location  string            `json:"location"`
-		Photo     domain.AreaPhoto  `json:"photo"`
-		Reservoir domain.Reservoir  `json:"reservoir"`
-		Notes     []domain.AreaNote `json:"notes"`
+		UID       string           `json:"uid"`
+		Name      string           `json:"name"`
+		Size      domain.AreaUnit  `json:"size"`
+		Type      string           `json:"type"`
+		Location  string           `json:"location"`
+		Photo     domain.AreaPhoto `json:"photo"`
+		Reservoir domain.Reservoir `json:"reservoir"`
+		Notes     SortedAreaNotes  `json:"notes"`
 	}{
 		UID:       da.UID.String(),
 		Name:      da.Name,
@@ -244,21 +269,23 @@ func (da DetailArea) MarshalJSON() ([]byte, error) {
 }
 
 func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
-	notes := make([]domain.ReservoirNote, 0, len(dr.Notes))
+	notes := make(SortedReservoirNotes, 0, len(dr.Notes))
 	for _, v := range dr.Notes {
 		notes = append(notes, v)
 	}
 
+	sort.Sort(notes)
+
 	return json.Marshal(struct {
-		UID              string                 `json:"uid"`
-		Name             string                 `json:"name"`
-		PH               float32                `json:"ph"`
-		EC               float32                `json:"ec"`
-		Temperature      float32                `json:"temperature"`
-		WaterSource      domain.WaterSource     `json:"water_source"`
-		Notes            []domain.ReservoirNote `json:"notes"`
-		CreatedDate      time.Time              `json:"created_date"`
-		InstalledToAreas []SimpleArea           `json:"installed_to_areas"`
+		UID              string               `json:"uid"`
+		Name             string               `json:"name"`
+		PH               float32              `json:"ph"`
+		EC               float32              `json:"ec"`
+		Temperature      float32              `json:"temperature"`
+		WaterSource      domain.WaterSource   `json:"water_source"`
+		Notes            SortedReservoirNotes `json:"notes"`
+		CreatedDate      time.Time            `json:"created_date"`
+		InstalledToAreas []SimpleArea         `json:"installed_to_areas"`
 	}{
 		UID:              dr.UID.String(),
 		Name:             dr.Name,
