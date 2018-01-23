@@ -1,6 +1,7 @@
 package query
 
 import (
+	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	uuid "github.com/satori/go.uuid"
@@ -30,7 +31,19 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan QueryResult {
 			if val.UID == uid {
 				area.UID = uid
 				area.Name = val.Name
-				// insert size here
+
+				// WARNING! Domain leakage. Please change this if we have better solution
+				cropAreaUnit := domain.CropAreaUnit{}
+				switch v := val.Size.(type) {
+				case assetsdomain.SquareMeter:
+					cropAreaUnit.Value = v.Value
+					cropAreaUnit.Symbol = v.Symbol()
+				case assetsdomain.Hectare:
+					cropAreaUnit.Value = v.Value
+					cropAreaUnit.Symbol = v.Symbol()
+				}
+
+				area.Size = cropAreaUnit
 				area.Type = val.Type
 				area.Location = val.Location
 				area.FarmUID = val.Farm.UID

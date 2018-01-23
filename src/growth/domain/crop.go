@@ -177,8 +177,8 @@ type CropArea struct {
 }
 
 type CropAreaUnit struct {
-	Value  float32
-	Symbol string
+	Value  float32 `json:"value"`
+	Symbol string  `json:"symbol"`
 }
 
 type CropFarm struct {
