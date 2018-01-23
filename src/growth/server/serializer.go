@@ -27,7 +27,7 @@ type CropBatch struct {
 	LastPruned     time.Time `json:"last_pruned"`
 	LastPesticided time.Time `json:"last_pesticided"`
 
-	Notes map[uuid.UUID]domain.CropNote `json:"notes"`
+	Notes []domain.CropNote `json:"notes"`
 }
 
 type CropContainer struct {
@@ -149,7 +149,11 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	cropBatch.LastPesticided = crop.LastPesticided
 	cropBatch.LastPruned = crop.LastPruned
 
-	cropBatch.Notes = crop.Notes
+	notes := make([]domain.CropNote, 0, len(crop.Notes))
+	for _, v := range crop.Notes {
+		notes = append(notes, v)
+	}
+	cropBatch.Notes = notes
 
 	return cropBatch, nil
 }

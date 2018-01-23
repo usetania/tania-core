@@ -157,8 +157,8 @@ type Trash struct {
 
 type CropNote struct {
 	UID         uuid.UUID `json:"uid"`
-	Content     string    `json"content"`
-	CreatedDate time.Time `json"created_date"`
+	Content     string    `json:"content"`
+	CreatedDate time.Time `json:"created_date"`
 }
 
 type CropInventory struct {
