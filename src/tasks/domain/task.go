@@ -6,14 +6,14 @@ import (
 )
 
 type Task struct {
-	UID			uuid.UUID 	`json:"uid"`
-	Description	string		`json:"description"`
-	CreatedDate	time.Time	`json:"created_date"`
-	DueDate		time.Time	`json:"due_date"`
-	Priority	string		`json:"priority"`
-	Status		string		`json:"status"`
-	TaskType	string		`json:"type"`
-	AssetID		uuid.UUID	`json:"asset_id"`
+	UID         uuid.UUID `json:"uid"`
+	Description string    `json:"description"`
+	CreatedDate time.Time `json:"created_date"`
+	DueDate     time.Time `json:"due_date"`
+	Priority    string    `json:"priority"`
+	Status      string    `json:"status"`
+	TaskType    string    `json:"type"`
+	AssetID     uuid.UUID `json:"asset_id"`
 }
 
 // CreateTask
@@ -34,17 +34,17 @@ func CreateTask(description string, due_date time.Time, priority string, status 
 	if err != nil {
 		return Task{}, err
 	}
-	
+
 	err = validateTaskStatus(status)
 	if err != nil {
 		return Task{}, err
 	}
-	
+
 	err = validateTaskType(tasktype)
 	if err != nil {
 		return Task{}, err
 	}
-	
+
 	err = validateAssetID(asset_id)
 	if err != nil {
 		return Task{}, err
@@ -59,20 +59,20 @@ func CreateTask(description string, due_date time.Time, priority string, status 
 		return Task{}, err
 	}
 
-	return Task {
-		UID:			uid,
-		Description:	description,
-		CreatedDate:	time.Now(),
-		DueDate:		due_date,
-		Priority:		priority,
-		Status:			status,
-		TaskType:		tasktype,
-		AssetID:		asset,
+	return Task{
+		UID:         uid,
+		Description: description,
+		CreatedDate: time.Now(),
+		DueDate:     due_date,
+		Priority:    priority,
+		Status:      status,
+		TaskType:    tasktype,
+		AssetID:     asset,
 	}, nil
 }
 
 // ChangeDescription
-func (t *Task) ChangeTaskDescription (newdescription string) error {
+func (t *Task) ChangeTaskDescription(newdescription string) error {
 
 	err := validateTaskDescription(newdescription)
 	if err != nil {
@@ -84,7 +84,7 @@ func (t *Task) ChangeTaskDescription (newdescription string) error {
 }
 
 // ChangeDueDate
-func (t *Task) ChangeTaskDueDate (newdate time.Time) error {
+func (t *Task) ChangeTaskDueDate(newdate time.Time) error {
 
 	err := validateTaskDueDate(newdate)
 	if err != nil {
@@ -96,7 +96,7 @@ func (t *Task) ChangeTaskDueDate (newdate time.Time) error {
 }
 
 // ChangePriority
-func (t *Task) ChangeTaskPriority (newpriority string) error {
+func (t *Task) ChangeTaskPriority(newpriority string) error {
 
 	err := validateTaskPriority(newpriority)
 	if err != nil {
@@ -108,7 +108,7 @@ func (t *Task) ChangeTaskPriority (newpriority string) error {
 }
 
 // ChangeStatus
-func (t *Task) ChangeTaskStatus (newstatus string) error {
+func (t *Task) ChangeTaskStatus(newstatus string) error {
 
 	err := validateTaskPriority(newstatus)
 	if err != nil {
@@ -121,7 +121,7 @@ func (t *Task) ChangeTaskStatus (newstatus string) error {
 }
 
 // ChangeCategory
-func (t *Task) ChangeTaskType (newtasktype string) error {
+func (t *Task) ChangeTaskType(newtasktype string) error {
 
 	err := validateTaskPriority(newtasktype)
 	if err != nil {
@@ -132,11 +132,10 @@ func (t *Task) ChangeTaskType (newtasktype string) error {
 	return nil
 }
 
-
-// Validation 
+// Validation
 
 // validateTaskDescription
-func validateTaskDescription (description string) error {
+func validateTaskDescription(description string) error {
 	if description == "" {
 		return TaskError{TaskErrorDescriptionEmptyCode}
 	}
@@ -144,7 +143,7 @@ func validateTaskDescription (description string) error {
 }
 
 // validateTaskDueDate
-func validateTaskDueDate (newdate time.Time) error {
+func validateTaskDueDate(newdate time.Time) error {
 	if newdate.Before(time.Now()) {
 		return TaskError{TaskErrorDueDateInvalidCode}
 	}
@@ -152,7 +151,7 @@ func validateTaskDueDate (newdate time.Time) error {
 }
 
 //validateTaskPriority
-func validateTaskPriority (priority string) error {
+func validateTaskPriority(priority string) error {
 
 	_, err := FindTaskPriorityByCode(priority)
 	if err != nil {
@@ -163,7 +162,7 @@ func validateTaskPriority (priority string) error {
 }
 
 // validateTaskStatus
-func validateTaskStatus (status string) error {
+func validateTaskStatus(status string) error {
 
 	_, err := FindTaskStatusByCode(status)
 	if err != nil {
@@ -174,7 +173,7 @@ func validateTaskStatus (status string) error {
 }
 
 // validateTaskType
-func validateTaskType (tasktype string) error {
+func validateTaskType(tasktype string) error {
 
 	_, err := FindTaskTypeByCode(tasktype)
 	if err != nil {
@@ -185,7 +184,7 @@ func validateTaskType (tasktype string) error {
 }
 
 // validateAssetID
-func validateAssetID (asset_id string) error {
+func validateAssetID(asset_id string) error {
 	if asset_id == "" {
 		return TaskError{TaskErrorAssetIDEmptyCode}
 	}

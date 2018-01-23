@@ -2,7 +2,7 @@ package domain
 
 const (
 	TaskStatusInProgress = "inprogress"
-	TaskStatusComplete = "complete"
+	TaskStatusComplete   = "complete"
 )
 
 type TaskStatus struct {

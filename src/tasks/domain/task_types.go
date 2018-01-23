@@ -1,12 +1,12 @@
 package domain
 
 const (
-	TaskTypeArea = "area"
+	TaskTypeArea      = "area"
 	TaskTypeReservoir = "reservoir"
-	TaskTypeCrop = "crop"
+	TaskTypeCrop      = "crop"
 	TaskTypeInventory = "inventory"
-	TaskTypeDevice = "device"
-	TaskTypeFinance = "finance"
+	TaskTypeDevice    = "device"
+	TaskTypeFinance   = "finance"
 )
 
 type TaskType struct {
