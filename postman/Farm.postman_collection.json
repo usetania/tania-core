@@ -266,9 +266,9 @@
 						},
 						{
 							"key": "photo",
+							"value": "",
 							"description": "Optional",
-							"type": "file",
-							"src": "Screen Shot 2018-01-16 at 3.38.56 PM.png"
+							"type": "file"
 						}
 					]
 				},
@@ -560,39 +560,39 @@
 					"urlencoded": [
 						{
 							"key": "crop_type",
-							"value": "seeding",
+							"value": "SEEDING",
 							"type": "text",
-							"description": ""
+							"description": "required. string. options: SEEDING, GROWING"
 						},
 						{
 							"key": "plant_type",
 							"value": "vegetable",
 							"type": "text",
-							"description": ""
+							"description": "required. string. options: vegetable, fruit, herb, flower, tree"
 						},
 						{
 							"key": "variety",
 							"value": "Brocolli Super Green 2",
 							"type": "text",
-							"description": ""
+							"description": "required. string. This should be gotten from `Get Farms's Available Inventories`"
 						},
 						{
 							"key": "container_quantity",
 							"value": "10",
 							"type": "text",
-							"description": ""
+							"description": "required. number."
 						},
 						{
 							"key": "container_type",
-							"value": "pot",
+							"value": "tray",
 							"type": "text",
-							"description": ""
+							"description": "required. options: pot, tray"
 						},
 						{
 							"key": "container_cell",
 							"value": "15",
 							"type": "text",
-							"description": ""
+							"description": "optiona. if container_type == tray then this is required."
 						}
 					]
 				},
@@ -903,6 +903,22 @@
 		},
 		{
 			"name": "Create Task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+							"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+							"}"
+						]
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -916,7 +932,7 @@
 					"urlencoded": [
 						{
 							"key": "description",
-							"value": "Weeding",
+							"value": "Water area",
 							"type": "text",
 							"description": "required string"
 						},
@@ -931,12 +947,6 @@
 							"value": "normal",
 							"type": "text",
 							"description": "required string. Options: normal, urgent"
-						},
-						{
-							"key": "status",
-							"value": "inprogress",
-							"type": "text",
-							"description": "required string. Options: inprogress, complete"
 						},
 						{
 							"key": "asset_id",
@@ -980,6 +990,66 @@
 						"tasks"
 					]
 				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Task By ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/{{TASK_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"{{TASK_ID}}"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Set Task As Due",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/{{TASK_ID}}/due",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"{{TASK_ID}}",
+						"due"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Get Task By Asset ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/tasks",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks"
+					]
+				},
+				"description": null
 			},
 			"response": []
 		}
