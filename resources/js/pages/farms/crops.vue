@@ -1,6 +1,6 @@
 <template lang="pug">
   .crops.col
-    modal(v-if="showModal")
+    modal(v-if="showModal" @close="showModal = false")
       farmCropCreate
     .wrapper-md
       h1.m-t.font-thin.h3.text-black Crops
@@ -23,7 +23,7 @@
       .panel.no-border
         .panel-heading.wrapper.m-b
           span.h4.text-lt All Growing Batches on This Farm
-          btn.btn-sm.btn-primary.btn-addon.pull-right(v-on:click="openModal" style="cursor: pointer;" name="show-create-crop-modal")
+          btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
             i.fa.fa-plus
             | Add a New Batch
         table.table.m-b
@@ -73,9 +73,6 @@ export default {
     ...mapActions([
       'fetchCrops'
     ]),
-    openModal: function () {
-      this.showModal = true
-    },
   }
 }
 </script>
