@@ -1,19 +1,18 @@
 package server
 
 import (
-	"net/http"
-	"github.com/labstack/echo"
-	"time"
 	domain "github.com/Tanibox/tania-server/src/tasks/domain"
 	repository "github.com/Tanibox/tania-server/src/tasks/repository"
 	storage "github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
-
+	"net/http"
+	"time"
 )
 
 // TaskServer ties the routes and handlers with injected dependencies
 type TaskServer struct {
-	TaskRepo      repository.TaskRepository
+	TaskRepo repository.TaskRepository
 }
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
@@ -22,13 +21,24 @@ func NewTaskServer() (*TaskServer, error) {
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
 	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
 	return &TaskServer{
-		TaskRepo:	taskRepo,
+		TaskRepo: taskRepo,
 	}, nil
 }
 
 // Mount defines the TaskServer's endpoints with its handlers
 func (s *TaskServer) Mount(g *echo.Group) {
-	g.POST("", s.SaveTask)
+	//g.POST("", s.SaveTask)
+	// Seed
+	g.POST("/seed", s.SaveSeedActivity)
+	// Fertilize
+	g.POST("/fertilize", s.SaveFertilizeActivity)
+	// Prune
+	g.POST("/prune", s.SavePruneActivity)
+	// Pesticide
+	g.POST("/pesticide", s.SavePesticideActivity)
+	// MoveToArea
+	// Dump
+	// Harvest
 	g.GET("", s.FindAllTask)
 	g.GET("/:id", s.FindTaskByID)
 	//g.PUT("/:id/start", s.StartTask)
@@ -57,8 +67,64 @@ func (s TaskServer) FindAllTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
+// SeedActivity
+func (s *TaskServer) SaveSeedActivity(c echo.Context) error {
+
+	activity, err := domain.CreateSeedActivity()
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
+// FertilizeActivity
+func (s *TaskServer) SaveFertilizeActivity(c echo.Context) error {
+
+	activity, err := domain.CreateFertilizeActivity()
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
+// PruneActivity
+func (s *TaskServer) SavePruneActivity(c echo.Context) error {
+
+	activity, err := domain.CreatePruneActivity()
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
+// PesticideActivity
+func (s *TaskServer) SavePesticideActivity(c echo.Context) error {
+
+	activity, err := domain.CreatePesticideActivity()
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
 // SaveTask is a TaskServer's handler to save new Task
-func (s *TaskServer) SaveTask(c echo.Context) error {
+func (s *TaskServer) SaveTask(c echo.Context, a domain.Activity) error {
 	data := make(map[string]domain.Task)
 
 	due_date, err := time.Parse(time.RFC3339, c.FormValue("due_date"))
@@ -67,13 +133,13 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-
 	task, err := domain.CreateTask(
 		c.FormValue("description"),
 		due_date,
 		c.FormValue("priority"),
 		c.FormValue("type"),
-		c.FormValue("asset_id"))
+		c.FormValue("asset_id"),
+		a)
 
 	if err != nil {
 		return Error(c, err)
@@ -93,7 +159,7 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	data := make(map[string]domain.Task)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return Error (c, err)
+		return Error(c, err)
 	}
 
 	result := <-s.TaskRepo.FindByID(c.Param("id"))
@@ -121,7 +187,7 @@ func (s *TaskServer) StartTask(c echo.Context) error {
 	data := make(map[string]domain.Task)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return Error (c, err)
+		return Error(c, err)
 	}
 
 	result := <-s.TaskRepo.FindByID(c.Param("id"))
@@ -154,7 +220,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	data := make(map[string]domain.Task)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return Error (c, err)
+		return Error(c, err)
 	}
 
 	result := <-s.TaskRepo.FindByID(c.Param("id"))
@@ -188,7 +254,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	data := make(map[string]domain.Task)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return Error (c, err)
+		return Error(c, err)
 	}
 
 	result := <-s.TaskRepo.FindByID(c.Param("id"))
@@ -217,13 +283,12 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-
 func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 
 	data := make(map[string]domain.Task)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return Error (c, err)
+		return Error(c, err)
 	}
 
 	result := <-s.TaskRepo.FindByID(c.Param("id"))

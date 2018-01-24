@@ -1,24 +1,26 @@
 package domain
 
 import (
+	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )
 
 type Task struct {
-	UID			uuid.UUID 	`json:"uid"`
-	Description	string		`json:"description"`
-	CreatedDate	time.Time	`json:"created_date"`
-	DueDate		time.Time	`json:"due_date"`
-	Priority	string		`json:"priority"`
-	Status		string		`json:"status"`
-	TaskType	string		`json:"type"`
-	IsDue		bool		`json:"is_due"`
-	AssetID		uuid.UUID	`json:"asset_id"`
+	UID          uuid.UUID `json:"uid"`
+	Description  string    `json:"description"`
+	CreatedDate  time.Time `json:"created_date"`
+	DueDate      time.Time `json:"due_date"`
+	Priority     string    `json:"priority"`
+	Status       string    `json:"status"`
+	TaskType     string    `json:"type"`
+	IsDue        bool      `json:"is_due"`
+	AssetID      uuid.UUID `json:"asset_id"`
+	TaskActivity Activity  `json:"Activity"`
 }
 
 // CreateTask
-func CreateTask(description string, due_date time.Time, priority string, tasktype string, asset_id string) (Task, error) {
+func CreateTask(description string, due_date time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
 	// add validation
 
 	err := validateTaskDescription(description)
@@ -55,16 +57,19 @@ func CreateTask(description string, due_date time.Time, priority string, tasktyp
 		return Task{}, err
 	}
 
-	return Task {
-		UID:			uid,
-		Description:	description,
-		CreatedDate:	time.Now(),
-		DueDate:		due_date,
-		Priority:		priority,
-		Status:			TaskStatusInProgress,
-		TaskType:		tasktype,
-		IsDue:			false,
-		AssetID:		asset,
+	fmt.Print(activity.Type())
+
+	return Task{
+		UID:          uid,
+		Description:  description,
+		CreatedDate:  time.Now(),
+		DueDate:      due_date,
+		Priority:     priority,
+		Status:       TaskStatusInProgress,
+		TaskType:     tasktype,
+		IsDue:        false,
+		AssetID:      asset,
+		TaskActivity: activity,
 	}, nil
 }
 
@@ -130,12 +135,11 @@ func (t *Task) ChangeTaskType(newtasktype string) error {
 }
 
 //SetTaskAsDue
-func (t *Task) SetTaskAsDue () {
+func (t *Task) SetTaskAsDue() {
 	t.IsDue = true
 }
 
-
-// Validation 
+// Validation
 
 // validateTaskDescription
 func validateTaskDescription(description string) error {
@@ -197,3 +201,5 @@ func validateAssetID(asset_id string) error {
 
 	return nil
 }
+
+// validateActivityParameters

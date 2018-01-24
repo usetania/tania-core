@@ -1,4 +1,4 @@
-package domain 
+package domain
 
 import (
 	uuid "github.com/satori/go.uuid"
@@ -8,7 +8,7 @@ type Activity interface {
 	Type() string
 }
 
-// SeedActivity 
+// SeedActivity
 type SeedActivity struct {
 }
 
@@ -58,9 +58,9 @@ func CreatePesticideActivity() (PesticideActivity, error) {
 
 // MoveToAreaActivity
 type MoveToAreaActivity struct {
-	SourceAreaID		uuid.UUID	`json:"source_area_id"`
-	DestinationAreaID	uuid.UUID	`json:"destination_area_id"`
-	Quantity			float32		`json:"quantity"`
+	SourceAreaID      uuid.UUID `json:"source_area_id"`
+	DestinationAreaID uuid.UUID `json:"destination_area_id"`
+	Quantity          float32   `json:"quantity"`
 }
 
 func (sa MoveToAreaActivity) Type() string {
@@ -96,8 +96,8 @@ func CreateMoveToAreaActivity(source string, dest string, qnt float32) (MoveToAr
 
 // DumpActivity
 type DumpActivity struct {
-	SourceAreaID	uuid.UUID	`json:"source_area_id"`
-	Quantity		float32		`json:"quantity"`
+	SourceAreaID uuid.UUID `json:"source_area_id"`
+	Quantity     float32   `json:"quantity"`
 }
 
 func (sa DumpActivity) Type() string {
@@ -124,8 +124,8 @@ func CreateDumpActivity(source string, qnt float32) (DumpActivity, error) {
 
 // HarvestActivity
 type HarvestActivity struct {
-	SourceAreaID	uuid.UUID	`json:"source_area_id"`
-	Quantity		float32		`json:"quantity"`
+	SourceAreaID uuid.UUID `json:"source_area_id"`
+	Quantity     float32   `json:"quantity"`
 }
 
 func (sa HarvestActivity) Type() string {

@@ -91,7 +91,7 @@ func Error(c echo.Context, err error) error {
 		errorResponse["error_message"] = re.Error()
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	}  else if rve, ok := err.(RequestValidationError); ok {
+	} else if rve, ok := err.(RequestValidationError); ok {
 		errorResponse["field_name"] = rve.FieldName
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage

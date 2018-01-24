@@ -1,8 +1,8 @@
 package storage
 
 import (
-	"sync"
 	domain "github.com/Tanibox/tania-server/src/tasks/domain"
+	"sync"
 
 	uuid "github.com/satori/go.uuid"
 )

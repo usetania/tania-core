@@ -1,10 +1,10 @@
 package domain
 
 const (
-	TaskStatusCreated = "created"
+	TaskStatusCreated    = "created"
 	TaskStatusInProgress = "inprogress"
-	TaskStatusCancelled = "cancelled"
-	TaskStatusComplete = "completed"
+	TaskStatusCancelled  = "cancelled"
+	TaskStatusComplete   = "completed"
 )
 
 type TaskStatus struct {

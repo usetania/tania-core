@@ -77,4 +77,3 @@ func (r *TaskRepositoryInMemory) Save(val *domain.Task) <-chan error {
 
 	return result
 }
-

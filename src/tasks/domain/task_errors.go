@@ -29,6 +29,7 @@ const (
 	TaskErrorTaskNotFound
 
 	// Activity Errors
+	TaskErrorActivityTypeInvalid
 	TaskErrorActivitySourceInvalid
 	TaskErrorActivityDestinationInvalid
 	TaskErrorActivityQuantityInvalid
@@ -67,6 +68,8 @@ func (e TaskError) Error() string {
 		return "Task asset reference is invalid."
 	case TaskErrorTaskNotFound:
 		return "Task not found"
+	case TaskErrorActivityTypeInvalid:
+		return "Task activity type is invalid"
 	case TaskErrorActivitySourceInvalid:
 		return "Task activity source reference is invalid"
 	case TaskErrorActivityDestinationInvalid:
