@@ -26,7 +26,7 @@ func (s TaskQueryInMemory) FindTasksByAssetID(assetID string) <-chan QueryResult
 
 		tasks := []domain.Task{}
 		for _, val := range s.Storage.TaskMap {
-			if val.Task.AssetID.String() == assetID {
+			if val.AssetID.String() == assetID {
 				tasks = append(tasks, val)
 			}
 		}
