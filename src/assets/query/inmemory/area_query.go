@@ -1,24 +1,21 @@
-package query
+package inmemory
 
 import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 )
-
-type AreaQuery interface {
-	FindAreasByReservoirID(reservoirID string) <-chan QueryResult
-}
 
 type AreaQueryInMemory struct {
 	Storage *storage.AreaStorage
 }
 
-func NewAreaQueryInMemory(s *storage.AreaStorage) AreaQuery {
+func NewAreaQueryInMemory(s *storage.AreaStorage) query.AreaQuery {
 	return AreaQueryInMemory{Storage: s}
 }
 
-func (s AreaQueryInMemory) FindAreasByReservoirID(reservoirID string) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (s AreaQueryInMemory) FindAreasByReservoirID(reservoirID string) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -31,7 +28,7 @@ func (s AreaQueryInMemory) FindAreasByReservoirID(reservoirID string) <-chan Que
 			}
 		}
 
-		result <- QueryResult{Result: areas}
+		result <- query.QueryResult{Result: areas}
 
 		close(result)
 	}()

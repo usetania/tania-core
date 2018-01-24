@@ -6,6 +6,7 @@ import (
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
+	"github.com/Tanibox/tania-server/src/assets/query/inmemory"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
@@ -37,14 +38,14 @@ func NewFarmServer(
 	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
 
 	areaRepo := repository.NewAreaRepositoryInMemory(areaStorage)
-	areaQuery := query.NewAreaQueryInMemory(areaStorage)
+	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(reservoirStorage)
 
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(inventoryMaterialStorage)
-	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
+	inventoryMaterialQuery := inmemory.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
 
-	cropQuery := query.NewCropQueryInMemory(cropStorage)
+	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
 	farmServer := FarmServer{
 		FarmRepo:               farmRepo,

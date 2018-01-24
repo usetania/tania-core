@@ -1,25 +1,21 @@
-package query
+package inmemory
 
 import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 )
-
-type InventoryMaterialQuery interface {
-	FindAllInventoryByPlantType(plantType domain.PlantType) <-chan QueryResult
-	FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan QueryResult
-}
 
 type InventoryMaterialQueryInMemory struct {
 	Storage *storage.InventoryMaterialStorage
 }
 
-func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) InventoryMaterialQuery {
+func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) query.InventoryMaterialQuery {
 	return &InventoryMaterialQueryInMemory{Storage: s}
 }
 
-func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType domain.PlantType) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType domain.PlantType) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -32,7 +28,7 @@ func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType d
 			}
 		}
 
-		result <- QueryResult{Result: inventories}
+		result <- query.QueryResult{Result: inventories}
 
 		close(result)
 	}()
@@ -40,8 +36,8 @@ func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType d
 	return result
 }
 
-func (q *InventoryMaterialQueryInMemory) FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (q *InventoryMaterialQueryInMemory) FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -54,7 +50,7 @@ func (q *InventoryMaterialQueryInMemory) FindInventoryByPlantTypeAndVariety(plan
 			}
 		}
 
-		result <- QueryResult{Result: inventory}
+		result <- query.QueryResult{Result: inventory}
 
 		close(result)
 	}()

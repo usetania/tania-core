@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -25,17 +26,17 @@ type AreaList struct {
 	PlantQuantity  int       `json:"plant_quantity"`
 }
 type DetailArea struct {
-	UID            uuid.UUID         `json:"uid"`
-	Name           string            `json:"name"`
-	Size           domain.AreaUnit   `json:"size"`
-	Type           string            `json:"type"`
-	Location       string            `json:"location"`
-	Photo          domain.AreaPhoto  `json:"photo"`
-	Reservoir      domain.Reservoir  `json:"reservoir"`
-	TotalCropBatch int               `json:"total_crop_batch"`
-	TotalVariety   int               `json:"total_variety"`
-	Crops          []domain.AreaCrop `json:"crops"`
-	Notes          SortedAreaNotes   `json:"notes"`
+	UID            uuid.UUID                   `json:"uid"`
+	Name           string                      `json:"name"`
+	Size           domain.AreaUnit             `json:"size"`
+	Type           string                      `json:"type"`
+	Location       string                      `json:"location"`
+	Photo          domain.AreaPhoto            `json:"photo"`
+	Reservoir      domain.Reservoir            `json:"reservoir"`
+	TotalCropBatch int                         `json:"total_crop_batch"`
+	TotalVariety   int                         `json:"total_variety"`
+	Crops          []query.AreaCropQueryResult `json:"crops"`
+	Notes          SortedAreaNotes             `json:"notes"`
 }
 
 type DetailReservoir struct {
@@ -132,7 +133,7 @@ func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
 			return []AreaList{}, queryResult.Error
 		}
 
-		cropCount, ok := queryResult.Result.(domain.CountAreaCrop)
+		cropCount, ok := queryResult.Result.(query.CountAreaCropQueryResult)
 		if !ok {
 			return []AreaList{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
@@ -232,7 +233,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		return DetailArea{}, queryResult.Error
 	}
 
-	cropCount, ok := queryResult.Result.(domain.CountAreaCrop)
+	cropCount, ok := queryResult.Result.(query.CountAreaCropQueryResult)
 	if !ok {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
@@ -244,7 +245,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		return DetailArea{}, queryResult.Error
 	}
 
-	crops, ok := queryResult.Result.([]domain.AreaCrop)
+	crops, ok := queryResult.Result.([]query.AreaCropQueryResult)
 	if !ok {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}

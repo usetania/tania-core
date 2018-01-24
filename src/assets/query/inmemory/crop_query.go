@@ -1,27 +1,22 @@
-package query
+package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/query"
 	growthdomain "github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
 
-type CropQuery interface {
-	FindAllCropByArea(areaUID uuid.UUID) <-chan QueryResult
-	CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult
-}
-
 type CropQueryInMemory struct {
 	Storage *storage.CropStorage
 }
 
-func NewCropQueryInMemory(s *storage.CropStorage) CropQuery {
+func NewCropQueryInMemory(s *storage.CropStorage) query.CropQuery {
 	return CropQueryInMemory{Storage: s}
 }
 
-func (q CropQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (q CropQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -43,7 +38,7 @@ func (q CropQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan QueryResul
 			}
 		}
 
-		result <- QueryResult{Result: domain.CountAreaCrop{
+		result <- query.QueryResult{Result: query.CountAreaCropQueryResult{
 			PlantQuantity:  totalPlant,
 			TotalCropBatch: totalCropBatch,
 		}}
@@ -54,75 +49,86 @@ func (q CropQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan QueryResul
 	return result
 }
 
-func (q CropQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (q CropQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		crops := []domain.AreaCrop{}
+		crops := []query.AreaCropQueryResult{}
 		for _, val := range q.Storage.CropMap {
 			if val.InitialArea.AreaUID == areaUID {
-				containerType := domain.CropContainerType{}
+
+				containerTypeCode := ""
+				containerTypeCell := 0
 				switch v := val.Container.Type.(type) {
 				case growthdomain.Tray:
-					containerType.Code = v.Code()
-					containerType.Cell = v.Cell
+					containerTypeCode = v.Code()
+					containerTypeCell = v.Cell
 				case growthdomain.Pot:
-					containerType.Code = v.Code()
+					containerTypeCode = v.Code()
 				}
 
-				crops = append(crops, domain.AreaCrop{
+				crops = append(crops, query.AreaCropQueryResult{
 					CropUID: val.UID,
 					BatchID: val.BatchID,
-					InitialArea: domain.InitialArea{
+					InitialArea: query.InitialArea{
 						AreaUID: val.InitialArea.AreaUID,
+						Name:    "",
 					},
 					MovingDate:  val.CreatedDate,
 					CreatedDate: val.CreatedDate,
-					Inventory: domain.CropInventory{
+					Inventory: query.Inventory{
 						UID: val.InventoryUID,
 					},
-					Container: domain.CropContainer{
+					Container: query.Container{
 						Quantity: val.Container.Quantity,
-						Type:     containerType,
+						Type: query.ContainerType{
+							Code: containerTypeCode,
+							Cell: containerTypeCell,
+						},
 					},
 				})
 			}
 
 			for _, v := range val.MovedArea {
 				if v.AreaUID == areaUID {
-					containerType := domain.CropContainerType{}
+
+					containerTypeCode := ""
+					containerTypeCell := 0
 					switch v := val.Container.Type.(type) {
 					case growthdomain.Tray:
-						containerType.Code = v.Code()
-						containerType.Cell = v.Cell
+						containerTypeCode = v.Code()
+						containerTypeCell = v.Cell
 					case growthdomain.Pot:
-						containerType.Code = v.Code()
+						containerTypeCode = v.Code()
 					}
 
-					crops = append(crops, domain.AreaCrop{
+					crops = append(crops, query.AreaCropQueryResult{
 						CropUID: val.UID,
 						BatchID: val.BatchID,
-						InitialArea: domain.InitialArea{
+						InitialArea: query.InitialArea{
 							AreaUID: v.SourceAreaUID,
 						},
 						MovingDate:  val.CreatedDate,
 						CreatedDate: val.CreatedDate,
-						Inventory: domain.CropInventory{
+						Inventory: query.Inventory{
 							UID: val.InventoryUID,
 						},
-						Container: domain.CropContainer{
+						Container: query.Container{
 							Quantity: val.Container.Quantity,
-							Type:     containerType,
+							Type: query.ContainerType{
+								Code: containerTypeCode,
+								Cell: containerTypeCell,
+							},
 						},
 					})
 				}
 			}
 		}
 
-		result <- QueryResult{Result: crops}
+		result <- query.QueryResult{Result: crops}
 
 		close(result)
 	}()
