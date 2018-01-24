@@ -91,7 +91,7 @@ export default {
     },
     create () {
       this.createArea(this.area)
-        .then(data => this.$router.push({ name: 'FarmAreas' }))
+        .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
     processFile (event) {

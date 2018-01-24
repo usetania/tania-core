@@ -51,8 +51,9 @@ export default {
     },
     create () {
       this.createReservoir(this.reservoir)
-        .then(({ data }) => this.$router.push({ name: 'FarmReservoirs'}))
+        .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
+
     },
     typeChanged (type) {
       if (type === 'bucket') {

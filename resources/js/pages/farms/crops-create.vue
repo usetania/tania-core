@@ -116,7 +116,7 @@ export default {
     },
     create () {
       this.createCrop(this.crop)
-        .then(data => this.$router.push({ name: 'FarmCrops' }))
+        .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
     typeChanged (type) {
