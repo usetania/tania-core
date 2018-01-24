@@ -67,7 +67,6 @@ import { AreaTypes } from '@/stores/helpers/farms/area'
 import { CropContainers } from '@/stores/helpers/farms/crop'
 import { StubCrop } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
 export default {
   name: "FarmCropCreate",
   computed: {
@@ -90,9 +89,6 @@ export default {
       set(value) {
       }
     }
-  },
-  components : {
-    Modal
   },
   data () {
     return {

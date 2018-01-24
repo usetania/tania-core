@@ -1,7 +1,9 @@
 <template lang="pug">
   .reservoirs.col
+    modal(v-if="showModal" @close="showModal = false")
+      farmReservoirCreate
     .wrapper-md
-      router-link.btn.m-b-xs.btn-primary.btn-addon.pull-right(:to="{name: 'FarmReservoirsCreate'}")
+      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
         i.fa.fa-plus
         | Add Reservoir
       h1.m-n.font-thin.h3.text-black Water Reservoir
@@ -32,12 +34,22 @@
 <script>
 import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
 import { mapGetters, mapActions } from 'vuex'
+import Modal from '@/components/modal'
 export default {
   name: "FarmReservoirs",
   computed : {
     ...mapGetters({
       reservoirs: 'getAllReservoirs'
     })
+  },
+  components: {
+    FarmReservoirCreate: () => import('./reservoirs-create.vue'),
+    Modal
+  },
+  data () {
+    return {
+      showModal: false
+    }
   },
   mounted () {
     this.fetchReservoirs()
