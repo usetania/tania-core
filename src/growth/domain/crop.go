@@ -128,14 +128,17 @@ type CropContainer struct {
 }
 
 type InitialArea struct {
-	AreaUID         uuid.UUID `json:"area_id"`
-	InitialQuantity int       `json:"initial_quantity"`
-	CurrentQuantity int       `json:"current_quantity"`
+	AreaUID         uuid.UUID    `json:"area_id"`
+	AreaType        CropAreaType `json:"area_type"`
+	InitialQuantity int          `json:"initial_quantity"`
+	CurrentQuantity int          `json:"current_quantity"`
 }
 
 type MovedArea struct {
 	AreaUID         uuid.UUID
+	AreaType        CropAreaType
 	SourceAreaUID   uuid.UUID
+	SourceAreaType  CropAreaType
 	InitialQuantity int
 	CurrentQuantity int
 	CreatedDate     time.Time
@@ -143,17 +146,19 @@ type MovedArea struct {
 }
 
 type HarvestedStorage struct {
-	Quantity      int
-	SourceAreaUID uuid.UUID
-	CreatedDate   time.Time
-	LastUpdated   time.Time
+	Quantity       int
+	SourceAreaUID  uuid.UUID
+	SourceAreaType CropAreaType
+	CreatedDate    time.Time
+	LastUpdated    time.Time
 }
 
 type Trash struct {
-	Quantity      int
-	SourceAreaUID uuid.UUID
-	CreatedDate   time.Time
-	LastUpdated   time.Time
+	Quantity       int
+	SourceAreaUID  uuid.UUID
+	SourceAreaType CropAreaType
+	CreatedDate    time.Time
+	LastUpdated    time.Time
 }
 
 type CropNote struct {
@@ -168,11 +173,38 @@ type CropInventory struct {
 	Variety       string    `json:"variety"`
 }
 
+const (
+	AreaSeeding = "SEEDING"
+	AreaGrowing = "GROWING"
+)
+
+type CropAreaType struct {
+	Code  string `json:"code"`
+	Label string `json:"label"`
+}
+
+func AreaTypes() []CropAreaType {
+	return []CropAreaType{
+		{Code: AreaSeeding, Label: "Seeding"},
+		{Code: AreaGrowing, Label: "Growing"},
+	}
+}
+
+func GetAreaType(code string) CropAreaType {
+	for _, v := range AreaTypes() {
+		if code == v.Code {
+			return v
+		}
+	}
+
+	return CropAreaType{}
+}
+
 type CropArea struct {
 	UID      uuid.UUID    `json:"uid"`
 	Name     string       `json:"name"`
 	Size     CropAreaUnit `json:"size"`
-	Type     string       `json:"type"`
+	Type     CropAreaType `json:"type"`
 	Location string       `json:"location"`
 	FarmUID  uuid.UUID    `json:"farm_uid"`
 }
@@ -253,6 +285,7 @@ func CreateCropBatch(
 		CreatedDate:  createdDate,
 		InitialArea: InitialArea{
 			AreaUID:         area.UID,
+			AreaType:        area.Type,
 			InitialQuantity: quantity,
 			CurrentQuantity: quantity,
 		},
@@ -290,11 +323,11 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 
 	// Check if movement rules for area type is valid
 	isValidMoveRules := false
-	if srcArea.Type == "seeding" && dstArea.Type == "growing" {
+	if srcArea.Type == GetAreaType(AreaSeeding) && dstArea.Type == GetAreaType(AreaGrowing) {
 		isValidMoveRules = true
-	} else if srcArea.Type == "seeding" && dstArea.Type == "seeding" {
+	} else if srcArea.Type == GetAreaType(AreaSeeding) && dstArea.Type == GetAreaType(AreaSeeding) {
 		isValidMoveRules = true
-	} else if srcArea.Type == "growing" && dstArea.Type == "growing" {
+	} else if srcArea.Type == GetAreaType(AreaGrowing) && dstArea.Type == GetAreaType(AreaGrowing) {
 		isValidMoveRules = true
 	}
 

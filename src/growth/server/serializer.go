@@ -20,6 +20,7 @@ type CropBatch struct {
 	CreatedDate      time.Time            `json:"created_date"`
 	DaysSinceSeeding int                  `json:"days_since_seeding"`
 	Photo            domain.CropPhoto     `json:"photo"`
+	ActivityType     CropActivityType     `json:"activity_type"`
 
 	InitialArea InitialArea `json:"initial_area"`
 	MovedArea   []MovedArea `json:"moved_area"`
@@ -66,6 +67,11 @@ func (sn SortedCropNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
 
 // Less is part of sort.Interface.
 func (sn SortedCropNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
+
+type CropActivityType struct {
+	TotalSeeding int `json:"total_seeding"`
+	TotalGrowing int `json:"total_growing"`
+}
 
 func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	queryResult := <-s.InventoryMaterialQuery.FindByID(crop.InventoryUID)
@@ -150,6 +156,30 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	}
 	cropBatch.CreatedDate = crop.CreatedDate
 	cropBatch.DaysSinceSeeding = crop.CalculateDaysSinceSeeding()
+
+	// Calculate Crop Activity Type
+	totalSeeding := 0
+	totalGrowing := 0
+
+	if crop.InitialArea.AreaType == domain.GetAreaType(domain.AreaSeeding) {
+		totalSeeding += crop.InitialArea.CurrentQuantity
+	} else if crop.InitialArea.AreaType == domain.GetAreaType(domain.AreaGrowing) {
+		totalGrowing += crop.InitialArea.CurrentQuantity
+	}
+
+	for _, v := range crop.MovedArea {
+		if v.AreaType == domain.GetAreaType(domain.AreaSeeding) {
+			totalSeeding += v.CurrentQuantity
+		}
+		if v.AreaType == domain.GetAreaType(domain.AreaGrowing) {
+			totalGrowing += v.CurrentQuantity
+		}
+	}
+
+	cropBatch.ActivityType = CropActivityType{
+		TotalSeeding: totalSeeding,
+		TotalGrowing: totalGrowing,
+	}
 
 	cropBatch.InitialArea = InitialArea{
 		Area:            initialArea,

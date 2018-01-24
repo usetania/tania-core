@@ -44,7 +44,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan QueryResult {
 				}
 
 				area.Size = cropAreaUnit
-				area.Type = val.Type
+				area.Type = domain.GetAreaType(val.Type.Code)
 				area.Location = val.Location
 				area.FarmUID = val.Farm.UID
 			}

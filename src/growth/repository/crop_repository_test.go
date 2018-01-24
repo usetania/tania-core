@@ -44,10 +44,10 @@ func TestCropInMemorySave(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaAUID, Type: "seeding"},
+		Result: domain.CropArea{UID: areaAUID, Type: domain.GetAreaType(domain.AreaSeeding)},
 	}
 	areaBServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaBUID, Type: "growing"},
+		Result: domain.CropArea{UID: areaBUID, Type: domain.GetAreaType(domain.AreaGrowing)},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
@@ -103,10 +103,10 @@ func TestCropInMemoryFindAll(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaAUID, Type: "seeding"},
+		Result: domain.CropArea{UID: areaAUID, Type: domain.GetAreaType(domain.AreaSeeding)},
 	}
 	areaBServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaBUID, Type: "growing"},
+		Result: domain.CropArea{UID: areaBUID, Type: domain.GetAreaType(domain.AreaGrowing)},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
@@ -171,10 +171,10 @@ func TestCropInMemoryFindByID(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaAUID, Type: "seeding"},
+		Result: domain.CropArea{UID: areaAUID, Type: domain.GetAreaType(domain.AreaSeeding)},
 	}
 	areaBServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaBUID, Type: "growing"},
+		Result: domain.CropArea{UID: areaBUID, Type: domain.GetAreaType(domain.AreaGrowing)},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)

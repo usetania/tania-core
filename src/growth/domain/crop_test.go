@@ -36,10 +36,10 @@ func TestCreateCropBatch(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := ServiceResult{
-		Result: CropArea{UID: areaAUID, Type: "seeding"},
+		Result: CropArea{UID: areaAUID, Type: GetAreaType(AreaSeeding)},
 	}
 	areaBServiceResult := ServiceResult{
-		Result: CropArea{UID: areaBUID, Type: "growing"},
+		Result: CropArea{UID: areaBUID, Type: GetAreaType(AreaGrowing)},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
@@ -60,7 +60,7 @@ func TestCreateCropBatch(t *testing.T) {
 	containerType := Tray{Cell: 15}
 
 	// When
-	crop, _ := CreateCropBatch(cropServiceMock, areaAUID, "SEEDING", inventoryUID, 20, containerType)
+	crop, _ := CreateCropBatch(cropServiceMock, areaAUID, CropTypeSeeding, inventoryUID, 20, containerType)
 	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
 	crop.Harvest(cropServiceMock, areaBUID, 6)
 	crop.Dump(cropServiceMock, areaBUID, 5)
