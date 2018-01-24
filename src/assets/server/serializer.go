@@ -18,13 +18,26 @@ type SimpleArea struct {
 	Type string
 }
 type AreaList struct {
-	UID            uuid.UUID
-	Name           string
-	Type           string
-	TotalCropBatch int
-	PlantQuantity  int
+	UID            uuid.UUID `json:"uid"`
+	Name           string    `json:"name"`
+	Type           string    `json:"type"`
+	TotalCropBatch int       `json:"total_crop_batch"`
+	PlantQuantity  int       `json:"plant_quantity"`
 }
-type DetailArea domain.Area
+type DetailArea struct {
+	UID            uuid.UUID         `json:"uid"`
+	Name           string            `json:"name"`
+	Size           domain.AreaUnit   `json:"size"`
+	Type           string            `json:"type"`
+	Location       string            `json:"location"`
+	Photo          domain.AreaPhoto  `json:"photo"`
+	Reservoir      domain.Reservoir  `json:"reservoir"`
+	TotalCropBatch int               `json:"total_crop_batch"`
+	TotalVariety   int               `json:"total_variety"`
+	Crops          []domain.AreaCrop `json:"crops"`
+	Notes          SortedAreaNotes   `json:"notes"`
+}
+
 type DetailReservoir struct {
 	domain.Reservoir
 	InstalledToAreas []SimpleArea
@@ -190,22 +203,88 @@ func MapToDetailReservoir(s *FarmServer, reservoir domain.Reservoir) (DetailRese
 	return detailReservoir, nil
 }
 
-func MapToDetailArea(area domain.Area) DetailArea {
+func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
+	detailArea := DetailArea{}
+
+	detailArea.UID = area.UID
+	detailArea.Name = area.Name
+	detailArea.Type = area.Type.Code
+	detailArea.Location = area.Location.Code
+	detailArea.Photo = area.Photo
+
 	switch v := area.Size.(type) {
 	case domain.SquareMeter:
-		area.Size = AreaSquareMeter{SquareMeter: v}
+		detailArea.Size = AreaSquareMeter{SquareMeter: v}
 	case domain.Hectare:
-		area.Size = AreaHectare{Hectare: v}
+		detailArea.Size = AreaHectare{Hectare: v}
 	}
 
+	detailArea.Reservoir = area.Reservoir
 	switch v := area.Reservoir.WaterSource.(type) {
 	case domain.Bucket:
-		area.Reservoir.WaterSource = ReservoirBucket{Bucket: v}
+		detailArea.Reservoir.WaterSource = ReservoirBucket{Bucket: v}
 	case domain.Tap:
-		area.Reservoir.WaterSource = ReservoirTap{Tap: v}
+		detailArea.Reservoir.WaterSource = ReservoirTap{Tap: v}
 	}
 
-	return DetailArea(area)
+	queryResult := <-s.CropQuery.CountCropsByArea(area.UID)
+	if queryResult.Error != nil {
+		return DetailArea{}, queryResult.Error
+	}
+
+	cropCount, ok := queryResult.Result.(domain.CountAreaCrop)
+	if !ok {
+		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	detailArea.TotalCropBatch = cropCount.TotalCropBatch
+
+	queryResult = <-s.CropQuery.FindAllCropByArea(area.UID)
+	if queryResult.Error != nil {
+		return DetailArea{}, queryResult.Error
+	}
+
+	crops, ok := queryResult.Result.([]domain.AreaCrop)
+	if !ok {
+		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	for i, v := range crops {
+		repoResult := <-s.AreaRepo.FindByID(v.InitialArea.AreaUID.String())
+
+		if repoResult.Error != nil {
+			return DetailArea{}, queryResult.Error
+		}
+
+		a, ok := repoResult.Result.(domain.Area)
+		if !ok {
+			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		crops[i].InitialArea.Name = a.Name
+	}
+
+	detailArea.Crops = crops
+
+	uniqueInventories := make(map[uuid.UUID]bool)
+	for _, v := range crops {
+		if _, ok := uniqueInventories[v.InventoryUID]; !ok {
+			uniqueInventories[v.InventoryUID] = true
+		}
+	}
+
+	detailArea.TotalVariety = len(uniqueInventories)
+
+	notes := make(SortedAreaNotes, 0, len(area.Notes))
+	for _, v := range area.Notes {
+		notes = append(notes, v)
+	}
+
+	sort.Sort(notes)
+
+	detailArea.Notes = notes
+
+	return detailArea, nil
 }
 
 func MapToPlantType(plantTypes []domain.PlantType) []PlantType {
@@ -269,35 +348,6 @@ func (sa SimpleArea) MarshalJSON() ([]byte, error) {
 		UID:  sa.UID.String(),
 		Name: sa.Name,
 		Type: sa.Type,
-	})
-}
-
-func (da DetailArea) MarshalJSON() ([]byte, error) {
-	notes := make(SortedAreaNotes, 0, len(da.Notes))
-	for _, v := range da.Notes {
-		notes = append(notes, v)
-	}
-
-	sort.Sort(notes)
-
-	return json.Marshal(struct {
-		UID       string           `json:"uid"`
-		Name      string           `json:"name"`
-		Size      domain.AreaUnit  `json:"size"`
-		Type      string           `json:"type"`
-		Location  string           `json:"location"`
-		Photo     domain.AreaPhoto `json:"photo"`
-		Reservoir domain.Reservoir `json:"reservoir"`
-		Notes     SortedAreaNotes  `json:"notes"`
-	}{
-		UID:       da.UID.String(),
-		Name:      da.Name,
-		Size:      da.Size,
-		Type:      da.Type.Code,
-		Location:  da.Location.Code,
-		Photo:     da.Photo,
-		Reservoir: da.Reservoir,
-		Notes:     notes,
 	})
 }
 

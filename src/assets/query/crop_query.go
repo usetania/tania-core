@@ -7,7 +7,7 @@ import (
 )
 
 type CropQuery interface {
-	FindCropsByArea(areaUID uuid.UUID) <-chan QueryResult
+	FindAllCropByArea(areaUID uuid.UUID) <-chan QueryResult
 	CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
@@ -53,7 +53,7 @@ func (q CropQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan QueryResul
 	return result
 }
 
-func (q CropQueryInMemory) FindCropsByArea(areaUID uuid.UUID) <-chan QueryResult {
+func (q CropQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan QueryResult {
 	result := make(chan QueryResult)
 
 	go func() {

@@ -494,7 +494,12 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	data["data"] = MapToDetailArea(area)
+	detailArea, err := MapToDetailArea(s, area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -545,7 +550,12 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = MapToDetailArea(area)
+	detailArea, err := MapToDetailArea(s, area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -599,7 +609,12 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = MapToDetailArea(area)
+	detailArea, err := MapToDetailArea(s, area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -651,7 +666,12 @@ func (s *FarmServer) GetAreasByID(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	data["data"] = MapToDetailArea(area)
+	detailArea, err := MapToDetailArea(s, area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
 }
