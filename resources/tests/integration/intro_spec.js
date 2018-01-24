@@ -57,9 +57,9 @@ function filled_area() {
   // Typing the form
   cy.get('#name').type('Area1').should('have.value', 'Area1')
   cy.get('#size').type('2').should('have.value', '2')
-  cy.get('#size_unit').select('hectare')
-  cy.get('#type').select('seeding')
-  cy.get('#location').select('outdoor')
+  cy.get('#size_unit').select('Ha')
+  cy.get('#type').select('SEEDING')
+  cy.get('#location').select('OUTDOOR')
   cy.get('#reservoir').select('Reservoir1')
   cy.get('button.btn[type=submit]').click()
 }
