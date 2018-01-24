@@ -2,6 +2,7 @@ package domain
 
 import (
 	uuid "github.com/satori/go.uuid"
+	"strconv"
 )
 
 type Activity interface {
@@ -67,7 +68,7 @@ func (sa MoveToAreaActivity) Type() string {
 	return "movetoarea"
 }
 
-func CreateMoveToAreaActivity(source string, dest string, qnt float32) (MoveToAreaActivity, error) {
+func CreateMoveToAreaActivity(source string, dest string, qnt string) (MoveToAreaActivity, error) {
 
 	src_id, err := uuid.FromString(source)
 	if err != nil {
@@ -87,11 +88,16 @@ func CreateMoveToAreaActivity(source string, dest string, qnt float32) (MoveToAr
 	if err != nil {
 		return MoveToAreaActivity{}, err
 	}
-	err = validateQuantity(qnt)
+	quantity64, err := strconv.ParseFloat(qnt, 32)
 	if err != nil {
 		return MoveToAreaActivity{}, err
 	}
-	return MoveToAreaActivity{SourceAreaID: src_id, DestinationAreaID: dest_id, Quantity: qnt}, nil
+	quantity32 := float32(quantity64)
+	err = validateQuantity(quantity32)
+	if err != nil {
+		return MoveToAreaActivity{}, err
+	}
+	return MoveToAreaActivity{SourceAreaID: src_id, DestinationAreaID: dest_id, Quantity: quantity32}, nil
 }
 
 // DumpActivity

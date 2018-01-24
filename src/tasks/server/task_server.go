@@ -37,6 +37,7 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	// Pesticide
 	g.POST("/pesticide", s.SavePesticideActivity)
 	// MoveToArea
+	g.POST("/movetoarea", s.SaveMoveToAreaActivity)
 	// Dump
 	// Harvest
 	g.GET("", s.FindAllTask)
@@ -113,6 +114,23 @@ func (s *TaskServer) SavePruneActivity(c echo.Context) error {
 func (s *TaskServer) SavePesticideActivity(c echo.Context) error {
 
 	activity, err := domain.CreatePesticideActivity()
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
+// MoveToAreaActivity
+func (s *TaskServer) SaveMoveToAreaActivity(c echo.Context) error {
+
+	activity, err := domain.CreateMoveToAreaActivity(
+		c.FormValue("source_area_id"),
+		c.FormValue("dest_area_id"),
+		c.FormValue("quantity"))
 
 	if err != nil {
 		return Error(c, err)
