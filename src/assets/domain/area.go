@@ -12,7 +12,7 @@ type Area struct {
 	Name      string                 `json:"name"`
 	Size      AreaUnit               `json:"size"`
 	Type      AreaType               `json:"type"`
-	Location  string                 `json:"location"`
+	Location  AreaLocation           `json:"location"`
 	Photo     AreaPhoto              `json:"photo"`
 	Notes     map[uuid.UUID]AreaNote `json:"-"`
 	Reservoir Reservoir              `json:"-"`
@@ -44,6 +44,33 @@ func GetAreaType(code string) AreaType {
 	}
 
 	return AreaType{}
+}
+
+const (
+	AreaLocationOutdoor = "OUTDOOR"
+	AreaLocationIndoor  = "INDOOR"
+)
+
+type AreaLocation struct {
+	Code string
+	Name string
+}
+
+func AreaLocations() []AreaLocation {
+	return []AreaLocation{
+		AreaLocation{Code: AreaLocationOutdoor, Name: "Field (Outdoor)"},
+		AreaLocation{Code: AreaLocationIndoor, Name: "Greenhouse (Indoor)"},
+	}
+}
+
+func GetAreaLocation(code string) AreaLocation {
+	for _, item := range AreaLocations() {
+		if item.Code == code {
+			return item
+		}
+	}
+
+	return AreaLocation{}
 }
 
 type AreaUnit interface {
@@ -118,13 +145,13 @@ func (a *Area) ChangeSize(size AreaUnit) error {
 }
 
 // ChangeLocation changes an area location
-func (a *Area) ChangeLocation(location string) error {
-	_, err := FindAreaLocationByCode(location)
-	if err != nil {
-		return err
+func (a *Area) ChangeLocation(locationCode string) error {
+	v := GetAreaLocation(locationCode)
+	if v == (AreaLocation{}) {
+		return AreaError{Code: AreaErrorInvalidAreaLocationCode}
 	}
 
-	a.Location = location
+	a.Location = v
 
 	return nil
 }

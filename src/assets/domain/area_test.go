@@ -30,8 +30,8 @@ func TestCreateArea(t *testing.T) {
 		exptectedSizeError    error
 		expectedLocationError error
 	}{
-		{"MyArea1", SquareMeter{Value: 100}, AreaTypeSeeding, "indoor", AreaPhoto{}, reservoir, farm, nil, nil, nil},
-		{"MyArea2", Hectare{Value: 5}, AreaTypeGrowing, "outdoor", AreaPhoto{}, reservoir, farm, nil, nil, nil},
+		{"MyArea1", SquareMeter{Value: 100}, AreaTypeSeeding, AreaLocationIndoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
+		{"MyArea2", Hectare{Value: 5}, AreaTypeGrowing, AreaLocationOutdoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
 	}
 
 	for _, test := range tests {
