@@ -7,6 +7,7 @@ import (
 	"time"
 
 	. "github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-server/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -36,17 +37,17 @@ func TestCreateCropBatch(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := ServiceResult{
-		Result: CropArea{UID: areaAUID, Type: GetAreaType(AreaSeeding)},
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
 	}
 	areaBServiceResult := ServiceResult{
-		Result: CropArea{UID: areaBUID, Type: GetAreaType(AreaGrowing)},
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := ServiceResult{
-		Result: CropInventory{
+		Result: query.CropInventoryQueryResult{
 			UID:     inventoryUID,
 			Variety: "Tomato Super One",
 		},

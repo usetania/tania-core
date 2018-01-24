@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	deadlock "github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
@@ -44,17 +45,17 @@ func TestCropInMemorySave(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaAUID, Type: domain.GetAreaType(domain.AreaSeeding)},
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
 	}
 	areaBServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaBUID, Type: domain.GetAreaType(domain.AreaGrowing)},
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
-		Result: domain.CropInventory{
+		Result: query.CropInventoryQueryResult{
 			UID:     inventoryUID,
 			Variety: "Tomato Super One",
 		},
@@ -103,17 +104,17 @@ func TestCropInMemoryFindAll(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaAUID, Type: domain.GetAreaType(domain.AreaSeeding)},
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
 	}
 	areaBServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaBUID, Type: domain.GetAreaType(domain.AreaGrowing)},
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
-		Result: domain.CropInventory{
+		Result: query.CropInventoryQueryResult{
 			UID:     inventoryUID,
 			Variety: "Tomato Super One",
 		},
@@ -171,17 +172,17 @@ func TestCropInMemoryFindByID(t *testing.T) {
 	areaAUID, _ := uuid.NewV4()
 	areaBUID, _ := uuid.NewV4()
 	areaAServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaAUID, Type: domain.GetAreaType(domain.AreaSeeding)},
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
 	}
 	areaBServiceResult := domain.ServiceResult{
-		Result: domain.CropArea{UID: areaBUID, Type: domain.GetAreaType(domain.AreaGrowing)},
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
-		Result: domain.CropInventory{
+		Result: query.CropInventoryQueryResult{
 			UID:     inventoryUID,
 			Variety: "Tomato Super One",
 		},

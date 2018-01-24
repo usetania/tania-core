@@ -20,7 +20,7 @@ func TestCreateArea(t *testing.T) {
 
 	var tests = []struct {
 		Name                  string
-		Size                  AreaUnit
+		Size                  AreaSize
 		Type                  string
 		Location              string
 		Photo                 AreaPhoto
@@ -30,8 +30,8 @@ func TestCreateArea(t *testing.T) {
 		exptectedSizeError    error
 		expectedLocationError error
 	}{
-		{"MyArea1", SquareMeter{Value: 100}, AreaTypeSeeding, AreaLocationIndoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
-		{"MyArea2", Hectare{Value: 5}, AreaTypeGrowing, AreaLocationOutdoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
+		{"MyArea1", AreaSize{Value: 100, Unit: AreaUnit{Symbol: SquareMeter}}, AreaTypeSeeding, AreaLocationIndoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
+		{"MyArea2", AreaSize{Value: 5, Unit: AreaUnit{Symbol: Hectare}}, AreaTypeGrowing, AreaLocationOutdoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
 	}
 
 	for _, test := range tests {
