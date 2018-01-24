@@ -261,15 +261,32 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
+		repoResult = <-s.InventoryMaterialRepo.FindByID(v.Inventory.UID.String())
+		if repoResult.Error != nil {
+			return DetailArea{}, repoResult.Error
+		}
+
+		inv, ok := repoResult.Result.(domain.InventoryMaterial)
+		if !ok {
+			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		now := time.Now()
+		diff := now.Sub(v.CreatedDate)
+		days := int(diff.Hours()) / 24
+
+		crops[i].DaysSinceSeeding = days
 		crops[i].InitialArea.Name = a.Name
+		crops[i].Inventory.PlantType = inv.PlantType.Code()
+		crops[i].Inventory.Variety = inv.Variety
 	}
 
 	detailArea.Crops = crops
 
 	uniqueInventories := make(map[uuid.UUID]bool)
 	for _, v := range crops {
-		if _, ok := uniqueInventories[v.InventoryUID]; !ok {
-			uniqueInventories[v.InventoryUID] = true
+		if _, ok := uniqueInventories[v.Inventory.UID]; !ok {
+			uniqueInventories[v.Inventory.UID] = true
 		}
 	}
 

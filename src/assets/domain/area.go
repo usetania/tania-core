@@ -115,13 +115,14 @@ type CountAreaCrop struct {
 }
 
 type AreaCrop struct {
-	CropUID      uuid.UUID     `json:"uid"`
-	BatchID      string        `json:"batch_id"`
-	InitialArea  InitialArea   `json:"initial_area"`
-	MovingDate   time.Time     `json:"moving_date"`
-	CreatedDate  time.Time     `json:"created_date"`
-	InventoryUID uuid.UUID     `json:"inventory_id"`
-	Container    CropContainer `json:"container"`
+	CropUID          uuid.UUID     `json:"uid"`
+	BatchID          string        `json:"batch_id"`
+	InitialArea      InitialArea   `json:"initial_area"`
+	MovingDate       time.Time     `json:"moving_date"`
+	CreatedDate      time.Time     `json:"created_date"`
+	DaysSinceSeeding int           `json:"days_since_seeding"`
+	Inventory        CropInventory `json:"inventory_id"`
+	Container        CropContainer `json:"container"`
 }
 
 type InitialArea struct {
@@ -130,8 +131,19 @@ type InitialArea struct {
 }
 
 type CropContainer struct {
-	Type     string `json:"type"`
-	Quantity int    `json:"quantity"`
+	Type     CropContainerType `json:"type"`
+	Quantity int               `json:"quantity"`
+}
+
+type CropContainerType struct {
+	Code string `json:"code"`
+	Cell int    `json:"cell"`
+}
+
+type CropInventory struct {
+	UID       uuid.UUID `json:"uid"`
+	PlantType string    `json:"plant_type"`
+	Variety   string    `json:"variety"`
 }
 
 // CreateArea registers a new area to a farm
