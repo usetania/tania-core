@@ -59,7 +59,7 @@
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") Save
             i.fa.fa-long-arrow-right
-          btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
 </template>
 
 <script>

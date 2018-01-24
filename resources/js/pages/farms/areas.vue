@@ -1,7 +1,9 @@
 <template lang="pug">
   .areas.col
+    modal(v-if="showModal" @close="showModal = false")
+      farmAreaCreate
     .wrapper-md
-      router-link.btn.m-b-xs.btn-primary.btn-addon.pull-right(:to="{name: 'FarmAreasCreate'}")
+      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
         i.fa.fa-plus
         | Add Area
       h1.m-n.font-thin.h3.text-black Areas
@@ -30,6 +32,7 @@
 <script>
 import { FindAreaType, FindAreaSizeUnit } from '@/stores/helpers/farms/area'
 import { mapActions, mapGetters } from 'vuex'
+import Modal from '@/components/modal'
 export default {
   name: "FarmAreas",
   computed: {
@@ -37,8 +40,17 @@ export default {
       areas: 'getAllAreas'
     })
   },
+  components: {
+    FarmAreaCreate: () => import('./areas-create.vue'),
+    Modal
+  },
   mounted () {
     this.fetchAreas()
+  },
+  data () {
+    return {
+      showModal: false
+    }
   },
   methods: {
     ...mapActions([
@@ -53,5 +65,3 @@ export default {
   }
 }
 </script>
-
-

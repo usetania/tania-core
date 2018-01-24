@@ -23,7 +23,7 @@
       .panel.no-border
         .panel-heading.wrapper.m-b
           span.h4.text-lt All Growing Batches on This Farm
-          btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
+          a.btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
             i.fa.fa-plus
             | Add a New Batch
         table.table.m-b
