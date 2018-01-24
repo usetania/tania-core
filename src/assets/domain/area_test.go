@@ -30,8 +30,8 @@ func TestCreateArea(t *testing.T) {
 		exptectedSizeError    error
 		expectedLocationError error
 	}{
-		{"MyArea1", SquareMeter{Value: 100}, "seeding", "indoor", AreaPhoto{}, reservoir, farm, nil, nil, nil},
-		{"MyArea2", Hectare{Value: 5}, "growing", "outdoor", AreaPhoto{}, reservoir, farm, nil, nil, nil},
+		{"MyArea1", SquareMeter{Value: 100}, AreaTypeSeeding, "indoor", AreaPhoto{}, reservoir, farm, nil, nil, nil},
+		{"MyArea2", Hectare{Value: 5}, AreaTypeGrowing, "outdoor", AreaPhoto{}, reservoir, farm, nil, nil, nil},
 	}
 
 	for _, test := range tests {
@@ -56,7 +56,7 @@ func TestCreateArea(t *testing.T) {
 func TestAreaCreateRemoveNote(t *testing.T) {
 	// Given
 	farm, farmErr := CreateFarm("MyFarm1", "organic")
-	area, areaErr := CreateArea(farm, "Area1", "seeding")
+	area, areaErr := CreateArea(farm, "Area1", AreaTypeSeeding)
 
 	// When
 	area.AddNewNote("This is my new note")

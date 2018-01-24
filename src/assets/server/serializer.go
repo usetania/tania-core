@@ -96,7 +96,7 @@ func MapToSimpleArea(areas []domain.Area) []SimpleArea {
 		installedAreaList[i] = SimpleArea{
 			UID:  area.UID,
 			Name: area.Name,
-			Type: area.Type,
+			Type: area.Type.Code,
 		}
 	}
 
@@ -260,7 +260,7 @@ func (da DetailArea) MarshalJSON() ([]byte, error) {
 		UID:       da.UID.String(),
 		Name:      da.Name,
 		Size:      da.Size,
-		Type:      da.Type,
+		Type:      da.Type.Code,
 		Location:  da.Location,
 		Photo:     da.Photo,
 		Reservoir: da.Reservoir,

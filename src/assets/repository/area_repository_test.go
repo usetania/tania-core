@@ -23,8 +23,8 @@ func TestAreaInMemorySave(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "seeding")
-	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
+	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", domain.AreaTypeSeeding)
+	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", domain.AreaTypeGrowing)
 
 	// When
 	var err1, err2 error
@@ -57,8 +57,8 @@ func TestAreaInMemoryFindAll(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "seeding")
-	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
+	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", domain.AreaTypeSeeding)
+	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", domain.AreaTypeGrowing)
 
 	var result, foundOne RepositoryResult
 	go func() {
@@ -104,8 +104,8 @@ func TestAreaInMemoryFindByID(t *testing.T) {
 		assert.Nil(t, err)
 	}
 
-	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", "seeding")
-	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", "growing")
+	area1, areaErr1 := domain.CreateArea(farm, "MyArea1", domain.AreaTypeSeeding)
+	area2, areaErr2 := domain.CreateArea(farm, "MyArea2", domain.AreaTypeGrowing)
 
 	var found1, found2 RepositoryResult
 	go func() {

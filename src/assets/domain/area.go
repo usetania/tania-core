@@ -11,12 +11,39 @@ type Area struct {
 	UID       uuid.UUID              `json:"uid"`
 	Name      string                 `json:"name"`
 	Size      AreaUnit               `json:"size"`
-	Type      string                 `json:"type"`
+	Type      AreaType               `json:"type"`
 	Location  string                 `json:"location"`
 	Photo     AreaPhoto              `json:"photo"`
 	Notes     map[uuid.UUID]AreaNote `json:"-"`
 	Reservoir Reservoir              `json:"-"`
 	Farm      Farm                   `json:"-"`
+}
+
+const (
+	AreaTypeSeeding = "SEEDING"
+	AreaTypeGrowing = "GROWING"
+)
+
+type AreaType struct {
+	Code  string `json:"code"`
+	Label string `json:"label"`
+}
+
+func AreaTypes() []AreaType {
+	return []AreaType{
+		{Code: AreaTypeSeeding, Label: "Seeding"},
+		{Code: AreaTypeGrowing, Label: "Growing"},
+	}
+}
+
+func GetAreaType(code string) AreaType {
+	for _, v := range AreaTypes() {
+		if v.Code == code {
+			return v
+		}
+	}
+
+	return AreaType{}
 }
 
 type AreaUnit interface {
@@ -74,7 +101,7 @@ func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 		UID:  uid,
 		Farm: farm,
 		Name: name,
-		Type: areaType,
+		Type: GetAreaType(areaType),
 	}, nil
 }
 
@@ -200,9 +227,9 @@ func validateAreaType(areaType string) error {
 		return AreaError{AreaErrorTypeEmptyCode}
 	}
 
-	_, err := FindAreaTypeByCode(areaType)
-	if err != nil {
-		return err
+	v := GetAreaType(areaType)
+	if v == (AreaType{}) {
+		return AreaError{AreaErrorInvalidAreaTypeCode}
 	}
 
 	return nil
