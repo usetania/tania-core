@@ -10,7 +10,7 @@ import (
 type Area struct {
 	UID       uuid.UUID              `json:"uid"`
 	Name      string                 `json:"name"`
-	Size      AreaUnit               `json:"size"`
+	Size      AreaSize               `json:"size"`
 	Type      AreaType               `json:"type"`
 	Location  AreaLocation           `json:"location"`
 	Photo     AreaPhoto              `json:"photo"`
@@ -73,24 +73,36 @@ func GetAreaLocation(code string) AreaLocation {
 	return AreaLocation{}
 }
 
-type AreaUnit interface {
-	Symbol() string
+const (
+	SquareMeter = "m2"
+	Hectare     = "Ha"
+)
+
+type AreaUnit struct {
+	Label  string `json:"label"`
+	Symbol string `json:"symbol"`
 }
 
-type SquareMeter struct {
-	Value float32
+func AreaUnits() []AreaUnit {
+	return []AreaUnit{
+		{Symbol: SquareMeter, Label: "Square Meter"},
+		{Symbol: Hectare, Label: "Hectare"},
+	}
 }
 
-func (sm SquareMeter) Symbol() string {
-	return "m2"
+type AreaSize struct {
+	Unit  AreaUnit `json:"unit"`
+	Value float32  `json:"value"`
 }
 
-type Hectare struct {
-	Value float32
-}
+func GetAreaUnit(symbol string) AreaUnit {
+	for _, v := range AreaUnits() {
+		if v.Symbol == symbol {
+			return v
+		}
+	}
 
-func (h Hectare) Symbol() string {
-	return "hectare"
+	return AreaUnit{}
 }
 
 type AreaPhoto struct {
@@ -133,7 +145,7 @@ func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 }
 
 // ChangeSize changes an area size
-func (a *Area) ChangeSize(size AreaUnit) error {
+func (a *Area) ChangeSize(size AreaSize) error {
 	err := validateSize(size)
 	if err != nil {
 		return err
@@ -223,27 +235,14 @@ func validateAreaName(name string) error {
 	return nil
 }
 
-func validateSize(size AreaUnit) error {
-	isValidUnit := true
-	sizeValue := float32(0)
-
-	switch v := size.(type) {
-	case SquareMeter:
-		sizeValue = v.Value
-		isValidUnit = true
-	case Hectare:
-		sizeValue = v.Value
-		isValidUnit = true
-	default:
-		sizeValue = 0
-		isValidUnit = false
-	}
-
-	if sizeValue <= 0 {
-		return AreaError{AreaErrorSizeEmptyCode}
-	}
-	if isValidUnit == false {
+func validateSize(size AreaSize) error {
+	unit := GetAreaUnit(size.Unit.Symbol)
+	if unit == (AreaUnit{}) {
 		return AreaError{AreaErrorInvalidSizeUnitCode}
+	}
+
+	if size.Value <= 0 {
+		return AreaError{AreaErrorSizeEmptyCode}
 	}
 
 	return nil

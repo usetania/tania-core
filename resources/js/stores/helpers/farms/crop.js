@@ -1,6 +1,6 @@
 export const CropContainers = [
-  { key: 'pot',  label: 'Pot' },
-  { key: 'tray',  label: 'Tray' },
+  { key: 'POT',  label: 'Pot' },
+  { key: 'TRAY',  label: 'Tray' },
 ]
 
 export function FindCropContainer(key) {

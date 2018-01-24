@@ -18,28 +18,29 @@ func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirId string)
 	return reservoir, nil
 }
 
-func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (domain.AreaUnit, error) {
+func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (domain.AreaSize, error) {
 	if size == "" {
-		return nil, NewRequestValidationError(REQUIRED, "size")
+		return domain.AreaSize{}, NewRequestValidationError(REQUIRED, "size")
 	}
 
 	if sizeUnit == "" {
-		return nil, NewRequestValidationError(REQUIRED, "size_unit")
+		return domain.AreaSize{}, NewRequestValidationError(REQUIRED, "size_unit")
 	}
 
 	sizeFloat, err := strconv.ParseFloat(size, 32)
 	if err != nil {
-		return nil, err
+		return domain.AreaSize{}, err
 	}
 
-	switch sizeUnit {
-	case "m2":
-		return domain.SquareMeter{Value: float32(sizeFloat)}, nil
-	case "hectare":
-		return domain.Hectare{Value: float32(sizeFloat)}, nil
-	default:
-		return nil, NewRequestValidationError(INVALID_OPTION, "size_unit")
+	unit := domain.GetAreaUnit(sizeUnit)
+	if unit == (domain.AreaUnit{}) {
+		return domain.AreaSize{}, NewRequestValidationError(INVALID_OPTION, "size_unit")
 	}
+
+	return domain.AreaSize{
+		Value: float32(sizeFloat),
+		Unit:  unit,
+	}, nil
 }
 
 func (rv *RequestValidation) ValidateAreaLocation(location string) (string, error) {

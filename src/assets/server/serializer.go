@@ -28,7 +28,7 @@ type AreaList struct {
 type DetailArea struct {
 	UID            uuid.UUID                   `json:"uid"`
 	Name           string                      `json:"name"`
-	Size           domain.AreaUnit             `json:"size"`
+	Size           domain.AreaSize             `json:"size"`
 	Type           string                      `json:"type"`
 	Location       string                      `json:"location"`
 	Photo          domain.AreaPhoto            `json:"photo"`
@@ -44,8 +44,6 @@ type DetailReservoir struct {
 	InstalledToAreas []SimpleArea
 }
 
-type AreaSquareMeter struct{ domain.SquareMeter }
-type AreaHectare struct{ domain.Hectare }
 type ReservoirBucket struct{ domain.Bucket }
 type ReservoirTap struct{ domain.Tap }
 type PlantType struct{ domain.PlantType }
@@ -91,23 +89,6 @@ func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	}
 
 	return farmList
-}
-
-func MapToArea(areas []domain.Area) []domain.Area {
-	areaList := make([]domain.Area, len(areas))
-
-	for i, area := range areas {
-		areaList[i] = area
-
-		switch v := area.Size.(type) {
-		case domain.SquareMeter:
-			areaList[i].Size = AreaSquareMeter{SquareMeter: v}
-		case domain.Hectare:
-			areaList[i].Size = AreaHectare{Hectare: v}
-		}
-	}
-
-	return areaList
 }
 
 func MapToSimpleArea(areas []domain.Area) []SimpleArea {
@@ -212,13 +193,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 	detailArea.Type = area.Type.Code
 	detailArea.Location = area.Location.Code
 	detailArea.Photo = area.Photo
-
-	switch v := area.Size.(type) {
-	case domain.SquareMeter:
-		detailArea.Size = AreaSquareMeter{SquareMeter: v}
-	case domain.Hectare:
-		detailArea.Size = AreaHectare{Hectare: v}
-	}
+	detailArea.Size = area.Size
 
 	detailArea.Reservoir = area.Reservoir
 	switch v := area.Reservoir.WaterSource.(type) {
@@ -397,26 +372,6 @@ func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
 		Notes:            notes,
 		CreatedDate:      dr.CreatedDate,
 		InstalledToAreas: dr.InstalledToAreas,
-	})
-}
-
-func (sm AreaSquareMeter) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Value  float32 `json:"value"`
-		Symbol string  `json:"symbol"`
-	}{
-		Value:  sm.Value,
-		Symbol: sm.Symbol(),
-	})
-}
-
-func (h AreaHectare) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Value  float32 `json:"value"`
-		Symbol string  `json:"symbol"`
-	}{
-		Value:  h.Value,
-		Symbol: h.Symbol(),
 	})
 }
 

@@ -1,15 +1,15 @@
 export const AreaTypes = [
-  { key: 'seeding',  label: 'Seeding' },
-  { key: 'growing', label: 'Growing Area' }
+  { key: 'SEEDING',  label: 'Seeding' },
+  { key: 'GROWING', label: 'Growing Area' }
 ]
 
 export const AreaLocations = [
-  { key: 'outdoor',  label: 'Field (Outdoor)' },
-  { key: 'indoor', label: 'Greenhouse (Indoor)' }
+  { key: 'OUTDOOR',  label: 'Field (Outdoor)' },
+  { key: 'INDOOR', label: 'Greenhouse (Indoor)' }
 ]
 
 export const AreaSizeUnits = [
-  { key: 'hectare',  label: 'Ha' },
+  { key: 'Ha',  label: 'Ha' },
   { key: 'm2', label: 'meter square' }
 ]
 

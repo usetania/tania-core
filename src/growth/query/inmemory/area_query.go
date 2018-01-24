@@ -1,7 +1,6 @@
 package inmemory
 
 import (
-	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	uuid "github.com/satori/go.uuid"
@@ -27,17 +26,8 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			if val.UID == uid {
 				area.UID = uid
 				area.Name = val.Name
-
-				// WARNING! Domain leakage. Please change this if we have better solution
-				switch v := val.Size.(type) {
-				case assetsdomain.SquareMeter:
-					area.Size.Value = v.Value
-					area.Size.Symbol = v.Symbol()
-				case assetsdomain.Hectare:
-					area.Size.Value = v.Value
-					area.Size.Symbol = v.Symbol()
-				}
-
+				area.Size.Value = val.Size.Value
+				area.Size.Symbol = val.Size.Unit.Symbol
 				area.Type = val.Type.Code
 				area.Location = val.Location.Code
 				area.FarmUID = val.Farm.UID

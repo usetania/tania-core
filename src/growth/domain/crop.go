@@ -116,12 +116,12 @@ type Tray struct {
 	Cell int
 }
 
-func (t Tray) Code() string { return "tray" }
+func (t Tray) Code() string { return "TRAY" }
 
 // Pot implements CropContainerType
 type Pot struct{}
 
-func (p Pot) Code() string { return "pot" }
+func (p Pot) Code() string { return "POT" }
 
 type CropContainer struct {
 	Quantity int

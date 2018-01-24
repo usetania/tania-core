@@ -266,7 +266,7 @@ func initDataDemo(
 	areaSeeding := assetsdomain.Area{
 		UID:       uid,
 		Name:      "MySeedingArea",
-		Size:      assetsdomain.SquareMeter{Value: 10},
+		Size:      assetsdomain.AreaSize{Value: 10, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.SquareMeter}},
 		Type:      assetsdomain.GetAreaType(assetsdomain.AreaTypeSeeding),
 		Location:  assetsdomain.GetAreaLocation(assetsdomain.AreaLocationIndoor),
 		Photo:     assetsdomain.AreaPhoto{},
@@ -283,7 +283,7 @@ func initDataDemo(
 	areaGrowing := assetsdomain.Area{
 		UID:       uid,
 		Name:      "MyGrowingArea",
-		Size:      assetsdomain.SquareMeter{Value: 100},
+		Size:      assetsdomain.AreaSize{Value: 50, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.Hectare}},
 		Type:      assetsdomain.GetAreaType(assetsdomain.AreaTypeGrowing),
 		Location:  assetsdomain.GetAreaLocation(assetsdomain.AreaLocationOutdoor),
 		Photo:     assetsdomain.AreaPhoto{},
