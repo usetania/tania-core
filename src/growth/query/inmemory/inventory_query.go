@@ -1,34 +1,27 @@
-package query
+package inmemory
 
 import (
-	"fmt"
-
 	"github.com/Tanibox/tania-server/src/assets/storage"
-	"github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-server/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 )
-
-type InventoryMaterialQuery interface {
-	FindByID(inventoryUID uuid.UUID) <-chan QueryResult
-	FindInventoryByPlantTypeCodeAndVariety(plantType string, variety string) <-chan QueryResult
-}
 
 type InventoryMaterialQueryInMemory struct {
 	Storage *storage.InventoryMaterialStorage
 }
 
-func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) InventoryMaterialQuery {
+func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) query.InventoryMaterialQuery {
 	return InventoryMaterialQueryInMemory{Storage: s}
 }
 
-func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		ci := domain.CropInventory{}
+		ci := query.CropInventoryQueryResult{}
 		for _, val := range s.Storage.InventoryMaterialMap {
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
@@ -37,7 +30,7 @@ func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan 
 			}
 		}
 
-		result <- QueryResult{Result: ci}
+		result <- query.QueryResult{Result: ci}
 
 		close(result)
 	}()
@@ -45,25 +38,23 @@ func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan 
 	return result
 }
 
-func (q InventoryMaterialQueryInMemory) FindInventoryByPlantTypeCodeAndVariety(plantTypeCode string, variety string) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (q InventoryMaterialQueryInMemory) FindInventoryByPlantTypeCodeAndVariety(plantTypeCode string, variety string) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		ci := domain.CropInventory{}
+		ci := query.CropInventoryQueryResult{}
 		for _, val := range q.Storage.InventoryMaterialMap {
 			if val.PlantType.Code() == plantTypeCode && val.Variety == variety {
 				ci.UID = val.UID
 				ci.PlantTypeCode = val.PlantType.Code()
 				ci.Variety = val.Variety
-
-				fmt.Println(ci)
 			}
 		}
 
-		result <- QueryResult{Result: ci}
+		result <- query.QueryResult{Result: ci}
 
 		close(result)
 	}()

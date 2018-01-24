@@ -5,22 +5,24 @@ import (
 	"sort"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/growth/query"
+
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
 
 type CropBatch struct {
-	UID              uuid.UUID            `json:"uid"`
-	BatchID          string               `json:"batch_id"`
-	Status           string               `json:"status"`
-	Type             string               `json:"type"`
-	Container        CropContainer        `json:"container"`
-	Inventory        domain.CropInventory `json:"inventory"`
-	CreatedDate      time.Time            `json:"created_date"`
-	DaysSinceSeeding int                  `json:"days_since_seeding"`
-	Photo            domain.CropPhoto     `json:"photo"`
-	ActivityType     CropActivityType     `json:"activity_type"`
+	UID              uuid.UUID                      `json:"uid"`
+	BatchID          string                         `json:"batch_id"`
+	Status           string                         `json:"status"`
+	Type             string                         `json:"type"`
+	Container        CropContainer                  `json:"container"`
+	Inventory        query.CropInventoryQueryResult `json:"inventory"`
+	CreatedDate      time.Time                      `json:"created_date"`
+	DaysSinceSeeding int                            `json:"days_since_seeding"`
+	Photo            domain.CropPhoto               `json:"photo"`
+	ActivityType     CropActivityType               `json:"activity_type"`
 
 	InitialArea InitialArea `json:"initial_area"`
 	MovedArea   []MovedArea `json:"moved_area"`
@@ -43,18 +45,18 @@ type CropContainerType struct {
 }
 
 type InitialArea struct {
-	Area            domain.CropArea `json:"area"`
-	InitialQuantity int             `json:"initial_quantity"`
-	CurrentQuantity int             `json:"current_quantity"`
+	Area            query.CropAreaQueryResult `json:"area"`
+	InitialQuantity int                       `json:"initial_quantity"`
+	CurrentQuantity int                       `json:"current_quantity"`
 }
 
 type MovedArea struct {
-	Area            domain.CropArea `json:"area"`
-	SourceArea      domain.CropArea `json:"source_area"`
-	InitialQuantity int             `json:"initial_quantity"`
-	CurrentQuantity int             `json:"current_quantity"`
-	CreatedDate     time.Time       `json:"created_date"`
-	LastUpdated     time.Time       `json:"last_updated"`
+	Area            query.CropAreaQueryResult `json:"area"`
+	SourceArea      query.CropAreaQueryResult `json:"source_area"`
+	InitialQuantity int                       `json:"initial_quantity"`
+	CurrentQuantity int                       `json:"current_quantity"`
+	CreatedDate     time.Time                 `json:"created_date"`
+	LastUpdated     time.Time                 `json:"last_updated"`
 }
 
 type SortedCropNotes []domain.CropNote
@@ -79,7 +81,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		return CropBatch{}, queryResult.Error
 	}
 
-	cropInventory, ok := queryResult.Result.(domain.CropInventory)
+	cropInventory, ok := queryResult.Result.(query.CropInventoryQueryResult)
 	if !ok {
 		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
@@ -92,14 +94,14 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		return CropBatch{}, queryResult.Error
 	}
 
-	initialArea, ok := queryResult.Result.(domain.CropArea)
+	initialArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
 
-	if initialArea.Type == domain.GetAreaType(domain.AreaSeeding) {
+	if initialArea.Type == "SEEDING" {
 		totalSeeding += crop.InitialArea.CurrentQuantity
-	} else if initialArea.Type == domain.GetAreaType(domain.AreaGrowing) {
+	} else if initialArea.Type == "GROWING" {
 		totalGrowing += crop.InitialArea.CurrentQuantity
 	}
 
@@ -110,7 +112,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 			return CropBatch{}, queryResult.Error
 		}
 
-		area, ok := queryResult.Result.(domain.CropArea)
+		area, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
 			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
@@ -120,15 +122,15 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 			return CropBatch{}, queryResult.Error
 		}
 
-		sourceArea, ok := queryResult.Result.(domain.CropArea)
+		sourceArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
 			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		if area.Type == domain.GetAreaType(domain.AreaSeeding) {
+		if area.Type == "SEEDING" {
 			totalSeeding += v.CurrentQuantity
 		}
-		if area.Type == domain.GetAreaType(domain.AreaGrowing) {
+		if area.Type == "GROWING" {
 			totalGrowing += v.CurrentQuantity
 		}
 
@@ -165,7 +167,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		},
 	}
 
-	cropBatch.Inventory = domain.CropInventory{
+	cropBatch.Inventory = query.CropInventoryQueryResult{
 		UID:           cropInventory.UID,
 		PlantTypeCode: cropInventory.PlantTypeCode,
 		Variety:       cropInventory.Variety,

@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	uuid "github.com/satori/go.uuid"
 )
@@ -143,77 +144,23 @@ type MovedArea struct {
 }
 
 type HarvestedStorage struct {
-	Quantity       int
-	SourceAreaUID  uuid.UUID
-	SourceAreaType CropAreaType
-	CreatedDate    time.Time
-	LastUpdated    time.Time
+	Quantity      int
+	SourceAreaUID uuid.UUID
+	CreatedDate   time.Time
+	LastUpdated   time.Time
 }
 
 type Trash struct {
-	Quantity       int
-	SourceAreaUID  uuid.UUID
-	SourceAreaType CropAreaType
-	CreatedDate    time.Time
-	LastUpdated    time.Time
+	Quantity      int
+	SourceAreaUID uuid.UUID
+	CreatedDate   time.Time
+	LastUpdated   time.Time
 }
 
 type CropNote struct {
 	UID         uuid.UUID `json:"uid"`
 	Content     string    `json:"content"`
 	CreatedDate time.Time `json:"created_date"`
-}
-
-type CropInventory struct {
-	UID           uuid.UUID `json:"uid"`
-	PlantTypeCode string    `json:"plant_type"`
-	Variety       string    `json:"variety"`
-}
-
-const (
-	AreaSeeding = "SEEDING"
-	AreaGrowing = "GROWING"
-)
-
-type CropAreaType struct {
-	Code  string `json:"code"`
-	Label string `json:"label"`
-}
-
-func AreaTypes() []CropAreaType {
-	return []CropAreaType{
-		{Code: AreaSeeding, Label: "Seeding"},
-		{Code: AreaGrowing, Label: "Growing"},
-	}
-}
-
-func GetAreaType(code string) CropAreaType {
-	for _, v := range AreaTypes() {
-		if code == v.Code {
-			return v
-		}
-	}
-
-	return CropAreaType{}
-}
-
-type CropArea struct {
-	UID      uuid.UUID    `json:"uid"`
-	Name     string       `json:"name"`
-	Size     CropAreaUnit `json:"size"`
-	Type     CropAreaType `json:"type"`
-	Location string       `json:"location"`
-	FarmUID  uuid.UUID    `json:"farm_uid"`
-}
-
-type CropAreaUnit struct {
-	Value  float32 `json:"value"`
-	Symbol string  `json:"symbol"`
-}
-
-type CropFarm struct {
-	UID  uuid.UUID
-	Name string
 }
 
 type CropPhoto struct {
@@ -236,7 +183,7 @@ func CreateCropBatch(
 		return Crop{}, serviceResult.Error
 	}
 
-	area := serviceResult.Result.(CropArea)
+	area := serviceResult.Result.(query.CropAreaQueryResult)
 
 	ct := GetCropType(cropType)
 	if ct == (CropType{}) {
@@ -248,7 +195,7 @@ func CreateCropBatch(
 		return Crop{}, serviceResult.Error
 	}
 
-	inv := serviceResult.Result.(CropInventory)
+	inv := serviceResult.Result.(query.CropInventoryQueryResult)
 
 	err := validateContainer(quantity, containerType)
 	if err != nil {
@@ -294,10 +241,10 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	// Check if source area is exist in DB
 	serviceResult := cropService.FindAreaByID(sourceAreaUID)
 	if serviceResult.Error != nil {
-		return CropError{Code: CropMoveToAreaErrorInvalidSourceArea}
+		return serviceResult.Error
 	}
 
-	srcArea, ok := serviceResult.Result.(CropArea)
+	srcArea, ok := serviceResult.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return CropError{Code: CropMoveToAreaErrorInvalidSourceArea}
 	}
@@ -308,7 +255,11 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 
 	// Check if destination area is exist in DB
 	serviceResult = cropService.FindAreaByID(destinationAreaUID)
-	dstArea, ok := serviceResult.Result.(CropArea)
+	if serviceResult.Error != nil {
+		return serviceResult.Error
+	}
+
+	dstArea, ok := serviceResult.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return CropError{Code: CropMoveToAreaErrorInvalidDestinationArea}
 	}
@@ -319,11 +270,11 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 
 	// Check if movement rules for area type is valid
 	isValidMoveRules := false
-	if srcArea.Type == GetAreaType(AreaSeeding) && dstArea.Type == GetAreaType(AreaGrowing) {
+	if srcArea.Type == "SEEDING" && dstArea.Type == "GROWING" {
 		isValidMoveRules = true
-	} else if srcArea.Type == GetAreaType(AreaSeeding) && dstArea.Type == GetAreaType(AreaSeeding) {
+	} else if srcArea.Type == "SEEDING" && dstArea.Type == "SEEDING" {
 		isValidMoveRules = true
-	} else if srcArea.Type == GetAreaType(AreaGrowing) && dstArea.Type == GetAreaType(AreaGrowing) {
+	} else if srcArea.Type == "GROWING" && dstArea.Type == "GROWING" {
 		isValidMoveRules = true
 	}
 
@@ -407,12 +358,16 @@ func (c *Crop) Harvest(cropService CropService, sourceAreaUID uuid.UUID, quantit
 	// Validate //
 	// Check if source area is exist in DB
 	serviceResult := cropService.FindAreaByID(sourceAreaUID)
-	srcArea, ok := serviceResult.Result.(CropArea)
+	if serviceResult.Error != nil {
+		return serviceResult.Error
+	}
+
+	srcArea, ok := serviceResult.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return CropError{Code: CropHarvestErrorInvalidSourceArea}
 	}
 
-	if srcArea == (CropArea{}) {
+	if srcArea == (query.CropAreaQueryResult{}) {
 		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
 	}
 
@@ -473,12 +428,16 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	// Validate //
 	// Check if source area is exist in DB
 	serviceResult := cropService.FindAreaByID(sourceAreaUID)
-	srcArea, ok := serviceResult.Result.(CropArea)
+	if serviceResult.Error != nil {
+		return serviceResult.Error
+	}
+
+	srcArea, ok := serviceResult.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return CropError{Code: CropDumpErrorInvalidSourceArea}
 	}
 
-	if srcArea == (CropArea{}) {
+	if srcArea == (query.CropAreaQueryResult{}) {
 		return CropError{Code: CropDumpErrorSourceAreaNotFound}
 	}
 
@@ -596,7 +555,7 @@ func (c *Crop) ChangeInventory(cropService CropService, inventoryUID uuid.UUID) 
 		return serviceResult.Error
 	}
 
-	inventory := serviceResult.Result.(CropInventory)
+	inventory := serviceResult.Result.(query.CropInventoryQueryResult)
 
 	batchID, err := generateBatchID(cropService, inventory, c.CreatedDate)
 	if err != nil {
@@ -666,7 +625,7 @@ func (c Crop) CalculateDaysSinceSeeding() int {
 	return days
 }
 
-func generateBatchID(cropService CropService, inventory CropInventory, createdDate time.Time) (string, error) {
+func generateBatchID(cropService CropService, inventory query.CropInventoryQueryResult, createdDate time.Time) (string, error) {
 	// Generate Batch ID
 	// Format the date to become daymonth format like 25jan
 	dateFormat := strings.ToLower(createdDate.Format("2Jan"))

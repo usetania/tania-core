@@ -21,7 +21,7 @@ func (s CropServiceInMemory) FindInventoryMaterialByID(uid uuid.UUID) domain.Ser
 		}
 	}
 
-	inv, ok := result.Result.(domain.CropInventory)
+	inv, ok := result.Result.(query.CropInventoryQueryResult)
 
 	if !ok {
 		return domain.ServiceResult{
@@ -29,7 +29,7 @@ func (s CropServiceInMemory) FindInventoryMaterialByID(uid uuid.UUID) domain.Ser
 		}
 	}
 
-	if inv == (domain.CropInventory{}) {
+	if inv == (query.CropInventoryQueryResult{}) {
 		return domain.ServiceResult{
 			Error: domain.CropError{Code: domain.CropInventoryErrorNotFound},
 		}
@@ -75,14 +75,14 @@ func (s CropServiceInMemory) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
 		}
 	}
 
-	area, ok := result.Result.(domain.CropArea)
+	area, ok := result.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.CropError{Code: domain.CropMoveToAreaErrorInvalidSourceArea},
 		}
 	}
 
-	if area == (domain.CropArea{}) {
+	if area == (query.CropAreaQueryResult{}) {
 		return domain.ServiceResult{
 			Error: domain.CropError{Code: domain.CropMoveToAreaErrorSourceAreaNotFound},
 		}

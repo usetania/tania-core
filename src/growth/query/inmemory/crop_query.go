@@ -1,27 +1,22 @@
-package query
+package inmemory
 
 import (
 	"github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
-
-type CropQuery interface {
-	FindByBatchID(batchID string) <-chan QueryResult
-	FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryResult
-	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
-}
 
 type CropQueryInMemory struct {
 	Storage *storage.CropStorage
 }
 
-func NewCropQueryInMemory(s *storage.CropStorage) CropQuery {
+func NewCropQueryInMemory(s *storage.CropStorage) query.CropQuery {
 	return CropQueryInMemory{Storage: s}
 }
 
-func (s CropQueryInMemory) FindByBatchID(batchID string) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (s CropQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -34,7 +29,7 @@ func (s CropQueryInMemory) FindByBatchID(batchID string) <-chan QueryResult {
 			}
 		}
 
-		result <- QueryResult{Result: crop}
+		result <- query.QueryResult{Result: crop}
 
 		close(result)
 	}()
@@ -42,8 +37,8 @@ func (s CropQueryInMemory) FindByBatchID(batchID string) <-chan QueryResult {
 	return result
 }
 
-func (s CropQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (s CropQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -56,7 +51,7 @@ func (s CropQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryRes
 			}
 		}
 
-		result <- QueryResult{Result: crops}
+		result <- query.QueryResult{Result: crops}
 
 		close(result)
 	}()
@@ -64,8 +59,8 @@ func (s CropQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryRes
 	return result
 }
 
-func (s CropQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (s CropQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -85,7 +80,7 @@ func (s CropQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryRes
 
 		}
 
-		result <- QueryResult{Result: crops}
+		result <- query.QueryResult{Result: crops}
 
 		close(result)
 	}()

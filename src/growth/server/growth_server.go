@@ -7,6 +7,7 @@ import (
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/domain/service"
+	"github.com/Tanibox/tania-server/src/growth/query/inmemory"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 
@@ -37,11 +38,11 @@ func NewGrowthServer(
 	farmStorage *assetsstorage.FarmStorage,
 ) (*GrowthServer, error) {
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
-	cropQuery := query.NewCropQueryInMemory(cropStorage)
+	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
-	areaQuery := query.NewAreaQueryInMemory(areaStorage)
-	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
-	farmQuery := query.NewFarmQueryInMemory(farmStorage)
+	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
+	inventoryMaterialQuery := inmemory.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
+	farmQuery := inmemory.NewFarmQueryInMemory(farmStorage)
 
 	cropService := service.CropServiceInMemory{
 		InventoryMaterialQuery: inventoryMaterialQuery,
@@ -102,7 +103,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, areaResult.Error)
 	}
 
-	area, ok := areaResult.Result.(domain.CropArea)
+	area, ok := areaResult.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -112,7 +113,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, queryResult.Error)
 	}
 
-	inventoryMaterial, ok := queryResult.Result.(domain.CropInventory)
+	inventoryMaterial, ok := queryResult.Result.(query.CropInventoryQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -281,7 +282,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	farm, ok := result.Result.(domain.CropFarm)
+	farm, ok := result.Result.(query.CropFarmQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
@@ -326,7 +327,7 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	area, ok := result.Result.(domain.CropArea)
+	area, ok := result.Result.(query.CropAreaQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
