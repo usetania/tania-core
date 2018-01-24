@@ -110,7 +110,7 @@ func (sa DumpActivity) Type() string {
 	return "dump"
 }
 
-func CreateDumpActivity(source string, qnt float32) (DumpActivity, error) {
+func CreateDumpActivity(source string, qnt string) (DumpActivity, error) {
 
 	src_id, err := uuid.FromString(source)
 	if err != nil {
@@ -121,11 +121,16 @@ func CreateDumpActivity(source string, qnt float32) (DumpActivity, error) {
 	if err != nil {
 		return DumpActivity{}, err
 	}
-	err = validateQuantity(qnt)
+	quantity64, err := strconv.ParseFloat(qnt, 32)
 	if err != nil {
 		return DumpActivity{}, err
 	}
-	return DumpActivity{SourceAreaID: src_id, Quantity: qnt}, nil
+	quantity32 := float32(quantity64)
+	err = validateQuantity(quantity32)
+	if err != nil {
+		return DumpActivity{}, err
+	}
+	return DumpActivity{SourceAreaID: src_id, Quantity: quantity32}, nil
 }
 
 // HarvestActivity
@@ -138,7 +143,7 @@ func (sa HarvestActivity) Type() string {
 	return "harvest"
 }
 
-func CreateHarvestActivity(source string, qnt float32) (HarvestActivity, error) {
+func CreateHarvestActivity(source string, qnt string) (HarvestActivity, error) {
 
 	src_id, err := uuid.FromString(source)
 	if err != nil {
@@ -149,11 +154,16 @@ func CreateHarvestActivity(source string, qnt float32) (HarvestActivity, error) 
 	if err != nil {
 		return HarvestActivity{}, err
 	}
-	err = validateQuantity(qnt)
+	quantity64, err := strconv.ParseFloat(qnt, 32)
 	if err != nil {
 		return HarvestActivity{}, err
 	}
-	return HarvestActivity{SourceAreaID: src_id, Quantity: qnt}, nil
+	quantity32 := float32(quantity64)
+	err = validateQuantity(quantity32)
+	if err != nil {
+		return HarvestActivity{}, err
+	}
+	return HarvestActivity{SourceAreaID: src_id, Quantity: quantity32}, nil
 }
 
 //Validation

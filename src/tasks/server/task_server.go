@@ -39,7 +39,9 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	// MoveToArea
 	g.POST("/movetoarea", s.SaveMoveToAreaActivity)
 	// Dump
+	g.POST("/dump", s.SaveDumpActivity)
 	// Harvest
+	g.POST("/harvest", s.SaveHarvestActivity)
 	g.GET("", s.FindAllTask)
 	g.GET("/:id", s.FindTaskByID)
 	//g.PUT("/:id/start", s.StartTask)
@@ -130,6 +132,38 @@ func (s *TaskServer) SaveMoveToAreaActivity(c echo.Context) error {
 	activity, err := domain.CreateMoveToAreaActivity(
 		c.FormValue("source_area_id"),
 		c.FormValue("dest_area_id"),
+		c.FormValue("quantity"))
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
+// DumpActivity
+func (s *TaskServer) SaveDumpActivity(c echo.Context) error {
+
+	activity, err := domain.CreateDumpActivity(
+		c.FormValue("source_area_id"),
+		c.FormValue("quantity"))
+
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := s.SaveTask(c, activity)
+
+	return result
+}
+
+// HarvestActivity
+func (s *TaskServer) SaveHarvestActivity(c echo.Context) error {
+
+	activity, err := domain.CreateHarvestActivity(
+		c.FormValue("source_area_id"),
 		c.FormValue("quantity"))
 
 	if err != nil {

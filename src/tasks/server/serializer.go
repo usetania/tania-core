@@ -22,15 +22,16 @@ func MapToSimpleTask(Tasks []domain.Task) []SimpleTask {
 
 func (st SimpleTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		UID         uuid.UUID `json:"uid"`
-		Description string    `json:"description"`
-		CreatedDate time.Time `json:"created_date"`
-		DueDate     time.Time `json:"due_date"`
-		Priority    string    `json:"priority"`
-		Status      string    `json:"status"`
-		TaskType    string    `json:"type"`
-		IsDue       bool      `json:"is_due"`
-		AssetID     uuid.UUID `json:"asset_id"`
+		UID          uuid.UUID `json:"uid"`
+		Description  string    `json:"description"`
+		CreatedDate  time.Time `json:"created_date"`
+		DueDate      time.Time `json:"due_date"`
+		Priority     string    `json:"priority"`
+		Status       string    `json:"status"`
+		TaskType     string    `json:"type"`
+		IsDue        bool      `json:"is_due"`
+		AssetID      uuid.UUID `json:"asset_id"`
+		TaskActivity Activity  `json:"Activity"`
 	}{
 		UID:         st.UID,
 		Description: st.Description,
@@ -41,5 +42,6 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		TaskType:    st.TaskType,
 		IsDue:       st.IsDue,
 		AssetID:     st.AssetID,
+		Activity:    st.TaskActivity,
 	})
 }
