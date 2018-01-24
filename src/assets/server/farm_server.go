@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	"github.com/labstack/echo"
@@ -21,6 +22,7 @@ type FarmServer struct {
 	AreaQuery              query.AreaQuery
 	InventoryMaterialRepo  repository.InventoryMaterialRepository
 	InventoryMaterialQuery query.InventoryMaterialQuery
+	CropQuery              query.CropQuery
 	File                   File
 }
 
@@ -30,6 +32,7 @@ func NewFarmServer(
 	areaStorage *storage.AreaStorage,
 	reservoirStorage *storage.ReservoirStorage,
 	inventoryMaterialStorage *storage.InventoryMaterialStorage,
+	cropStorage *growthstorage.CropStorage,
 ) (*FarmServer, error) {
 	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
 
@@ -41,6 +44,8 @@ func NewFarmServer(
 	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(inventoryMaterialStorage)
 	inventoryMaterialQuery := query.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
 
+	cropQuery := query.NewCropQueryInMemory(cropStorage)
+
 	farmServer := FarmServer{
 		FarmRepo:               farmRepo,
 		ReservoirRepo:          reservoirRepo,
@@ -48,7 +53,8 @@ func NewFarmServer(
 		AreaQuery:              areaQuery,
 		InventoryMaterialRepo:  inventoryMaterialRepo,
 		InventoryMaterialQuery: inventoryMaterialQuery,
-		File: LocalFile{},
+		CropQuery:              cropQuery,
+		File:                   LocalFile{},
 	}
 
 	return &farmServer, nil
@@ -599,7 +605,7 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 }
 
 func (s *FarmServer) GetFarmAreas(c echo.Context) error {
-	data := make(map[string][]domain.Area)
+	data := make(map[string][]AreaList)
 
 	result := <-s.FarmRepo.FindByID(c.Param("id"))
 	if result.Error != nil {
@@ -611,10 +617,12 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	data["data"] = MapToArea(farm.Areas)
-	if len(farm.Areas) == 0 {
-		data["data"] = []domain.Area{}
+	areaList, err := MapToAreaList(s, farm.Areas)
+	if err != nil {
+		return Error(c, err)
 	}
+
+	data["data"] = areaList
 
 	return c.JSON(http.StatusOK, data)
 }

@@ -107,6 +107,33 @@ type AreaNote struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
+// Structs to collect query //
+
+type CountAreaCrop struct {
+	PlantQuantity  int
+	TotalCropBatch int
+}
+
+type AreaCrop struct {
+	CropUID      uuid.UUID     `json:"uid"`
+	BatchID      string        `json:"batch_id"`
+	InitialArea  InitialArea   `json:"initial_area"`
+	MovingDate   time.Time     `json:"moving_date"`
+	CreatedDate  time.Time     `json:"created_date"`
+	InventoryUID uuid.UUID     `json:"inventory_id"`
+	Container    CropContainer `json:"container"`
+}
+
+type InitialArea struct {
+	AreaUID uuid.UUID `json:"uid"`
+	Name    string    `json:"name"`
+}
+
+type CropContainer struct {
+	Type     string `json:"type"`
+	Quantity int    `json:"quantity"`
+}
+
 // CreateArea registers a new area to a farm
 func CreateArea(farm Farm, name string, areaType string) (Area, error) {
 	err := validateAreaName(name)

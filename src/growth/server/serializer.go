@@ -84,6 +84,9 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
 
+	totalSeeding := 0
+	totalGrowing := 0
+
 	queryResult = <-s.AreaQuery.FindByID(crop.InitialArea.AreaUID)
 	if queryResult.Error != nil {
 		return CropBatch{}, queryResult.Error
@@ -92,6 +95,12 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	initialArea, ok := queryResult.Result.(domain.CropArea)
 	if !ok {
 		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	if initialArea.Type == domain.GetAreaType(domain.AreaSeeding) {
+		totalSeeding += crop.InitialArea.CurrentQuantity
+	} else if initialArea.Type == domain.GetAreaType(domain.AreaGrowing) {
+		totalGrowing += crop.InitialArea.CurrentQuantity
 	}
 
 	movedAreas := []MovedArea{}
@@ -114,6 +123,13 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		sourceArea, ok := queryResult.Result.(domain.CropArea)
 		if !ok {
 			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		if area.Type == domain.GetAreaType(domain.AreaSeeding) {
+			totalSeeding += v.CurrentQuantity
+		}
+		if area.Type == domain.GetAreaType(domain.AreaGrowing) {
+			totalGrowing += v.CurrentQuantity
 		}
 
 		movedAreas = append(movedAreas, MovedArea{
@@ -157,30 +173,6 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	cropBatch.CreatedDate = crop.CreatedDate
 	cropBatch.DaysSinceSeeding = crop.CalculateDaysSinceSeeding()
 
-	// Calculate Crop Activity Type
-	totalSeeding := 0
-	totalGrowing := 0
-
-	if crop.InitialArea.AreaType == domain.GetAreaType(domain.AreaSeeding) {
-		totalSeeding += crop.InitialArea.CurrentQuantity
-	} else if crop.InitialArea.AreaType == domain.GetAreaType(domain.AreaGrowing) {
-		totalGrowing += crop.InitialArea.CurrentQuantity
-	}
-
-	for _, v := range crop.MovedArea {
-		if v.AreaType == domain.GetAreaType(domain.AreaSeeding) {
-			totalSeeding += v.CurrentQuantity
-		}
-		if v.AreaType == domain.GetAreaType(domain.AreaGrowing) {
-			totalGrowing += v.CurrentQuantity
-		}
-	}
-
-	cropBatch.ActivityType = CropActivityType{
-		TotalSeeding: totalSeeding,
-		TotalGrowing: totalGrowing,
-	}
-
 	cropBatch.InitialArea = InitialArea{
 		Area:            initialArea,
 		InitialQuantity: crop.InitialArea.InitialQuantity,
@@ -199,6 +191,11 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	cropBatch.LastPruned = ""
 	if !crop.LastPruned.IsZero() {
 		cropBatch.LastPruned = crop.LastPruned.String()
+	}
+
+	cropBatch.ActivityType = CropActivityType{
+		TotalSeeding: totalSeeding,
+		TotalGrowing: totalGrowing,
 	}
 
 	notes := make(SortedCropNotes, 0, len(crop.Notes))

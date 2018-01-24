@@ -17,6 +17,13 @@ type SimpleArea struct {
 	Name string
 	Type string
 }
+type AreaList struct {
+	UID            uuid.UUID
+	Name           string
+	Type           string
+	TotalCropBatch int
+	PlantQuantity  int
+}
 type DetailArea domain.Area
 type DetailReservoir struct {
 	domain.Reservoir
@@ -90,17 +97,43 @@ func MapToArea(areas []domain.Area) []domain.Area {
 }
 
 func MapToSimpleArea(areas []domain.Area) []SimpleArea {
-	installedAreaList := make([]SimpleArea, len(areas))
+	simpleAreaList := make([]SimpleArea, len(areas))
 
 	for i, area := range areas {
-		installedAreaList[i] = SimpleArea{
+		simpleAreaList[i] = SimpleArea{
 			UID:  area.UID,
 			Name: area.Name,
 			Type: area.Type.Code,
 		}
 	}
 
-	return installedAreaList
+	return simpleAreaList
+}
+
+func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
+	areaList := make([]AreaList, len(areas))
+
+	for i, area := range areas {
+		queryResult := <-s.CropQuery.CountCropsByArea(area.UID)
+		if queryResult.Error != nil {
+			return []AreaList{}, queryResult.Error
+		}
+
+		cropCount, ok := queryResult.Result.(domain.CountAreaCrop)
+		if !ok {
+			return []AreaList{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		areaList[i] = AreaList{
+			UID:            area.UID,
+			Name:           area.Name,
+			Type:           area.Type.Code,
+			TotalCropBatch: cropCount.TotalCropBatch,
+			PlantQuantity:  cropCount.PlantQuantity,
+		}
+	}
+
+	return areaList, nil
 }
 
 func MapToReservoir(s *FarmServer, reservoirs []domain.Reservoir) ([]DetailReservoir, error) {

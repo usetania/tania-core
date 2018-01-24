@@ -45,6 +45,7 @@ func main() {
 		areaStorage,
 		reservoirStorage,
 		inventoryMaterialStorage,
+		cropStorage,
 	)
 	if err != nil {
 		e.Logger.Fatal(err)

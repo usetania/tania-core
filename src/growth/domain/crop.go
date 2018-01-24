@@ -128,17 +128,14 @@ type CropContainer struct {
 }
 
 type InitialArea struct {
-	AreaUID         uuid.UUID    `json:"area_id"`
-	AreaType        CropAreaType `json:"area_type"`
-	InitialQuantity int          `json:"initial_quantity"`
-	CurrentQuantity int          `json:"current_quantity"`
+	AreaUID         uuid.UUID `json:"area_id"`
+	InitialQuantity int       `json:"initial_quantity"`
+	CurrentQuantity int       `json:"current_quantity"`
 }
 
 type MovedArea struct {
 	AreaUID         uuid.UUID
-	AreaType        CropAreaType
 	SourceAreaUID   uuid.UUID
-	SourceAreaType  CropAreaType
 	InitialQuantity int
 	CurrentQuantity int
 	CreatedDate     time.Time
@@ -285,7 +282,6 @@ func CreateCropBatch(
 		CreatedDate:  createdDate,
 		InitialArea: InitialArea{
 			AreaUID:         area.UID,
-			AreaType:        area.Type,
 			InitialQuantity: quantity,
 			CurrentQuantity: quantity,
 		},
