@@ -47,8 +47,8 @@ func (rv *RequestValidation) ValidateAreaLocation(location string) (string, erro
 		return "", NewRequestValidationError(REQUIRED, "location")
 	}
 
-	areaLocation, err := domain.FindAreaLocationByCode(location)
-	if err != nil {
+	areaLocation := domain.GetAreaLocation(location)
+	if areaLocation == (domain.AreaLocation{}) {
 		return "", NewRequestValidationError(INVALID_OPTION, "location")
 	}
 

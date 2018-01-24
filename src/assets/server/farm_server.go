@@ -2,7 +2,6 @@ package server
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -12,7 +11,6 @@ import (
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	"github.com/labstack/echo"
-	uuid "github.com/satori/go.uuid"
 )
 
 // FarmServer ties the routes and handlers with injected dependencies
@@ -742,148 +740,4 @@ func (s *FarmServer) GetAvailableInventories(c echo.Context) error {
 	data["data"] = MapToAvailableInventories(inventories)
 
 	return c.JSON(http.StatusOK, data)
-}
-
-func initDataDemo(
-	server *FarmServer,
-	farmStorage *storage.FarmStorage,
-	areaStorage *storage.AreaStorage,
-	reservoirStorage *storage.ReservoirStorage,
-	inventoryMaterialStorage *storage.InventoryMaterialStorage,
-) {
-	farmUID, _ := uuid.NewV4()
-	farm1 := domain.Farm{
-		UID:         farmUID,
-		Name:        "MyFarm",
-		Type:        "organic",
-		Latitude:    "10.00",
-		Longitude:   "11.00",
-		CountryCode: "ID",
-		CityCode:    "JK",
-		IsActive:    true,
-	}
-
-	farmStorage.FarmMap[farmUID] = farm1
-
-	uid, _ := uuid.NewV4()
-
-	noteUID, _ := uuid.NewV4()
-	reservoirNotes := make(map[uuid.UUID]domain.ReservoirNote, 0)
-	reservoirNotes[noteUID] = domain.ReservoirNote{
-		UID:         noteUID,
-		Content:     "Don't forget to close the bucket after using",
-		CreatedDate: time.Now(),
-	}
-
-	reservoir1 := domain.Reservoir{
-		UID:         uid,
-		Name:        "MyBucketReservoir",
-		PH:          8,
-		EC:          12.5,
-		Temperature: 29,
-		WaterSource: domain.Bucket{Capacity: 100, Volume: 10},
-		Farm:        farm1,
-		Notes:       reservoirNotes,
-		CreatedDate: time.Now(),
-	}
-
-	farm1.AddReservoir(&reservoir1)
-	farmStorage.FarmMap[farmUID] = farm1
-	reservoirStorage.ReservoirMap[uid] = reservoir1
-
-	uid, _ = uuid.NewV4()
-	reservoir2 := domain.Reservoir{
-		UID:         uid,
-		Name:        "MyTapReservoir",
-		PH:          8,
-		EC:          12.5,
-		Temperature: 29,
-		WaterSource: domain.Tap{},
-		Farm:        farm1,
-		Notes:       make(map[uuid.UUID]domain.ReservoirNote),
-		CreatedDate: time.Now(),
-	}
-
-	farm1.AddReservoir(&reservoir2)
-	farmStorage.FarmMap[farmUID] = farm1
-	reservoirStorage.ReservoirMap[uid] = reservoir2
-
-	uid, _ = uuid.NewV4()
-
-	noteUID, _ = uuid.NewV4()
-	areaNotes := make(map[uuid.UUID]domain.AreaNote, 0)
-	areaNotes[noteUID] = domain.AreaNote{
-		UID:         noteUID,
-		Content:     "This area should only be used for seeding.",
-		CreatedDate: time.Now(),
-	}
-
-	area1 := domain.Area{
-		UID:       uid,
-		Name:      "MySeedingArea",
-		Size:      domain.SquareMeter{Value: 10},
-		Type:      domain.GetAreaType(domain.AreaTypeSeeding),
-		Location:  "indoor",
-		Photo:     domain.AreaPhoto{},
-		Notes:     areaNotes,
-		Reservoir: reservoir2,
-		Farm:      farm1,
-	}
-
-	farm1.AddArea(&area1)
-	farmStorage.FarmMap[farmUID] = farm1
-	areaStorage.AreaMap[uid] = area1
-
-	uid, _ = uuid.NewV4()
-	area2 := domain.Area{
-		UID:       uid,
-		Name:      "MyGrowingArea",
-		Size:      domain.SquareMeter{Value: 100},
-		Type:      domain.GetAreaType(domain.AreaTypeGrowing),
-		Location:  "outdoor",
-		Photo:     domain.AreaPhoto{},
-		Notes:     make(map[uuid.UUID]domain.AreaNote),
-		Reservoir: reservoir1,
-		Farm:      farm1,
-	}
-
-	farm1.AddArea(&area2)
-	farmStorage.FarmMap[farmUID] = farm1
-	areaStorage.AreaMap[uid] = area2
-
-	uid, _ = uuid.NewV4()
-	inventory1 := domain.InventoryMaterial{
-		UID:       uid,
-		PlantType: domain.Vegetable{},
-		Variety:   "Bayam Lu Hsieh",
-	}
-
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory1
-
-	uid, _ = uuid.NewV4()
-	inventory2 := domain.InventoryMaterial{
-		UID:       uid,
-		PlantType: domain.Vegetable{},
-		Variety:   "Tomat Super One",
-	}
-
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory2
-
-	uid, _ = uuid.NewV4()
-	inventory3 := domain.InventoryMaterial{
-		UID:       uid,
-		PlantType: domain.Fruit{},
-		Variety:   "Apple Rome Beauty",
-	}
-
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory3
-
-	uid, _ = uuid.NewV4()
-	inventory4 := domain.InventoryMaterial{
-		UID:       uid,
-		PlantType: domain.Fruit{},
-		Variety:   "Orange Sweet Mandarin",
-	}
-
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
 }

@@ -261,7 +261,7 @@ func (da DetailArea) MarshalJSON() ([]byte, error) {
 		Name:      da.Name,
 		Size:      da.Size,
 		Type:      da.Type.Code,
-		Location:  da.Location,
+		Location:  da.Location.Code,
 		Photo:     da.Photo,
 		Reservoir: da.Reservoir,
 		Notes:     notes,
