@@ -2,10 +2,6 @@ import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
 import FarmApi from '@/stores/api/farm'
-import stubFarm from '@/stores/stubs/farm'
-import stubReservoir from '@/stores/stubs/reservoir'
-import stubCrop from '@/stores/stubs/crop'
-import stub from '@/stores/stubs/farm'
 
 const state = {
   inventories: []
@@ -16,7 +12,6 @@ const getters = {
 }
 
 const actions = {
-
   fetchFarmInventories ({ commit, state }) {
     NProgress.start()
     return new Promise((resolve, reject) => {
@@ -27,7 +22,6 @@ const actions = {
         }, error => reject(error.response))
     })
   }
-
 }
 
 const mutations = {

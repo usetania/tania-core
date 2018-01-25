@@ -2,10 +2,6 @@ import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
 import FarmApi from '@/stores/api/farm'
-import stubFarm from '@/stores/stubs/farm'
-import stubReservoir from '@/stores/stubs/reservoir'
-import stubCrop from '@/stores/stubs/crop'
-import stub from '@/stores/stubs/farm'
 
 const state = {
   reservoir: {},
@@ -18,7 +14,6 @@ const getters = {
 }
 
 const actions = {
-
   createReservoir ({ commit, state, getters }, payload) {
     const farm = getters.getCurrentFarm
 

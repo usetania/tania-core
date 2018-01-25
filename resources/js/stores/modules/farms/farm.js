@@ -2,13 +2,10 @@ import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
 import FarmApi from '@/stores/api/farm'
-import stubFarm from '@/stores/stubs/farm'
-import stubReservoir from '@/stores/stubs/reservoir'
-import stubCrop from '@/stores/stubs/crop'
-import stub from '@/stores/stubs/farm'
+import { StubFarm } from '@/stores/stubs'
 
 const state = {
-  farm: stub,
+  farm: Object.assign({}, StubFarm),
   farms: [],
   types: [],
 }
