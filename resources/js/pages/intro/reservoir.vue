@@ -26,8 +26,8 @@
                 span.help-block.text-danger(v-show="errors.has('capacity')") {{ errors.first('capacity') }}
               .form-group
                 button.btn.btn-addon.btn-primary.pull-right(type="submit")
-                  | Continue
                   i.fa.fa-long-arrow-right
+                  | Continue
                 router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroFarmCreate'}")
                   i.fa.fa-long-arrow-left
                   | Back

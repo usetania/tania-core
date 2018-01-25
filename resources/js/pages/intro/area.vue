@@ -58,8 +58,8 @@
                     input(type="file" @change="processFile($event)")
               .form-group
                 button.btn.btn-addon.btn-success.pull-right(type="submit")
-                  | Finish Setup
                   i.fa.fa-long-arrow-right
+                  | Finish Setup
                 router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroReservoirCreate'}")
                   i.fa.fa-long-arrow-left
                   | Back
