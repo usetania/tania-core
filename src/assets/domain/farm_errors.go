@@ -44,7 +44,7 @@ func (e FarmError) Error() string {
 	case FarmErrorNameExceedMaximunCharacterCode:
 		return "Farm name cannot more than 100 characters"
 	case FarmErrorNameAlphanumericOnlyCode:
-		return "Farm name should be alphanumeric"
+		return "Farm name should be alphanumeric, space, hypen, or underscore"
 	case FarmErrorInvalidLatitudeValueCode:
 		return "Latitude value is invalid"
 	case FarmErrorInvalidLongitudeValueCode:

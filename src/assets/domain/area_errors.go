@@ -33,7 +33,7 @@ func (e AreaError) Error() string {
 	case AreaErrorNameExceedMaximunCharacterCode:
 		return "Area name cannot more than 100 characters"
 	case AreaErrorNameAlphanumericOnlyCode:
-		return "Area name should be alphanumeric"
+		return "Area name should be alphanumeric, space, hypen, or underscore"
 	case AreaErrorSizeEmptyCode:
 		return "Area size cannot be empty"
 	case AreaErrorInvalidSizeUnitCode:

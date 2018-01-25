@@ -1,6 +1,6 @@
 export const ReservoirTypes = [
-  { key: "tap", label: "Tap / Well" },
-  { key: "bucket", label: "Water Tank / Cistern" }
+  { key: "TAP", label: "Tap / Well" },
+  { key: "BUCKET", label: "Water Tank / Cistern" }
 ]
 
 export function FindReservoirType(key) {

@@ -2,6 +2,8 @@ package domain
 
 const (
 	ReservoirEmptyBucketPercentage = 0.2
+	BucketType                     = "BUCKET"
+	TapType                        = "TAP"
 )
 
 type WaterSource interface {
@@ -38,7 +40,7 @@ func CreateTap() (Tap, error) {
 }
 
 func (b Bucket) Type() string {
-	return "bucket"
+	return BucketType
 }
 
 // ChangeVolume changes the amount of water in the Bucket.
@@ -64,7 +66,7 @@ func (b Bucket) IsBucketEmpty() bool {
 }
 
 func (t Tap) Type() string {
-	return "tap"
+	return TapType
 }
 
 func validateVolume(capacity, volume float32) error {

@@ -33,7 +33,7 @@ func (e ReservoirError) Error() string {
 	case ReservoirErrorNameExceedMaximunCharacterCode:
 		return "Reservoir name cannot more than 100 characters"
 	case ReservoirErrorNameAlphanumericOnlyCode:
-		return "Reservoir name should be alphanumeric"
+		return "Reservoir name should be alphanumeric, space, hypen, or underscore"
 	case ReservoirErrorPHInvalidCode:
 		return "Reservoir pH value is invalid."
 	case ReservoirErrorECInvalidCode:

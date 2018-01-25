@@ -48,7 +48,7 @@ func IsAlphanumSpaceHyphenUnderscore(val string) bool {
 		return true
 	}
 
-	regex := regexp.MustCompile("^[a-zA-Z0-9]+[a-zA-Z0-9-_ ]*[a-zA-Z0-9]")
+	regex := regexp.MustCompile("^[a-zA-Z0-9]+[a-zA-Z0-9-_ ]*[a-zA-Z0-9]$")
 
 	return regex.MatchString(val)
 }

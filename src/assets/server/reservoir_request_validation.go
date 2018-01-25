@@ -21,7 +21,7 @@ func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) 
 }
 
 func (rv *RequestValidation) ValidateCapacity(waterSourceType, capacity string) (float32, error) {
-	if waterSourceType == "tap" {
+	if waterSourceType == domain.TapType {
 		return 0, nil
 	}
 
@@ -50,7 +50,7 @@ func (rv *RequestValidation) ValidateType(t string) (string, error) {
 		return "", NewRequestValidationError(ALPHA, "type")
 	}
 
-	if t != "bucket" && t != "tap" {
+	if t != domain.BucketType && t != domain.TapType {
 		return "", NewRequestValidationError(INVALID_OPTION, "type")
 	}
 
