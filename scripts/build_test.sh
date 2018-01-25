@@ -8,7 +8,7 @@ go test ./...
 
 echo "Building golang binaries..."
 # Build and test Golang
-make linux-arm linux-amd64 windows
+make linux-arm linux-amd64 windows osxcross
 
 echo "Configuring binary for running ..."
 # Setting up configuration
