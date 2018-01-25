@@ -38,7 +38,7 @@ type AreaCropQueryResult struct {
 	MovingDate       time.Time   `json:"moving_date"`
 	CreatedDate      time.Time   `json:"created_date"`
 	DaysSinceSeeding int         `json:"days_since_seeding"`
-	Inventory        Inventory   `json:"inventory_id"`
+	Inventory        Inventory   `json:"inventory"`
 	Container        Container   `json:"container"`
 }
 

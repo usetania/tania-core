@@ -19,11 +19,12 @@ type SimpleArea struct {
 	Type string
 }
 type AreaList struct {
-	UID            uuid.UUID `json:"uid"`
-	Name           string    `json:"name"`
-	Type           string    `json:"type"`
-	TotalCropBatch int       `json:"total_crop_batch"`
-	PlantQuantity  int       `json:"plant_quantity"`
+	UID            uuid.UUID       `json:"uid"`
+	Name           string          `json:"name"`
+	Type           string          `json:"type"`
+	Size           domain.AreaSize `json:"size"`
+	TotalCropBatch int             `json:"total_crop_batch"`
+	PlantQuantity  int             `json:"plant_quantity"`
 }
 type DetailArea struct {
 	UID            uuid.UUID                   `json:"uid"`
@@ -123,6 +124,7 @@ func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
 			UID:            area.UID,
 			Name:           area.Name,
 			Type:           area.Type.Code,
+			Size:           area.Size,
 			TotalCropBatch: cropCount.TotalCropBatch,
 			PlantQuantity:  cropCount.PlantQuantity,
 		}
