@@ -1,5 +1,5 @@
 .PHONY: all cover clean clean-osx clean-linux-arm clean-linux-amd64 clean-win64 \
-	osx linux-amd64 linux-arm windows fetch-dep run
+	osx linux-amd64 linux-arm windows fetch-dep run osxcross.bin
 
 all: osx linux-amd64 linux-arm windows
 
@@ -27,6 +27,13 @@ terra.osx.amd64: main.go
 	file $@
 
 osx: terra.osx.amd64
+
+osxcross: main.go
+	CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 \
+		CC=o64-clang	\
+		CXX=o64-clang++ \
+		go build -ldflags '-s -w' -o terra.osx.amd64
+	file terra.osx.amd64
 
 terra.linux.arm: main.go
 	CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 \
