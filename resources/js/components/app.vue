@@ -54,13 +54,13 @@ export default {
     init () {
       try {
         // perform http initial request location services ?
-        Promise.all([
-          this.fetchCountries(),
-          this.fetchFarmTypes(),
-          this.fetchFarmInventories(),
-        ]).then(response => {
-          event.emit('tanibox:ready')
-        })
+        // Promise.all([
+        //   this.fetchCountries(),
+        //   this.fetchFarmTypes(),
+        //   this.fetchFarmInventories(),
+        // ]).then(response => {
+        //   event.emit('tanibox:ready')
+        // })
       } catch (err) {
 
       }

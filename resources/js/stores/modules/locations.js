@@ -21,7 +21,7 @@ const actions = {
       http.get('locations/countries', ({ data }) => {
         commit(types.FETCH_COUNTRIES, data)
         resolve(data)
-      }, error => reject(error))
+      }, error => reject(error.response))
     })
   },
 
@@ -32,7 +32,7 @@ const actions = {
       http.get('locations/cities?country_id=' + payload, ({ data }) => {
         commit(types.FETCH_CITIES, data)
         resolve(data)
-      }, error => reject(error))
+      }, error => reject(error.response))
     })
   }
 }

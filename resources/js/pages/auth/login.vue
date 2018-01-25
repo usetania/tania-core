@@ -53,6 +53,7 @@ export default {
       'userLogin',
       'fetchCountries',
       'fetchFarmTypes',
+      'fetchFarm',
       'fetchFarmInventories',
     ]),
     validateBeforeSubmit() {
@@ -66,25 +67,23 @@ export default {
       this.userLogin({
         username: this.username,
         password: this.password
-      }).then(response => {
+      }).then(this.redirector).catch(error => {})
+    },
+    redirector (response) {
+      Promise.all([
+        this.fetchCountries(),
+        this.fetchFarm(),
+        this.fetchFarmTypes(),
+        this.fetchFarmInventories()
+      ]).then(response => {
+        // Keep this logic we create auth endpoint
+        if (this.user.intro === true) {
+          this.$router.push({ name: 'IntroFarmCreate' })
+        } else {
+          this.$router.push({ name: 'Home' })
+        }
         Nprogres.done()
-        // Just hack this logic before we have authentication endpoint
-        Promise.all([
-          this.fetchCountries(),
-          this.fetchFarm(),
-          this.fetchFarmTypes(),
-          this.fetchFarmInventories()
-        ]).then(response => {
-          // if the current user is new user
-          if (this.user.intro === true) {
-            this.$router.push({ name: 'IntroFarmCreate' })
-          } else {
-            this.$router.push({ name: 'Home' })
-          }
-        })
-
-
-      }).catch(error => {})
+      }).catch(error => console.log(error))
     }
   }
 }

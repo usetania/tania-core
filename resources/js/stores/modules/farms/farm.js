@@ -36,10 +36,10 @@ const actions = {
     NProgress.start()
     return new Promise((resolve, reject) => {
       FarmApi
-        .ApiFetchFarm(payload, ({ data }) => {
+        .ApiFetchFarm(({ data }) => {
           commit(types.FETCH_FARM, data.data)
           // commit(types.SET_FARM, data.data)
-          resolve(data.data)
+          resolve(data)
         }, error => reject(error.response))
     })
   },
@@ -67,6 +67,9 @@ const actions = {
 }
 
 const mutations = {
+  [types.FETCH_FARM] (state, payload) {
+    state.farms = payload
+  },
   [types.FETCH_FARM_TYPES] (state, payload) {
     state.types = payload
   },

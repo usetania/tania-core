@@ -13,11 +13,11 @@ const state = Object.assign({},
 )
 
 const getters = Object.assign({},
-  FarmArea.gettters,
-  FarmCrop.gettters,
-  FarmFarm.gettters,
-  FarmInventories.gettters,
-  FarmReservoir.gettters
+  FarmArea.getters,
+  FarmCrop.getters,
+  FarmFarm.getters,
+  FarmInventories.getters,
+  FarmReservoir.getters
 )
 
 const actions = Object.assign({},
