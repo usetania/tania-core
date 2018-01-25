@@ -105,12 +105,12 @@ describe('Intro specs', () => {
       cy.get('button.btn[type=submit]').click()
 
       cy.get('span.h4.font-bold').should('contain', 'Create Farm')
-      cy.get('span.help-block.text-danger').should('contain', 'The farm.name field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The farm.farm_type field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The farm.latitude field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The farm.latitude field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The farm.country_code field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The farm.city_code field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The type field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The latitude field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The latitude field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The country field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The city field is required.')
     })
 
     it ('should go to the next page when the form filled correctly', () => {
@@ -141,10 +141,10 @@ describe('Intro specs', () => {
       login()
       filled_farm()
       cy.get('button.btn[type=submit]').click()
-      cy.get('span.help-block.text-danger').should('contain', 'The reservoir.name field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
     })
 
-    it ('shoul to redirect to the reservoir page, if the reservoir empty', () => {
+    it ('should to redirect to the reservoir page, if the reservoir empty', () => {
       login()
       filled_farm()
       // always redirect into farm intro when the farm is empty
@@ -185,12 +185,12 @@ describe('Intro specs', () => {
       filled_farm()
       filled_reservoir()
       cy.get('button.btn[type=submit]').click()
-      cy.get('span.help-block.text-danger').should('contain', 'The area.name field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The area.size field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The area.size_unit field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The area.type field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The area.location field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The area.reservoir field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The size field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The size_unit field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The type field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The location field is required.')
+      cy.get('span.help-block.text-danger').should('contain', 'The reservoir field is required.')
     })
     it ('should go to next page when form is filled correctly', () => {
       login()

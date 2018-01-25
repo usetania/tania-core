@@ -18,7 +18,7 @@ describe('Login specs', () => {
     cy.get('span.help-block.text-danger').should('contain', 'The password field is required.')
   })
 
-  it ('should redirect to homepage for existing user who already have farm', () => {
+  it('should redirect to homepage for existing user who already have farm', () => {
     cy.clearLocalStorage()
 
     cy.visit('/#/')
@@ -29,9 +29,13 @@ describe('Login specs', () => {
     cy.location().should( location => {
       expect(location.hash).to.eq('#/')
     })
+
+    cy.get('a.farm-current span').should('contain', 'FarmName2')
+
   })
 
-  it ('should redirect to intro page for non existing user', () => {
+  // skip this test, we will enable when the auth endpoint
+  it.skip ('should redirect to intro page for non existing user', () => {
     cy.clearLocalStorage()
 
     cy.visit('/#/')

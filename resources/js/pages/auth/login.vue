@@ -37,7 +37,8 @@ export default {
 
   computed : {
     ...mapGetters({
-      user: 'getCurrentUser'
+      user: 'getCurrentUser',
+      IsNewUser: 'IsNewUser'
     })
   },
 
@@ -76,8 +77,7 @@ export default {
         this.fetchFarmTypes(),
         this.fetchFarmInventories()
       ]).then(response => {
-        // Keep this logic we create auth endpoint
-        if (this.user.intro === true) {
+        if (this.IsNewUser === true) {
           this.$router.push({ name: 'IntroFarmCreate' })
         } else {
           this.$router.push({ name: 'Home' })

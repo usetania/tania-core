@@ -38,7 +38,12 @@ const actions = {
       FarmApi
         .ApiFetchFarm(({ data }) => {
           commit(types.FETCH_FARM, data.data)
-          // commit(types.SET_FARM, data.data)
+
+          // select the current farm for the first array
+          if (data.data.length > 0) {
+            commit(types.SET_FARM, data.data[0])
+          }
+
           resolve(data)
         }, error => reject(error.response))
     })

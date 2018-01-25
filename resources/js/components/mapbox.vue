@@ -12,6 +12,7 @@
 <script>
 import L from 'leaflet'
 import Vue2Leaflet from 'vue2-leaflet'
+import { map } from 'bluebird';
 // Build icon assets.
 delete L.Icon.Default.prototype._getIconUrl
 L.Icon.Default.imagePath = ''
@@ -45,13 +46,13 @@ export default {
   // whe need to change the location data from the props
   watch : {
     latitude (value, before) {
-      if (value && value !== this.location[0]) {
-        this.location = [parseFloat(value), this.location[1]]
+      if (value && value !== this.location[0] && this.isFloat(value)) {
+        this.location = [parseFloat(value), parseFloat(this.location[1])]
       }
     },
     longitude (value, before) {
-      if (value && value !== this.location[1]) {
-        this.location = [this.location[0], parseFloat(value)]
+      if (value && value !== this.location[1] && this.isFloat(value)) {
+        this.location = [parseFloat(this.location[0]), parseFloat(value)]
       }
     }
   },
@@ -89,7 +90,13 @@ export default {
           this.publish()
         }, error => console.log(error))
       }
+    },
+
+    isFloat (value) {
+      let regexp = /^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$/
+      return value.search(regexp) === 0
     }
+
   }
 }
 </script>
