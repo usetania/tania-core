@@ -21,7 +21,7 @@
                   option(value="") Please select source
                   option(v-for="option in options" :value="option.key") {{ option.label }}
                 span.help-block.text-danger(v-show="errors.has('reservoir.type')") {{ errors.first('reservoir.type') }}
-              .form-group(v-if="reservoir.type == 'bucket'")
+              .form-group(v-if="reservoir.type == 'BUCKET'")
                 input#capacity.form-control(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('reservoir.capacity') }" v-model="reservoir.capacity" placeholder="Capacity (litre)" name="reservoir.capacity")
                 span.help-block.text-danger(v-show="errors.has('reservoir.capacity')") {{ errors.first('reservoir.capacity') }}
               .form-group
@@ -78,7 +78,7 @@ export default {
       })
     },
     typeChanged (type) {
-      if (type === 'bucket') {
+      if (type === 'BUCKET') {
         this.reservoir.capacity = ''
       } else {
         this.reservoir.capacity = 0

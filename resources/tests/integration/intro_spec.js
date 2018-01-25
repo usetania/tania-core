@@ -39,9 +39,9 @@ function filled_reservoir() {
 
   // Typing the form
   cy.get('#name').type('Reservoir1').should('have.value', 'Reservoir1')
-  cy.get('#type').select('tap')
+  cy.get('#type').select('TAP')
   cy.get('#capacity').should('not.exist')
-  cy.get('#type').select('bucket')
+  cy.get('#type').select('BUCKET')
   cy.get('#capacity').should('exist').type('12').should('have.value', '12')
   cy.get('button.btn[type=submit]').click()
 }
