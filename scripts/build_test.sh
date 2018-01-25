@@ -36,6 +36,5 @@ echo "Killing Server [$TERRA_PID] ..."
 # Move the screenshoot and recorded video from the test result into public folder
 mkdir public/assets
 cp -rf resources/tests/assets/videos public/assets/
-cp -rf resources/tests/assets/screenshots public/assets/
 
 kill -s TERM $TERRA_PID
