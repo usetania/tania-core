@@ -32,19 +32,6 @@ export default {
     AppFooterComponent: () => import('./footer.vue')
   },
 
-  mounted () {
-    this.init()
-  },
-
-  created () {
-    event.on({
-      'tanibox:ready': () => {
-        this.appReady = true
-        // console.log('tanibox is ready')
-      }
-    })
-  },
-
   methods: {
     setFolded (payload) {
       this.folded = !this.folded

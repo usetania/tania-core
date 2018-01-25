@@ -29,8 +29,13 @@ yarn && yarn run unit
 
 echo "Running end to end tests ..."
 # build and test e2e
-yarn run production && yarn run cypress:run 
+yarn run production && yarn run cypress:run
 
 echo "Killing Server [$TERRA_PID] ..."
+
+# Move the screenshoot and recorded video from the test result into public folder
+mkdir public/assets
+cp -rf resources/tests/assets/videos public/assets/
+cp -rf resources/tests/assets/screenshots public/assets/
 
 kill -s TERM $TERRA_PID
