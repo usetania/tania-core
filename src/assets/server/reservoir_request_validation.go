@@ -13,7 +13,7 @@ func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) 
 	if name == "" {
 		return "", NewRequestValidationError(REQUIRED, "name")
 	}
-	if !validationhelper.IsAlphanumeric(name) {
+	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return "", NewRequestValidationError(ALPHANUMERIC, "name")
 	}
 

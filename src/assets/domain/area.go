@@ -222,7 +222,7 @@ func validateAreaName(name string) error {
 	if name == "" {
 		return AreaError{AreaErrorNameEmptyCode}
 	}
-	if !validationhelper.IsAlphanumeric(name) {
+	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return AreaError{AreaErrorNameAlphanumericOnlyCode}
 	}
 	if len(name) < 5 {

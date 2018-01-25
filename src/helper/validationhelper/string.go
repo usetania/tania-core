@@ -39,3 +39,16 @@ func IsAlphanumeric(val string) bool {
 
 	return regexAlphanumeric.MatchString(val)
 }
+
+// IsAlphanumeric check if the string contains only letters, numbers, space, hypens, and underscore.
+// Only allow letters and numbers at the start and the end.
+// Empty string is valid.
+func IsAlphanumSpaceHyphenUnderscore(val string) bool {
+	if len(val) == 0 {
+		return true
+	}
+
+	regex := regexp.MustCompile("^[a-zA-Z0-9]+[a-zA-Z0-9-_ ]*[a-zA-Z0-9]")
+
+	return regex.MatchString(val)
+}

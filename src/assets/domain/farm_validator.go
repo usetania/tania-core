@@ -11,7 +11,7 @@ func validateFarmName(name string) error {
 	if name == "" {
 		return FarmError{FarmErrorNameEmptyCode}
 	}
-	if !validationhelper.IsAlphanumeric(name) {
+	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return FarmError{FarmErrorNameAlphanumericOnlyCode}
 	}
 	if len(name) < 5 {

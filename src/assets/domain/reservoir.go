@@ -189,7 +189,7 @@ func validateReservoirName(name string) error {
 	if name == "" {
 		return ReservoirError{ReservoirErrorNameEmptyCode}
 	}
-	if !validationhelper.IsAlphanumeric(name) {
+	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}
 	}
 	if len(name) < 5 {
