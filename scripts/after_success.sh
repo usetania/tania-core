@@ -8,6 +8,7 @@ echo -n "Archiving..."
 
 tar cvJf tania-server-${TIMESTAMP}-linux-arm.txz terra.linux.arm public
 tar cvJf tania-server-${TIMESTAMP}-linux-amd64.txz terra.linux.amd64 public
+tar cvJf tania-server-${TIMESTAMP}-macos-amd64.txz terra.osx.amd64 public
 7za a -t7z -mx=9 tania-server-${TIMESTAMP}-windows-amd64.7z terra.windows.amd64.exe public
 
 
@@ -19,5 +20,6 @@ then
   aws s3 cp tania-server-${TIMESTAMP}-linux-arm.txz s3://tanibox-terra/archives/ --storage-class STANDARD_IA
   aws s3 cp tania-server-${TIMESTAMP}-linux-amd64.txz s3://tanibox-terra/archives/ --storage-class STANDARD_IA
   aws s3 cp tania-server-${TIMESTAMP}-windows-amd64.7z s3://tanibox-terra/archives/ --storage-class STANDARD_IA
+  aws s3 cp tania-server-${TIMESTAPM}-macos-amd64.txz s3://tanibox-terra/archives/ --storage-class STANDARD_IA
 
 fi
