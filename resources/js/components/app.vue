@@ -12,7 +12,7 @@
 
 <script>
 import { event } from '@/services/bus'
-import { mapActions, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'AppComponent',
   data () {
@@ -46,26 +46,6 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      'fetchCountries',
-      'fetchFarmTypes',
-      'fetchFarmInventories',
-    ]),
-    init () {
-      try {
-        // perform http initial request location services ?
-        // Promise.all([
-        //   this.fetchCountries(),
-        //   this.fetchFarmTypes(),
-        //   this.fetchFarmInventories(),
-        // ]).then(response => {
-        //   event.emit('tanibox:ready')
-        // })
-      } catch (err) {
-
-      }
-    },
-
     setFolded (payload) {
       this.folded = !this.folded
     }
