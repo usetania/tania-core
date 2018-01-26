@@ -18,7 +18,7 @@
             .panel-body
               .row
                 .col-xs-4
-                  small.text-muted.block Size ( {{ getSizeUnit(area.size.symbol).label }} )
+                  small.text-muted.block Size ( {{ getSizeUnit(area.size.unit.symbol).label }} )
                   span.text-md {{ area.size.value }}
                 .col-xs-4
                   small.text-muted.block Grow Batches
