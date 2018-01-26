@@ -188,14 +188,14 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	if waterSourceType == "bucket" {
+	if waterSourceType == domain.BucketType {
 		b, err := domain.CreateBucket(capacity, 0)
 		if err != nil {
 			return Error(c, err)
 		}
 
 		r.AttachBucket(b)
-	} else if waterSourceType == "tap" {
+	} else if waterSourceType == domain.TapType {
 		t, err := domain.CreateTap()
 		if err != nil {
 			return Error(c, err)
