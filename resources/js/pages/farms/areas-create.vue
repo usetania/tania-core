@@ -48,8 +48,13 @@
               span.help-block.text-danger(v-show="errors.has('area.reservoir')") {{ errors.first('area.reservoir') }}
           .col-xs-6
             .form-group
-              label Select photo <small class="text-muted">(if any)</small>
-              input(type="file" @change="processFile($event)")
+              label Select photo
+                small.text-muted (if any)
+              .row
+                .col-xs-12.text-truncate
+                  label.btn.btn-default.btn-file Browse
+                    input(type="file" @change="processFile($event)" style="display: none;")
+                  span.text-muted {{ filename }}
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") Save
             i.fa.fa-long-arrow-right
@@ -66,6 +71,7 @@ export default {
     return {
       message: Object.assign({}, StubMessage),
       area: Object.assign({}, StubArea),
+      filename : 'No file chosen',
       options: {
         types: Array.from(AreaTypes),
         locations: Array.from(AreaLocations),
@@ -96,6 +102,7 @@ export default {
     },
     processFile (event) {
       this.area.photo = event.target.files[0]
+      this.filename = event.target.files[0].name
     }
   }
 }
