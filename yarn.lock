@@ -8414,6 +8414,10 @@ uuid@^3.0.0, uuid@^3.0.1, uuid@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.1.0.tgz#3dd3d3e790abc24d7b0d3a034ffababe28ebbc04"
 
+v-click-outside@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/v-click-outside/-/v-click-outside-1.0.2.tgz#9ca50aa0014d09ee78d257be4e6a3288caa0d753"
+
 vali-date@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/vali-date/-/vali-date-1.0.0.tgz#1b904a59609fb328ef078138420934f6b86709a6"

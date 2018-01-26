@@ -32,6 +32,14 @@ const actions = {
   },
   userCompletedIntro({ commit, state }) {
     commit(types.USER_COMPLETED_INTRO)
+  },
+  userSignOut({commit, state}, payload) {
+    return new Promise((resolve, reject) => {
+      // @TODO sent http request to the server to revoke the
+      // authentication access
+      commit(types.USER_LOGOUT)
+      resolve()
+    })
   }
 }
 
@@ -41,6 +49,9 @@ const mutations = {
   },
   [types.USER_COMPLETED_INTRO] (state) {
     state.current.intro = false
+  },
+  [types.USER_LOGOUT] (state, payload) {
+    state.current.uid = ''
   }
 }
 

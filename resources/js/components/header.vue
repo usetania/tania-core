@@ -7,6 +7,9 @@
         img(src="../../images/logo.png")
         span.hidden-folded.m-l.xs Tania
     .collapse.pos-rlt.navbar-collapse.box-shadow.bg-white-only
+      ul.nav.navbar-nav.navbar-right
+        li
+          a#signout(href="#" @click.prevent="signout") Sign Out
       ul.nav.navbar-nav.hidden-xs
         li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
           a.farm-current(href="#" @click.prevent="dropdownToggle")
@@ -22,6 +25,7 @@
 </template>
 
 <script>
+import { ls } from '@/services'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'AppHeaderComponent',
@@ -38,7 +42,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setCurrentFarm'
+      'setCurrentFarm',
+      'userSignOut'
     ]),
     setFarm (farmId) {
       this.setCurrentFarm(farmId)
@@ -47,6 +52,14 @@ export default {
     },
     dropdownToggle() {
       this.dropdown = !this.dropdown
+    },
+    signout () {
+      this.userSignOut()
+        .then(data => {
+          ls.remove('vuex')
+          this.$router.push({ name: 'AuthLogin' })
+        })
+        .catch(err => console.log(error))
     }
   }
 }
