@@ -24,8 +24,10 @@ type CropBatch struct {
 	Photo            domain.CropPhoto               `json:"photo"`
 	ActivityType     CropActivityType               `json:"activity_type"`
 
-	InitialArea InitialArea `json:"initial_area"`
-	MovedArea   []MovedArea `json:"moved_area"`
+	InitialArea      InitialArea        `json:"initial_area"`
+	MovedArea        []MovedArea        `json:"moved_area"`
+	HarvestedStorage []HarvestedStorage `json:"harvested_storage"`
+	Trash            []Trash            `json:"trash"`
 
 	// Fields to track care crop
 	LastFertilized string `json:"last_fertilized"`
@@ -57,6 +59,20 @@ type MovedArea struct {
 	CurrentQuantity int                       `json:"current_quantity"`
 	CreatedDate     time.Time                 `json:"created_date"`
 	LastUpdated     time.Time                 `json:"last_updated"`
+}
+
+type HarvestedStorage struct {
+	SourceArea  query.CropAreaQueryResult `json:"source_area"`
+	Quantity    int                       `json:"quantity"`
+	CreatedDate time.Time                 `json:"created_date"`
+	LastUpdated time.Time                 `json:"last_updated"`
+}
+
+type Trash struct {
+	SourceArea  query.CropAreaQueryResult `json:"source_area"`
+	Quantity    int                       `json:"quantity"`
+	CreatedDate time.Time                 `json:"created_date"`
+	LastUpdated time.Time                 `json:"last_updated"`
 }
 
 type SortedCropNotes []domain.CropNote
@@ -144,6 +160,46 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		})
 	}
 
+	harvestedStorage := []HarvestedStorage{}
+	for _, v := range crop.HarvestedStorage {
+		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
+		if queryResult.Error != nil {
+			return CropBatch{}, queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		harvestedStorage = append(harvestedStorage, HarvestedStorage{
+			SourceArea:  area,
+			Quantity:    v.Quantity,
+			CreatedDate: v.CreatedDate,
+			LastUpdated: v.LastUpdated,
+		})
+	}
+
+	trash := []Trash{}
+	for _, v := range crop.Trash {
+		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
+		if queryResult.Error != nil {
+			return CropBatch{}, queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		trash = append(trash, Trash{
+			SourceArea:  area,
+			Quantity:    v.Quantity,
+			CreatedDate: v.CreatedDate,
+			LastUpdated: v.LastUpdated,
+		})
+	}
+
 	cropBatch := CropBatch{}
 	cropBatch.UID = crop.UID
 	cropBatch.BatchID = crop.BatchID
@@ -180,7 +236,10 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		InitialQuantity: crop.InitialArea.InitialQuantity,
 		CurrentQuantity: crop.InitialArea.CurrentQuantity,
 	}
+
 	cropBatch.MovedArea = movedAreas
+	cropBatch.HarvestedStorage = harvestedStorage
+	cropBatch.Trash = trash
 
 	cropBatch.LastFertilized = ""
 	if !crop.LastFertilized.IsZero() {
