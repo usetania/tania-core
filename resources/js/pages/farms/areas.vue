@@ -22,10 +22,10 @@
                   span.text-md {{ area.size.value }}
                 .col-xs-4
                   small.text-muted.block Grow Batches
-                  span.text-md 21
+                  span.text-md {{ area.total_crop_batch }}
                 .col-xs-4
                   small.text-muted.block Plant Quantity
-                  span.text-md 1680
+                  span.text-md {{ area.plant_quantity }}
 
 </template>
 
