@@ -13,23 +13,23 @@
               img.img-full(src="../../../images/germination.jpg")
             .list-group.no-radius.alt
               .list-group-item
-                span.col-sm-7.text-muted.point Area Size {{ getSizeUnit(area.size.symbol).label }}
+                span.col-sm-7.text-muted.point Area Size {{ getSizeUnit(area.size.unit.symbol).label }}
                 span {{ area.size.value }}
               .list-group-item
                 span.col-sm-7.text-muted.point Location
-                span {{ getLocation(area.location).label }}
+                span.text-truncate {{ getLocation(area.location).label }}
               .list-group-item
                 span.col-sm-7.text-muted.point Batches
-                span 5
+                span {{ area.total_crop_batch }}
               .list-group-item
                 span.col-sm-7.text-muted.point Crop Variety
-                span 5
+                span {{ area.total_variety }}
               .list-group-item
                 span.col-sm-7.text-muted.point Connected Device
                 span 5
               .list-group-item
                 span.col-sm-7.text-muted.point Reservoir
-                span 5
+                span {{ area.reservoir.name }}
         .col-md-8
           .panel
             .panel-heading
