@@ -67,6 +67,9 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
 	g.GET("/crops/:id", s.FindCropByID)
+	g.POST("/crops/:id/move", s.MoveCrop)
+	g.POST("/crops/:id/harvest", s.HarvestCrop)
+	g.POST("/crops/:id/dump", s.DumpCrop)
 	g.POST("/crops/:id/notes", s.SaveCropNotes)
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.POST("/crops/:id/photos", s.UploadCropPhotos)
@@ -172,6 +175,168 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 
 	if crop.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) MoveCrop(c echo.Context) error {
+	cropID := c.Param("id")
+	srcAreaID := c.FormValue("source_area_id")
+	dstAreaID := c.FormValue("destination_area_id")
+	quantity := c.FormValue("quantity")
+
+	// VALIDATE //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	srcAreaUID, err := uuid.FromString(srcAreaID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	dstAreaUID, err := uuid.FromString(dstAreaID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	qty, err := strconv.Atoi(quantity)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PROCESS //
+	err = crop.MoveToArea(s.CropService, srcAreaUID, dstAreaUID, qty)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PERSIST //
+	err = <-s.CropRepo.Save(&crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) HarvestCrop(c echo.Context) error {
+	cropID := c.Param("id")
+	srcAreaID := c.FormValue("source_area_id")
+	quantity := c.FormValue("quantity")
+
+	// VALIDATE //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	srcAreaUID, err := uuid.FromString(srcAreaID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	qty, err := strconv.Atoi(quantity)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PROCESS //
+	err = crop.Harvest(s.CropService, srcAreaUID, qty)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PERSIST //
+	err = <-s.CropRepo.Save(&crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) DumpCrop(c echo.Context) error {
+	cropID := c.Param("id")
+	srcAreaID := c.FormValue("source_area_id")
+	quantity := c.FormValue("quantity")
+
+	// VALIDATE //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	srcAreaUID, err := uuid.FromString(srcAreaID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	qty, err := strconv.Atoi(quantity)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PROCESS //
+	err = crop.Dump(s.CropService, srcAreaUID, qty)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PERSIST //
+	err = <-s.CropRepo.Save(&crop)
+	if err != nil {
+		return Error(c, err)
 	}
 
 	data := make(map[string]CropBatch)

@@ -87,9 +87,9 @@
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "MyFarm",
+							"value": "My Farm 1",
 							"type": "text",
-							"description": "Required, alphanumeric, min 5 char, max 100 char"
+							"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char"
 						},
 						{
 							"key": "description",
@@ -172,15 +172,15 @@
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "MyReservoir1",
+							"value": "My<>Reservoir1",
 							"type": "text",
-							"description": "Required, alphanumeric, min 5 char, max 100 char"
+							"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char"
 						},
 						{
 							"key": "type",
-							"value": "tap",
+							"value": "TAP",
 							"type": "text",
-							"description": "Requred. Options: bucket, tap.\nIf bucket then `capacity` is required\nif tap then `capacity` is not required"
+							"description": "Requred. Options: BUCKET, TAP.\nIf BUCKET then `capacity` is required\nif TAP then `capacity` is not required"
 						},
 						{
 							"key": "capacity",
@@ -230,8 +230,8 @@
 					"formdata": [
 						{
 							"key": "name",
-							"value": "MyAreax",
-							"description": "Required, alphanumeric, min 5 char, max 100 char",
+							"value": "My Area 1",
+							"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char",
 							"type": "text"
 						},
 						{
@@ -242,20 +242,20 @@
 						},
 						{
 							"key": "size_unit",
-							"value": "hectare",
-							"description": "Required, alpha. options: hectare, m2",
+							"value": "m2",
+							"description": "Required, alpha. options: Ha, m2",
 							"type": "text"
 						},
 						{
 							"key": "type",
-							"value": "seeding",
-							"description": "Required, alpha. options: seeding, growing",
+							"value": "SEEDING",
+							"description": "Required, alpha. options: SEEDING, GROWING",
 							"type": "text"
 						},
 						{
 							"key": "location",
-							"value": "outdoor",
-							"description": "Required, alpha. options: indoor, outdoor",
+							"value": "OUTDOOR",
+							"description": "Required, alpha. options: INDOOR, OUTDOOR",
 							"type": "text"
 						},
 						{
@@ -956,7 +956,181 @@
 			"response": []
 		},
 		{
-			"name": "Create Task",
+			"name": "Create Task: Harvest Activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+							"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "Water area",
+							"type": "text",
+							"description": "required string"
+						},
+						{
+							"key": "due_date",
+							"value": "2019-01-23T17:37:39.697328206+01:00",
+							"type": "text",
+							"description": "required time equal to or later than current time"
+						},
+						{
+							"key": "priority",
+							"value": "normal",
+							"type": "text",
+							"description": "required string. Options: normal, urgent"
+						},
+						{
+							"key": "asset_id",
+							"value": "{{AREA_ID}}",
+							"type": "text",
+							"description": "required asset uid"
+						},
+						{
+							"key": "type",
+							"value": "area",
+							"type": "text",
+							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+						},
+						{
+							"key": "source_area_id",
+							"value": "{{AREA_ID}}",
+							"description": "required area uid",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "45",
+							"description": "required float value",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/harvest",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"harvest"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Task: Dump Activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+							"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "Water area",
+							"type": "text",
+							"description": "required string"
+						},
+						{
+							"key": "due_date",
+							"value": "2019-01-23T17:37:39.697328206+01:00",
+							"type": "text",
+							"description": "required time equal to or later than current time"
+						},
+						{
+							"key": "priority",
+							"value": "normal",
+							"type": "text",
+							"description": "required string. Options: normal, urgent"
+						},
+						{
+							"key": "asset_id",
+							"value": "{{AREA_ID}}",
+							"type": "text",
+							"description": "required asset uid"
+						},
+						{
+							"key": "type",
+							"value": "area",
+							"type": "text",
+							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+						},
+						{
+							"key": "source_area_id",
+							"value": "{{AREA_ID}}",
+							"description": "required area uid",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "45",
+							"description": "required float value",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/harvest",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"harvest"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Task: Seed Activity",
 			"event": [
 				{
 					"listen": "test",
@@ -1017,12 +1191,256 @@
 					]
 				},
 				"url": {
-					"raw": "{{API_HOST}}/tasks",
+					"raw": "{{API_HOST}}/tasks/harvest",
 					"host": [
 						"{{API_HOST}}"
 					],
 					"path": [
-						"tasks"
+						"tasks",
+						"harvest"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Task: Prune Activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+							"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "Water area",
+							"type": "text",
+							"description": "required string"
+						},
+						{
+							"key": "due_date",
+							"value": "2019-01-23T17:37:39.697328206+01:00",
+							"type": "text",
+							"description": "required time equal to or later than current time"
+						},
+						{
+							"key": "priority",
+							"value": "normal",
+							"type": "text",
+							"description": "required string. Options: normal, urgent"
+						},
+						{
+							"key": "asset_id",
+							"value": "{{AREA_ID}}",
+							"type": "text",
+							"description": "required asset uid"
+						},
+						{
+							"key": "type",
+							"value": "area",
+							"type": "text",
+							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/harvest",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"harvest"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Task: Fertilize Activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+							"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "Water area",
+							"type": "text",
+							"description": "required string"
+						},
+						{
+							"key": "due_date",
+							"value": "2019-01-23T17:37:39.697328206+01:00",
+							"type": "text",
+							"description": "required time equal to or later than current time"
+						},
+						{
+							"key": "priority",
+							"value": "normal",
+							"type": "text",
+							"description": "required string. Options: normal, urgent"
+						},
+						{
+							"key": "asset_id",
+							"value": "{{AREA_ID}}",
+							"type": "text",
+							"description": "required asset uid"
+						},
+						{
+							"key": "type",
+							"value": "area",
+							"type": "text",
+							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/harvest",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"harvest"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Task: Move To Area Activity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+							"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "Water area",
+							"type": "text",
+							"description": "required string"
+						},
+						{
+							"key": "due_date",
+							"value": "2019-01-23T17:37:39.697328206+01:00",
+							"type": "text",
+							"description": "required time equal to or later than current time"
+						},
+						{
+							"key": "priority",
+							"value": "normal",
+							"type": "text",
+							"description": "required string. Options: normal, urgent"
+						},
+						{
+							"key": "asset_id",
+							"value": "{{AREA_ID}}",
+							"type": "text",
+							"description": "required asset uid"
+						},
+						{
+							"key": "type",
+							"value": "area",
+							"type": "text",
+							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+						},
+						{
+							"key": "source_area_id",
+							"value": "{{AREA_ID}}",
+							"description": "required area uid",
+							"type": "text"
+						},
+						{
+							"key": "dest_area_id",
+							"value": "{{AREA_ID}}",
+							"description": "required area uid",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "34.2",
+							"description": "required float",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/movetoarea",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"movetoarea"
 					]
 				},
 				"description": null
