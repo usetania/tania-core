@@ -1,9 +1,13 @@
 package server
 
 import (
-	domain "github.com/Tanibox/tania-server/src/tasks/domain"
-	repository "github.com/Tanibox/tania-server/src/tasks/repository"
-	storage "github.com/Tanibox/tania-server/src/tasks/storage"
+	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
+	cropstorage "github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/Tanibox/tania-server/src/tasks/domain"
+	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
+	"github.com/Tanibox/tania-server/src/tasks/query/inmemory"
+	"github.com/Tanibox/tania-server/src/tasks/repository"
+	"github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
@@ -12,16 +16,28 @@ import (
 
 // TaskServer ties the routes and handlers with injected dependencies
 type TaskServer struct {
-	TaskRepo repository.TaskRepository
+	TaskRepo    repository.TaskRepository
+	TaskService domain.TaskService
 }
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
-func NewTaskServer() (*TaskServer, error) {
+func NewTaskServer(
+	cropStorage *cropstorage.CropStorage,
+	areaStorage *assetsstorage.AreaStorage) (*TaskServer, error) {
 
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
 	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
+
+	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
+	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
+
+	taskService := service.TaskServiceInMemory{
+		CropQuery: cropQuery,
+		AreaQuery: areaQuery,
+	}
 	return &TaskServer{
-		TaskRepo: taskRepo,
+		TaskRepo:    taskRepo,
+		TaskService: taskService,
 	}, nil
 }
 
@@ -186,6 +202,7 @@ func (s *TaskServer) SaveTask(c echo.Context, a domain.Activity) error {
 	}
 
 	task, err := domain.CreateTask(
+		s.TaskService,
 		c.FormValue("description"),
 		due_date,
 		c.FormValue("priority"),

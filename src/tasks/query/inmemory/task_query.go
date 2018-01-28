@@ -1,12 +1,13 @@
-package query
+package inmemory
 
 import (
 	"github.com/Tanibox/tania-server/src/tasks/domain"
+	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 )
 
 type TaskQuery interface {
-	FindTasksByAssetID(assetID string) <-chan QueryResult
+	FindTasksByAssetID(assetID string) <-chan query.QueryResult
 }
 
 type TaskQueryInMemory struct {
@@ -17,8 +18,8 @@ func NewTaskQueryInMemory(s *storage.TaskStorage) TaskQuery {
 	return TaskQueryInMemory{Storage: s}
 }
 
-func (s TaskQueryInMemory) FindTasksByAssetID(assetID string) <-chan QueryResult {
-	result := make(chan QueryResult)
+func (s TaskQueryInMemory) FindTasksByAssetID(assetID string) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -31,7 +32,7 @@ func (s TaskQueryInMemory) FindTasksByAssetID(assetID string) <-chan QueryResult
 			}
 		}
 
-		result <- QueryResult{Result: tasks}
+		result <- query.QueryResult{Result: tasks}
 
 		close(result)
 	}()

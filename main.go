@@ -51,7 +51,9 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	taskServer, err := taskserver.NewTaskServer()
+	taskServer, err := taskserver.NewTaskServer(
+		cropStorage,
+		areaStorage)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}

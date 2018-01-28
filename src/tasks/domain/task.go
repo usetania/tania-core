@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+type TaskService interface {
+	FindAreaByID(uid uuid.UUID) ServiceResult
+	FindCropByID(uid uuid.UUID) ServiceResult
+}
+
+// ServiceResult is the container for service result
+type ServiceResult struct {
+	Result interface{}
+	Error  error
+}
+
 type Task struct {
 	UID          uuid.UUID `json:"uid"`
 	Description  string    `json:"description"`
@@ -20,7 +31,7 @@ type Task struct {
 }
 
 // CreateTask
-func CreateTask(description string, due_date time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
+func CreateTask(task_service TaskService, description string, due_date time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
 	// add validation
 
 	err := validateTaskDescription(description)
@@ -43,16 +54,16 @@ func CreateTask(description string, due_date time.Time, priority string, tasktyp
 		return Task{}, err
 	}
 
-	err = validateAssetID(asset_id)
-	if err != nil {
-		return Task{}, err
-	}
-
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return Task{}, err
 	}
 	asset, err := uuid.FromString(asset_id)
+	if err != nil {
+		return Task{}, err
+	}
+
+	err = validateAssetID(task_service, asset, tasktype)
 	if err != nil {
 		return Task{}, err
 	}
@@ -191,13 +202,30 @@ func validateTaskType(tasktype string) error {
 }
 
 // validateAssetID
-func validateAssetID(asset_id string) error {
-	if asset_id == "" {
-		return TaskError{TaskErrorAssetIDEmptyCode}
-	}
+func validateAssetID(taskService TaskService, asset_id uuid.UUID, tasktype string) error {
 
+	if tasktype == "" {
+		return TaskError{TaskErrorTypeEmptyCode}
+	}
 	//Find asset in repository
 	// if not found return error
+
+	switch tasktype {
+	case TaskTypeArea:
+		serviceResult := taskService.FindAreaByID(asset_id)
+
+		if serviceResult.Error != nil {
+			return serviceResult.Error
+		}
+	case TaskTypeCrop:
+
+		serviceResult := taskService.FindCropByID(asset_id)
+
+		if serviceResult.Error != nil {
+			return serviceResult.Error
+		}
+	default:
+	}
 
 	return nil
 }

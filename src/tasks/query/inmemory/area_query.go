@@ -21,7 +21,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		area := query.CropAreaQueryResult{}
+		area := query.TaskAreaQueryResult{}
 		for _, val := range s.Storage.AreaMap {
 			if val.UID == uid {
 				area.UID = uid
