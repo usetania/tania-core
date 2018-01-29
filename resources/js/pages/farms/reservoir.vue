@@ -111,12 +111,12 @@ export default {
     ...mapActions([
       'getReservoirByUid',
       'createReservoirNotes',
-      'deleteReservoirNotes',
+      'deleteReservoirNote',
     ]),
     deleteNote(note_uid) {
       this.note.obj_uid = this.$route.params.id
       this.note.uid = note_uid
-      this.deleteReservoirNotes(this.note)
+      this.deleteReservoirNote(this.note)
         .then(data => this.reservoir = data)
         .catch(({ data }) => this.message = data)
     },
