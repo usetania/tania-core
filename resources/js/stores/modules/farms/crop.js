@@ -1,6 +1,7 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
+import FarmApi from '@/stores/api/farm'
 
 const state = {
   crops: [],
