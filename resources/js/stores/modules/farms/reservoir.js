@@ -60,7 +60,20 @@ const actions = {
           resolve(payload)
         }, error => reject(error.response))
     })
-  }
+  },
+  deleteReservoirNote ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let reservoirId = payload.obj_uid
+      let noteId = payload.uid
+      FarmApi
+        .ApiDeleteReservoirNotes(reservoirId, noteId, payload, ({ data }) => {
+          payload = data.data
+          commit(types.DELETE_RESERVOIR_NOTES, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
@@ -74,6 +87,9 @@ const mutations = {
     state.reservoirs = payload
   },
   [types.CREATE_RESERVOIR_NOTES] (state, payload) {
+    state.reservoirnotes.push(payload)
+  },
+  [types.DELETE_RESERVOIR_NOTES] (state, payload) {
     state.reservoirnotes.push(payload)
   }
 }

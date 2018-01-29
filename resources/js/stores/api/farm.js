@@ -25,6 +25,9 @@ export default {
   ApiCreateReservoirNotes: (reservoirid, payload, cbSuccess, cbError) => {
     http.post('farms/reservoirs/' + reservoirid + '/notes' , payload, cbSuccess, cbError)
   },
+  ApiDeleteReservoirNotes: (reservoirid, noteid, payload, cbSuccess, cbError) => {
+    http.post('farms/reservoirs/' + reservoirid + '/notes/' + noteid, payload, cbSuccess, cbError)
+  },
   ApiCreateArea: (farmid, payload, cbSuccess, cbError) => {
     http.post('farms/' + farmid + '/areas', payload, cbSuccess, cbError, {
       'Content-Type': 'multipart/form-data'
@@ -39,6 +42,9 @@ export default {
   ApiCreateAreaNotes: (areaid, payload, cbSuccess, cbError) => {
     http.post('farms/areas/' + areaid + '/notes' , payload, cbSuccess, cbError)
   },
+  ApiDeleteAreaNotes: (areaid, noteid, payload, cbSuccess, cbError) => {
+    http.post('farms/areas/' + areaid + '/notes/' + noteid, payload, cbSuccess, cbError)
+  },
   ApiCreateCrop: (areaid, payload, cbSuccess, cbError) => {
     http.post('farms/areas/' + areaid + '/crops' , payload, cbSuccess, cbError)
   },
@@ -50,5 +56,8 @@ export default {
   },
   ApiCreateCropNotes: (cropid, payload, cbSuccess, cbError) => {
     http.post('farms/crops/' + cropid + '/notes' , payload, cbSuccess, cbError)
+  },
+  ApiDeleteCropNotes: (cropid, noteid, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/' + cropid + '/notes/' + noteid, payload, cbSuccess, cbError)
   },
 }

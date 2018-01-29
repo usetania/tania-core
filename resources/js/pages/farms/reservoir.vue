@@ -80,7 +80,7 @@
                   span {{ reservoirNote.content }}
                   small.text-muted.clear.text-ellipsis {{ reservoirNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                 .col-sm-3
-                  button.btn.btn-xs.btn-default.pull-right
+                  button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(reservoirNote.uid)")
                     i.fa.fa-trash
 </template>
 
@@ -110,8 +110,16 @@ export default {
   methods: {
     ...mapActions([
       'getReservoirByUid',
-      'createReservoirNotes'
+      'createReservoirNotes',
+      'deleteReservoirNotes',
     ]),
+    deleteNote(note_uid) {
+      this.note.obj_uid = this.$route.params.id
+      this.note.uid = note_uid
+      this.deleteReservoirNotes(this.note)
+        .then(data => this.reservoir = data)
+        .catch(({ data }) => this.message = data)
+    },
     getReservoirType(key) {
       return FindReservoirType(key)
     },

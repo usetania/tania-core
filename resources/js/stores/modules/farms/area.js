@@ -65,15 +65,28 @@ const actions = {
   createAreaNotes ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
-      let cropId = payload.obj_uid
+      let areaId = payload.obj_uid
       FarmApi
-        .ApiCreateAreaNotes(cropId, payload, ({ data }) => {
+        .ApiCreateAreaNotes(areaId, payload, ({ data }) => {
           payload = data.data
           commit(types.CREATE_AREA_NOTES, payload)
           resolve(payload)
         }, error => reject(error.response))
     })
-  }
+  },
+  deleteAreaNote ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let areaId = payload.obj_uid
+      let noteId = payload.uid
+      FarmApi
+        .ApiDeleteAreaNotes(areaId, noteId, payload, ({ data }) => {
+          payload = data.data
+          commit(types.DELETE_AREA_NOTES, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
@@ -87,6 +100,9 @@ const mutations = {
     state.areas = payload
   },
   [types.CREATE_AREA_NOTES] (state, payload) {
+    state.areanotes.push(payload)
+  },
+  [types.DELETE_AREA_NOTES] (state, payload) {
     state.areanotes.push(payload)
   }
 }
