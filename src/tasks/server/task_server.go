@@ -261,39 +261,6 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) StartTask(c echo.Context) error {
-
-	data := make(map[string]domain.Task)
-	uid, err := uuid.FromString(c.Param("id"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := <-s.TaskRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return result.Error
-	}
-
-	task, ok := result.Result.(domain.Task)
-
-	if task.UID != uid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
-	}
-	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	task.ChangeTaskStatus(domain.TaskStatusInProgress)
-	err = <-s.TaskRepo.Save(&task)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	data["data"] = task
-
-	return c.JSON(http.StatusOK, data)
-}
-
 func (s *TaskServer) CancelTask(c echo.Context) error {
 
 	data := make(map[string]domain.Task)

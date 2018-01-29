@@ -76,7 +76,7 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 		CreatedDate:  time.Now(),
 		DueDate:      due_date,
 		Priority:     priority,
-		Status:       TaskStatusInProgress,
+		Status:       TaskStatusCreated,
 		TaskType:     tasktype,
 		IsDue:        false,
 		AssetID:      asset,
