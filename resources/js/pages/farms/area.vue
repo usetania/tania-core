@@ -10,7 +10,7 @@
             .panel-heading
               span.h4.text-lt Basic info
             .item
-              img.img-full(src="../../../images/germination.jpg")
+              img.img-full(:src="'/api/farms/' + farm.uid + '/areas/' + area.uid + '/photos'")
             .list-group.no-radius.alt
               .list-group-item
                 span.col-sm-7.text-muted.point Area Size {{ getSizeUnit(area.size.unit.symbol).label }}
@@ -113,7 +113,7 @@
 <script>
 import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpers/farms/area'
 import { StubArea, StubNote } from '@/stores/stubs'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'Area',
   data () {
@@ -123,6 +123,11 @@ export default {
       note: Object.assign({}, StubNote),
       areaNotes: [],
     }
+  },
+  computed: {
+    ...mapGetters({
+      farm: 'getCurrentFarm'
+    })
   },
   created () {
     this.getAreaByUid(this.$route.params.id)

@@ -85,9 +85,13 @@ export default {
       reservoirs: 'getAllReservoirs'
     })
   },
+  mounted () {
+    this.fetchReservoirs()
+  },
   methods: {
     ...mapActions([
-      'createArea'
+      'createArea',
+      'fetchReservoirs'
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
