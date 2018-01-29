@@ -62,12 +62,12 @@
                           // QTY & TASK
                           .hbox.bg-light.lter.wrapper(style="min-height: 40px;")
                             small.text-muted Current Quantity
-                            .h4.m-b.m-t
-                              | 12 Plants at 
-                              span.areatag-sm Florania
-                            .h4
-                              | 13 Plants at 
-                              span.areatag-sm Frontyard Garden
+                            .h4.m-b.m-t 
+                              | {{ crop.initial_area.current_quantity }} Plants at 
+                              span.areatag-sm {{ crop.initial_area.area.name }}
+                            .h4(v-for="area in crop.moved_area")
+                              | {{ area.current_quantity }} Plants at 
+                              span.areatag-sm {{ area.area.name }}
                           .m-t
                             .h4.font-bold Tasks
                             ul.list-group.no-bg.no-borders.pull-in
