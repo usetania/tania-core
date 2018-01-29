@@ -86,7 +86,7 @@
 
 <script>
 import { StubReservoir, StubNote } from '@/stores/stubs'
-import { FindReservoirType } from '@/stores/helpers/farms/reservoir' 
+import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
 import { mapActions } from 'vuex'
 export default {
   name: 'Reservoir',
@@ -133,7 +133,10 @@ export default {
     create () {
       this.note.obj_uid = this.$route.params.id
       this.createReservoirNotes(this.note)
-        .then(data => this.reservoir = data)
+        .then(data => {
+          this.reservoir = data
+          this.note.content = ''
+        })
         .catch(({ data }) => this.message = data)
     },
   }

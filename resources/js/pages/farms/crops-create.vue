@@ -13,52 +13,53 @@
             .col-sm-6(v-for="type in options.areaTypes")
               .radio
                 label.i-checks
-                  input#crop_type(type="radio" name="crop.crop_type" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop.initial_area') }" v-model="crop.crop_type" v-bind:value="type.key")
+                  input#crop_type(type="radio" name="crop_type" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop_type') }" v-model="crop.crop_type" v-bind:value="type.key")
                   i
                   | {{ type.label }}
         .form-group
           label Area
-          select.form-control#initial_area(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop.initial_area') }" v-model="crop.initial_area" name="crop.initial_area" value="")
+          select.form-control#initial_area(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('initial_area') }" v-model="crop.initial_area" name="initial_area")
             option(value="") - select area to grow -
             option(v-for="area in areas" v-bind:value="area.uid") {{ area.name }}
-          span.help-block.text-danger(v-show="errors.has('crop.initial_area')") {{ errors.first('crop.initial_area') }}
+          span.help-block.text-danger(v-show="errors.has('initial_area')") {{ errors.first('initial_area') }}
         .row
           .col-xs-6
             .form-group
               label Plant Type
-              select.form-control#plant_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop.plant_type') }" v-model="crop.plant_type" name="crop.plant_type" value="" v-on:change="onChange")
+              select.form-control#plant_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('plant_type') }" v-model="crop.plant_type" name="plant_type" v-on:change="onChange")
                 option(value="") - select plant type -
                 option(v-for="type in inventories" v-bind:value="type.plant_type.code") {{ type.plant_type.code }}
-              span.help-block.text-danger(v-show="errors.has('crop.plant_type')") {{ errors.first('crop.plant_type') }}
+              span.help-block.text-danger(v-show="errors.has('plant_type')") {{ errors.first('plant_type') }}
           .col-xs-6
             .form-group
               label.control-label Crop Variety
-              select.form-control#variety(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop.variety') }" v-model="crop.variety" name="crop.variety")
+              select.form-control#variety(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('variety') }" v-model="crop.variety" name="variety")
                 option(value="") - select crop variety -
                 option(v-for="variety in cropVarieties" v-bind:value="variety") {{ variety }}
-              span.help-block.text-danger(v-show="errors.has('crop.variety')") {{ errors.first('crop.variety') }}
+              span.help-block.text-danger(v-show="errors.has('variety')") {{ errors.first('variety') }}
         .row
 
           .col-xs-6
             .form-group
               label.control-label Container Quantity
-              input.form-control#container_quantity(type="text" v-validate="'required|alpha_num|min:0'" :class="{'input': true, 'text-danger': errors.has('crop.container_quantity') }" v-model="crop.container_quantity" name="crop.container_quantity" value="")
-              span.help-block.text-danger(v-show="errors.has('crop.container_quantity')") {{ errors.first('crop.container_quantity') }}
+              input.form-control#container_quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('container_quantity') }" v-model="crop.container_quantity" name="container_quantity")
+              span.help-block.text-danger(v-show="errors.has('container_quantity')") {{ errors.first('container_quantity') }}
           .col-xs-6
             .form-group
               label.control-label Container Type
-              select.form-control#container_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('crop.container_type') }" v-model="crop.container_type" name="crop.container_type" @change="typeChanged($event.target.value)" value="")
+              select.form-control#container_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('container_type') }" v-model="crop.container_type" name="container_type" @change="typeChanged($event.target.value)")
                 option(value="") - select unit -
                 option(v-for="container in options.cropContainers" v-bind:value="container.key") {{ container.label }}s
-              span.help-block.text-danger(v-show="errors.has('crop.container_type')") {{ errors.first('crop.container_type') }}
+              span.help-block.text-danger(v-show="errors.has('container_type')") {{ errors.first('container_type') }}
         .row(v-if="crop.container_type == 'tray'")
           .col-xs-6.pull-right
             .form-group
-              input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|alpha_num|min:0'" :class="{'input': true, 'text-danger': errors.has('crop.container_cell') }" v-model="crop.container_cell" name="crop.container_cell")
-              span.help-block.text-danger(v-show="errors.has('crop.container_cell')") {{ errors.first('crop.container_cell') }}
+              input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('container_cell') }" v-model="crop.container_cell" name="container_cell")
+              span.help-block.text-danger(v-show="errors.has('container_cell')") {{ errors.first('container_cell') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit") Save
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
             i.fa.fa-long-arrow-right
+            | Save
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
 </template>
 

@@ -164,7 +164,10 @@ export default {
     create () {
       this.note.obj_uid = this.$route.params.id
       this.createAreaNotes(this.note)
-        .then(data => this.area = data)
+        .then(data => {
+          this.area = data
+          this.note.content = ''
+        })
         .catch(({ data }) => this.message = data)
     },
   }
