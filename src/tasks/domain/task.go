@@ -18,20 +18,20 @@ type ServiceResult struct {
 }
 
 type Task struct {
-	UID          uuid.UUID `json:"uid"`
-	Description  string    `json:"description"`
-	CreatedDate  time.Time `json:"created_date"`
-	DueDate      time.Time `json:"due_date"`
-	Priority     string    `json:"priority"`
-	Status       string    `json:"status"`
-	TaskType     string    `json:"type"`
-	IsDue        bool      `json:"is_due"`
-	AssetID      uuid.UUID `json:"asset_id"`
-	TaskActivity Activity  `json:"Activity"`
+	UID          uuid.UUID  `json:"uid"`
+	Description  string     `json:"description"`
+	CreatedDate  time.Time  `json:"created_date"`
+	DueDate      *time.Time `json:"due_date,omitempty"`
+	Priority     string     `json:"priority"`
+	Status       string     `json:"status"`
+	TaskType     string     `json:"type"`
+	IsDue        bool       `json:"is_due"`
+	AssetID      uuid.UUID  `json:"asset_id"`
+	TaskActivity Activity   `json:"Activity"`
 }
 
 // CreateTask
-func CreateTask(task_service TaskService, description string, due_date time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
+func CreateTask(task_service TaskService, description string, due_date *time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
 	// add validation
 
 	err := validateTaskDescription(description)
@@ -97,7 +97,7 @@ func (t *Task) ChangeTaskDescription(newdescription string) error {
 }
 
 // ChangeDueDate
-func (t *Task) ChangeTaskDueDate(newdate time.Time) error {
+func (t *Task) ChangeTaskDueDate(newdate *time.Time) error {
 
 	err := validateTaskDueDate(newdate)
 	if err != nil {
@@ -161,9 +161,11 @@ func validateTaskDescription(description string) error {
 }
 
 // validateTaskDueDate
-func validateTaskDueDate(newdate time.Time) error {
-	if newdate.Before(time.Now()) {
-		return TaskError{TaskErrorDueDateInvalidCode}
+func validateTaskDueDate(newdate *time.Time) error {
+	if newdate != nil {
+		if (*newdate).Before(time.Now()) {
+			return TaskError{TaskErrorDueDateInvalidCode}
+		}
 	}
 	return nil
 }

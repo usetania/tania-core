@@ -195,16 +195,21 @@ func (s *TaskServer) SaveHarvestActivity(c echo.Context) error {
 func (s *TaskServer) SaveTask(c echo.Context, a domain.Activity) error {
 	data := make(map[string]domain.Task)
 
-	due_date, err := time.Parse(time.RFC3339, c.FormValue("due_date"))
+	form_date := c.FormValue("due_date")
+	due_ptr := (*time.Time)(nil)
+	if len(form_date) != 0 {
+		due_date, err := time.Parse(time.RFC3339, form_date)
 
-	if err != nil {
-		return Error(c, err)
+		if err != nil {
+			return Error(c, err)
+		}
+		due_ptr = &due_date
 	}
 
 	task, err := domain.CreateTask(
 		s.TaskService,
 		c.FormValue("description"),
-		due_date,
+		due_ptr,
 		c.FormValue("priority"),
 		c.FormValue("type"),
 		c.FormValue("asset_id"),

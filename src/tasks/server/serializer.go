@@ -25,7 +25,7 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		UID          uuid.UUID       `json:"uid"`
 		Description  string          `json:"description"`
 		CreatedDate  time.Time       `json:"created_date"`
-		DueDate      time.Time       `json:"due_date"`
+		DueDate      *time.Time      `json:"due_date, omitempty"`
 		Priority     string          `json:"priority"`
 		Status       string          `json:"status"`
 		TaskType     string          `json:"type"`
