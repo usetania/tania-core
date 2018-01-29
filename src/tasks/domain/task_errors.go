@@ -33,6 +33,7 @@ const (
 	TaskErrorActivitySourceInvalid
 	TaskErrorActivityDestinationInvalid
 	TaskErrorActivityQuantityInvalid
+	TaskErrorActivityNotSupported
 )
 
 // TaskError is a custom error from Go built-in error
@@ -76,6 +77,8 @@ func (e TaskError) Error() string {
 		return "Task activity destination reference is invalid"
 	case TaskErrorActivityQuantityInvalid:
 		return "Task activity quantity is invalid"
+	case TaskErrorActivityNotSupported:
+		return "Task activity type is not supported by asset"
 	default:
 		return "Unrecognized Task Error Code"
 	}

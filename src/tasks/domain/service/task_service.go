@@ -49,20 +49,20 @@ func (s TaskServiceInMemory) FindCropByID(uid uuid.UUID) domain.ServiceResult {
 		}
 	}
 
-	area, ok := result.Result.(query.TaskAreaQueryResult)
+	crop, ok := result.Result.(query.TaskCropQueryResult)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
 	}
 
-	if area == (query.TaskAreaQueryResult{}) {
+	if crop == (query.TaskCropQueryResult{}) {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
 	}
 
 	return domain.ServiceResult{
-		Result: area,
+		Result: crop,
 	}
 }

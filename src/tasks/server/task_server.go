@@ -100,9 +100,10 @@ func (s *TaskServer) SaveSeedActivity(c echo.Context) error {
 	return result
 }
 
-// FertilizeActivity
+// Crop: FertilizeActivity
 func (s *TaskServer) SaveFertilizeActivity(c echo.Context) error {
 
+	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateFertilizeActivity()
 
 	if err != nil {
@@ -114,9 +115,10 @@ func (s *TaskServer) SaveFertilizeActivity(c echo.Context) error {
 	return result
 }
 
-// PruneActivity
+// Crop: PruneActivity
 func (s *TaskServer) SavePruneActivity(c echo.Context) error {
 
+	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreatePruneActivity()
 
 	if err != nil {
@@ -128,9 +130,10 @@ func (s *TaskServer) SavePruneActivity(c echo.Context) error {
 	return result
 }
 
-// PesticideActivity
+// Crop: PesticideActivity
 func (s *TaskServer) SavePesticideActivity(c echo.Context) error {
 
+	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreatePesticideActivity()
 
 	if err != nil {
@@ -142,9 +145,10 @@ func (s *TaskServer) SavePesticideActivity(c echo.Context) error {
 	return result
 }
 
-// MoveToAreaActivity
+// Crop: MoveToAreaActivity
 func (s *TaskServer) SaveMoveToAreaActivity(c echo.Context) error {
 
+	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateMoveToAreaActivity(
 		c.FormValue("source_area_id"),
 		c.FormValue("dest_area_id"),
@@ -159,9 +163,10 @@ func (s *TaskServer) SaveMoveToAreaActivity(c echo.Context) error {
 	return result
 }
 
-// DumpActivity
+// Crop: DumpActivity
 func (s *TaskServer) SaveDumpActivity(c echo.Context) error {
 
+	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateDumpActivity(
 		c.FormValue("source_area_id"),
 		c.FormValue("quantity"))
@@ -175,9 +180,10 @@ func (s *TaskServer) SaveDumpActivity(c echo.Context) error {
 	return result
 }
 
-// HarvestActivity
+// Crop: HarvestActivity
 func (s *TaskServer) SaveHarvestActivity(c echo.Context) error {
 
+	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateHarvestActivity(
 		c.FormValue("source_area_id"),
 		c.FormValue("quantity"))
@@ -244,8 +250,7 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	task, ok := result.Result.(domain.Task)
 
 	if task.UID != uid {
-		//return domain.TaskError{domain.TaskErrorTaskNotFound}
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -272,7 +277,7 @@ func (s *TaskServer) StartTask(c echo.Context) error {
 	task, ok := result.Result.(domain.Task)
 
 	if task.UID != uid {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -305,7 +310,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	task, ok := result.Result.(domain.Task)
 
 	if task.UID != uid {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -339,7 +344,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	task, ok := result.Result.(domain.Task)
 
 	if task.UID != uid {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -373,7 +378,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	task, ok := result.Result.(domain.Task)
 
 	if task.UID != uid {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error: Task Not Found")
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -389,4 +394,11 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	data["data"] = task
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func validateTaskActivity(c echo.Context, task_type string) error {
+	if c.FormValue("type") != task_type {
+		return Error(c, NewRequestValidationError(UNSUPPORTED_ACTIVITY, "type"))
+	}
+	return nil
 }

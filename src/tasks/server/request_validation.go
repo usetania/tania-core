@@ -5,19 +5,20 @@ import (
 	"net/http"
 	"strconv"
 
-	domain "github.com/Tanibox/tania-server/src/tasks/domain"
+	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/labstack/echo"
 )
 
 const (
-	REQUIRED       = "REQUIRED"
-	ALPHANUMERIC   = "ALPHANUMERIC"
-	ALPHA          = "ALPHA"
-	NUMERIC        = "NUMERIC"
-	FLOAT          = "FLOAT"
-	PARSE_FAILED   = "PARSE_FAILED"
-	INVALID_OPTION = "INVALID_OPTION"
-	NOT_FOUND      = "NOT_FOUND"
+	REQUIRED             = "REQUIRED"
+	ALPHANUMERIC         = "ALPHANUMERIC"
+	ALPHA                = "ALPHA"
+	NUMERIC              = "NUMERIC"
+	FLOAT                = "FLOAT"
+	PARSE_FAILED         = "PARSE_FAILED"
+	INVALID_OPTION       = "INVALID_OPTION"
+	NOT_FOUND            = "NOT_FOUND"
+	UNSUPPORTED_ACTIVITY = "UNSUPPORTED_ACTIVITY"
 )
 
 // RequestValidation sanitizes request inputs and convert the input to its correct data type.
@@ -63,6 +64,8 @@ func Message(errorCode string) string {
 		return "This value is not available in options. Please give the correct options."
 	case NOT_FOUND:
 		return "Data not found."
+	case UNSUPPORTED_ACTIVITY:
+		return "Activity type is not supported by asset."
 	default:
 		return "Internal server error"
 	}
