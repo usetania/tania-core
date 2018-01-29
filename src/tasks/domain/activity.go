@@ -14,7 +14,7 @@ type SeedActivity struct {
 }
 
 func (sa SeedActivity) Type() string {
-	return "seed"
+	return ActivityTypeSeed
 }
 
 func CreateSeedActivity() (SeedActivity, error) {
@@ -26,7 +26,7 @@ type FertilizeActivity struct {
 }
 
 func (sa FertilizeActivity) Type() string {
-	return "fertilize"
+	return ActivityTypeFertilize
 }
 
 func CreateFertilizeActivity() (FertilizeActivity, error) {
@@ -38,7 +38,7 @@ type PruneActivity struct {
 }
 
 func (sa PruneActivity) Type() string {
-	return "prune"
+	return ActivityTypePrune
 }
 
 func CreatePruneActivity() (PruneActivity, error) {
@@ -50,7 +50,7 @@ type PesticideActivity struct {
 }
 
 func (sa PesticideActivity) Type() string {
-	return "pesticide"
+	return ActivityTypePesticide
 }
 
 func CreatePesticideActivity() (PesticideActivity, error) {
@@ -65,7 +65,7 @@ type MoveToAreaActivity struct {
 }
 
 func (sa MoveToAreaActivity) Type() string {
-	return "movetoarea"
+	return ActivityTypeMoveToArea
 }
 
 func CreateMoveToAreaActivity(source string, dest string, qnt string) (MoveToAreaActivity, error) {
@@ -107,7 +107,7 @@ type DumpActivity struct {
 }
 
 func (sa DumpActivity) Type() string {
-	return "dump"
+	return ActivityTypeDump
 }
 
 func CreateDumpActivity(source string, qnt string) (DumpActivity, error) {
@@ -140,7 +140,7 @@ type HarvestActivity struct {
 }
 
 func (sa HarvestActivity) Type() string {
-	return "harvest"
+	return ActivityTypeHarvest
 }
 
 func CreateHarvestActivity(source string, qnt string) (HarvestActivity, error) {
