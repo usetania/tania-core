@@ -105,7 +105,7 @@
                   span {{ areaNote.content }}
                   small.text-muted.clear.text-ellipsis {{ areaNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                 .col-sm-3
-                  button.btn.btn-xs.btn-default.pull-right
+                  button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(areaNote.uid)")
                     i.fa.fa-trash
       //- Ending row
 </template>
@@ -135,7 +135,8 @@ export default {
   methods: {
     ...mapActions([
       'getAreaByUid',
-      'createAreaNotes'
+      'createAreaNotes',
+      'deleteAreaNote'
     ]),
     getType(key) {
       return FindAreaType(key)
@@ -145,6 +146,13 @@ export default {
     },
     getLocation(key) {
       return FindAreaLocation(key)
+    },
+    deleteNote(note_uid) {
+      this.note.obj_uid = this.$route.params.id
+      this.note.uid = note_uid
+      this.deleteAreaNote(this.note)
+        .then(data => this.area = data)
+        .catch(({ data }) => this.message = data)
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
