@@ -19,14 +19,14 @@
                           .identifier {{ crop.batch_id }}
                         .col-sm-5
                           small.text-muted Activity Type
-                          .h4.m-b.m-t {{ crop.type.code }}
+                          .h4.m-b.m-t {{ crop.activity_type.total_seeding }} Seeding, {{ crop.activity_type.total_growing }} Growing
                     .panel-body.bg-light.lter.b-b.b-light.m-l-n-xxs.m-r-n-xxs
                       .row
                         .col-sm-6.h5
                           | Seeded on 
                           b {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                           |  at 
-                          u {{ crop.initial_area.name }}
+                          u {{ crop.initial_area.area.name }}
                         .col-sm-6.text-right.h5
                           | Initial Qty: 
                           b {{ crop.container.quantity }} {{ getCropContainer(crop.container.type.code, crop.container.quantity) }}
