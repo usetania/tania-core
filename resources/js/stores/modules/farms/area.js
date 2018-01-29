@@ -6,7 +6,8 @@ import { StubArea } from '@/stores/stubs'
 
 const state = {
   area: Object.assign({}, StubArea),
-  areas: []
+  areas: [],
+  areanotes: [],
 }
 
 const getters = {
@@ -60,6 +61,18 @@ const actions = {
         resolve(data)
       }, error => reject(error.response))
     })
+  },
+  createAreaNotes ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiCreateAreaNotes(cropId, payload, ({ data }) => {
+          payload = data.data
+          commit(types.CREATE_AREA_NOTES, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
   }
 }
 
@@ -72,6 +85,9 @@ const mutations = {
   },
   [types.FETCH_AREA] (state, payload) {
     state.areas = payload
+  },
+  [types.CREATE_AREA_NOTES] (state, payload) {
+    state.areanotes.push(payload)
   }
 }
 

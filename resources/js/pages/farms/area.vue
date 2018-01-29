@@ -17,7 +17,7 @@
                 span {{ area.size.value }}
               .list-group-item
                 span.col-sm-7.text-muted.point Location
-                span.text-truncate {{ getLocation(area.location).label }}
+                span {{ getLocation(area.location).label }}
               .list-group-item
                 span.col-sm-7.text-muted.point Batches
                 span {{ area.total_crop_batch }}
@@ -92,16 +92,18 @@
             .panel-heading
               span.h4.text-lt Notes
             .panel-body
-              .input-group
-                input.form-control.input-sm(type="text" placeholder="Create a note")
-                span.input-group-btn
-                  button.btn.btn-sm.btn-success(type="submit")
-                    i.fa.fa-send
+              form(@submit.prevent="validateBeforeSubmit")
+                .input-group
+                  input.form-control.input-sm#content(type="text" placeholder="Create a note" rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                  span.input-group-btn
+                    button.btn.btn-sm.btn-success(type="submit")
+                      i.fa.fa-send
+                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
             ul.list-group.list-group-lg.no-bg.auto
-              li.list-group-item.row
+              li.list-group-item.row(v-for="areaNote in area.notes")
                 .col-sm-9
-                  span The screen must be checked every month to make sure there are no rips or holes or unfastened
-                  small.text-muted.clear.text-ellipsis 19/11/2017
+                  span {{ areaNote.content }}
+                  small.text-muted.clear.text-ellipsis {{ areaNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                 .col-sm-3
                   button.btn.btn-xs.btn-default.pull-right
                     i.fa.fa-trash
@@ -110,14 +112,16 @@
 
 <script>
 import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpers/farms/area'
-import { StubArea } from '@/stores/stubs'
+import { StubArea, StubNote } from '@/stores/stubs'
 import { mapActions } from 'vuex'
 export default {
   name: 'Area',
   data () {
     return {
       loading: true,
-      area: Object.assign({}, StubArea)
+      area: Object.assign({}, StubArea),
+      note: Object.assign({}, StubNote),
+      areaNotes: [],
     }
   },
   created () {
@@ -130,7 +134,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getAreaByUid'
+      'getAreaByUid',
+      'createAreaNotes'
     ]),
     getType(key) {
       return FindAreaType(key)
@@ -140,7 +145,20 @@ export default {
     },
     getLocation(key) {
       return FindAreaLocation(key)
-    }
+    },
+    validateBeforeSubmit () {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.create()
+        }
+      })
+    },
+    create () {
+      this.note.obj_uid = this.$route.params.id
+      this.createAreaNotes(this.note)
+        .then(data => this.area = data)
+        .catch(({ data }) => this.message = data)
+    },
   }
 }
 </script>

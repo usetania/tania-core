@@ -30,6 +30,9 @@ export default {
   ApiFindAreaByUid: (farmid, areaid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/areas/' + areaid, cbSuccess, cbError)
   },
+  ApiCreateAreaNotes: (areaId, payload, cbSuccess, cbError) => {
+    http.post('farms/areas/' + areaId + '/notes' , payload, cbSuccess, cbError)
+  },
   ApiCreateCrop: (areaid, payload, cbSuccess, cbError) => {
     http.post('farms/areas/' + areaid + '/crops' , payload, cbSuccess, cbError)
   },
