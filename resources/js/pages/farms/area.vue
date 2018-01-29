@@ -94,7 +94,7 @@
             .panel-body
               form(@submit.prevent="validateBeforeSubmit")
                 .input-group
-                  input.form-control.input-sm#content(type="text" placeholder="Create a note" rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                  input.form-control.input-sm#content(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
                   span.input-group-btn
                     button.btn.btn-sm.btn-success(type="submit")
                       i.fa.fa-send

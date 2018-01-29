@@ -67,18 +67,19 @@
             .panel-heading
               span.h4.text-lt Notes
             .panel-body
-              .input-group
-                input.form-control.input-sm(type="text" placeholder="Create a note")
-                span.input-group-btn
-                  button.btn.btn-default.btn-sm.btn-success(type="submit")
-                    i.fa.fa-send
+              form(@submit.prevent="validateBeforeSubmit")
+                .input-group
+                  input.form-control.input-sm#content(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                  span.input-group-btn
+                    button.btn.btn-sm.btn-success(type="submit")
+                      i.fa.fa-send
+                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
             ul.list-group.list-group-lg.no-bg.auto
-              li.list-group-item.row
-                span.col-sm-9
-                  span
-                    | This water tap needs to be fastened with stainless steel clamp to avoid leak and burst
-                  small.text-muted.clear.text-ellipsis 19/11/2017
-                span.col-sm-3
+              li.list-group-item.row(v-for="reservoirNote in reservoir.notes")
+                .col-sm-9
+                  span {{ reservoirNote.content }}
+                  small.text-muted.clear.text-ellipsis {{ reservoirNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                .col-sm-3
                   button.btn.btn-xs.btn-default.pull-right
                     i.fa.fa-trash
 </template>
