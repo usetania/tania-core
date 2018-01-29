@@ -41,10 +41,14 @@
                               button.btn.btn-xs.btn-success.m-b(type="submit") Add Note
                             ul.list-group.list-group-lg.no-bg.auto
                               li.list-group-item.row(v-for="cropNote in crop.notes")
-                                .pull-left.m-r
-                                  i.fa.fa-file.block.m-b.m-t
-                                span {{ cropNote.content }}
-                                small.text-muted.clear.text-ellipsis {{ cropNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                                .col-sm-9
+                                  .pull-left.m-r
+                                    i.fa.fa-file.block.m-b.m-t
+                                  span {{ cropNote.content }}
+                                  small.text-muted.clear.text-ellipsis {{ cropNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                                .col-sm-3
+                                  button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(cropNote.uid)")
+                                    i.fa.fa-trash
                           .cropactivity
                             .h4.font-bold.m-b.clearfix Activity
                             ul.list-group.no-bg.no-borders.pull-in
@@ -158,10 +162,18 @@ export default {
   methods: {
     ...mapActions([
       'getCropByUid',
-      'createCropNotes'
+      'createCropNotes',
+      'deleteCropNote'
     ]),
     getCropContainer(key, count) {
       return FindCropContainer(key).label + ((count != 1)? 's':'')
+    },
+    deleteNote(note_uid) {
+      this.note.obj_uid = this.$route.params.id
+      this.note.uid = note_uid
+      this.deleteCropNote(this.note)
+        .then(data => this.crop = data)
+        .catch(({ data }) => this.message = data)
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {

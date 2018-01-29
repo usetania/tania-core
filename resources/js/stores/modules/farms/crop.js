@@ -61,7 +61,20 @@ const actions = {
           resolve(payload)
         }, error => reject(error.response))
     })
-  }
+  },
+  deleteCropNote ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      let noteId = payload.uid
+      FarmApi
+        .ApiDeleteCropNotes(cropId, noteId, payload, ({ data }) => {
+          payload = data.data
+          commit(types.DELETE_CROP_NOTES, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
@@ -75,6 +88,9 @@ const mutations = {
     state.crops = payload
   },
   [types.CREATE_CROP_NOTES] (state, payload) {
+    state.cropnotes.push(payload)
+  },
+  [types.DELETE_CROP_NOTES] (state, payload) {
     state.cropnotes.push(payload)
   }
 }
