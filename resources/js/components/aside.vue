@@ -33,7 +33,7 @@
                 span Inventories
               slot(name="item")
                 ul.nav.nav-sub.dk
-                  li <a><span>Material</span></a>
+                  li <router-link :to="{ name: 'InventoriesMaterials'}"><span>Material</span></router-link>
                   li <a><span>Tools</span></a>
             aside-item-component
               a
