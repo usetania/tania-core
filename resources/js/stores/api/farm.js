@@ -19,6 +19,12 @@ export default {
   ApiFetchReservoir: (farmid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/reservoirs', cbSuccess, cbError)
   },
+  ApiFindReservoirByUid: (farmid, reservoirid, cbSuccess, cbError) => {
+    http.get('farms/' + farmid + '/reservoirs/' + reservoirid, cbSuccess, cbError)
+  },
+  ApiCreateReservoirNotes: (reservoirid, payload, cbSuccess, cbError) => {
+    http.post('farms/reservoirs/' + reservoirid + '/notes' , payload, cbSuccess, cbError)
+  },
   ApiCreateArea: (farmid, payload, cbSuccess, cbError) => {
     http.post('farms/' + farmid + '/areas', payload, cbSuccess, cbError, {
       'Content-Type': 'multipart/form-data'
@@ -30,8 +36,8 @@ export default {
   ApiFindAreaByUid: (farmid, areaid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/areas/' + areaid, cbSuccess, cbError)
   },
-  ApiCreateAreaNotes: (areaId, payload, cbSuccess, cbError) => {
-    http.post('farms/areas/' + areaId + '/notes' , payload, cbSuccess, cbError)
+  ApiCreateAreaNotes: (areaid, payload, cbSuccess, cbError) => {
+    http.post('farms/areas/' + areaid + '/notes' , payload, cbSuccess, cbError)
   },
   ApiCreateCrop: (areaid, payload, cbSuccess, cbError) => {
     http.post('farms/areas/' + areaid + '/crops' , payload, cbSuccess, cbError)
@@ -42,7 +48,7 @@ export default {
   ApiFindCropByUid: (farmid, cropid, cbSuccess, cbError) => {
     http.get('farms/crops/' + cropid, cbSuccess, cbError)
   },
-  ApiCreateCropNotes: (cropId, payload, cbSuccess, cbError) => {
-    http.post('farms/crops/' + cropId + '/notes' , payload, cbSuccess, cbError)
+  ApiCreateCropNotes: (cropid, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/' + cropid + '/notes' , payload, cbSuccess, cbError)
   },
 }

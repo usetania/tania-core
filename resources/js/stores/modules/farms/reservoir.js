@@ -5,7 +5,8 @@ import FarmApi from '@/stores/api/farm'
 
 const state = {
   reservoir: {},
-  reservoirs: []
+  reservoirs: [],
+  reservoirnotes: [],
 }
 
 const getters = {
@@ -32,10 +33,32 @@ const actions = {
     const farm = getters.getCurrentFarm
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi.ApiFetchReservoir(farmId, ({ data }) => {
+      FarmApi.ApiFetchReservoir(farm.uid, ({ data }) => {
         commit(types.FETCH_RESERVOIR, data.data)
         resolve(data)
       }, error => reject(error.response))
+    })
+  },
+  getReservoirByUid ({ commit, state, getters }, reservoirId) {
+    const farm = getters.getCurrentFarm
+
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi.ApiFindReservoirByUid(farm.uid, reservoirId, ({ data }) => {
+        resolve(data)
+      }, error => reject(error.response))
+    })
+  },
+  createReservoirNotes ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let reservoirId = payload.obj_uid
+      FarmApi
+        .ApiCreateReservoirNotes(reservoirId, payload, ({ data }) => {
+          payload = data.data
+          commit(types.CREATE_RESERVOIR_NOTES, payload)
+          resolve(payload)
+        }, error => reject(error.response))
     })
   }
 }
@@ -49,6 +72,9 @@ const mutations = {
   },
   [types.FETCH_RESERVOIR] (state, payload) {
     state.reservoirs = payload
+  },
+  [types.CREATE_RESERVOIR_NOTES] (state, payload) {
+    state.reservoirnotes.push(payload)
   }
 }
 
