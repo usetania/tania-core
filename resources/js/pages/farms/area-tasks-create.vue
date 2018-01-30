@@ -12,25 +12,26 @@
         .row
           .col-xs-6
             .form-group
-              label Due Date
+              label(for="due_date") Due Date
               .input-group
-                input.form-control(type="text" datepicker-popup="" ng-model="dt" is-open="opened" datepicker-options="dateOptions" ng-required="true" close-text="Close")
+                datepicker#due_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('due_date') }" v-model="task.due_date" name="due_date" input-class="form-control" ref="openCal")
                 span.input-group-btn
-                  button.btn.btn-primary(type="button" ng-click="open($event)")
+                  button.btn.btn-primary(type="button" v-on:click="openPicker")
                     i.glyphicon.glyphicon-calendar
+                span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
           .col-xs-6
             .form-group
-              label Is this task urgent?
+              label(for="priority") Is this task urgent?
               .radio
                 label.i-checks.i-checks-sm
-                  input(type="radio" name="urgenttask" value="yes" checked="checked")
+                  input#priority(type="radio" name="priority" value="yes" checked="checked" v-model="task.priority" v-validate="'required'")
                   i
-                  |                           Yes
+                  | Yes
               .radio
                 label.i-checks.i-checks-sm
-                  input(type="radio" name="urgenttask" value="no")
+                  input#priority(type="radio" name="priority" value="no" v-model="task.priority" v-validate="'required'")
                   i
-                  |                           No
+                  | No
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") Save
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
@@ -40,6 +41,8 @@
 import { AreaTypes, AreaLocations, AreaSizeUnits } from '@/stores/helpers/farms/area'
 import { StubTask } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
+import Datepicker from 'vuejs-datepicker';
+
 export default {
   name: "FarmAreaTasksCreate",
   data () {
@@ -47,9 +50,13 @@ export default {
       task: Object.assign({}, StubTask),
     }
   },
+  components: {
+      Datepicker
+  },
   methods: {
     ...mapActions([
       'createAreaTask',
+      'openPicker',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -57,6 +64,9 @@ export default {
           this.create()
         }
       })
+    },
+    openPicker () {
+      this.$refs.openCal.showCalendar()
     },
     create () {
     },
