@@ -1,5 +1,5 @@
 <template lang="pug">
-  .crops-create
+  .crops-create(v-if="loading === false")
     .modal-header
       span.h4.font-bold Add a New Batch
     .modal-body
@@ -73,7 +73,6 @@ export default {
   computed: {
     ...mapGetters({
       areas: 'getAllAreas',
-      inventories: 'getAllFarmInventories'
     }),
     cropVarieties: {
       get() {
@@ -94,16 +93,27 @@ export default {
   data () {
     return {
       crop: Object.assign({}, StubCrop),
+      inventories: [],
+      loading: true,
       options: {
         areaTypes: Array.from(AreaTypes),
         cropContainers: Array.from(CropContainers)
       }
     }
   },
+  created () {
+    this.fetchFarmInventories()
+      .then(({ data }) =>  {
+        this.loading = false
+        this.inventories = data
+      })
+      .catch(error => console.log(error))
+  },
   methods: {
     ...mapActions([
       'createCrop',
-      'typeChanged'
+      'typeChanged',
+      'fetchFarmInventories'
     ]),
     onChange: function () {
       this.cropVarieties = this.cropVarieties
