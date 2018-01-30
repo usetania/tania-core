@@ -186,8 +186,8 @@ func GetHarvestType(code string) HarvestType {
 }
 
 const (
-	Kg = "kg"
-	Gr = "gr"
+	Kg = "Kg"
+	Gr = "Gr"
 )
 
 type ProducedUnit struct {

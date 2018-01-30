@@ -272,12 +272,24 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	ht := domain.GetHarvestType(harvestType)
+	if ht == (domain.HarvestType{}) {
+		return Error(c, NewRequestValidationError(INVALID_OPTION, "harvest_type"))
+	}
+
+	if producedQuantity == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "produced_quantity"))
+	}
+
 	prodQty, err := strconv.ParseFloat(producedQuantity, 32)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	prodUnit := domain.GetProducedUnit(producedUnit)
+	if prodUnit == (domain.ProducedUnit{}) {
+		return Error(c, NewRequestValidationError(INVALID_OPTION, "produced_unit"))
+	}
 
 	// PROCESS //
 	err = crop.Harvest(s.CropService, srcAreaUID, harvestType, float32(prodQty), prodUnit)

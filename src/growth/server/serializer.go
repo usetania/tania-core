@@ -62,10 +62,11 @@ type MovedArea struct {
 }
 
 type HarvestedStorage struct {
-	SourceArea  query.CropAreaQueryResult `json:"source_area"`
-	Quantity    int                       `json:"quantity"`
-	CreatedDate time.Time                 `json:"created_date"`
-	LastUpdated time.Time                 `json:"last_updated"`
+	SourceArea           query.CropAreaQueryResult `json:"source_area"`
+	Quantity             int                       `json:"quantity"`
+	ProducedGramQuantity float32                   `json:"produced_quantity"`
+	CreatedDate          time.Time                 `json:"created_date"`
+	LastUpdated          time.Time                 `json:"last_updated"`
 }
 
 type Trash struct {
@@ -173,10 +174,11 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		}
 
 		harvestedStorage = append(harvestedStorage, HarvestedStorage{
-			SourceArea:  area,
-			Quantity:    v.Quantity,
-			CreatedDate: v.CreatedDate,
-			LastUpdated: v.LastUpdated,
+			SourceArea:           area,
+			Quantity:             v.Quantity,
+			ProducedGramQuantity: v.ProducedGramQuantity,
+			CreatedDate:          v.CreatedDate,
+			LastUpdated:          v.LastUpdated,
 		})
 	}
 
