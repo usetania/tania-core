@@ -231,5 +231,3 @@ func validateAssetID(taskService TaskService, asset_id uuid.UUID, tasktype strin
 
 	return nil
 }
-
-// validateActivityParameters

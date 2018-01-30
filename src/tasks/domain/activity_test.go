@@ -29,24 +29,20 @@ func TestCreateActivity(t *testing.T) {
 	source_areaUID_notexist, _ := uuid.NewV4()
 	dest_areaUID, _ := uuid.NewV4()
 	dest_areaUID_notexist, _ := uuid.NewV4()
-	cropUID, _ := uuid.NewV4()
-	cropUID_notexist, _ := uuid.NewV4()
+	//cropUID, _ := uuid.NewV4()
 	source_areaServiceResult := ServiceResult{
 		Result: query.TaskAreaQueryResult{UID: source_areaUID},
 	}
 	dest_areaServiceResult := ServiceResult{
 		Result: query.TaskAreaQueryResult{UID: dest_areaUID},
 	}
-	cropServiceResult := ServiceResult{
-		Result: query.TaskCropQueryResult{UID: cropUID},
-	}
+	//cropServiceResult := ServiceResult{
+	//	Result: query.TaskCropQueryResult{UID: cropUID},
+	//}
 
 	taskServiceMock.On("FindAreaByID", source_areaUID).Return(source_areaServiceResult)
 	taskServiceMock.On("FindAreaByID", dest_areaUID).Return(dest_areaServiceResult)
-	taskServiceMock.On("FindCropByID", cropUID).Return(cropServiceResult)
-	taskServiceMock.On("FindAreaByID", source_areaUID_notexist).Return(nil)
-	taskServiceMock.On("FindAreaByID", dest_areaUID_notexist).Return(nil)
-	taskServiceMock.On("FindCropByID", cropUID_notexist).Return(nil)
+	//taskServiceMock.On("FindCropByID", cropUID).Return(cropServiceResult)
 
 	// Harvest Activity
 	var tests_harvestactivity = []struct {
@@ -63,7 +59,10 @@ func TestCreateActivity(t *testing.T) {
 	}
 
 	for _, test := range tests_harvestactivity {
-		task, err := CreateHarvestActivity(test.source_area_id, test.quantity)
+
+		_, err := CreateHarvestActivity(taskServiceMock, test.source_area_id, test.quantity)
+
+		//taskServiceMock.AssertExpectations(t)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
@@ -83,7 +82,10 @@ func TestCreateActivity(t *testing.T) {
 	}
 
 	for _, test := range tests_dumpactivity {
-		task, err := CreateDumpActivity(test.source_area_id, test.quantity)
+
+		_, err := CreateDumpActivity(taskServiceMock, test.source_area_id, test.quantity)
+
+		//taskServiceMock.AssertExpectations(t)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
@@ -108,7 +110,10 @@ func TestCreateActivity(t *testing.T) {
 	}
 
 	for _, test := range tests_movetoareaactivity {
-		task, err := CreateMoveToAreaActivity(test.source_area_id, test.dest_area_id, test.quantity)
+
+		_, err := CreateMoveToAreaActivity(taskServiceMock, test.source_area_id, test.dest_area_id, test.quantity)
+
+		//taskServiceMock.AssertExpectations(t)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}

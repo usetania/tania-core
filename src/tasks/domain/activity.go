@@ -68,29 +68,31 @@ func (sa MoveToAreaActivity) Type() string {
 	return ActivityTypeMoveToArea
 }
 
-func CreateMoveToAreaActivity(source string, dest string, qnt string) (MoveToAreaActivity, error) {
+func CreateMoveToAreaActivity(taskService TaskService, source string, dest string, qnt string) (MoveToAreaActivity, error) {
 
-	src_id, err := uuid.FromString(source)
+	err := validateAreaID(source)
 	if err != nil {
-		return MoveToAreaActivity{}, err
+		return MoveToAreaActivity{}, TaskError{TaskErrorActivitySourceInvalidCode}
+	}
+	src_id, _ := uuid.FromString(source)
+	err = validateAssetID(taskService, src_id, TaskTypeArea)
+	if err != nil {
+		return MoveToAreaActivity{}, TaskError{TaskErrorActivitySourceInvalidCode}
 	}
 
-	dest_id, err := uuid.FromString(source)
+	err = validateAreaID(dest)
 	if err != nil {
-		return MoveToAreaActivity{}, err
+		return MoveToAreaActivity{}, TaskError{TaskErrorActivityDestinationInvalidCode}
+	}
+	dest_id, _ := uuid.FromString(source)
+	err = validateAssetID(taskService, dest_id, TaskTypeArea)
+	if err != nil {
+		return MoveToAreaActivity{}, TaskError{TaskErrorActivityDestinationInvalidCode}
 	}
 
-	err = validateAreaID(src_id)
-	if err != nil {
-		return MoveToAreaActivity{}, err
-	}
-	err = validateAreaID(dest_id)
-	if err != nil {
-		return MoveToAreaActivity{}, err
-	}
 	quantity64, err := strconv.ParseFloat(qnt, 32)
 	if err != nil {
-		return MoveToAreaActivity{}, err
+		return MoveToAreaActivity{}, TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 	quantity32 := float32(quantity64)
 	err = validateQuantity(quantity32)
@@ -110,20 +112,21 @@ func (sa DumpActivity) Type() string {
 	return ActivityTypeDump
 }
 
-func CreateDumpActivity(source string, qnt string) (DumpActivity, error) {
+func CreateDumpActivity(taskService TaskService, source string, qnt string) (DumpActivity, error) {
 
-	src_id, err := uuid.FromString(source)
+	err := validateAreaID(source)
 	if err != nil {
-		return DumpActivity{}, err
+		return DumpActivity{}, TaskError{TaskErrorActivitySourceInvalidCode}
+	}
+	src_id, _ := uuid.FromString(source)
+	err = validateAssetID(taskService, src_id, TaskTypeArea)
+	if err != nil {
+		return DumpActivity{}, TaskError{TaskErrorActivitySourceInvalidCode}
 	}
 
-	err = validateAreaID(src_id)
-	if err != nil {
-		return DumpActivity{}, err
-	}
 	quantity64, err := strconv.ParseFloat(qnt, 32)
 	if err != nil {
-		return DumpActivity{}, err
+		return DumpActivity{}, TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 	quantity32 := float32(quantity64)
 	err = validateQuantity(quantity32)
@@ -143,20 +146,21 @@ func (sa HarvestActivity) Type() string {
 	return ActivityTypeHarvest
 }
 
-func CreateHarvestActivity(source string, qnt string) (HarvestActivity, error) {
+func CreateHarvestActivity(taskService TaskService, source string, qnt string) (HarvestActivity, error) {
 
-	src_id, err := uuid.FromString(source)
+	err := validateAreaID(source)
 	if err != nil {
-		return HarvestActivity{}, err
+		return HarvestActivity{}, TaskError{TaskErrorActivitySourceInvalidCode}
+	}
+	src_id, _ := uuid.FromString(source)
+	err = validateAssetID(taskService, src_id, TaskTypeArea)
+	if err != nil {
+		return HarvestActivity{}, TaskError{TaskErrorActivitySourceInvalidCode}
 	}
 
-	err = validateAreaID(src_id)
-	if err != nil {
-		return HarvestActivity{}, err
-	}
 	quantity64, err := strconv.ParseFloat(qnt, 32)
 	if err != nil {
-		return HarvestActivity{}, err
+		return HarvestActivity{}, TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 	quantity32 := float32(quantity64)
 	err = validateQuantity(quantity32)
@@ -167,9 +171,11 @@ func CreateHarvestActivity(source string, qnt string) (HarvestActivity, error) {
 }
 
 //Validation
-func validateAreaID(id uuid.UUID) error {
-	//TODO
-
+func validateAreaID(id string) error {
+	_, err := uuid.FromString(id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 func validateQuantity(qnt float32) error {

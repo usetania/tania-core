@@ -150,6 +150,7 @@ func (s *TaskServer) SaveMoveToAreaActivity(c echo.Context) error {
 
 	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateMoveToAreaActivity(
+		s.TaskService,
 		c.FormValue("source_area_id"),
 		c.FormValue("dest_area_id"),
 		c.FormValue("quantity"))
@@ -168,6 +169,7 @@ func (s *TaskServer) SaveDumpActivity(c echo.Context) error {
 
 	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateDumpActivity(
+		s.TaskService,
 		c.FormValue("source_area_id"),
 		c.FormValue("quantity"))
 
@@ -185,6 +187,7 @@ func (s *TaskServer) SaveHarvestActivity(c echo.Context) error {
 
 	validateTaskActivity(c, domain.TaskTypeCrop)
 	activity, err := domain.CreateHarvestActivity(
+		s.TaskService,
 		c.FormValue("source_area_id"),
 		c.FormValue("quantity"))
 
