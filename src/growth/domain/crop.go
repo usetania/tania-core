@@ -159,9 +159,8 @@ type Trash struct {
 }
 
 const (
-	HarvestTypeAll        = "ALL"
-	HarvestTypePartial    = "PARTIAL"
-	HarvestTypeCutAndCome = "CUTANDCOME"
+	HarvestTypeAll     = "ALL"
+	HarvestTypePartial = "PARTIAL"
 )
 
 type HarvestType struct {
@@ -173,7 +172,6 @@ func HarvestTypes() []HarvestType {
 	return []HarvestType{
 		{Code: HarvestTypeAll, Label: "All"},
 		{Code: HarvestTypePartial, Label: "Partial"},
-		{Code: HarvestTypeCutAndCome, Label: "Cut and Come"},
 	}
 }
 
@@ -415,7 +413,6 @@ func (c *Crop) Harvest(
 	cropService CropService,
 	sourceAreaUID uuid.UUID,
 	harvestType string,
-	quantity int,
 	producedQuantity float32,
 	producedUnit ProducedUnit) error {
 
@@ -462,35 +459,19 @@ func (c *Crop) Harvest(
 	}
 
 	// Process //
-	if ht.Code == HarvestTypePartial {
-		harvestWithCut(c, srcArea.UID, quantity)
-	} else if ht.Code == HarvestTypeAll {
-		harvestAll(c, srcArea.UID)
-	}
-
-	// Calculate the produced harvest
-	for i, v := range c.HarvestedStorage {
-		if v.SourceAreaUID == srcArea.UID {
-			c.HarvestedStorage[i].ProducedGramQuantity += totalProduced
-		}
-	}
-
-	return nil
-}
-
-// harvestAll is used to calculate the quantity of the source area and the related HarvestedStorage.
-// This should reduce all the source area plant.
-func harvestAll(c *Crop, sourceAreaUID uuid.UUID) error {
-	// Empty the quantity in the area because it has been all harvested
+	// If harvestType All, then empty the quantity in the area because it has been all harvested
+	// Else if harvestType Partial, then we assume that the quantity of moved plant is 0
 	harvestedQuantity := 0
-	if c.InitialArea.AreaUID == sourceAreaUID {
-		harvestedQuantity = c.InitialArea.CurrentQuantity
-		c.InitialArea.CurrentQuantity = 0
-	}
-	for i, v := range c.MovedArea {
-		if v.AreaUID == sourceAreaUID {
-			harvestedQuantity = c.MovedArea[i].CurrentQuantity
-			c.MovedArea[i].CurrentQuantity = 0
+	if ht.Code == HarvestTypeAll {
+		if c.InitialArea.AreaUID == sourceAreaUID {
+			harvestedQuantity = c.InitialArea.CurrentQuantity
+			c.InitialArea.CurrentQuantity = 0
+		}
+		for i, v := range c.MovedArea {
+			if v.AreaUID == sourceAreaUID {
+				harvestedQuantity = c.MovedArea[i].CurrentQuantity
+				c.MovedArea[i].CurrentQuantity = 0
+			}
 		}
 	}
 
@@ -514,44 +495,11 @@ func harvestAll(c *Crop, sourceAreaUID uuid.UUID) error {
 		c.HarvestedStorage = append(c.HarvestedStorage, hs)
 	}
 
-	return nil
-}
-
-// harvestWithCut is used to calculate the quantity of the source area and the related HarvestedStorage.
-// This should reduce some of the source area plant by the specified quantity.
-func harvestWithCut(c *Crop, sourceAreaUID uuid.UUID, quantity int) error {
-	if quantity <= 0 {
-		return CropError{Code: CropHarvestErrorInvalidQuantity}
-	}
-
-	// Reduce the quantity in the area because it has been harvested
-	if c.InitialArea.AreaUID == sourceAreaUID {
-		c.InitialArea.CurrentQuantity -= quantity
-	}
-	for i, v := range c.MovedArea {
-		if v.AreaUID == sourceAreaUID {
-			c.MovedArea[i].CurrentQuantity -= quantity
-		}
-	}
-
-	// Check source area existance. If already exist, then just update it
-	isExist := false
+	// Calculate the produced harvest
 	for i, v := range c.HarvestedStorage {
-		if v.SourceAreaUID == sourceAreaUID {
-			c.HarvestedStorage[i].Quantity += quantity
-			c.HarvestedStorage[i].LastUpdated = time.Now()
-			isExist = true
+		if v.SourceAreaUID == srcArea.UID {
+			c.HarvestedStorage[i].ProducedGramQuantity += totalProduced
 		}
-	}
-
-	if !isExist {
-		hs := HarvestedStorage{
-			Quantity:      quantity,
-			SourceAreaUID: sourceAreaUID,
-			CreatedDate:   time.Now(),
-			LastUpdated:   time.Now(),
-		}
-		c.HarvestedStorage = append(c.HarvestedStorage, hs)
 	}
 
 	return nil

@@ -248,7 +248,9 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 	cropID := c.Param("id")
 	srcAreaID := c.FormValue("source_area_id")
-	quantity := c.FormValue("quantity")
+	harvestType := c.FormValue("harvest_type")
+	producedQuantity := c.FormValue("produced_quantity")
+	producedUnit := c.FormValue("produced_unit")
 
 	// VALIDATE //
 	result := <-s.CropRepo.FindByID(cropID)
@@ -270,13 +272,15 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	qty, err := strconv.Atoi(quantity)
+	prodQty, err := strconv.ParseFloat(producedQuantity, 32)
 	if err != nil {
 		return Error(c, err)
 	}
 
+	prodUnit := domain.GetProducedUnit(producedUnit)
+
 	// PROCESS //
-	err = crop.Harvest(s.CropService, srcAreaUID, qty)
+	err = crop.Harvest(s.CropService, srcAreaUID, harvestType, float32(prodQty), prodUnit)
 	if err != nil {
 		return Error(c, err)
 	}
