@@ -26,14 +26,14 @@ const (
 	TaskErrorInvalidAssetIDCode
 
 	// Task General Errors
-	TaskErrorTaskNotFound
+	TaskErrorTaskNotFoundCode
 
 	// Activity Errors
-	TaskErrorActivityTypeInvalid
-	TaskErrorActivitySourceInvalid
-	TaskErrorActivityDestinationInvalid
-	TaskErrorActivityQuantityInvalid
-	TaskErrorActivityNotSupported
+	TaskErrorActivityTypeInvalidCode
+	TaskErrorActivitySourceInvalidCode
+	TaskErrorActivityDestinationInvalidCode
+	TaskErrorActivityQuantityInvalidCode
+	TaskErrorActivityNotSupportedCode
 )
 
 // TaskError is a custom error from Go built-in error
@@ -67,17 +67,17 @@ func (e TaskError) Error() string {
 		return "Task must have a referenced asset."
 	case TaskErrorInvalidAssetIDCode:
 		return "Task asset reference is invalid."
-	case TaskErrorTaskNotFound:
+	case TaskErrorTaskNotFoundCode:
 		return "Task not found"
-	case TaskErrorActivityTypeInvalid:
+	case TaskErrorActivityTypeInvalidCode:
 		return "Task activity type is invalid"
-	case TaskErrorActivitySourceInvalid:
+	case TaskErrorActivitySourceInvalidCode:
 		return "Task activity source reference is invalid"
-	case TaskErrorActivityDestinationInvalid:
+	case TaskErrorActivityDestinationInvalidCode:
 		return "Task activity destination reference is invalid"
-	case TaskErrorActivityQuantityInvalid:
+	case TaskErrorActivityQuantityInvalidCode:
 		return "Task activity quantity is invalid"
-	case TaskErrorActivityNotSupported:
+	case TaskErrorActivityNotSupportedCode:
 		return "Task activity type is not supported by asset"
 	default:
 		return "Unrecognized Task Error Code"

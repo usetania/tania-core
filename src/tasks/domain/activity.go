@@ -174,7 +174,7 @@ func validateAreaID(id uuid.UUID) error {
 }
 func validateQuantity(qnt float32) error {
 	if qnt < 0 {
-		return TaskError{TaskErrorActivityQuantityInvalid}
+		return TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 
 	return nil

@@ -36,5 +36,5 @@ func FindActivityTypeByCode(code string) (ActivityType, error) {
 		}
 	}
 
-	return ActivityType{}, TaskError{TaskErrorActivityTypeInvalid}
+	return ActivityType{}, TaskError{TaskErrorActivityTypeInvalidCode}
 }
