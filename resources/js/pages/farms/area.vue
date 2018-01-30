@@ -1,15 +1,17 @@
 <template lang="pug">
   .area-detail.col(v-if="loading === false")
+    modal(v-if="showModal" @close="showModal = false")
+      farmAreaTaskCreate
     .wrapper-md
-      h1.m-n.font-thin.h3.text-black {{ area.name }}
-      small.text-muted {{ getType(area.type).label }}
       .pull-right
-        a.btn.btn-sm.btn-addon.btn-primary.m-r(href="#")
+        a.btn.btn-sm.m-b-xs.btn-addon.btn-primary.m-r(style="cursor: pointer;" id="show-modal" @click="showModal = true")
           i.fa.fa-tasks
           | Add Task
-        a.btn.btn-sm.btn-addon.btn-info(href="#")
+        a.btn.btn-sm.m-b-xs.btn-addon.btn-info(href="#")
           i.fa.fa-tint
           | Watering
+      h1.m-n.font-thin.h3.text-primary {{ area.name }}
+      small.text-muted {{ getType(area.type).label }}
     .wrapper-md
       .row
         .col-md-4.col-xs-12
@@ -122,6 +124,7 @@
 import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpers/farms/area'
 import { StubArea, StubNote } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
+import Modal from '@/components/modal'
 export default {
   name: 'Area',
   data () {
@@ -130,7 +133,12 @@ export default {
       area: Object.assign({}, StubArea),
       note: Object.assign({}, StubNote),
       areaNotes: [],
+      showModal: false,
     }
+  },
+  components: {
+    FarmAreaTaskCreate: () => import('./area-tasks-create.vue'),
+    Modal
   },
   computed: {
     ...mapGetters({

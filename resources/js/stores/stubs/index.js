@@ -5,6 +5,7 @@ import reservoir from './reservoir'
 import user from './user'
 import crop from './crop'
 import note from './note'
+import task from './task'
 
 export const StubArea = area
 export const StubFarm =  farm
@@ -13,3 +14,4 @@ export const StubReservoir = reservoir
 export const StubUser = user
 export const StubCrop = crop
 export const StubNote = note
+export const StubTask = task
