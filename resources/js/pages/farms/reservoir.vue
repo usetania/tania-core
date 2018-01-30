@@ -1,5 +1,7 @@
 <template lang="pug">
   .reservoir-detail.col(v-if="loading === false")
+    modal(v-if="showModal" @close="showModal = false")
+      farmReservoirTaskCreate
     .wrapper-md
       a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
         i.fa.fa-plus
@@ -88,6 +90,7 @@
 import { StubReservoir, StubNote } from '@/stores/stubs'
 import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
 import { mapActions } from 'vuex'
+import Modal from '@/components/modal'
 export default {
   name: 'Reservoir',
   data () {
@@ -98,6 +101,10 @@ export default {
       reservoirNotes: [],
       showModal: false,
     }
+  },
+  components: {
+    FarmReservoirTaskCreate: () => import('./reservoir-tasks-create.vue'),
+    Modal
   },
   created () {
     this.getReservoirByUid(this.$route.params.id)
