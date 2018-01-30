@@ -3,6 +3,13 @@
     .wrapper-md
       h1.m-n.font-thin.h3.text-black {{ area.name }}
       small.text-muted {{ getType(area.type).label }}
+      .pull-right
+        a.btn.btn-sm.btn-addon.btn-primary.m-r(href="#")
+          i.fa.fa-tasks
+          | Add Task
+        a.btn.btn-sm.btn-addon.btn-info(href="#")
+          i.fa.fa-tint
+          | Watering
     .wrapper-md
       .row
         .col-md-4.col-xs-12
