@@ -123,9 +123,9 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 
 	var containerT domain.CropContainerType
 	switch containerType {
-	case "tray":
+	case domain.Tray{}.Code():
 		containerT = domain.Tray{Cell: containerCell}
-	case "pot":
+	case domain.Pot{}.Code():
 		containerT = domain.Pot{}
 	default:
 		return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))

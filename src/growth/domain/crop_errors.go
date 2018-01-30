@@ -20,6 +20,7 @@ const (
 	CropHarvestErrorInvalidSourceArea
 	CropHarvestErrorSourceAreaNotFound
 	CropHarvestErrorInvalidQuantity
+	CropHarvestErrorInvalidHarvestType
 
 	// Crop dump errors
 	CropDumpErrorInvalidSourceArea
@@ -84,6 +85,8 @@ func (e CropError) Error() string {
 		return "Source area not found"
 	case CropHarvestErrorInvalidQuantity:
 		return "Invalid quantity"
+	case CropHarvestErrorInvalidHarvestType:
+		return "Invalid harvest type"
 
 	case CropDumpErrorInvalidSourceArea:
 		return "Invalid source area"
