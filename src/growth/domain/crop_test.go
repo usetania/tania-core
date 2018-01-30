@@ -118,13 +118,18 @@ func TestHarvestCropBatch(t *testing.T) {
 	// When
 	crop, _ := CreateCropBatch(cropServiceMock, areaAUID, CropTypeSeeding, inventoryUID, 20, containerType)
 	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
-	crop.Harvest(cropServiceMock, areaBUID, HarvestTypePartial, 10, GetProducedUnit(Kg))
+	err1 := crop.Harvest(cropServiceMock, areaBUID, HarvestTypePartial, 10, GetProducedUnit(Kg))
+	err2 := crop.Harvest(cropServiceMock, areaAUID, HarvestTypePartial, 10, GetProducedUnit(Kg))
 
 	// Then
 	cropServiceMock.AssertExpectations(t)
+
+	assert.Nil(t, err1)
 	assert.Equal(t, areaBUID, crop.HarvestedStorage[0].SourceAreaUID)
 	assert.Equal(t, 0, crop.HarvestedStorage[0].Quantity)
 	assert.Equal(t, float32(10000), crop.HarvestedStorage[0].ProducedGramQuantity)
+
+	assert.NotNil(t, err2)
 
 	// When
 	crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 2000, GetProducedUnit(Gr))

@@ -447,6 +447,10 @@ func (c *Crop) Harvest(
 		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
 	}
 
+	if srcArea.Type != "GROWING" {
+		return CropError{Code: CropHarvestErrorInvalidSourceArea}
+	}
+
 	ht := GetHarvestType(harvestType)
 	if ht == (HarvestType{}) {
 		return CropError{Code: CropHarvestErrorInvalidHarvestType}
