@@ -34,8 +34,8 @@ func CreateMaterialTypeSeed(plantType string) (MaterialTypeSeed, error) {
 }
 
 type PlantType struct {
-	Code  string
-	Label string
+	Code  string `json:"code"`
+	Label string `json:"label"`
 }
 
 const (

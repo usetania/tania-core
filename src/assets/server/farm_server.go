@@ -721,7 +721,7 @@ func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 }
 
 func (s *FarmServer) SaveMaterialSeed(c echo.Context) error {
-	data := make(map[string]domain.Material)
+	data := make(map[string]Material)
 
 	name := c.FormValue("name")
 	plantType := c.FormValue("plant_type")
@@ -763,7 +763,7 @@ func (s *FarmServer) SaveMaterialSeed(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	data["data"] = material
+	data["data"] = MapToMaterial(material)
 
 	return c.JSON(http.StatusOK, data)
 }

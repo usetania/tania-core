@@ -8,16 +8,15 @@ import (
 )
 
 type Material struct {
-	UID            uuid.UUID            `json:"uid"`
-	Name           string               `json:"name"`
-	PricePerUnit   Money                `json:"price_per_unit"`
-	Type           MaterialType         `json:"type"`
-	Quantity       float32              `json:"quantity"`
-	QuantityUnit   MaterialQuantityUnit `json:"quantity_unit"`
-	ExpirationDate time.Time            `json:"expiration_date"`
-	Notes          string               `json:"notes"`
-	IsExpense      bool                 `json:"is_expense"`
-	ProducedBy     string               `json:"produced_by"`
+	UID            uuid.UUID        `json:"uid"`
+	Name           string           `json:"name"`
+	PricePerUnit   Money            `json:"price_per_unit"`
+	Type           MaterialType     `json:"type"`
+	Quantity       MaterialQuantity `json:"quantity"`
+	ExpirationDate *time.Time       `json:"expiration_date"`
+	Notes          *string          `json:"notes"`
+	IsExpense      *bool            `json:"is_expense"`
+	ProducedBy     *string          `json:"produced_by"`
 }
 
 const (
@@ -76,9 +75,14 @@ const (
 	MaterialUnitKilogram = "KILOGRAM"
 )
 
+type MaterialQuantity struct {
+	Value float32              `json:"value"`
+	Unit  MaterialQuantityUnit `json:"unit"`
+}
+
 type MaterialQuantityUnit struct {
-	Code  string
-	Label string
+	Code  string `json:"code"`
+	Label string `json:"label"`
 }
 
 func MaterialTypeSeedQuantityUnits() []MaterialQuantityUnit {
@@ -122,14 +126,14 @@ func CreateMaterial(
 		return Material{}, errors.New("cannot be empty")
 	}
 
-	qu := MaterialQuantityUnit{}
-	switch materialType.(type) {
-	case MaterialTypeSeed:
-		qu = GetMaterialTypeSeedQuantityUnit(quantityUnit)
+	err = validateQuantity(quantity)
+	if err != nil {
+		return Material{}, err
 	}
 
-	if qu == (MaterialQuantityUnit{}) {
-		return Material{}, errors.New("Cannot be empty")
+	qu, err := validateQuantityUnit(quantityUnit, materialType)
+	if err != nil {
+		return Material{}, err
 	}
 
 	return Material{
@@ -137,7 +141,75 @@ func CreateMaterial(
 		Name:         name,
 		PricePerUnit: money,
 		Type:         materialType,
-		Quantity:     quantity,
-		QuantityUnit: qu,
+		Quantity: MaterialQuantity{
+			Value: quantity,
+			Unit:  qu,
+		},
 	}, nil
+}
+
+func (m *Material) ChangeName(name string) error {
+	if name == "" {
+		return errors.New("cannot be empty")
+	}
+
+	if len(name) <= 5 {
+		return errors.New("too few characters")
+	}
+
+	m.Name = name
+
+	return nil
+}
+
+func (m *Material) ChangePricePerUnit(price, priceUnit string) error {
+	money, err := CreateMoney(price, priceUnit)
+	if err != nil {
+		return err
+	}
+
+	m.PricePerUnit = money
+
+	return nil
+}
+
+func (m *Material) ChangeQuantityUnit(quantity float32, quantityUnit string, materialType MaterialType) error {
+	err := validateQuantity(quantity)
+	if err != nil {
+		return err
+	}
+
+	qu, err := validateQuantityUnit(quantityUnit, materialType)
+	if err != nil {
+		return err
+	}
+
+	m.Quantity = MaterialQuantity{
+		Value: quantity,
+		Unit:  qu,
+	}
+
+	return nil
+}
+
+func validateQuantity(quantity float32) error {
+	if quantity <= 0 {
+		return errors.New("Cannot be empty")
+	}
+
+	return nil
+}
+
+func validateQuantityUnit(quantityUnit string, materialType MaterialType) (MaterialQuantityUnit, error) {
+	qu := MaterialQuantityUnit{}
+	switch materialType.(type) {
+	case MaterialTypeSeed:
+		qu = GetMaterialTypeSeedQuantityUnit(quantityUnit)
+	}
+
+	if qu == (MaterialQuantityUnit{}) {
+		return MaterialQuantityUnit{}, errors.New("Cannot be empty")
+	}
+
+	return qu, nil
 }

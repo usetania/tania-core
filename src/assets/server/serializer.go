@@ -48,6 +48,38 @@ type DetailReservoir struct {
 type ReservoirBucket struct{ domain.Bucket }
 type ReservoirTap struct{ domain.Tap }
 
+type Material struct {
+	UID            uuid.UUID        `json:"uid"`
+	Name           string           `json:"name"`
+	PricePerUnit   Money            `json:"price_per_unit"`
+	Type           MaterialType     `json:"type"`
+	Quantity       MaterialQuantity `json:"quantity"`
+	ExpirationDate *time.Time       `json:"expiration_date"`
+	Notes          *string          `json:"notes"`
+	IsExpense      *bool            `json:"is_expense"`
+	ProducedBy     *string          `json:"produced_by"`
+}
+
+type Money struct {
+	Code   string `json:"code"`
+	Symbol string `json:"symbol"`
+	Amount string `json:"amount"`
+}
+
+type MaterialQuantity struct {
+	Value float32 `json:"value"`
+	Unit  string  `json:"unit"`
+}
+
+type MaterialType struct {
+	Code               string      `json:"code"`
+	MaterialTypeDetail interface{} `json:"type_detail"`
+}
+
+type MaterialTypeSeed struct {
+	PlantType domain.PlantType `json:"plant_type"`
+}
+
 type AvailableInventory struct {
 	PlantType string   `json:"plant_type"`
 	Names     []string `json:"names"`
@@ -283,6 +315,55 @@ func MapToPlantType(plantTypes []domain.PlantType) []string {
 	}
 
 	return pt
+}
+
+func MapToMaterial(material domain.Material) Material {
+	m := Material{}
+
+	m.UID = material.UID
+	m.Name = material.Name
+	m.PricePerUnit = Money{
+		Code:   material.PricePerUnit.Code(),
+		Symbol: material.PricePerUnit.Symbol(),
+		Amount: material.PricePerUnit.Amount(),
+	}
+
+	switch v := material.Type.(type) {
+	case domain.MaterialTypeSeed:
+		m.Type = MaterialType{
+			Code: v.Code(),
+			MaterialTypeDetail: MaterialTypeSeed{
+				PlantType: v.PlantType,
+			},
+		}
+	}
+
+	m.Quantity = MaterialQuantity{
+		Value: material.Quantity.Value,
+		Unit:  material.Quantity.Unit.Code,
+	}
+
+	m.ExpirationDate = nil
+	if material.ExpirationDate != nil {
+		m.ExpirationDate = material.ExpirationDate
+	}
+
+	m.Notes = nil
+	if material.Notes != nil {
+		m.Notes = material.Notes
+	}
+
+	m.IsExpense = nil
+	if material.IsExpense != nil {
+		m.IsExpense = material.IsExpense
+	}
+
+	m.ProducedBy = nil
+	if material.ProducedBy != nil {
+		m.ProducedBy = material.ProducedBy
+	}
+
+	return m
 }
 
 func MapToAvailableInventories(materials []domain.Material) []AvailableInventory {
