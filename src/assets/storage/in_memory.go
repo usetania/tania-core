@@ -54,17 +54,17 @@ func CreateReservoirStorage() *ReservoirStorage {
 	return &ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
 }
 
-type InventoryMaterialStorage struct {
-	Lock                 *deadlock.RWMutex
-	InventoryMaterialMap map[uuid.UUID]domain.InventoryMaterial
+type MaterialStorage struct {
+	Lock        *deadlock.RWMutex
+	MaterialMap map[uuid.UUID]domain.Material
 }
 
-func CreateInventoryMaterialStorage() *InventoryMaterialStorage {
+func CreateMaterialStorage() *MaterialStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("INVENTORY MATERIAL STORAGE DEADLOCK!")
+		fmt.Println("MATERIAL STORAGE DEADLOCK!")
 	}
 
-	return &InventoryMaterialStorage{InventoryMaterialMap: make(map[uuid.UUID]domain.InventoryMaterial), Lock: &rwMutex}
+	return &MaterialStorage{MaterialMap: make(map[uuid.UUID]domain.Material), Lock: &rwMutex}
 }

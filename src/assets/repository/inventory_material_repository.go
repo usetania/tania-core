@@ -6,30 +6,30 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type InventoryMaterialRepository interface {
-	Save(val *domain.InventoryMaterial) <-chan error
+type MaterialRepository interface {
+	Save(val *domain.Material) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
 }
 
-// InventoryMaterialRepositoryInMemory is in-memory InventoryRepository db implementation
-type InventoryMaterialRepositoryInMemory struct {
-	Storage *storage.InventoryMaterialStorage
+// MaterialRepositoryInMemory is in-memory Repository db implementation
+type MaterialRepositoryInMemory struct {
+	Storage *storage.MaterialStorage
 }
 
-func NewInventoryMaterialRepositoryInMemory(s *storage.InventoryMaterialStorage) InventoryMaterialRepository {
-	return &InventoryMaterialRepositoryInMemory{Storage: s}
+func NewMaterialRepositoryInMemory(s *storage.MaterialStorage) MaterialRepository {
+	return &MaterialRepositoryInMemory{Storage: s}
 }
 
-func (f *InventoryMaterialRepositoryInMemory) FindAll() <-chan RepositoryResult {
+func (f *MaterialRepositoryInMemory) FindAll() <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
 		f.Storage.Lock.RLock()
 		defer f.Storage.Lock.RUnlock()
 
-		inventories := []domain.InventoryMaterial{}
-		for _, val := range f.Storage.InventoryMaterialMap {
+		inventories := []domain.Material{}
+		for _, val := range f.Storage.MaterialMap {
 			inventories = append(inventories, val)
 		}
 
@@ -42,14 +42,14 @@ func (f *InventoryMaterialRepositoryInMemory) FindAll() <-chan RepositoryResult 
 }
 
 // Save is to save
-func (f *InventoryMaterialRepositoryInMemory) Save(val *domain.InventoryMaterial) <-chan error {
+func (f *MaterialRepositoryInMemory) Save(val *domain.Material) <-chan error {
 	result := make(chan error)
 
 	go func() {
 		f.Storage.Lock.Lock()
 		defer f.Storage.Lock.Unlock()
 
-		f.Storage.InventoryMaterialMap[val.UID] = *val
+		f.Storage.MaterialMap[val.UID] = *val
 
 		result <- nil
 
@@ -60,7 +60,7 @@ func (f *InventoryMaterialRepositoryInMemory) Save(val *domain.InventoryMaterial
 }
 
 // FindByID is to find by ID
-func (f *InventoryMaterialRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
+func (f *MaterialRepositoryInMemory) FindByID(uid string) <-chan RepositoryResult {
 	result := make(chan RepositoryResult)
 
 	go func() {
@@ -72,7 +72,7 @@ func (f *InventoryMaterialRepositoryInMemory) FindByID(uid string) <-chan Reposi
 			result <- RepositoryResult{Error: err}
 		}
 
-		result <- RepositoryResult{Result: f.Storage.InventoryMaterialMap[uid]}
+		result <- RepositoryResult{Result: f.Storage.MaterialMap[uid]}
 	}()
 
 	return result

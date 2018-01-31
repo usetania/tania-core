@@ -100,15 +100,6 @@ func GetMaterialTypeSeedQuantityUnit(code string) MaterialQuantityUnit {
 	return MaterialQuantityUnit{}
 }
 
-func GetQuantityUnit(quantityUnit string, materialType MaterialType) MaterialQuantityUnit {
-	switch materialType.(type) {
-	case MaterialTypeSeed:
-		return GetMaterialTypeSeedQuantityUnit(quantityUnit)
-	}
-
-	return MaterialQuantityUnit{}
-}
-
 func CreateMaterial(
 	name string,
 	price string,
@@ -131,7 +122,12 @@ func CreateMaterial(
 		return Material{}, errors.New("cannot be empty")
 	}
 
-	qu := GetQuantityUnit(quantityUnit, materialType)
+	qu := MaterialQuantityUnit{}
+	switch materialType.(type) {
+	case MaterialTypeSeed:
+		qu = GetMaterialTypeSeedQuantityUnit(quantityUnit)
+	}
+
 	if qu == (MaterialQuantityUnit{}) {
 		return Material{}, errors.New("Cannot be empty")
 	}

@@ -1,14 +1,10 @@
 package domain
 
-import (
-	uuid "github.com/satori/go.uuid"
-)
-
-type InventoryMaterial struct {
-	UID       uuid.UUID `json:"uid"`
-	PlantType PlantType `json:"plant_type"`
-	Variety   string    `json:"variety"`
-}
+// type InventoryMaterial struct {
+// 	UID       uuid.UUID `json:"uid"`
+// 	PlantType PlantType `json:"plant_type"`
+// 	Variety   string    `json:"variety"`
+// }
 
 // type PlantType interface {
 // 	Code() string
@@ -34,27 +30,27 @@ type InventoryMaterial struct {
 
 // func (v Tree) Code() string { return "tree" }
 
-func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMaterial, error) {
-	// err := validatePlantType(plantType)
-	// if err != nil {
-	// 	return InventoryMaterial{}, err
-	// }
+// func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMaterial, error) {
+// 	// err := validatePlantType(plantType)
+// 	// if err != nil {
+// 	// 	return InventoryMaterial{}, err
+// 	// }
 
-	if variety == "" {
-		return InventoryMaterial{}, InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
-	}
+// 	if variety == "" {
+// 		return InventoryMaterial{}, InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
+// 	}
 
-	uid, err := uuid.NewV4()
-	if err != nil {
-		return InventoryMaterial{}, err
-	}
+// 	uid, err := uuid.NewV4()
+// 	if err != nil {
+// 		return InventoryMaterial{}, err
+// 	}
 
-	return InventoryMaterial{
-		UID:       uid,
-		PlantType: plantType,
-		Variety:   variety,
-	}, nil
-}
+// 	return InventoryMaterial{
+// 		UID:       uid,
+// 		PlantType: plantType,
+// 		Variety:   variety,
+// 	}, nil
+// }
 
 func CreateInventoryTools() {}
 
