@@ -15,11 +15,11 @@
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-th-large
-                    router-link(:to="{ name: 'FarmAreas' }") 4 Areas
+                    router-link(:to="{ name: 'FarmAreas' }") {{ areas.length }} Areas
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-leaf
-                    router-link(:to="{ name: 'FarmCrops' }") 9 Varieties
+                    router-link(:to="{ name: 'FarmCrops' }") {{ crops.length }} Varieties
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-clipboard
@@ -127,35 +127,23 @@
       .row
         .col-sm-6
           // CROPS STATUS
-          .panel.no-border(style="min-height: 200px;")
+          .panel.no-border
             .panel-heading
               .m-b.m-t
                 span.pull-right.text-primary
-                  a(href="crop.html")
+                  router-link(:to="{ name: 'FarmCrops' }")
                     | See all Crops 
                     i.fa.fa-angle-double-right
                 span.h4.text-lt Crops
             table.table.m-b-none
               thead
                 tr
-                  th(style="width: 70%;") Crop Variety
+                  th Crop Variety
                   th Batches Qty
               tbody
-                tr
-                  td Bayam Lu Hsien
-                  td 7
-                tr
-                  td Brokoli Green Super
-                  td 5
-                tr
-                  td Kale Nero Toscana
-                  td 2
-                tr
-                  td Lettuce Cos Lobjoits
-                  td 7
-                tr
-                  td Pak Choi
-                  td 7
+                tr(v-for="crop in crops")
+                  td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.variety }}
+                  td {{ crop.container.quantity }}
             .panel-footer
               .text-center
                 ul.pagination.pagination-sm.m-t-none.m-b-none
@@ -177,7 +165,7 @@
                       i.fa.fa-chevron-right
         .col-sm-6
           // TASK LIST
-          .panel.no-border(style="min-height: 200px;")
+          .panel.no-border
             .panel-heading
               .m-b.m-t
                 span.pull-right.text-primary
@@ -247,15 +235,18 @@ export default {
   name: 'Home',
   computed : {
     ...mapGetters({
-      areas: 'getAllAreas'
+      areas: 'getAllAreas',
+      crops: 'getAllCrops'
     })
   },
   mounted () {
     this.fetchAreas()
+    this.fetchCrops()
   },
   methods: {
     ...mapActions([
-      'fetchAreas'
+      'fetchAreas',
+      'fetchCrops',
     ])
   }
 }
