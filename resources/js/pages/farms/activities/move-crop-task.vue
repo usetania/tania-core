@@ -1,5 +1,5 @@
 <template lang="pug">
-  .move-crop-task
+  .move-crop-task(v-if="loading === false")
     .modal-header
       span.h4.font-bold Move Crops
     .modal-body
@@ -11,7 +11,10 @@
             option(v-for="area in areas" :value="area.uid") {{ area.name }}
           span.help-block.text-danger(v-show="errors.has('dest_area_id')") {{ errors.first('dest_area_id') }}
         .form-group
-          label(for="quantity") How many of tom-ail-cra-3nov do you want to move?
+          label(for="quantity")
+            | How many of 
+            span.identifier-sm {{ crop.batch_id }}
+            |  do you want to move?
           input.form-control#quantity(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
@@ -22,25 +25,36 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
+import { StubTask, StubCrop } from '@/stores/stubs'
 export default {
   name: "MoveCropTask",
   computed : {
     ...mapGetters({
-      areas: 'getAllAreas'
+      areas: 'getAllAreas',
     })
   },
   data () {
     return {
+      loading: true,
+      crop: Object.assign({}, StubCrop),
       task: Object.assign({}, StubTask),
     }
   },
   mounted () {
     this.fetchAreas()
   },
+  created () {
+    this.getCropByUid(this.$route.params.id)
+      .then(({ data }) =>  {
+        this.loading = false
+        this.crop = data
+      })
+      .catch(error => console.log(error))
+  },
   methods: {
     ...mapActions([
-      'fetchAreas'
+      'fetchAreas',
+      'getCropByUid',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
