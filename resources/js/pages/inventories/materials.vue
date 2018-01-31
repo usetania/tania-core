@@ -2,7 +2,7 @@
   .material.col
     .wrapper-md
       modal(v-if="showModal" @close="showModal = false")
-        inventories-material-create
+        inventories-material-create-sc
       a.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="showModal = true")
         i.fa.fa-plus
         |Add Material
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import InventoriesMaterialCreate from '@/pages/inventories/materials-create.vue'
 import Modal from '@/components/modal.vue'
 export default {
   name: 'InventoriesMaterial',
@@ -33,7 +32,15 @@ export default {
     }
   },
   components: {
-    Modal, InventoriesMaterialCreate
+    Modal,
+    InventoriesMaterialCreate: () => import('./materials-create.vue'),
+    InventoriesMaterialCreateAc: () => import('./materials-create-ac.vue'),
+    InventoriesMaterialCreateGm: () => import('./materials-create-gm.vue'),
+    InventoriesMaterialCreateLc: () => import('./materials-create-lc.vue'),
+    InventoriesMaterialCreateO: () => import('./materials-create-o.vue'),
+    InventoriesMaterialCreatePh: () => import('./materials-create-ph.vue'),
+    InventoriesMaterialCreateS: () => import('./materials-create-s.vue'),
+    InventoriesMaterialCreateSc: () => import('./materials-create-sc.vue')
   },
 
 }

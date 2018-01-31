@@ -1,0 +1,85 @@
+<template lang="pug">
+
+</template>
+<template lang="pug">
+  .materials-create
+    .modal-header
+      span.h4.font-bold Add New Seed
+    .modal-body
+      form(@submit.prevent="validateBeforeSubmit")
+        .form-group
+          label.control-label(for="name") Variety Name
+          input#name.form-control(type="text" name="name")
+        .form-group
+          .row
+            .col-xs-6
+              label.control-label(for="type") Plant Type
+              select.form-control
+                option Flower
+                option Fruit
+                option Herb
+                option Ornamental Plant
+                option Staple Crop
+                option Tuber / Root
+                option Vegetable
+            .col-xs-6
+              label.control-label Produced by
+              input.form-control(type="text")
+        .form-group
+          .row
+            .col-xs-6
+              label(for="price") Price per Unit
+              .input-group.m-b
+                span.input-group-addon &euro;
+                input#price.form-control(type="text" name="price")
+            .col-xs-6
+              label() Add this Expense?
+              .radio
+                label.i-checks.i-checks-sm
+                  input(type="radio" value="yes" checked)
+                  i
+                  | Yes
+                label.i-checks.i-checks-sm
+                  input(type="radio" value="no")
+                  i
+                  | No
+        .form-group
+          .row
+            .col-xs-6
+              label.control-labe Quantity
+              .row
+                .col-xs-6
+                  select.form-control
+                    option Seeds
+                    option Packets
+                    option Gram
+                    option Kilogram
+                .col-xs-6
+                  input.form-control(type="text")
+            .col-xs-6
+              label.control-label(for="expiration_date") Expiration date
+              .input-group
+                input.form-control(type="text")
+                spab.input-group-btn
+                  button.btn.btn-default(type="button")
+                    i.fa.fa-calendar
+        .form-group
+          label.control-label Additional Notes
+          textarea.form-control(rows="3")
+        .form-group
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            i.fa.fa-plus
+            | Save
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+</template>
+
+<script>
+export default {
+  name: 'InventoriesMaterialsCreateS',
+  methods: {
+    validateBeforeSubmit () {
+
+    }
+  }
+}
+</script>
