@@ -73,11 +73,13 @@ import { mapActions, mapGetters } from 'vuex'
 import UploadComponent from '@/components/upload'
 export default {
   name: 'AreaIntro',
+  components: {
+    UploadComponent
+  },
   data () {
     return {
       message: Object.assign({}, StubMessage),
       area: Object.assign({}, StubArea),
-      filename : 'No file chosen',
       options: {
         types: Array.from(AreaTypes),
         locations: Array.from(AreaLocations),

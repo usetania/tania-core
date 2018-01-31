@@ -11,7 +11,7 @@ export default {
   name: "UploadComponent",
   data () {
     return {
-      filename: '',
+      filename: 'No file chosen',
     }
   },
   methods: {
