@@ -6,29 +6,31 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/storage"
 )
 
-type InventoryMaterialQueryInMemory struct {
-	Storage *storage.InventoryMaterialStorage
+type MaterialQueryInMemory struct {
+	Storage *storage.MaterialStorage
 }
 
-func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) query.InventoryMaterialQuery {
-	return &InventoryMaterialQueryInMemory{Storage: s}
+func NewMaterialQueryInMemory(s *storage.MaterialStorage) query.MaterialQuery {
+	return &MaterialQueryInMemory{Storage: s}
 }
 
-func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType domain.PlantType) <-chan query.QueryResult {
+func (q *MaterialQueryInMemory) FindAllSeedMaterialByPlantType(plantType domain.PlantType) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		inventories := []domain.InventoryMaterial{}
-		for _, val := range q.Storage.InventoryMaterialMap {
-			if val.PlantType == plantType {
-				inventories = append(inventories, val)
+		materials := []domain.Material{}
+		for _, val := range q.Storage.MaterialMap {
+			s, ok := val.Type.(domain.MaterialTypeSeed)
+
+			if ok && s.PlantType == plantType {
+				materials = append(materials, val)
 			}
 		}
 
-		result <- query.QueryResult{Result: inventories}
+		result <- query.QueryResult{Result: materials}
 
 		close(result)
 	}()
@@ -36,21 +38,23 @@ func (q *InventoryMaterialQueryInMemory) FindAllInventoryByPlantType(plantType d
 	return result
 }
 
-func (q *InventoryMaterialQueryInMemory) FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan query.QueryResult {
+func (q *MaterialQueryInMemory) FindSeedMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		inventory := domain.InventoryMaterial{}
-		for _, val := range q.Storage.InventoryMaterialMap {
-			if val.PlantType == plantType && val.Variety == variety {
-				inventory = val
+		material := domain.Material{}
+		for _, val := range q.Storage.MaterialMap {
+			s, ok := val.Type.(domain.MaterialTypeSeed)
+
+			if ok && s.PlantType == plantType && val.Name == name {
+				material = val
 			}
 		}
 
-		result <- query.QueryResult{Result: inventory}
+		result <- query.QueryResult{Result: material}
 
 		close(result)
 	}()

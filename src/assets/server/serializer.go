@@ -47,17 +47,10 @@ type DetailReservoir struct {
 
 type ReservoirBucket struct{ domain.Bucket }
 type ReservoirTap struct{ domain.Tap }
-type PlantType struct{ domain.PlantType }
-
-type InventoryMaterial struct {
-	UID       uuid.UUID `json:"uid"`
-	PlantType PlantType `json:"plant_type"`
-	Variety   string    `json:"variety"`
-}
 
 type AvailableInventory struct {
-	PlantType PlantType `json:"plant_type"`
-	Varieties []string  `json:"varieties"`
+	PlantType string   `json:"plant_type"`
+	Names     []string `json:"names"`
 }
 
 type SortedAreaNotes []domain.AreaNote
@@ -239,15 +232,15 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		repoResult = <-s.InventoryMaterialRepo.FindByID(v.Inventory.UID.String())
+		repoResult = <-s.MaterialRepo.FindByID(v.Inventory.UID.String())
 		if repoResult.Error != nil {
 			return DetailArea{}, repoResult.Error
 		}
 
-		inv, ok := repoResult.Result.(domain.InventoryMaterial)
-		if !ok {
-			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
+		// mat, ok := repoResult.Result.(domain.Material)
+		// if !ok {
+		// 	return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		// }
 
 		now := time.Now()
 		diff := now.Sub(v.CreatedDate)
@@ -255,8 +248,8 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 
 		crops[i].DaysSinceSeeding = days
 		crops[i].InitialArea.Name = a.Name
-		crops[i].Inventory.PlantType = inv.PlantType.Code()
-		crops[i].Inventory.Variety = inv.Variety
+		// crops[i].Inventory.PlantType = inv.PlantType.Code()
+		// crops[i].Inventory.Variety = inv.Variety
 	}
 
 	detailArea.Crops = crops
@@ -282,27 +275,31 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 	return detailArea, nil
 }
 
-func MapToPlantType(plantTypes []domain.PlantType) []PlantType {
-	pt := make([]PlantType, len(plantTypes))
+func MapToPlantType(plantTypes []domain.PlantType) []string {
+	pt := make([]string, len(plantTypes))
 
 	for i, v := range plantTypes {
-		pt[i] = PlantType{PlantType: v}
+		pt[i] = v.Code
 	}
 
 	return pt
 }
 
-func MapToAvailableInventories(inventories []domain.InventoryMaterial) []AvailableInventory {
+func MapToAvailableInventories(materials []domain.Material) []AvailableInventory {
 	ai := make(map[string]AvailableInventory, 0)
 
 	// Convert domain.InventoryMaterial to AvailableInventory first with Map
-	for _, v := range inventories {
-		inv := AvailableInventory{
-			PlantType: PlantType{PlantType: v.PlantType},
-			Varieties: append(ai[v.PlantType.Code()].Varieties, v.Variety),
-		}
+	for _, v := range materials {
+		s, ok := v.Type.(domain.MaterialTypeSeed)
 
-		ai[v.PlantType.Code()] = inv
+		if ok {
+			mat := AvailableInventory{
+				PlantType: s.PlantType.Code,
+				Names:     append(ai[s.PlantType.Code].Names, v.Name),
+			}
+
+			ai[s.PlantType.Code] = mat
+		}
 	}
 
 	// From Map, we need to change it to slice for the json response purpose
@@ -312,14 +309,6 @@ func MapToAvailableInventories(inventories []domain.InventoryMaterial) []Availab
 	}
 
 	return aiSlice
-}
-
-func MapToInventoryMaterial(inventoryMaterial domain.InventoryMaterial) InventoryMaterial {
-	return InventoryMaterial{
-		UID:       inventoryMaterial.UID,
-		PlantType: PlantType{PlantType: inventoryMaterial.PlantType},
-		Variety:   inventoryMaterial.Variety,
-	}
 }
 
 func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
@@ -394,13 +383,5 @@ func (rt ReservoirTap) MarshalJSON() ([]byte, error) {
 		Type string `json:"type"`
 	}{
 		Type: rt.Type(),
-	})
-}
-
-func (pt PlantType) MarshalJSON() ([]byte, error) {
-	return json.Marshal(struct {
-		Code string `json:"code"`
-	}{
-		Code: pt.PlantType.Code(),
 	})
 }

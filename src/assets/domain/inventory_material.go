@@ -8,16 +8,16 @@ import (
 )
 
 type Material struct {
-	UID            uuid.UUID
-	Name           string
-	PricePerUnit   Money
-	Type           MaterialType
-	Quantity       float32
-	QuantityUnit   MaterialQuantityUnit
-	ExpirationDate time.Time
-	Notes          string
-	IsExpense      bool
-	ProducedBy     string
+	UID            uuid.UUID            `json:"uid"`
+	Name           string               `json:"name"`
+	PricePerUnit   Money                `json:"price_per_unit"`
+	Type           MaterialType         `json:"type"`
+	Quantity       float32              `json:"quantity"`
+	QuantityUnit   MaterialQuantityUnit `json:"quantity_unit"`
+	ExpirationDate time.Time            `json:"expiration_date"`
+	Notes          string               `json:"notes"`
+	IsExpense      bool                 `json:"is_expense"`
+	ProducedBy     string               `json:"produced_by"`
 }
 
 const (

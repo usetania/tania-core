@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -17,14 +18,14 @@ import (
 
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
-	FarmRepo               repository.FarmRepository
-	ReservoirRepo          repository.ReservoirRepository
-	AreaRepo               repository.AreaRepository
-	AreaQuery              query.AreaQuery
-	InventoryMaterialRepo  repository.InventoryMaterialRepository
-	InventoryMaterialQuery query.InventoryMaterialQuery
-	CropQuery              query.CropQuery
-	File                   File
+	FarmRepo      repository.FarmRepository
+	ReservoirRepo repository.ReservoirRepository
+	AreaRepo      repository.AreaRepository
+	AreaQuery     query.AreaQuery
+	MaterialRepo  repository.MaterialRepository
+	MaterialQuery query.MaterialQuery
+	CropQuery     query.CropQuery
+	File          File
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -32,7 +33,7 @@ func NewFarmServer(
 	farmStorage *storage.FarmStorage,
 	areaStorage *storage.AreaStorage,
 	reservoirStorage *storage.ReservoirStorage,
-	inventoryMaterialStorage *storage.InventoryMaterialStorage,
+	materialStorage *storage.MaterialStorage,
 	cropStorage *growthstorage.CropStorage,
 ) (*FarmServer, error) {
 	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
@@ -42,20 +43,20 @@ func NewFarmServer(
 
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(reservoirStorage)
 
-	inventoryMaterialRepo := repository.NewInventoryMaterialRepositoryInMemory(inventoryMaterialStorage)
-	inventoryMaterialQuery := inmemory.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
+	materialRepo := repository.NewMaterialRepositoryInMemory(materialStorage)
+	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
 
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
 	farmServer := FarmServer{
-		FarmRepo:               farmRepo,
-		ReservoirRepo:          reservoirRepo,
-		AreaRepo:               areaRepo,
-		AreaQuery:              areaQuery,
-		InventoryMaterialRepo:  inventoryMaterialRepo,
-		InventoryMaterialQuery: inventoryMaterialQuery,
-		CropQuery:              cropQuery,
-		File:                   LocalFile{},
+		FarmRepo:      farmRepo,
+		ReservoirRepo: reservoirRepo,
+		AreaRepo:      areaRepo,
+		AreaQuery:     areaQuery,
+		MaterialRepo:  materialRepo,
+		MaterialQuery: materialQuery,
+		CropQuery:     cropQuery,
+		File:          LocalFile{},
 	}
 
 	return &farmServer, nil
@@ -66,7 +67,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 	g.GET("/inventories/plant_types", s.GetInventoryPlantTypes)
 	g.GET("/inventories", s.GetAvailableInventories)
-	g.POST("/inventories", s.SaveInventory)
+	g.POST("/inventories/material_seed", s.SaveMaterialSeed)
 
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
@@ -710,47 +711,59 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 }
 
 func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
-	plantTypes := MapToPlantType(domain.GetPlantTypes())
+	data := make(map[string][]string)
 
-	return c.JSON(http.StatusOK, plantTypes)
+	plantTypes := MapToPlantType(domain.PlantTypes())
+
+	data["data"] = plantTypes
+
+	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) SaveInventory(c echo.Context) error {
-	data := make(map[string]InventoryMaterial)
+func (s *FarmServer) SaveMaterialSeed(c echo.Context) error {
+	data := make(map[string]domain.Material)
 
-	pType := c.FormValue("plant_type")
-	variety := c.FormValue("variety")
+	name := c.FormValue("name")
+	plantType := c.FormValue("plant_type")
+	pricePerUnit := c.FormValue("price_per_unit")
+	currencyCode := c.FormValue("currency_code")
+	quantity := c.FormValue("quantity")
+	quantityUnit := c.FormValue("quantity_unit")
+	// expirationDate := c.FormValue("expiration_date")
+	// notes := c.FormValue("notes")
+	// isExpense := c.FormValue("is_expense")
+	// producedBy := c.FormValue("produced_by")
 
 	// Validate //
-	var plantType domain.PlantType
-	switch pType {
-	case "vegetable":
-		plantType = domain.Vegetable{}
-	case "fruit":
-		plantType = domain.Fruit{}
-	case "herb":
-		plantType = domain.Herb{}
-	case "flower":
-		plantType = domain.Flower{}
-	case "tree":
-		plantType = domain.Tree{}
-	default:
-		return Error(c, NewRequestValidationError(NOT_FOUND, "plant_type"))
+	pt := domain.GetPlantType(plantType)
+	if pt == (domain.PlantType{}) {
+		return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+	}
+
+	q, err := strconv.ParseFloat(quantity, 32)
+	if err != nil {
+		return Error(c, NewRequestValidationError(INVALID_OPTION, "quantity"))
 	}
 
 	// Process //
-	inventoryMaterial, err := domain.CreateInventoryMaterial(plantType, variety)
+	mts, err := domain.CreateMaterialTypeSeed(pt.Code)
+	if err != nil {
+		return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+	}
+
+	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mts, float32(q), quantityUnit)
+
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// Persist //
-	err = <-s.InventoryMaterialRepo.Save(&inventoryMaterial)
+	err = <-s.MaterialRepo.Save(&material)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	data["data"] = MapToInventoryMaterial(inventoryMaterial)
+	data["data"] = material
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -759,14 +772,14 @@ func (s *FarmServer) GetAvailableInventories(c echo.Context) error {
 	data := make(map[string][]AvailableInventory)
 
 	// Process //
-	result := <-s.InventoryMaterialRepo.FindAll()
+	result := <-s.MaterialRepo.FindAll()
 
-	inventories, ok := result.Result.([]domain.InventoryMaterial)
+	materials, ok := result.Result.([]domain.Material)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	data["data"] = MapToAvailableInventories(inventories)
+	data["data"] = MapToAvailableInventories(materials)
 
 	return c.JSON(http.StatusOK, data)
 }

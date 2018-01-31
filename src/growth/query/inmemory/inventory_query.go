@@ -7,10 +7,10 @@ import (
 )
 
 type InventoryMaterialQueryInMemory struct {
-	Storage *storage.InventoryMaterialStorage
+	Storage *storage.MaterialStorage
 }
 
-func NewInventoryMaterialQueryInMemory(s *storage.InventoryMaterialStorage) query.InventoryMaterialQuery {
+func NewInventoryMaterialQueryInMemory(s *storage.MaterialStorage) query.InventoryMaterialQuery {
 	return InventoryMaterialQueryInMemory{Storage: s}
 }
 
@@ -22,11 +22,11 @@ func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan 
 		defer s.Storage.Lock.RUnlock()
 
 		ci := query.CropInventoryQueryResult{}
-		for _, val := range s.Storage.InventoryMaterialMap {
+		for _, val := range s.Storage.MaterialMap {
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
-				ci.PlantTypeCode = val.PlantType.Code()
-				ci.Variety = val.Variety
+				// ci.PlantTypeCode = val.PlantType.Code()
+				// ci.Variety = val.Variety
 			}
 		}
 
@@ -46,12 +46,12 @@ func (q InventoryMaterialQueryInMemory) FindInventoryByPlantTypeCodeAndVariety(p
 		defer q.Storage.Lock.RUnlock()
 
 		ci := query.CropInventoryQueryResult{}
-		for _, val := range q.Storage.InventoryMaterialMap {
-			if val.PlantType.Code() == plantTypeCode && val.Variety == variety {
-				ci.UID = val.UID
-				ci.PlantTypeCode = val.PlantType.Code()
-				ci.Variety = val.Variety
-			}
+		for _, val := range q.Storage.MaterialMap {
+			// if val.PlantType.Code() == plantTypeCode && val.Variety == variety {
+			ci.UID = val.UID
+			// ci.PlantTypeCode = val.PlantType.Code()
+			// ci.Variety = val.Variety
+			// }
 		}
 
 		result <- query.QueryResult{Result: ci}

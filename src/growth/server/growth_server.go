@@ -34,14 +34,14 @@ type GrowthServer struct {
 func NewGrowthServer(
 	cropStorage *storage.CropStorage,
 	areaStorage *assetsstorage.AreaStorage,
-	inventoryMaterialStorage *assetsstorage.InventoryMaterialStorage,
+	materialStorage *assetsstorage.MaterialStorage,
 	farmStorage *assetsstorage.FarmStorage,
 ) (*GrowthServer, error) {
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
-	inventoryMaterialQuery := inmemory.NewInventoryMaterialQueryInMemory(inventoryMaterialStorage)
+	inventoryMaterialQuery := inmemory.NewInventoryMaterialQueryInMemory(materialStorage)
 	farmQuery := inmemory.NewFarmQueryInMemory(farmStorage)
 
 	cropService := service.CropServiceInMemory{

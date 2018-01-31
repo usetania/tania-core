@@ -16,9 +16,9 @@ type CropQuery interface {
 	CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
-type InventoryMaterialQuery interface {
-	FindAllInventoryByPlantType(plantType domain.PlantType) <-chan QueryResult
-	FindInventoryByPlantTypeAndVariety(plantType domain.PlantType, variety string) <-chan QueryResult
+type MaterialQuery interface {
+	FindAllSeedMaterialByPlantType(plantType domain.PlantType) <-chan QueryResult
+	FindSeedMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan QueryResult
 }
 
 type QueryResult struct {
@@ -48,9 +48,16 @@ type InitialArea struct {
 }
 
 type Inventory struct {
-	UID       uuid.UUID `json:"uid"`
-	PlantType string    `json:"plant_type"`
-	Variety   string    `json:"variety"`
+	UID            uuid.UUID                   `json:"uid"`
+	Name           string                      `json:"name"`
+	PricePerUnit   domain.Money                `json:"price_per_unit"`
+	Type           domain.MaterialType         `json:"type"`
+	Quantity       float32                     `json:"quantity"`
+	QuantityUnit   domain.MaterialQuantityUnit `json:"quantity_unit"`
+	ExpirationDate time.Time                   `json:"expiration_date"`
+	Notes          string                      `json:"notes"`
+	IsExpense      bool                        `json:"is_expense"`
+	ProducedBy     string                      `json:"produced_by"`
 }
 
 type Container struct {

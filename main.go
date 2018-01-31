@@ -2,10 +2,8 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/Tanibox/tania-server/config"
@@ -14,7 +12,6 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/server"
 	assetsserver "github.com/Tanibox/tania-server/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
-	growthdomain "github.com/Tanibox/tania-server/src/growth/domain"
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
@@ -37,14 +34,14 @@ func main() {
 	farmStorage := assetsstorage.CreateFarmStorage()
 	areaStorage := assetsstorage.CreateAreaStorage()
 	reservoirStorage := assetsstorage.CreateReservoirStorage()
-	inventoryMaterialStorage := assetsstorage.CreateInventoryMaterialStorage()
+	materialStorage := assetsstorage.CreateMaterialStorage()
 	cropStorage := growthstorage.CreateCropStorage()
 
 	farmServer, err := server.NewFarmServer(
 		farmStorage,
 		areaStorage,
 		reservoirStorage,
-		inventoryMaterialStorage,
+		materialStorage,
 		cropStorage,
 	)
 	if err != nil {
@@ -61,7 +58,7 @@ func main() {
 	growthServer, err := growthserver.NewGrowthServer(
 		cropStorage,
 		areaStorage,
-		inventoryMaterialStorage,
+		materialStorage,
 		farmStorage,
 	)
 	if err != nil {
@@ -71,7 +68,7 @@ func main() {
 	if *config.Config.DemoMode {
 		initDataDemo(
 			farmServer, growthServer,
-			farmStorage, areaStorage, reservoirStorage, inventoryMaterialStorage, cropStorage,
+			farmStorage, areaStorage, reservoirStorage, materialStorage, cropStorage,
 		)
 	}
 
@@ -193,7 +190,7 @@ func initDataDemo(
 	farmStorage *assetsstorage.FarmStorage,
 	areaStorage *assetsstorage.AreaStorage,
 	reservoirStorage *assetsstorage.ReservoirStorage,
-	inventoryMaterialStorage *assetsstorage.InventoryMaterialStorage,
+	materialStorage *assetsstorage.MaterialStorage,
 	cropStorage *growthstorage.CropStorage,
 ) {
 	log.Info("==== DEMO DATA SEEDED ====")
@@ -298,108 +295,108 @@ func initDataDemo(
 	farmStorage.FarmMap[farmUID] = farm1
 	areaStorage.AreaMap[uid] = areaGrowing
 
-	uid, _ = uuid.NewV4()
-	inventory1 := assetsdomain.InventoryMaterial{
-		UID:       uid,
-		PlantType: assetsdomain.Vegetable{},
-		Variety:   "Bayam Lu Hsieh",
-	}
+	// uid, _ = uuid.NewV4()
+	// inventory1 := assetsdomain.Material{
+	// 	UID:       uid,
+	// 	PlantType: assetsdomain.Vegetable{},
+	// 	Variety:   "Bayam Lu Hsieh",
+	// }
 
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory1
+	// inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory1
 
-	uid, _ = uuid.NewV4()
-	inventory2 := assetsdomain.InventoryMaterial{
-		UID:       uid,
-		PlantType: assetsdomain.Vegetable{},
-		Variety:   "Tomat Super One",
-	}
+	// uid, _ = uuid.NewV4()
+	// inventory2 := assetsdomain.InventoryMaterial{
+	// 	UID:       uid,
+	// 	PlantType: assetsdomain.Vegetable{},
+	// 	Variety:   "Tomat Super One",
+	// }
 
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory2
+	// inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory2
 
-	uid, _ = uuid.NewV4()
-	inventory3 := assetsdomain.InventoryMaterial{
-		UID:       uid,
-		PlantType: assetsdomain.Fruit{},
-		Variety:   "Apple Rome Beauty",
-	}
+	// uid, _ = uuid.NewV4()
+	// inventory3 := assetsdomain.InventoryMaterial{
+	// 	UID:       uid,
+	// 	PlantType: assetsdomain.Fruit{},
+	// 	Variety:   "Apple Rome Beauty",
+	// }
 
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory3
+	// inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory3
 
-	uid, _ = uuid.NewV4()
-	inventory4 := assetsdomain.InventoryMaterial{
-		UID:       uid,
-		PlantType: assetsdomain.Fruit{},
-		Variety:   "Orange Sweet Mandarin",
-	}
+	// uid, _ = uuid.NewV4()
+	// inventory4 := assetsdomain.InventoryMaterial{
+	// 	UID:       uid,
+	// 	PlantType: assetsdomain.Fruit{},
+	// 	Variety:   "Orange Sweet Mandarin",
+	// }
 
-	inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
+	// inventoryMaterialStorage.InventoryMaterialMap[uid] = inventory4
 
-	/******************************
-	CROP
-	******************************/
-	now := strings.ToLower(time.Now().Format("2Jan"))
+	// /******************************
+	// CROP
+	// ******************************/
+	// now := strings.ToLower(time.Now().Format("2Jan"))
 
-	uid, _ = uuid.NewV4()
+	// uid, _ = uuid.NewV4()
 
-	noteUID, _ = uuid.NewV4()
-	cropNotes := make(map[uuid.UUID]growthdomain.CropNote, 0)
-	cropNotes[noteUID] = growthdomain.CropNote{
-		UID:         noteUID,
-		Content:     "This crop must be intensely watched because its expensive",
-		CreatedDate: time.Now(),
-	}
+	// noteUID, _ = uuid.NewV4()
+	// cropNotes := make(map[uuid.UUID]growthdomain.CropNote, 0)
+	// cropNotes[noteUID] = growthdomain.CropNote{
+	// 	UID:         noteUID,
+	// 	Content:     "This crop must be intensely watched because its expensive",
+	// 	CreatedDate: time.Now(),
+	// }
 
-	crop1 := growthdomain.Crop{
-		UID:     uid,
-		BatchID: fmt.Sprintf("%s%s", "bay-lu-hsi-", now),
-		Status:  growthdomain.CropStatus{Code: growthdomain.CropActive},
-		Type:    growthdomain.CropType{Code: growthdomain.CropTypeSeeding},
-		Container: growthdomain.CropContainer{
-			Quantity: 10,
-			Type:     growthdomain.Tray{Cell: 15},
-		},
-		InventoryUID: inventory1.UID,
-		FarmUID:      farmUID,
-		CreatedDate:  time.Now(),
-		InitialArea: growthdomain.InitialArea{
-			AreaUID:         areaSeeding.UID,
-			InitialQuantity: 10,
-			CurrentQuantity: 10,
-		},
-		Notes: cropNotes,
-	}
+	// crop1 := growthdomain.Crop{
+	// 	UID:     uid,
+	// 	BatchID: fmt.Sprintf("%s%s", "bay-lu-hsi-", now),
+	// 	Status:  growthdomain.CropStatus{Code: growthdomain.CropActive},
+	// 	Type:    growthdomain.CropType{Code: growthdomain.CropTypeSeeding},
+	// 	Container: growthdomain.CropContainer{
+	// 		Quantity: 10,
+	// 		Type:     growthdomain.Tray{Cell: 15},
+	// 	},
+	// 	InventoryUID: inventory1.UID,
+	// 	FarmUID:      farmUID,
+	// 	CreatedDate:  time.Now(),
+	// 	InitialArea: growthdomain.InitialArea{
+	// 		AreaUID:         areaSeeding.UID,
+	// 		InitialQuantity: 10,
+	// 		CurrentQuantity: 10,
+	// 	},
+	// 	Notes: cropNotes,
+	// }
 
-	cropStorage.CropMap[uid] = crop1
+	// cropStorage.CropMap[uid] = crop1
 
-	uid, _ = uuid.NewV4()
+	// uid, _ = uuid.NewV4()
 
-	noteUID, _ = uuid.NewV4()
-	cropNotes = make(map[uuid.UUID]growthdomain.CropNote, 0)
-	cropNotes[noteUID] = growthdomain.CropNote{
-		UID:         noteUID,
-		Content:     "This crop must be intensely watched because its expensive",
-		CreatedDate: time.Now(),
-	}
+	// noteUID, _ = uuid.NewV4()
+	// cropNotes = make(map[uuid.UUID]growthdomain.CropNote, 0)
+	// cropNotes[noteUID] = growthdomain.CropNote{
+	// 	UID:         noteUID,
+	// 	Content:     "This crop must be intensely watched because its expensive",
+	// 	CreatedDate: time.Now(),
+	// }
 
-	crop2 := growthdomain.Crop{
-		UID:     uid,
-		BatchID: fmt.Sprintf("%s%s", "tom-sup-one-", now),
-		Status:  growthdomain.CropStatus{Code: growthdomain.CropActive},
-		Type:    growthdomain.CropType{Code: growthdomain.CropTypeSeeding},
-		Container: growthdomain.CropContainer{
-			Quantity: 50,
-			Type:     growthdomain.Pot{},
-		},
-		InventoryUID: inventory2.UID,
-		FarmUID:      farmUID,
-		CreatedDate:  time.Now(),
-		InitialArea: growthdomain.InitialArea{
-			AreaUID:         areaSeeding.UID,
-			InitialQuantity: 50,
-			CurrentQuantity: 50,
-		},
-		Notes: cropNotes,
-	}
+	// crop2 := growthdomain.Crop{
+	// 	UID:     uid,
+	// 	BatchID: fmt.Sprintf("%s%s", "tom-sup-one-", now),
+	// 	Status:  growthdomain.CropStatus{Code: growthdomain.CropActive},
+	// 	Type:    growthdomain.CropType{Code: growthdomain.CropTypeSeeding},
+	// 	Container: growthdomain.CropContainer{
+	// 		Quantity: 50,
+	// 		Type:     growthdomain.Pot{},
+	// 	},
+	// 	InventoryUID: inventory2.UID,
+	// 	FarmUID:      farmUID,
+	// 	CreatedDate:  time.Now(),
+	// 	InitialArea: growthdomain.InitialArea{
+	// 		AreaUID:         areaSeeding.UID,
+	// 		InitialQuantity: 50,
+	// 		CurrentQuantity: 50,
+	// 	},
+	// 	Notes: cropNotes,
+	// }
 
-	cropStorage.CropMap[uid] = crop2
+	// cropStorage.CropMap[uid] = crop2
 }
