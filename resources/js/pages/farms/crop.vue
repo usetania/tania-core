@@ -1,5 +1,7 @@
 <template lang="pug">
   .crop-detail.hbox(v-if="loading === false")
+    modal(v-if="showMoveCropModal" @close="showMoveCropModal = false")
+      moveCropTask
     .col
       .vbox
         .row-row
@@ -103,7 +105,7 @@
       .wrapper-md
         .m-b.text-md Activity
         .m-b
-          button.btn.btn-addon.btn-default
+          button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="showMoveCropModal = true")
             i.fa.fa-exchange
             | Move
         .m-b
@@ -141,14 +143,20 @@
 import { FindCropContainer } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop, StubNote } from '@/stores/stubs'
+import Modal from '@/components/modal'
 export default {
   name: 'FarmCrop',
+  components: {
+    moveCropTask: () => import('./activities/move-crop-task.vue'),
+    Modal
+  },
   data () {
     return {
       loading: true,
       crop: Object.assign({}, StubCrop),
       note: Object.assign({}, StubNote),
       cropNotes: [],
+      showMoveCropModal : false,
     }
   },
   created () {
