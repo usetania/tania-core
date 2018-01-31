@@ -2,6 +2,12 @@
   .crop-detail.hbox(v-if="loading === false")
     modal(v-if="showMoveCropModal" @close="showMoveCropModal = false")
       moveCropTask
+    modal(v-if="showDumpCropModal" @close="showDumpCropModal = false")
+      dumpCropTask
+    modal(v-if="showHarvestCropModal" @close="showHarvestCropModal = false")
+      harvestCropTask
+    modal(v-if="showUploadCropModal" @close="showUploadCropModal = false")
+      uploadCropTask
     .hbox
       .col
         .vbox
@@ -110,15 +116,15 @@
               i.fa.fa-exchange
               | Move
           .m-b
-            button.btn.btn-addon.btn-primary
+            button.btn.btn-addon.btn-primary(style="cursor: pointer;" @click="showDumpCropModal = true")
               i.fa.fa-trash
               | Dump
           .m-b
-            button.btn.btn-addon.btn-success
+            button.btn.btn-addon.btn-success(style="cursor: pointer;" @click="showHarvestCropModal = true")
               i.fa.fa-scissors
               | Harvest
           .m-b
-            button.btn.btn-addon.btn-dark
+            button.btn.btn-addon.btn-dark(style="cursor: pointer;" @click="showUploadCropModal = true")
               i.fa.fa-camera
               | Upload Photo
         .wrapper-md
@@ -149,6 +155,9 @@ export default {
   name: 'FarmCrop',
   components: {
     moveCropTask: () => import('./activities/move-crop-task.vue'),
+    dumpCropTask: () => import('./activities/dump-crop-task.vue'),
+    harvestCropTask: () => import('./activities/harvest-crop-task.vue'),
+    uploadCropTask: () => import('./activities/upload-crop-task.vue'),
     Modal
   },
   data () {
@@ -157,7 +166,10 @@ export default {
       crop: Object.assign({}, StubCrop),
       note: Object.assign({}, StubNote),
       cropNotes: [],
-      showMoveCropModal : false,
+      showMoveCropModal: false,
+      showDumpCropModal: false,
+      showHarvestCropModal: false,
+      showUploadCropModal: false,
     }
   },
   created () {

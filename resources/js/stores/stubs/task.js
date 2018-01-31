@@ -6,5 +6,7 @@ export default {
   type: '',
   source_area_id: '',
   dest_area_id: '',
-  quantity: ''
+  quantity: '',
+  type: '',
+  units: '',
 }
