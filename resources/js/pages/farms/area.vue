@@ -10,7 +10,8 @@
             .panel-heading
               span.h4.text-lt Basic info
             .item
-              img.img-full(:src="'/api/farms/' + farm.uid + '/areas/' + area.uid + '/photos'")
+              img.img-full(v-if="area.photo.filename.length > 0" :src="'/api/farms/' + farm.uid + '/areas/' + area.uid + '/photos'")
+              img.img-full(v-else :src="'/images/no-img.png'")
             .list-group.no-radius.alt
               .list-group-item
                 span.col-sm-7.text-muted.point Area Size {{ getSizeUnit(area.size.unit.symbol).label }}
