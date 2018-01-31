@@ -50,11 +50,7 @@
             .form-group
               label Select photo
                 small.text-muted (if any)
-              .row
-                .col-xs-12.text-truncate
-                  label.btn.btn-default.btn-file Browse
-                    input(type="file" @change="processFile($event)" style="display: none;")
-                  span.text-muted {{ filename }}
+              UploadComponent(@fileSelelected="fileSelelected")
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit")
             i.fa.fa-long-arrow-right
@@ -66,8 +62,12 @@
 import { AreaTypes, AreaLocations, AreaSizeUnits } from '@/stores/helpers/farms/area'
 import { StubArea, StubMessage } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
+import UploadComponent from '@/components/upload'
 export default {
   name: "FarmAreasCreate",
+  components: {
+    UploadComponent
+  },
   data () {
     return {
       message: Object.assign({}, StubMessage),
@@ -91,7 +91,8 @@ export default {
   methods: {
     ...mapActions([
       'createArea',
-      'fetchReservoirs'
+      'fetchReservoirs',
+      'fileSelelected',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -105,9 +106,8 @@ export default {
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
-    processFile (event) {
-      this.area.photo = event.target.files[0]
-      this.filename = event.target.files[0].name
+    fileSelelected (file) {
+      this.area.photo = file
     }
   }
 }

@@ -17,6 +17,7 @@ export default {
   methods: {
     processFile (event) {
       this.filename = event.target.files[0].name
+      this.$emit('fileSelelected', event.target.files[0])
     }
   }
 }

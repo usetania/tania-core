@@ -6,7 +6,7 @@
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label Choose photo
-          UploadComponent
+          UploadComponent(@fileSelelected="fileSelelected")
         .form-group
           small.text-muted.pull-right (max. 200 char)
           label(for="description") Describe a bit about this photo
@@ -35,6 +35,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'fileSelelected',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -45,6 +46,9 @@ export default {
     },
     create () {
     },
+    fileSelelected (file) {
+      this.task.photo = file
+    }
   }
 }
 </script>
