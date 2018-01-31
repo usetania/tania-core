@@ -6,11 +6,7 @@
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label Choose photo
-          .row
-            .col-xs-12.text-truncate
-              label.btn.btn-default.btn-file Browse
-                input(type="file" @change="processFile($event)" style="display: none;")
-              span.text-muted {{ filename }}
+          UploadComponent
         .form-group
           small.text-muted.pull-right (max. 200 char)
           label(for="description") Describe a bit about this photo
@@ -25,8 +21,12 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { StubTask } from '@/stores/stubs'
+import UploadComponent from '@/components/upload'
 export default {
   name: "UploadCropTask",
+  components: {
+    UploadComponent
+  },
   data () {
     return {
       task: Object.assign({}, StubTask),
@@ -45,10 +45,6 @@ export default {
     },
     create () {
     },
-    processFile (event) {
-      this.task.photo = event.target.files[0]
-      this.filename = event.target.files[0].name
-    }
   }
 }
 </script>
