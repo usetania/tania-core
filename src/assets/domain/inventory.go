@@ -10,35 +10,35 @@ type InventoryMaterial struct {
 	Variety   string    `json:"variety"`
 }
 
-type PlantType interface {
-	Code() string
-}
+// type PlantType interface {
+// 	Code() string
+// }
 
-type Vegetable struct{}
+// type Vegetable struct{}
 
-func (v Vegetable) Code() string { return "vegetable" }
+// func (v Vegetable) Code() string { return "vegetable" }
 
-type Fruit struct{}
+// type Fruit struct{}
 
-func (v Fruit) Code() string { return "fruit" }
+// func (v Fruit) Code() string { return "fruit" }
 
-type Herb struct{}
+// type Herb struct{}
 
-func (v Herb) Code() string { return "herb" }
+// func (v Herb) Code() string { return "herb" }
 
-type Flower struct{}
+// type Flower struct{}
 
-func (v Flower) Code() string { return "flower" }
+// func (v Flower) Code() string { return "flower" }
 
-type Tree struct{}
+// type Tree struct{}
 
-func (v Tree) Code() string { return "tree" }
+// func (v Tree) Code() string { return "tree" }
 
 func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMaterial, error) {
-	err := validatePlantType(plantType)
-	if err != nil {
-		return InventoryMaterial{}, err
-	}
+	// err := validatePlantType(plantType)
+	// if err != nil {
+	// 	return InventoryMaterial{}, err
+	// }
 
 	if variety == "" {
 		return InventoryMaterial{}, InventoryMaterialError{Code: InventoryMaterialInvalidVariety}
@@ -58,26 +58,26 @@ func CreateInventoryMaterial(plantType PlantType, variety string) (InventoryMate
 
 func CreateInventoryTools() {}
 
-func GetPlantTypes() []PlantType {
-	return []PlantType{
-		Vegetable{},
-		Fruit{},
-		Herb{},
-		Flower{},
-		Tree{},
-	}
-}
+// func GetPlantTypes() []PlantType {
+// 	return []PlantType{
+// 		Vegetable{},
+// 		Fruit{},
+// 		Herb{},
+// 		Flower{},
+// 		Tree{},
+// 	}
+// }
 
-func validatePlantType(plantType PlantType) error {
-	switch plantType.(type) {
-	case Vegetable:
-	case Fruit:
-	case Herb:
-	case Flower:
-	case Tree:
-	default:
-		return InventoryMaterialError{Code: InventoryMaterialInvalidPlantType}
-	}
+// func validatePlantType(plantType PlantType) error {
+// 	switch plantType.(type) {
+// 	case Vegetable:
+// 	case Fruit:
+// 	case Herb:
+// 	case Flower:
+// 	case Tree:
+// 	default:
+// 		return InventoryMaterialError{Code: InventoryMaterialInvalidPlantType}
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
