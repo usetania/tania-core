@@ -92,7 +92,6 @@ export default {
     ...mapActions([
       'createArea',
       'fetchReservoirs',
-      'fileSelelected',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {

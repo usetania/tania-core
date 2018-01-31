@@ -19,7 +19,6 @@
 
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
 import { StubTask } from '@/stores/stubs'
 import UploadComponent from '@/components/upload'
 export default {
@@ -34,9 +33,6 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'fileSelelected',
-    ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
