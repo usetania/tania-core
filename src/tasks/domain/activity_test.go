@@ -1,12 +1,11 @@
 package domain
 
 import (
-	"testing"
-
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"testing"
 )
 
 type TaskServiceMock struct {
@@ -25,95 +24,107 @@ func (m TaskServiceMock) FindCropByID(uid uuid.UUID) ServiceResult {
 func TestCreateActivity(t *testing.T) {
 	taskServiceMock := new(TaskServiceMock)
 
-	source_areaUID, _ := uuid.NewV4()
-	source_areaUID_notexist, _ := uuid.NewV4()
-	dest_areaUID, _ := uuid.NewV4()
-	dest_areaUID_notexist, _ := uuid.NewV4()
-	//cropUID, _ := uuid.NewV4()
-	source_areaServiceResult := ServiceResult{
-		Result: query.TaskAreaQueryResult{UID: source_areaUID},
-	}
-	dest_areaServiceResult := ServiceResult{
-		Result: query.TaskAreaQueryResult{UID: dest_areaUID},
-	}
-	//cropServiceResult := ServiceResult{
-	//	Result: query.TaskCropQueryResult{UID: cropUID},
-	//}
-
-	taskServiceMock.On("FindAreaByID", source_areaUID).Return(source_areaServiceResult)
-	taskServiceMock.On("FindAreaByID", dest_areaUID).Return(dest_areaServiceResult)
-	//taskServiceMock.On("FindCropByID", cropUID).Return(cropServiceResult)
+	source_area_id, _ := uuid.NewV4()
+	source_area_id_not_exist, _ := uuid.NewV4()
+	dest_area_id, _ := uuid.NewV4()
+	dest_area_id_not_exist, _ := uuid.NewV4()
 
 	// Harvest Activity
 	var tests_harvestactivity = []struct {
-		source_area_id     string
+		source_area_id     uuid.UUID
 		quantity           string
+		expectedMockError  error
 		eexpectedTaskError error
 	}{
 		// empty source_area_id
-		{"", "67", TaskError{TaskErrorActivitySourceInvalidCode}},
+		{uuid.UUID{}, "67", TaskError{TaskErrorActivitySourceInvalidCode}, nil},
 		// invalid source_area_id
-		{source_areaUID_notexist.String(), "67", TaskError{TaskErrorActivitySourceInvalidCode}},
+		{source_area_id_not_exist, "67", TaskError{TaskErrorActivitySourceInvalidCode}, nil},
 		// invalid quantity
-		{source_areaUID.String(), "nan", TaskError{TaskErrorActivityQuantityInvalidCode}},
+		{source_area_id, "nan", nil, TaskError{TaskErrorActivityQuantityInvalidCode}},
 	}
 
 	for _, test := range tests_harvestactivity {
+		source_areaServiceResult := ServiceResult{
+			Result: query.TaskAreaQueryResult{UID: test.source_area_id},
+			Error:  test.expectedMockError,
+		}
+		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(source_areaServiceResult)
+		_, err := CreateHarvestActivity(taskServiceMock, test.source_area_id.String(), test.quantity)
 
-		_, err := CreateHarvestActivity(taskServiceMock, test.source_area_id, test.quantity)
+		taskServiceMock.AssertExpectations(t)
 
-		//taskServiceMock.AssertExpectations(t)
-
-		assert.Equal(t, test.eexpectedTaskError, err)
+		if test.expectedMockError != nil {
+			assert.Equal(t, test.expectedMockError, err)
+		} else {
+			assert.Equal(t, test.eexpectedTaskError, err)
+		}
 	}
 
 	// Dump Activity
 	var tests_dumpactivity = []struct {
-		source_area_id     string
+		source_area_id     uuid.UUID
 		quantity           string
+		query_result       query.TaskAreaQueryResult
 		eexpectedTaskError error
 	}{
 		// empty source_area_id
-		{"", "67", TaskError{TaskErrorActivitySourceInvalidCode}},
+		{uuid.UUID{}, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivitySourceInvalidCode}},
 		// invalid source_area_id
-		{source_areaUID_notexist.String(), "67", TaskError{TaskErrorActivitySourceInvalidCode}},
+		{source_area_id_not_exist, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivitySourceInvalidCode}},
 		// invalid quantity
-		{source_areaUID.String(), "nan", TaskError{TaskErrorActivityQuantityInvalidCode}},
+		{source_area_id, "nan", query.TaskAreaQueryResult{UID: source_area_id}, TaskError{TaskErrorActivityQuantityInvalidCode}},
 	}
 
 	for _, test := range tests_dumpactivity {
-
-		_, err := CreateDumpActivity(taskServiceMock, test.source_area_id, test.quantity)
-
-		//taskServiceMock.AssertExpectations(t)
+		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(ServiceResult{Result: test.query_result})
+		_, err := CreateDumpActivity(taskServiceMock, test.source_area_id.String(), test.quantity)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
 
 	// Move To Area Activity
 	var tests_movetoareaactivity = []struct {
-		source_area_id     string
-		dest_area_id       string
+		source_area_id     uuid.UUID
+		dest_area_id       uuid.UUID
 		quantity           string
+		query_result       query.TaskAreaQueryResult
 		eexpectedTaskError error
 	}{
 		// empty source_area_id
-		{"", dest_areaUID.String(), "67", TaskError{TaskErrorActivitySourceInvalidCode}},
+		{uuid.UUID{}, dest_area_id, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivitySourceInvalidCode}},
 		// invalid source_area_id
-		{source_areaUID_notexist.String(), dest_areaUID.String(), "67", TaskError{TaskErrorActivitySourceInvalidCode}},
-		// empty dest_area_id
-		{source_areaUID.String(), "", "67", TaskError{TaskErrorActivityDestinationInvalidCode}},
-		// invalid dest_area_id
-		{source_areaUID.String(), dest_areaUID_notexist.String(), "67", TaskError{TaskErrorActivityDestinationInvalidCode}},
-		// invalid quantity
-		{source_areaUID.String(), dest_areaUID.String(), "nan", TaskError{TaskErrorActivityQuantityInvalidCode}},
+		{source_area_id_not_exist, dest_area_id, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivitySourceInvalidCode}},
 	}
 
 	for _, test := range tests_movetoareaactivity {
 
-		_, err := CreateMoveToAreaActivity(taskServiceMock, test.source_area_id, test.dest_area_id, test.quantity)
+		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(ServiceResult{Result: test.query_result})
+		_, err := CreateMoveToAreaActivity(taskServiceMock, test.source_area_id.String(), test.dest_area_id.String(), test.quantity)
 
-		//taskServiceMock.AssertExpectations(t)
+		assert.Equal(t, test.eexpectedTaskError, err)
+	}
+
+	var tests_movetoareaactivity2 = []struct {
+		source_area_id     uuid.UUID
+		dest_area_id       uuid.UUID
+		quantity           string
+		query_result       query.TaskAreaQueryResult
+		eexpectedTaskError error
+	}{
+		// empty dest_area_id
+		{source_area_id, uuid.UUID{}, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityDestinationInvalidCode}},
+		// invalid dest_area_id
+		{source_area_id, dest_area_id_not_exist, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityDestinationInvalidCode}},
+		// invalid quantity
+		//{source_area_id, dest_area_id, "nan", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityQuantityInvalidCode}},
+	}
+
+	for _, test := range tests_movetoareaactivity2 {
+
+		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(ServiceResult{Result: query.TaskAreaQueryResult{UID: test.source_area_id}})
+		taskServiceMock.On("FindAreaByID", test.dest_area_id).Return(ServiceResult{Result: test.query_result})
+		_, err := CreateMoveToAreaActivity(taskServiceMock, test.source_area_id.String(), test.dest_area_id.String(), test.quantity)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}

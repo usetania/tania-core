@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )
@@ -34,12 +33,7 @@ type Task struct {
 func CreateTask(task_service TaskService, description string, due_date *time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
 	// add validation
 
-	err := validateTaskDescription(description)
-	if err != nil {
-		return Task{}, err
-	}
-
-	err = validateTaskDueDate(due_date)
+	err := validateTaskDueDate(due_date)
 	if err != nil {
 		return Task{}, err
 	}
@@ -68,8 +62,6 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 		return Task{}, err
 	}
 
-	fmt.Print(activity.Type())
-
 	return Task{
 		UID:          uid,
 		Description:  description,
@@ -87,10 +79,6 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 // ChangeDescription
 func (t *Task) ChangeTaskDescription(newdescription string) error {
 
-	err := validateTaskDescription(newdescription)
-	if err != nil {
-		return err
-	}
 	t.Description = newdescription
 
 	return nil
@@ -152,14 +140,6 @@ func (t *Task) SetTaskAsDue() {
 
 // Validation
 
-// validateTaskDescription
-func validateTaskDescription(description string) error {
-	if description == "" {
-		return TaskError{TaskErrorDescriptionEmptyCode}
-	}
-	return nil
-}
-
 // validateTaskDueDate
 func validateTaskDueDate(newdate *time.Time) error {
 	if newdate != nil {
@@ -173,6 +153,10 @@ func validateTaskDueDate(newdate *time.Time) error {
 //validateTaskPriority
 func validateTaskPriority(priority string) error {
 
+	if priority == "" {
+		return TaskError{TaskErrorPriorityEmptyCode}
+	}
+
 	_, err := FindTaskPriorityByCode(priority)
 	if err != nil {
 		return err
@@ -184,6 +168,10 @@ func validateTaskPriority(priority string) error {
 // validateTaskStatus
 func validateTaskStatus(status string) error {
 
+	if status == "" {
+		return TaskError{TaskErrorStatusEmptyCode}
+	}
+
 	_, err := FindTaskStatusByCode(status)
 	if err != nil {
 		return err
@@ -194,6 +182,10 @@ func validateTaskStatus(status string) error {
 
 // validateTaskType
 func validateTaskType(tasktype string) error {
+
+	if tasktype == "" {
+		return TaskError{TaskErrorTypeEmptyCode}
+	}
 
 	_, err := FindTaskTypeByCode(tasktype)
 	if err != nil {

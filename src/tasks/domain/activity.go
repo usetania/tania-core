@@ -2,6 +2,7 @@ package domain
 
 import (
 	uuid "github.com/satori/go.uuid"
+	"math"
 	"strconv"
 )
 
@@ -91,7 +92,7 @@ func CreateMoveToAreaActivity(taskService TaskService, source string, dest strin
 	}
 
 	quantity64, err := strconv.ParseFloat(qnt, 32)
-	if err != nil {
+	if err != nil || math.IsNaN(quantity64) {
 		return MoveToAreaActivity{}, TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 	quantity32 := float32(quantity64)
@@ -125,7 +126,7 @@ func CreateDumpActivity(taskService TaskService, source string, qnt string) (Dum
 	}
 
 	quantity64, err := strconv.ParseFloat(qnt, 32)
-	if err != nil {
+	if err != nil || math.IsNaN(quantity64) {
 		return DumpActivity{}, TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 	quantity32 := float32(quantity64)
@@ -159,7 +160,7 @@ func CreateHarvestActivity(taskService TaskService, source string, qnt string) (
 	}
 
 	quantity64, err := strconv.ParseFloat(qnt, 32)
-	if err != nil {
+	if err != nil || math.IsNaN(quantity64) {
 		return HarvestActivity{}, TaskError{TaskErrorActivityQuantityInvalidCode}
 	}
 	quantity32 := float32(quantity64)

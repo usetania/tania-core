@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -8,6 +9,7 @@ import (
 )
 
 func TestCreateTask(t *testing.T) {
+	taskServiceMock := new(TaskServiceMock)
 
 	assetID, _ := uuid.NewV4()
 
@@ -25,33 +27,32 @@ func TestCreateTask(t *testing.T) {
 		duedate            *time.Time
 		priority           string
 		tasktype           string
-		assetid            string
+		assetid            uuid.UUID
 		eexpectedTaskError error
 	}{
-		//empty description
-		{"", due_ptr, "urgent", tasktype, assetID.String(), TaskError{TaskErrorDescriptionEmptyCode}},
 		//emptyduedate
-		{"MyDescription", nil, "urgent", tasktype, assetID.String(), TaskError{TaskErrorDueDateEmptyCode}},
+		{"MyDescription", nil, "urgent", tasktype, assetID, nil},
 		//duedatepassed
-		{"MyDescription", due_ptr_invalid, "urgent", tasktype, assetID.String(), TaskError{TaskErrorDueDateInvalidCode}},
+		{"MyDescription", due_ptr_invalid, "urgent", tasktype, assetID, TaskError{TaskErrorDueDateInvalidCode}},
 		//empty priority
-		{"MyDescription", due_ptr, "", tasktype, assetID.String(), TaskError{TaskErrorPriorityEmptyCode}},
+		{"MyDescription", due_ptr, "", tasktype, assetID, TaskError{TaskErrorPriorityEmptyCode}},
 		//invalidpriority
-		{"MyDescription", due_ptr, "later", tasktype, assetID.String(), TaskError{TaskErrorInvalidPriorityCode}},
+		{"MyDescription", due_ptr, "later", tasktype, assetID, TaskError{TaskErrorInvalidPriorityCode}},
 		//empty type
-		{"MyDescription", due_ptr, "urgent", "", assetID.String(), TaskError{TaskErrorTypeEmptyCode}},
+		{"MyDescription", due_ptr, "urgent", "", assetID, TaskError{TaskErrorTypeEmptyCode}},
 		//invalid type
-		{"MyDescription", due_ptr, "urgent", "vegetable", assetID.String(), TaskError{TaskErrorInvalidTypeCode}},
+		{"MyDescription", due_ptr, "urgent", "vegetable", assetID, TaskError{TaskErrorInvalidTypeCode}},
 		//empty assetid
-		{"MyDescription", due_ptr, "urgent", tasktype, "", TaskError{TaskErrorAssetIDEmptyCode}},
+		{"MyDescription", due_ptr, "urgent", tasktype, uuid.UUID{}, TaskError{TaskErrorInvalidAssetIDCode}},
 		//assetid doesn't exist
-		{"MyDescription", due_ptr, "urgent", tasktype, assetID.String(), TaskError{TaskErrorInvalidAssetIDCode}},
+		{"MyDescription", due_ptr, "urgent", tasktype, assetID, TaskError{TaskErrorInvalidAssetIDCode}},
 	}
 
 	for _, test := range tests {
+		taskServiceMock.On("FindCropByID", test.assetid).Return(ServiceResult{Result: query.TaskCropQueryResult{}})
 
 		_, err := CreateTask(
-			nil, test.description, test.duedate, test.priority, test.tasktype, test.assetid, act)
+			taskServiceMock, test.description, test.duedate, test.priority, test.tasktype, test.assetid.String(), act)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
