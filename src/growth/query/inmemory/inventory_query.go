@@ -1,32 +1,36 @@
 package inmemory
 
 import (
+	assetdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 )
 
-type InventoryMaterialQueryInMemory struct {
+type MaterialQueryInMemory struct {
 	Storage *storage.MaterialStorage
 }
 
-func NewInventoryMaterialQueryInMemory(s *storage.MaterialStorage) query.InventoryMaterialQuery {
-	return InventoryMaterialQueryInMemory{Storage: s}
+func NewMaterialQueryInMemory(s *storage.MaterialStorage) query.MaterialQuery {
+	return MaterialQueryInMemory{Storage: s}
 }
 
-func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
+func (s MaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		ci := query.CropInventoryQueryResult{}
+		ci := query.CropMaterialQueryResult{}
 		for _, val := range s.Storage.MaterialMap {
-			if val.UID == inventoryUID {
+			// WARNING, domain leakage
+			materialSeed, ok := val.Type.(assetdomain.MaterialTypeSeed)
+
+			if ok && val.UID == inventoryUID {
 				ci.UID = val.UID
-				// ci.PlantTypeCode = val.PlantType.Code()
-				// ci.Variety = val.Variety
+				ci.Name = val.Name
+				ci.MaterialSeedPlantTypeCode = materialSeed.PlantType.Code
 			}
 		}
 
@@ -38,20 +42,23 @@ func (s InventoryMaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan 
 	return result
 }
 
-func (q InventoryMaterialQueryInMemory) FindInventoryByPlantTypeCodeAndVariety(plantTypeCode string, variety string) <-chan query.QueryResult {
+func (q MaterialQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		ci := query.CropInventoryQueryResult{}
+		ci := query.CropMaterialQueryResult{}
 		for _, val := range q.Storage.MaterialMap {
-			// if val.PlantType.Code() == plantTypeCode && val.Variety == variety {
-			ci.UID = val.UID
-			// ci.PlantTypeCode = val.PlantType.Code()
-			// ci.Variety = val.Variety
-			// }
+			// WARNING, domain leakage
+			materialSeed, ok := val.Type.(assetdomain.MaterialTypeSeed)
+
+			if ok && materialSeed.PlantType.Code == plantTypeCode && val.Name == name {
+				ci.UID = val.UID
+				ci.MaterialSeedPlantTypeCode = materialSeed.PlantType.Code
+				ci.Name = val.Name
+			}
 		}
 
 		result <- query.QueryResult{Result: ci}

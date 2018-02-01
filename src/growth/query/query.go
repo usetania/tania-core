@@ -12,9 +12,9 @@ type CropQuery interface {
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
-type InventoryMaterialQuery interface {
+type MaterialQuery interface {
 	FindByID(inventoryUID uuid.UUID) <-chan QueryResult
-	FindInventoryByPlantTypeCodeAndVariety(plantType string, variety string) <-chan QueryResult
+	FindMaterialByPlantTypeCodeAndName(plantType string, name string) <-chan QueryResult
 }
 
 type FarmQuery interface {
@@ -26,10 +26,10 @@ type QueryResult struct {
 	Error  error
 }
 
-type CropInventoryQueryResult struct {
-	UID           uuid.UUID `json:"uid"`
-	PlantTypeCode string    `json:"plant_type"`
-	Variety       string    `json:"variety"`
+type CropMaterialQueryResult struct {
+	UID                       uuid.UUID `json:"uid"`
+	MaterialSeedPlantTypeCode string    `json:"plant_type"`
+	Name                      string    `json:"name"`
 }
 
 type CropAreaQueryResult struct {

@@ -7,13 +7,13 @@ import (
 )
 
 type CropServiceInMemory struct {
-	InventoryMaterialQuery query.InventoryMaterialQuery
-	CropQuery              query.CropQuery
-	AreaQuery              query.AreaQuery
+	MaterialQuery query.MaterialQuery
+	CropQuery     query.CropQuery
+	AreaQuery     query.AreaQuery
 }
 
-func (s CropServiceInMemory) FindInventoryMaterialByID(uid uuid.UUID) domain.ServiceResult {
-	result := <-s.InventoryMaterialQuery.FindByID(uid)
+func (s CropServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
+	result := <-s.MaterialQuery.FindByID(uid)
 
 	if result.Error != nil {
 		return domain.ServiceResult{
@@ -21,17 +21,17 @@ func (s CropServiceInMemory) FindInventoryMaterialByID(uid uuid.UUID) domain.Ser
 		}
 	}
 
-	inv, ok := result.Result.(query.CropInventoryQueryResult)
+	inv, ok := result.Result.(query.CropMaterialQueryResult)
 
 	if !ok {
 		return domain.ServiceResult{
-			Error: domain.CropError{Code: domain.CropInventoryErrorInvalidInventory},
+			Error: domain.CropError{Code: domain.CropMaterialErrorInvalidMaterial},
 		}
 	}
 
-	if inv == (query.CropInventoryQueryResult{}) {
+	if inv == (query.CropMaterialQueryResult{}) {
 		return domain.ServiceResult{
-			Error: domain.CropError{Code: domain.CropInventoryErrorNotFound},
+			Error: domain.CropError{Code: domain.CropMaterialErrorNotFound},
 		}
 	}
 

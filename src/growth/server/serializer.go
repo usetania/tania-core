@@ -13,16 +13,16 @@ import (
 )
 
 type CropBatch struct {
-	UID              uuid.UUID                      `json:"uid"`
-	BatchID          string                         `json:"batch_id"`
-	Status           string                         `json:"status"`
-	Type             string                         `json:"type"`
-	Container        CropContainer                  `json:"container"`
-	Inventory        query.CropInventoryQueryResult `json:"inventory"`
-	CreatedDate      time.Time                      `json:"created_date"`
-	DaysSinceSeeding int                            `json:"days_since_seeding"`
-	Photo            domain.CropPhoto               `json:"photo"`
-	ActivityType     CropActivityType               `json:"activity_type"`
+	UID              uuid.UUID                     `json:"uid"`
+	BatchID          string                        `json:"batch_id"`
+	Status           string                        `json:"status"`
+	Type             string                        `json:"type"`
+	Container        CropContainer                 `json:"container"`
+	Inventory        query.CropMaterialQueryResult `json:"inventory"`
+	CreatedDate      time.Time                     `json:"created_date"`
+	DaysSinceSeeding int                           `json:"days_since_seeding"`
+	Photo            domain.CropPhoto              `json:"photo"`
+	ActivityType     CropActivityType              `json:"activity_type"`
 
 	InitialArea      InitialArea        `json:"initial_area"`
 	MovedArea        []MovedArea        `json:"moved_area"`
@@ -93,12 +93,12 @@ type CropActivityType struct {
 }
 
 func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
-	queryResult := <-s.InventoryMaterialQuery.FindByID(crop.InventoryUID)
+	queryResult := <-s.MaterialQuery.FindByID(crop.InventoryUID)
 	if queryResult.Error != nil {
 		return CropBatch{}, queryResult.Error
 	}
 
-	cropInventory, ok := queryResult.Result.(query.CropInventoryQueryResult)
+	cropInventory, ok := queryResult.Result.(query.CropMaterialQueryResult)
 	if !ok {
 		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
@@ -225,10 +225,10 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		},
 	}
 
-	cropBatch.Inventory = query.CropInventoryQueryResult{
-		UID:           cropInventory.UID,
-		PlantTypeCode: cropInventory.PlantTypeCode,
-		Variety:       cropInventory.Variety,
+	cropBatch.Inventory = query.CropMaterialQueryResult{
+		UID: cropInventory.UID,
+		MaterialSeedPlantTypeCode: cropInventory.MaterialSeedPlantTypeCode,
+		Name: cropInventory.Name,
 	}
 	cropBatch.CreatedDate = crop.CreatedDate
 	cropBatch.DaysSinceSeeding = crop.CalculateDaysSinceSeeding()

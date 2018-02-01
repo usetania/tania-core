@@ -37,7 +37,7 @@ type Crop struct {
 
 // CropService handles crop behaviours that needs external interaction to be worked
 type CropService interface {
-	FindInventoryMaterialByID(uid uuid.UUID) ServiceResult
+	FindMaterialByID(uid uuid.UUID) ServiceResult
 	FindByBatchID(batchID string) ServiceResult
 	FindAreaByID(uid uuid.UUID) ServiceResult
 }
@@ -245,12 +245,12 @@ func CreateCropBatch(
 		return Crop{}, CropError{Code: CropErrorInvalidCropType}
 	}
 
-	serviceResult = cropService.FindInventoryMaterialByID(inventoryUID)
+	serviceResult = cropService.FindMaterialByID(inventoryUID)
 	if serviceResult.Error != nil {
 		return Crop{}, serviceResult.Error
 	}
 
-	inv := serviceResult.Result.(query.CropInventoryQueryResult)
+	inv := serviceResult.Result.(query.CropMaterialQueryResult)
 
 	err := validateContainer(quantity, containerType)
 	if err != nil {
@@ -634,13 +634,13 @@ func (c *Crop) ChangeContainer(quantity int, containerType CropContainerType) er
 }
 
 func (c *Crop) ChangeInventory(cropService CropService, inventoryUID uuid.UUID) error {
-	serviceResult := cropService.FindInventoryMaterialByID(inventoryUID)
+	serviceResult := cropService.FindMaterialByID(inventoryUID)
 
 	if serviceResult.Error != nil {
 		return serviceResult.Error
 	}
 
-	inventory := serviceResult.Result.(query.CropInventoryQueryResult)
+	inventory := serviceResult.Result.(query.CropMaterialQueryResult)
 
 	batchID, err := generateBatchID(cropService, inventory, c.CreatedDate)
 	if err != nil {
@@ -710,13 +710,13 @@ func (c Crop) CalculateDaysSinceSeeding() int {
 	return days
 }
 
-func generateBatchID(cropService CropService, inventory query.CropInventoryQueryResult, createdDate time.Time) (string, error) {
+func generateBatchID(cropService CropService, inventory query.CropMaterialQueryResult, createdDate time.Time) (string, error) {
 	// Generate Batch ID
 	// Format the date to become daymonth format like 25jan
 	dateFormat := strings.ToLower(createdDate.Format("2Jan"))
 
 	// Get variety name and split it to slice
-	varietySlice := strings.Fields(inventory.Variety)
+	varietySlice := strings.Fields(inventory.Name)
 	varietyFormat := ""
 	for _, v := range varietySlice {
 		// 	// For every value, get only the first three characters

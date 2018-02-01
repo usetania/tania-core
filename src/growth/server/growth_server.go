@@ -21,13 +21,13 @@ import (
 
 // GrowthServer ties the routes and handlers with injected dependencies
 type GrowthServer struct {
-	CropRepo               repository.CropRepository
-	CropQuery              query.CropQuery
-	CropService            domain.CropService
-	AreaQuery              query.AreaQuery
-	InventoryMaterialQuery query.InventoryMaterialQuery
-	FarmQuery              query.FarmQuery
-	File                   File
+	CropRepo      repository.CropRepository
+	CropQuery     query.CropQuery
+	CropService   domain.CropService
+	AreaQuery     query.AreaQuery
+	MaterialQuery query.MaterialQuery
+	FarmQuery     query.FarmQuery
+	File          File
 }
 
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
@@ -41,23 +41,23 @@ func NewGrowthServer(
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
-	inventoryMaterialQuery := inmemory.NewInventoryMaterialQueryInMemory(materialStorage)
+	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
 	farmQuery := inmemory.NewFarmQueryInMemory(farmStorage)
 
 	cropService := service.CropServiceInMemory{
-		InventoryMaterialQuery: inventoryMaterialQuery,
-		CropQuery:              cropQuery,
-		AreaQuery:              areaQuery,
+		MaterialQuery: materialQuery,
+		CropQuery:     cropQuery,
+		AreaQuery:     areaQuery,
 	}
 
 	return &GrowthServer{
-		CropRepo:               cropRepo,
-		CropQuery:              cropQuery,
-		CropService:            cropService,
-		AreaQuery:              areaQuery,
-		InventoryMaterialQuery: inventoryMaterialQuery,
-		FarmQuery:              farmQuery,
-		File:                   LocalFile{},
+		CropRepo:      cropRepo,
+		CropQuery:     cropQuery,
+		CropService:   cropService,
+		AreaQuery:     areaQuery,
+		MaterialQuery: materialQuery,
+		FarmQuery:     farmQuery,
+		File:          LocalFile{},
 	}, nil
 }
 
@@ -82,7 +82,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	areaID := c.Param("id")
 	cropType := c.FormValue("crop_type")
 	plantType := c.FormValue("plant_type")
-	variety := c.FormValue("variety")
+	name := c.FormValue("name")
 
 	containerQuantity, err := strconv.Atoi(c.FormValue("container_quantity"))
 	if err != nil {
@@ -111,12 +111,12 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	queryResult := <-s.InventoryMaterialQuery.FindInventoryByPlantTypeCodeAndVariety(plantType, variety)
+	queryResult := <-s.MaterialQuery.FindMaterialByPlantTypeCodeAndName(plantType, name)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}
 
-	inventoryMaterial, ok := queryResult.Result.(query.CropInventoryQueryResult)
+	material, ok := queryResult.Result.(query.CropMaterialQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -136,7 +136,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		s.CropService,
 		area.UID,
 		cropType,
-		inventoryMaterial.UID,
+		material.UID,
 		containerQuantity,
 		containerT,
 	)

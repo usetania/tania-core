@@ -35,8 +35,8 @@ const (
 	CropContainerErrorInvalidQuantity
 	CropContainerErrorInvalidTrayCell
 
-	CropInventoryErrorInvalidInventory
-	CropInventoryErrorNotFound
+	CropMaterialErrorInvalidMaterial
+	CropMaterialErrorNotFound
 
 	CropNoteErrorInvalidContent
 	CropNoteErrorNotFound
@@ -102,10 +102,10 @@ func (e CropError) Error() string {
 	case CropContainerErrorInvalidTrayCell:
 		return "Invalid crop container tray cell"
 
-	case CropInventoryErrorInvalidInventory:
-		return "Invalid crop inventory"
-	case CropInventoryErrorNotFound:
-		return "Crop inventory not found"
+	case CropMaterialErrorInvalidMaterial:
+		return "Invalid crop material"
+	case CropMaterialErrorNotFound:
+		return "Crop inventory material not found"
 
 	case CropNoteErrorInvalidContent:
 		return "Invalid crop note content"
