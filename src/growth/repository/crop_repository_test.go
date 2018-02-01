@@ -19,7 +19,7 @@ type CropServiceMock struct {
 	mock.Mock
 }
 
-func (m CropServiceMock) FindInventoryMaterialByID(uid uuid.UUID) domain.ServiceResult {
+func (m CropServiceMock) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(domain.ServiceResult)
 }
@@ -55,12 +55,12 @@ func TestCropInMemorySave(t *testing.T) {
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
-		Result: query.CropInventoryQueryResult{
-			UID:     inventoryUID,
-			Variety: "Tomato Super One",
+		Result: query.CropMaterialQueryResult{
+			UID:  inventoryUID,
+			Name: "Tomato Super One",
 		},
 	}
-	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+	cropServiceMock.On("FindMaterialByID", inventoryUID).Return(inventoryServiceResult)
 
 	date := strings.ToLower(time.Now().Format("2Jan"))
 	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
@@ -114,12 +114,12 @@ func TestCropInMemoryFindAll(t *testing.T) {
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
-		Result: query.CropInventoryQueryResult{
-			UID:     inventoryUID,
-			Variety: "Tomato Super One",
+		Result: query.CropMaterialQueryResult{
+			UID:  inventoryUID,
+			Name: "Tomato Super One",
 		},
 	}
-	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+	cropServiceMock.On("FindMaterialByID", inventoryUID).Return(inventoryServiceResult)
 
 	date := strings.ToLower(time.Now().Format("2Jan"))
 	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
@@ -182,12 +182,12 @@ func TestCropInMemoryFindByID(t *testing.T) {
 
 	inventoryUID, _ := uuid.NewV4()
 	inventoryServiceResult := domain.ServiceResult{
-		Result: query.CropInventoryQueryResult{
-			UID:     inventoryUID,
-			Variety: "Tomato Super One",
+		Result: query.CropMaterialQueryResult{
+			UID:  inventoryUID,
+			Name: "Tomato Super One",
 		},
 	}
-	cropServiceMock.On("FindInventoryMaterialByID", inventoryUID).Return(inventoryServiceResult)
+	cropServiceMock.On("FindMaterialByID", inventoryUID).Return(inventoryServiceResult)
 
 	date := strings.ToLower(time.Now().Format("2Jan"))
 	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
