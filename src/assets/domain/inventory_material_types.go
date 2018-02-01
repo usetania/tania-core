@@ -180,3 +180,10 @@ type MaterialTypePostHarvestSupply struct {
 func (mt MaterialTypePostHarvestSupply) Code() string {
 	return MaterialTypePostHarvestSupplyCode
 }
+
+type MaterialTypeOther struct {
+}
+
+func (mt MaterialTypeOther) Code() string {
+	return MaterialTypeOtherCode
+}
