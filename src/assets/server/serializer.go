@@ -277,10 +277,10 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 			return DetailArea{}, repoResult.Error
 		}
 
-		// mat, ok := repoResult.Result.(domain.Material)
-		// if !ok {
-		// 	return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		// }
+		mat, ok := repoResult.Result.(domain.Material)
+		if !ok {
+			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
 
 		now := time.Now()
 		diff := now.Sub(v.CreatedDate)
@@ -288,8 +288,8 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 
 		crops[i].DaysSinceSeeding = days
 		crops[i].InitialArea.Name = a.Name
-		// crops[i].Inventory.PlantType = inv.PlantType.Code()
-		// crops[i].Inventory.Variety = inv.Variety
+		crops[i].Inventory.UID = mat.UID
+		crops[i].Inventory.Name = mat.Name
 	}
 
 	detailArea.Crops = crops

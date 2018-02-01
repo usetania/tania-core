@@ -48,16 +48,8 @@ type InitialArea struct {
 }
 
 type Inventory struct {
-	UID            uuid.UUID                   `json:"uid"`
-	Name           string                      `json:"name"`
-	PricePerUnit   domain.Money                `json:"price_per_unit"`
-	Type           domain.MaterialType         `json:"type"`
-	Quantity       float32                     `json:"quantity"`
-	QuantityUnit   domain.MaterialQuantityUnit `json:"quantity_unit"`
-	ExpirationDate time.Time                   `json:"expiration_date"`
-	Notes          string                      `json:"notes"`
-	IsExpense      bool                        `json:"is_expense"`
-	ProducedBy     string                      `json:"produced_by"`
+	UID  uuid.UUID `json:"uid"`
+	Name string    `json:"name"`
 }
 
 type Container struct {
