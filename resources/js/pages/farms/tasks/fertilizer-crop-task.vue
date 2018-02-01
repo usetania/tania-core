@@ -1,7 +1,8 @@
 <template lang="pug">
-  .dump-crop-task(v-if="loading === false")
+  .fertilizer-crop-task(v-if="loading === false")
     .modal-header
-      span.h4.font-bold Dump Crops
+      span.h4.font-bold Fertilize 
+        span.identifier {{ crop.batch_id }}
       span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
         i.fa.fa-close
     .modal-body
@@ -33,7 +34,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { StubTask, StubCrop } from '@/stores/stubs'
 export default {
-  name: "DumpCropTask",
+  name: "FertilizerCropTask",
   computed : {
     ...mapGetters({
       areas: 'getAllAreas',

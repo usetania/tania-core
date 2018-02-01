@@ -2,6 +2,8 @@
   .harvest-crop-task(v-if="loading === false")
     .modal-header
       span.h4.font-bold Move Crops
+      span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
+        i.fa.fa-close
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
@@ -33,8 +35,10 @@
                 option(value="kg") Kilograms
               span.help-block.text-danger(v-show="errors.has('unit')") {{ errors.first('unit') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit") Save
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          .text-center.m-t
+            button.btn.btn-primary(type="submit")
+              i.fa.fa-check
+              |  OK
 </template>
 
 

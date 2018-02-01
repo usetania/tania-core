@@ -8,6 +8,14 @@
       harvestCropTask
     modal(v-if="showUploadCropModal" @close="showUploadCropModal = false")
       uploadCropTask
+    modal(v-if="showFertilizerCropModal" @close="showFertilizerCropModal = false")
+      fertilizerCropTask
+    modal(v-if="showPesticideCropModal" @close="showPesticideCropModal = false")
+      pesticideCropTask
+    modal(v-if="showPruneCropModal" @close="showPruneCropModal = false")
+      pruneCropTask
+    modal(v-if="showOtherCropModal" @close="showOtherCropModal = false")
+      otherCropTask
     .hbox
       .col
         .vbox
@@ -130,19 +138,19 @@
         .wrapper-md
           .m-b.text-md Tasks
           .m-b
-            button.btn.btn-addon.btn-warning
+            button.btn.btn-addon.btn-warning(style="cursor: pointer;" @click="showFertilizerCropModal = true")
               i.fa.fa-flask
               | Fertilize
           .m-b
-            button.btn.btn-addon.btn-danger
+            button.btn.btn-addon.btn-danger(style="cursor: pointer;" @click="showPesticideCropModal = true")
               i.fa.fa-bug
               | Pesticide
           .m-b
-            button.btn.btn-addon.btn-dark
+            button.btn.btn-addon.btn-dark(style="cursor: pointer;" @click="showPruneCropModal = true")
               i.fa.fa-scissors
               | Prune
           .m-b
-            button.btn.btn-addon.btn-default
+            button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="showOtherCropModal = true")
               i.fa.fa-tasks
               | Other Task
 </template>
@@ -158,6 +166,10 @@ export default {
     dumpCropTask: () => import('./activities/dump-crop-task.vue'),
     harvestCropTask: () => import('./activities/harvest-crop-task.vue'),
     uploadCropTask: () => import('./activities/upload-crop-task.vue'),
+    fertilizerCropTask: () => import('./tasks/fertilizer-crop-task.vue'),
+    pesticideCropTask: () => import('./tasks/pesticide-crop-task.vue'),
+    pruneCropTask: () => import('./tasks/prune-crop-task.vue'),
+    otherCropTask: () => import('./tasks/other-crop-task.vue'),
     Modal
   },
   data () {
@@ -170,6 +182,10 @@ export default {
       showDumpCropModal: false,
       showHarvestCropModal: false,
       showUploadCropModal: false,
+      showFertilizerCropModal: false,
+      showPesticideCropModal: false,
+      showPruneCropModal: false,
+      showOtherCropModal: false,
     }
   },
   created () {

@@ -2,6 +2,8 @@
   .move-crop-task(v-if="loading === false")
     .modal-header
       span.h4.font-bold Move Crops
+      span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
+        i.fa.fa-close
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
@@ -18,8 +20,10 @@
           input.form-control#quantity(type="text" v-validate="'required|alpha_num_space|min:1'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit") Save
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          .text-center.m-t
+            button.btn.btn-primary(type="submit")
+              i.fa.fa-check
+              |  OK
 </template>
 
 
