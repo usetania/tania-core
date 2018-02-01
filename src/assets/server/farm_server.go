@@ -68,8 +68,8 @@ func NewFarmServer(
 func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 	g.GET("/inventories/plant_types", s.GetInventoryPlantTypes)
-	g.GET("/inventories", s.GetAvailableInventories)
-	g.POST("/inventories/material/:type", s.SaveMaterial)
+	g.GET("/inventories/materials/available_seed", s.GetAvailableSeedMaterial)
+	g.POST("/inventories/materials/:type", s.SaveMaterial)
 
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
@@ -837,8 +837,8 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) GetAvailableInventories(c echo.Context) error {
-	data := make(map[string][]AvailableInventory)
+func (s *FarmServer) GetAvailableSeedMaterial(c echo.Context) error {
+	data := make(map[string][]AvailableSeedMaterial)
 
 	// Process //
 	result := <-s.MaterialRepo.FindAll()
@@ -848,7 +848,7 @@ func (s *FarmServer) GetAvailableInventories(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	data["data"] = MapToAvailableInventories(materials)
+	data["data"] = MapToAvailableSeedMaterial(materials)
 
 	return c.JSON(http.StatusOK, data)
 }

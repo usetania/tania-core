@@ -88,7 +88,7 @@ type MaterialTypeSeedingContainer struct {
 	ContainerType domain.ContainerType `json:"container_type"`
 }
 
-type AvailableInventory struct {
+type AvailableSeedMaterial struct {
 	PlantType string   `json:"plant_type"`
 	Names     []string `json:"names"`
 }
@@ -396,15 +396,15 @@ func MapToMaterial(material domain.Material) Material {
 	return m
 }
 
-func MapToAvailableInventories(materials []domain.Material) []AvailableInventory {
-	ai := make(map[string]AvailableInventory, 0)
+func MapToAvailableSeedMaterial(materials []domain.Material) []AvailableSeedMaterial {
+	ai := make(map[string]AvailableSeedMaterial, 0)
 
-	// Convert domain.InventoryMaterial to AvailableInventory first with Map
+	// Convert domain.Material to AvailableSeedMaterial first with Map
 	for _, v := range materials {
 		s, ok := v.Type.(domain.MaterialTypeSeed)
 
 		if ok {
-			mat := AvailableInventory{
+			mat := AvailableSeedMaterial{
 				PlantType: s.PlantType.Code,
 				Names:     append(ai[s.PlantType.Code].Names, v.Name),
 			}
@@ -414,7 +414,7 @@ func MapToAvailableInventories(materials []domain.Material) []AvailableInventory
 	}
 
 	// From Map, we need to change it to slice for the json response purpose
-	aiSlice := []AvailableInventory{}
+	aiSlice := []AvailableSeedMaterial{}
 	for _, v := range ai {
 		aiSlice = append(aiSlice, v)
 	}
