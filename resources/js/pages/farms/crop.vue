@@ -9,13 +9,13 @@
     modal(v-if="showUploadCropModal" @close="showUploadCropModal = false")
       uploadCropTask(:crop="crop")
     modal(v-if="showFertilizerCropModal" @close="showFertilizerCropModal = false")
-      fertilizerCropTask(:crop="crop")
+      cropTask(:crop="crop" :isfertilizer="true")
     modal(v-if="showPesticideCropModal" @close="showPesticideCropModal = false")
-      pesticideCropTask(:crop="crop")
+      cropTask(:crop="crop" :ispesticide="true")
     modal(v-if="showPruneCropModal" @close="showPruneCropModal = false")
-      pruneCropTask(:crop="crop")
+      cropTask(:crop="crop" :isprune="true")
     modal(v-if="showOtherCropModal" @close="showOtherCropModal = false")
-      otherCropTask(:crop="crop")
+      cropTask(:crop="crop" :isother="true")
     .hbox
       .col
         .vbox
@@ -166,10 +166,7 @@ export default {
     dumpCropTask: () => import('./activities/dump-crop-task.vue'),
     harvestCropTask: () => import('./activities/harvest-crop-task.vue'),
     uploadCropTask: () => import('./activities/upload-crop-task.vue'),
-    fertilizerCropTask: () => import('./tasks/fertilizer-crop-task.vue'),
-    pesticideCropTask: () => import('./tasks/pesticide-crop-task.vue'),
-    pruneCropTask: () => import('./tasks/prune-crop-task.vue'),
-    otherCropTask: () => import('./tasks/other-crop-task.vue'),
+    cropTask: () => import('./tasks/crop-task.vue'),
     Modal
   },
   data () {

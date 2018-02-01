@@ -1,7 +1,13 @@
 <template lang="pug">
-  .fertilizer-crop-task
+  .crop-task
     .modal-header
-      span.h4.font-bold Fertilize 
+      span.h4.font-bold(v-if="isfertilizer") Fertilize 
+        span.identifier {{ crop.batch_id }}
+      span.h4.font-bold(v-if="ispesticide") Pesticide 
+        span.identifier {{ crop.batch_id }}
+      span.h4.font-bold(v-if="isprune") Prune 
+        span.identifier {{ crop.batch_id }}
+      span.h4.font-bold(v-if="isother") Other Task for 
         span.identifier {{ crop.batch_id }}
       span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
         i.fa.fa-close
@@ -44,15 +50,26 @@
               label(for="category") 
                 | Task Category
               select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
-                option(selected="selected" value="Nutrient") Nutrient
+                option(value="Nutrient" v-if="isfertilizer") Nutrient
+                option(value="Pest Control" v-if="ispesticide") Pest Control
+                option(value="Crop" v-if="isprune") Crop
+                option(value="Sanitation" v-if="isprune") Sanitation
+                option(v-if="isother" v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
               span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
-        .form-group
+        .form-group(v-if="isfertilizer")
           label(for="fertilizer") 
             | Select fertilizer you are going to use
           select.form-control#fertilizer(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('fertilizer') }" v-model="task.fertilizer" name="fertilizer")
             option(value="") Please select fertilizer
             option(v-for="fertilizer in fertilizers" :value="fertilizer.uid") {{ fertilizer.name }}
           span.help-block.text-danger(v-show="errors.has('fertilizer')") {{ errors.first('fertilizer') }}
+        .form-group(v-if="ispesticide")
+          label(for="pesticide") 
+            | Select pesticide you are going to use
+          select.form-control#pesticide(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('pesticide') }" v-model="task.pesticide" name="pesticide")
+            option(value="") Please select pesticide
+            option(v-for="pesticide in pesticides" :value="pesticide.uid") {{ pesticide.name }}
+          span.help-block.text-danger(v-show="errors.has('pesticide')") {{ errors.first('pesticide') }}
         .form-group
           label(for="title") Title
           input.form-control#title(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('title') }" v-model="task.title" name="title")
@@ -72,9 +89,10 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { StubTask } from '@/stores/stubs'
+import { TaskCategories } from '@/stores/helpers/farms/task'
 import Datepicker from 'vuejs-datepicker';
 export default {
-  name: "FertilizerCropTask",
+  name: "CropTask",
   components: {
       Datepicker
   },
@@ -86,14 +104,27 @@ export default {
   data () {
     return {
       fertilizers: [],
+      pesticides: [],
       task: Object.assign({}, StubTask),
+      options: {
+        taskCategories: Array.from(TaskCategories),
+      }
     }
   },
-  props: ['crop'],
+  props: ['crop', 'isfertilizer', 'ispesticide', 'isprune', 'isother'],
   mounted () {
     this.fetchAreas()
   },
   created () {
+    if (this.isfertilizer) {
+      this.task.category = "Nutrient"
+    } else if(this.ispesticide) {
+      this.task.category = "Pest Control"
+    } else if(this.isprune) {
+      this.task.category = "Crop"
+    } else {
+      this.task.category = "General"
+    }
   },
   methods: {
     ...mapActions([
