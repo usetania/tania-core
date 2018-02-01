@@ -28,7 +28,7 @@
               label Plant Type
               select.form-control#plant_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('plant_type') }" v-model="crop.plant_type" name="plant_type" v-on:change="onChange")
                 option(value="") - select plant type -
-                option(v-for="type in inventories" v-bind:value="type.plant_type.code") {{ type.plant_type.code }}
+                option(v-for="type in inventories" v-bind:value="type.plant_type") {{ type.plant_type }}
               span.help-block.text-danger(v-show="errors.has('plant_type')") {{ errors.first('plant_type') }}
           .col-xs-6
             .form-group
@@ -78,9 +78,9 @@ export default {
       get() {
         let cropVarieties = []
         for (var inventory in this.inventories) {
-          if (this.inventories[inventory].plant_type.code === this.crop.plant_type) {
-            cropVarieties = this.inventories[inventory].varieties
-            this.crop.variety = ""
+          if (this.inventories[inventory].plant_type === this.crop.plant_type) {
+            cropVarieties = this.inventories[inventory].names
+            this.crop.name = ""
             break
           }
         }

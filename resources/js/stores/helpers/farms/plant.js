@@ -1,8 +1,7 @@
 export const PlantTypes = [
-  { key: 'vegetable',  label: 'Vegetable' },
-  { key: 'fruit',  label: 'Fruit' },
-  { key: 'herb',  label: 'Herb' },
-  { key: 'flower',  label: 'Flower' },
-  { key: 'treeshrub',  label: 'Tree & Shrub' },
-  { key: 'other',  label: 'Other' }
+  { key: 'VEGETABLE',  label: 'Vegetable' },
+  { key: 'FRUIT',  label: 'Fruit' },
+  { key: 'HERB',  label: 'Herb' },
+  { key: 'FLOWER',  label: 'Flower' },
+  { key: 'TREE',  label: 'Tree & Shrub' },
 ]

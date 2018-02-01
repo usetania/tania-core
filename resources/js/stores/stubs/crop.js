@@ -6,7 +6,7 @@ export default {
   plant_type: '',
   current_area: [],
   inventory: '',
-  variety: '',
+  name: '',
   container_quantity: '',
   container_type: '',
   created_date: '',
