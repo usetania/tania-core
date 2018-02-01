@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -745,7 +746,7 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	// Process //
 	var mt domain.MaterialType
 	switch materialTypeParam {
-	case "seed":
+	case strings.ToLower(domain.MaterialTypeSeedCode):
 		pt := domain.GetPlantType(plantType)
 		if pt == (domain.PlantType{}) {
 			return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
@@ -755,7 +756,7 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 		if err != nil {
 			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
 		}
-	case "agrochemical":
+	case strings.ToLower(domain.MaterialTypeAgrochemicalCode):
 		ct := domain.GetChemicalType(chemicalType)
 		if ct == (domain.ChemicalType{}) {
 			return Error(c, NewRequestValidationError(INVALID_OPTION, "chemical_type"))
@@ -765,6 +766,8 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 		if err != nil {
 			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
 		}
+	case strings.ToLower(domain.MaterialTypeGrowingMediumCode):
+		mt = domain.MaterialTypeGrowingMedium{}
 	}
 
 	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)

@@ -3,13 +3,13 @@ package domain
 import "errors"
 
 const (
-	MaterialTypeSeedCode                = "MATERIAL_SEED"
-	MaterialTypeGrowingMediumCode       = "MATERIAL_GROWING_MEDIUM"
-	MaterialTypeAgrochemicalCode        = "MATERIAL_AGROCHEMICAL"
-	MaterialTypeLabelAndCropSupportCode = "MATERIAL_LABEL_AND_CROP_SUPPORT"
-	MaterialTypeSeedingContainerCode    = "MATERIAL_SEEDING_CONTAINER"
-	MaterialTypePostHarvestSupplyCode   = "MATERIAL_POST_HARVEST_SUPPLY"
-	MaterialTypeOtherCode               = "MATERIAL_OTHER"
+	MaterialTypeSeedCode                = "SEED"
+	MaterialTypeGrowingMediumCode       = "GROWING_MEDIUM"
+	MaterialTypeAgrochemicalCode        = "AGROCHEMICAL"
+	MaterialTypeLabelAndCropSupportCode = "LABEL_AND_CROP_SUPPORT"
+	MaterialTypeSeedingContainerCode    = "SEEDING_CONTAINER"
+	MaterialTypePostHarvestSupplyCode   = "POST_HARVEST_SUPPLY"
+	MaterialTypeOtherCode               = "OTHER"
 )
 
 type MaterialType interface {
@@ -114,4 +114,11 @@ func CreateMaterialTypeAgrochemical(chemicalType string) (MaterialTypeAgrochemic
 	}
 
 	return MaterialTypeAgrochemical{ct}, nil
+}
+
+type MaterialTypeGrowingMedium struct {
+}
+
+func (mt MaterialTypeGrowingMedium) Code() string {
+	return MaterialTypeGrowingMediumCode
 }

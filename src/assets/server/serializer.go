@@ -347,6 +347,8 @@ func MapToMaterial(material domain.Material) Material {
 				ChemicalType: v.ChemicalType,
 			},
 		}
+	case domain.MaterialTypeGrowingMedium:
+		m.Type = MaterialType{Code: v.Code()}
 	}
 
 	m.Quantity = MaterialQuantity{

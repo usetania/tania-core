@@ -69,12 +69,13 @@ func CreateMoney(price, priceUnit string) (Money, error) {
 }
 
 const (
-	MaterialUnitSeeds    = "SEEDS"
-	MaterialUnitPackets  = "PACKETS"
-	MaterialUnitGram     = "GRAM"
-	MaterialUnitKilogram = "KILOGRAM"
-	MaterialUnitBags     = "BAGS"
-	MaterialUnitBottles  = "BOTTLES"
+	MaterialUnitSeeds      = "SEEDS"
+	MaterialUnitPackets    = "PACKETS"
+	MaterialUnitGram       = "GRAM"
+	MaterialUnitKilogram   = "KILOGRAM"
+	MaterialUnitBags       = "BAGS"
+	MaterialUnitBottles    = "BOTTLES"
+	MaterialUnitCubicMetre = "CUBIC_METRE"
 )
 
 type MaterialQuantity struct {
@@ -87,35 +88,33 @@ type MaterialQuantityUnit struct {
 	Label string `json:"label"`
 }
 
-func MaterialTypeSeedQuantityUnits() []MaterialQuantityUnit {
-	return []MaterialQuantityUnit{
-		{Code: MaterialUnitSeeds, Label: "Seeds"},
-		{Code: MaterialUnitPackets, Label: "Packets"},
-		{Code: MaterialUnitGram, Label: "Gram"},
-		{Code: MaterialUnitKilogram, Label: "Kilogram"},
-	}
-}
-
-func GetMaterialTypeSeedQuantityUnit(code string) MaterialQuantityUnit {
-	for _, v := range MaterialTypeSeedQuantityUnits() {
-		if v.Code == code {
-			return v
+func MaterialQuantityUnits(materialTypeCode string) []MaterialQuantityUnit {
+	switch materialTypeCode {
+	case MaterialTypeSeedCode:
+		return []MaterialQuantityUnit{
+			{Code: MaterialUnitSeeds, Label: "Seeds"},
+			{Code: MaterialUnitPackets, Label: "Packets"},
+			{Code: MaterialUnitGram, Label: "Gram"},
+			{Code: MaterialUnitKilogram, Label: "Kilogram"},
+		}
+	case MaterialTypeAgrochemicalCode:
+		return []MaterialQuantityUnit{
+			{Code: MaterialUnitPackets, Label: "Packets"},
+			{Code: MaterialUnitBottles, Label: "Bottles"},
+			{Code: MaterialUnitBags, Label: "Bags"},
+		}
+	case MaterialTypeGrowingMediumCode:
+		return []MaterialQuantityUnit{
+			{Code: MaterialUnitBags, Label: "Bags"},
+			{Code: MaterialUnitCubicMetre, Label: "Cubic Metre"},
 		}
 	}
 
-	return MaterialQuantityUnit{}
+	return nil
 }
 
-func MaterialTypeAgrochemicalQuantityUnits() []MaterialQuantityUnit {
-	return []MaterialQuantityUnit{
-		{Code: MaterialUnitPackets, Label: "Packets"},
-		{Code: MaterialUnitBottles, Label: "Bottles"},
-		{Code: MaterialUnitBags, Label: "Bags"},
-	}
-}
-
-func GetMaterialTypeAgrochemicalQuantityUnit(code string) MaterialQuantityUnit {
-	for _, v := range MaterialTypeAgrochemicalQuantityUnits() {
+func GetMaterialQuantityUnit(materialTypeCode string, code string) MaterialQuantityUnit {
+	for _, v := range MaterialQuantityUnits(materialTypeCode) {
 		if v.Code == code {
 			return v
 		}
@@ -221,13 +220,7 @@ func validateQuantity(quantity float32) error {
 }
 
 func validateQuantityUnit(quantityUnit string, materialType MaterialType) (MaterialQuantityUnit, error) {
-	qu := MaterialQuantityUnit{}
-	switch materialType.(type) {
-	case MaterialTypeSeed:
-		qu = GetMaterialTypeSeedQuantityUnit(quantityUnit)
-	case MaterialTypeAgrochemical:
-		qu = GetMaterialTypeAgrochemicalQuantityUnit(quantityUnit)
-	}
+	qu := GetMaterialQuantityUnit(materialType.Code(), quantityUnit)
 
 	if qu == (MaterialQuantityUnit{}) {
 		return MaterialQuantityUnit{}, errors.New("Cannot be empty")
