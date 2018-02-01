@@ -6,7 +6,7 @@ TIMESTAMP="$(date +%Y%m%d-%s)-b${TRAVIS_BUILD_NUMBER}"
 
 echo -n "Archiving..."
 
-ASSETS_FILE=public conf.json
+ASSETS_FILE="public conf.json"
 
 tar cvJf tania-server-${TIMESTAMP}-linux-arm.txz terra.linux.arm ${ASSETS_FILE}
 tar cvJf tania-server-${TIMESTAMP}-linux-amd64.txz terra.linux.amd64 ${ASSETS_FILE}
