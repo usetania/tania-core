@@ -9,4 +9,8 @@ export default {
   quantity: '',
   type: '',
   units: '',
+  asset_id: '',
+  category: '',
+  title: '',
+  fertilizer: '',
 }
