@@ -106,24 +106,31 @@ func TestCreateActivity(t *testing.T) {
 	}
 
 	var tests_movetoareaactivity2 = []struct {
-		source_area_id     uuid.UUID
-		dest_area_id       uuid.UUID
-		quantity           string
-		query_result       query.TaskAreaQueryResult
-		eexpectedTaskError error
+		source_area_id         uuid.UUID
+		source_area_result_err ServiceResult
+		dest_area_id           uuid.UUID
+		dest_area_result_err   ServiceResult
+		quantity               string
+		eexpectedTaskError     error
 	}{
 		// empty dest_area_id
-		{source_area_id, uuid.UUID{}, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityDestinationInvalidCode}},
+		{source_area_id, ServiceResult{Result: query.TaskAreaQueryResult{UID: source_area_id}},
+			uuid.UUID{}, ServiceResult{Error: TaskError{TaskErrorInvalidAssetIDCode}},
+			"67", TaskError{TaskErrorActivityDestinationInvalidCode}},
 		// invalid dest_area_id
-		{source_area_id, dest_area_id_not_exist, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityDestinationInvalidCode}},
+		{source_area_id, ServiceResult{Result: query.TaskAreaQueryResult{UID: source_area_id}},
+			dest_area_id_not_exist, ServiceResult{Error: TaskError{TaskErrorInvalidAssetIDCode}},
+			"67", TaskError{TaskErrorActivityDestinationInvalidCode}},
 		// invalid quantity
-		{source_area_id, dest_area_id, "nan", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityQuantityInvalidCode}},
+		{source_area_id, ServiceResult{Result: query.TaskAreaQueryResult{UID: source_area_id}},
+			dest_area_id, ServiceResult{Result: query.TaskAreaQueryResult{UID: dest_area_id}},
+			"nan", TaskError{TaskErrorActivityQuantityInvalidCode}},
 	}
 
 	for _, test := range tests_movetoareaactivity2 {
 
-		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(ServiceResult{Result: query.TaskAreaQueryResult{UID: test.source_area_id}})
-		taskServiceMock.On("FindAreaByID", test.dest_area_id).Return(ServiceResult{Result: query.TaskAreaQueryResult{}})
+		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(test.source_area_result_err)
+		taskServiceMock.On("FindAreaByID", test.dest_area_id).Return(test.dest_area_result_err)
 		_, err := CreateMoveToAreaActivity(taskServiceMock, test.source_area_id.String(), test.dest_area_id.String(), test.quantity)
 
 		assert.Equal(t, test.eexpectedTaskError, err)

@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )

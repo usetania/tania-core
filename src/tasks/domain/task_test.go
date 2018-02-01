@@ -61,7 +61,7 @@ func TestCreateTask(t *testing.T) {
 	assert.Equal(t, TaskError{TaskErrorAssetIDEmptyCode}, err)
 
 	//assetid doesn't exist
-	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}})
+	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}, Error: TaskError{TaskErrorInvalidAssetIDCode}})
 
 	_, err = CreateTask(
 		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", assetID_notexist.String(), act)
