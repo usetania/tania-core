@@ -67,6 +67,7 @@ func NewFarmServer(
 // Mount defines the FarmServer's endpoints with its handlers
 func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
+	g.GET("/inventories/materials", s.GetMaterials)
 	g.GET("/inventories/plant_types", s.GetInventoryPlantTypes)
 	g.GET("/inventories/materials/available_seed", s.GetAvailableSeedMaterial)
 	g.POST("/inventories/materials/:type", s.SaveMaterial)
@@ -718,6 +719,29 @@ func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 	plantTypes := MapToPlantType(domain.PlantTypes())
 
 	data["data"] = plantTypes
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetMaterials(c echo.Context) error {
+	data := make(map[string][]Material)
+
+	queryResult := <-s.MaterialQuery.FindAll()
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	results, ok := queryResult.Result.([]domain.Material)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	materials := []Material{}
+	for _, v := range results {
+		materials = append(materials, MapToMaterial(v))
+	}
+
+	data["data"] = materials
 
 	return c.JSON(http.StatusOK, data)
 }

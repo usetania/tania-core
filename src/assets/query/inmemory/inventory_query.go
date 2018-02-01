@@ -14,6 +14,26 @@ func NewMaterialQueryInMemory(s *storage.MaterialStorage) query.MaterialQuery {
 	return &MaterialQueryInMemory{Storage: s}
 }
 
+func (q *MaterialQueryInMemory) FindAll() <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
+
+		materials := []domain.Material{}
+		for _, val := range q.Storage.MaterialMap {
+			materials = append(materials, val)
+		}
+
+		result <- query.QueryResult{Result: materials}
+
+		close(result)
+	}()
+
+	return result
+}
+
 func (q *MaterialQueryInMemory) FindAllSeedMaterialByPlantType(plantType domain.PlantType) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
