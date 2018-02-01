@@ -1,21 +1,21 @@
 <template lang="pug">
   .crop-detail.hbox(v-if="loading === false")
     modal(v-if="showMoveCropModal" @close="showMoveCropModal = false")
-      moveCropTask
+      moveCropTask(:crop="crop")
     modal(v-if="showDumpCropModal" @close="showDumpCropModal = false")
-      dumpCropTask
+      dumpCropTask(:crop="crop")
     modal(v-if="showHarvestCropModal" @close="showHarvestCropModal = false")
-      harvestCropTask
+      harvestCropTask(:crop="crop")
     modal(v-if="showUploadCropModal" @close="showUploadCropModal = false")
-      uploadCropTask
+      uploadCropTask(:crop="crop")
     modal(v-if="showFertilizerCropModal" @close="showFertilizerCropModal = false")
-      fertilizerCropTask
+      fertilizerCropTask(:crop="crop")
     modal(v-if="showPesticideCropModal" @close="showPesticideCropModal = false")
-      pesticideCropTask
+      pesticideCropTask(:crop="crop")
     modal(v-if="showPruneCropModal" @close="showPruneCropModal = false")
-      pruneCropTask
+      pruneCropTask(:crop="crop")
     modal(v-if="showOtherCropModal" @close="showOtherCropModal = false")
-      otherCropTask
+      otherCropTask(:crop="crop")
     .hbox
       .col
         .vbox

@@ -1,5 +1,5 @@
 <template lang="pug">
-  .fertilizer-crop-task(v-if="loading === false")
+  .fertilizer-crop-task
     .modal-header
       span.h4.font-bold Fertilize 
         span.identifier {{ crop.batch_id }}
@@ -32,7 +32,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask, StubCrop } from '@/stores/stubs'
+import { StubTask } from '@/stores/stubs'
 export default {
   name: "FertilizerCropTask",
   computed : {
@@ -42,26 +42,18 @@ export default {
   },
   data () {
     return {
-      loading: true,
-      crop: Object.assign({}, StubCrop),
       task: Object.assign({}, StubTask),
     }
   },
+  props: ['crop'],
   mounted () {
     this.fetchAreas()
   },
   created () {
-    this.getCropByUid(this.$route.params.id)
-      .then(({ data }) =>  {
-        this.loading = false
-        this.crop = data
-      })
-      .catch(error => console.log(error))
   },
   methods: {
     ...mapActions([
       'fetchAreas',
-      'getCropByUid',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {

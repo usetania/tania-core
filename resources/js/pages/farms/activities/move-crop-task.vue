@@ -1,5 +1,5 @@
 <template lang="pug">
-  .move-crop-task(v-if="loading === false")
+  .move-crop-task
     .modal-header
       span.h4.font-bold Move Crops
       span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
@@ -29,7 +29,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask, StubCrop } from '@/stores/stubs'
+import { StubTask } from '@/stores/stubs'
 export default {
   name: "MoveCropTask",
   computed : {
@@ -39,26 +39,18 @@ export default {
   },
   data () {
     return {
-      loading: true,
-      crop: Object.assign({}, StubCrop),
       task: Object.assign({}, StubTask),
     }
   },
+  props: ['crop'],
   mounted () {
     this.fetchAreas()
   },
   created () {
-    this.getCropByUid(this.$route.params.id)
-      .then(({ data }) =>  {
-        this.loading = false
-        this.crop = data
-      })
-      .catch(error => console.log(error))
   },
   methods: {
     ...mapActions([
       'fetchAreas',
-      'getCropByUid',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
