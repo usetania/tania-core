@@ -12,6 +12,7 @@ func TestCreateTask(t *testing.T) {
 	taskServiceMock := new(TaskServiceMock)
 
 	assetID, _ := uuid.NewV4()
+	assetID_notexist, _ := uuid.NewV4()
 
 	due_date_invalid, _ := time.Parse(time.RFC3339, "2017-01-23T17:37:39.697328206+01:00")
 	due_ptr_invalid := &due_date_invalid
@@ -42,10 +43,6 @@ func TestCreateTask(t *testing.T) {
 		{"MyDescription", due_ptr, "urgent", "", assetID, TaskError{TaskErrorTypeEmptyCode}},
 		//invalid type
 		{"MyDescription", due_ptr, "urgent", "vegetable", assetID, TaskError{TaskErrorInvalidTypeCode}},
-		//empty assetid
-		{"MyDescription", due_ptr, "urgent", tasktype, uuid.UUID{}, TaskError{TaskErrorInvalidAssetIDCode}},
-		//assetid doesn't exist
-		{"MyDescription", due_ptr, "urgent", tasktype, assetID, TaskError{TaskErrorInvalidAssetIDCode}},
 	}
 
 	for _, test := range tests {
@@ -56,4 +53,18 @@ func TestCreateTask(t *testing.T) {
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
+
+	//empty assetid
+	_, err := CreateTask(
+		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", "", act)
+
+	assert.Equal(t, TaskError{TaskErrorAssetIDEmptyCode}, err)
+
+	//assetid doesn't exist
+	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}})
+
+	_, err = CreateTask(
+		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", assetID_notexist.String(), act)
+
+	assert.Equal(t, TaskError{TaskErrorInvalidAssetIDCode}, err)
 }

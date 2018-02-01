@@ -85,7 +85,7 @@ func CreateMoveToAreaActivity(taskService TaskService, source string, dest strin
 	if err != nil {
 		return MoveToAreaActivity{}, TaskError{TaskErrorActivityDestinationInvalidCode}
 	}
-	dest_id, _ := uuid.FromString(source)
+	dest_id, _ := uuid.FromString(dest)
 	err = validateAssetID(taskService, dest_id, TaskTypeArea)
 	if err != nil {
 		return MoveToAreaActivity{}, TaskError{TaskErrorActivityDestinationInvalidCode}

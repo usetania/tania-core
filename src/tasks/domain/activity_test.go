@@ -117,13 +117,13 @@ func TestCreateActivity(t *testing.T) {
 		// invalid dest_area_id
 		{source_area_id, dest_area_id_not_exist, "67", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityDestinationInvalidCode}},
 		// invalid quantity
-		//{source_area_id, dest_area_id, "nan", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityQuantityInvalidCode}},
+		{source_area_id, dest_area_id, "nan", query.TaskAreaQueryResult{}, TaskError{TaskErrorActivityQuantityInvalidCode}},
 	}
 
 	for _, test := range tests_movetoareaactivity2 {
 
 		taskServiceMock.On("FindAreaByID", test.source_area_id).Return(ServiceResult{Result: query.TaskAreaQueryResult{UID: test.source_area_id}})
-		taskServiceMock.On("FindAreaByID", test.dest_area_id).Return(ServiceResult{Result: test.query_result})
+		taskServiceMock.On("FindAreaByID", test.dest_area_id).Return(ServiceResult{Result: query.TaskAreaQueryResult{}})
 		_, err := CreateMoveToAreaActivity(taskServiceMock, test.source_area_id.String(), test.dest_area_id.String(), test.quantity)
 
 		assert.Equal(t, test.eexpectedTaskError, err)

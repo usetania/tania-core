@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"time"
 )
@@ -47,17 +48,20 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 	if err != nil {
 		return Task{}, err
 	}
-
-	uid, err := uuid.NewV4()
-	if err != nil {
-		return Task{}, err
+	if asset_id == "" {
+		return Task{}, TaskError{TaskErrorAssetIDEmptyCode}
 	}
 	asset, err := uuid.FromString(asset_id)
 	if err != nil {
-		return Task{}, err
+		return Task{}, TaskError{TaskErrorInvalidAssetIDCode}
 	}
 
 	err = validateAssetID(task_service, asset, tasktype)
+	if err != nil {
+		return Task{}, err
+	}
+
+	uid, err := uuid.NewV4()
 	if err != nil {
 		return Task{}, err
 	}
