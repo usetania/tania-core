@@ -113,6 +113,10 @@ func MaterialQuantityUnits(materialTypeCode string) []MaterialQuantityUnit {
 		return []MaterialQuantityUnit{
 			{Code: MaterialUnitPieces, Label: "Pieces"},
 		}
+	case MaterialTypeSeedingContainerCode:
+		return []MaterialQuantityUnit{
+			{Code: MaterialUnitPieces, Label: "Pieces"},
+		}
 	}
 
 	return nil

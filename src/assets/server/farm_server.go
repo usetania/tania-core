@@ -727,8 +727,11 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 
 	materialTypeParam := c.Param("type")
 	name := c.FormValue("name")
+
 	plantType := c.FormValue("plant_type")
 	chemicalType := c.FormValue("chemical_type")
+	containerType := c.FormValue("container_type")
+
 	pricePerUnit := c.FormValue("price_per_unit")
 	currencyCode := c.FormValue("currency_code")
 	quantity := c.FormValue("quantity")
@@ -797,6 +800,16 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 		mt = domain.MaterialTypeGrowingMedium{}
 	case strings.ToLower(domain.MaterialTypeLabelAndCropSupportCode):
 		mt = domain.MaterialTypeLabelAndCropSupport{}
+	case strings.ToLower(domain.MaterialTypeSeedingContainerCode):
+		ct := domain.GetContainerType(containerType)
+		if ct == (domain.ContainerType{}) {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "container_type"))
+		}
+
+		mt, err = domain.CreateMaterialTypeSeedingContainer(ct.Code)
+		if err != nil {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+		}
 	}
 
 	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)

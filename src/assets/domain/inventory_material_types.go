@@ -129,3 +129,47 @@ type MaterialTypeLabelAndCropSupport struct {
 func (mt MaterialTypeLabelAndCropSupport) Code() string {
 	return MaterialTypeLabelAndCropSupportCode
 }
+
+type MaterialTypeSeedingContainer struct {
+	ContainerType ContainerType
+}
+
+func (mt MaterialTypeSeedingContainer) Code() string {
+	return MaterialTypeSeedingContainerCode
+}
+
+const (
+	ContainerTypeTray = "TRAY"
+	ContainerTypePot  = "POT"
+)
+
+type ContainerType struct {
+	Code  string `json:"code"`
+	Label string `json:"label"`
+}
+
+func ContainerTypes() []ContainerType {
+	return []ContainerType{
+		{Code: ContainerTypeTray, Label: "Tray"},
+		{Code: ContainerTypePot, Label: "Pot"},
+	}
+}
+
+func GetContainerType(code string) ContainerType {
+	for _, v := range ContainerTypes() {
+		if v.Code == code {
+			return v
+		}
+	}
+
+	return ContainerType{}
+}
+
+func CreateMaterialTypeSeedingContainer(containerType string) (MaterialTypeSeedingContainer, error) {
+	ct := GetContainerType(containerType)
+	if ct == (ContainerType{}) {
+		return MaterialTypeSeedingContainer{}, errors.New("options wrong")
+	}
+
+	return MaterialTypeSeedingContainer{ContainerType: ct}, nil
+}
