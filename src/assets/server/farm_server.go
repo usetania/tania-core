@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -732,15 +733,41 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	currencyCode := c.FormValue("currency_code")
 	quantity := c.FormValue("quantity")
 	quantityUnit := c.FormValue("quantity_unit")
-	// expirationDate := c.FormValue("expiration_date")
-	// notes := c.FormValue("notes")
-	// isExpense := c.FormValue("is_expense")
-	// producedBy := c.FormValue("produced_by")
+	expirationDate := c.FormValue("expiration_date")
+	notes := c.FormValue("notes")
+	isExpense := c.FormValue("is_expense")
+	producedBy := c.FormValue("produced_by")
 
 	// Validate //
 	q, err := strconv.ParseFloat(quantity, 32)
 	if err != nil {
 		return Error(c, NewRequestValidationError(INVALID_OPTION, "quantity"))
+	}
+
+	var expDate *time.Time
+	if expirationDate != "" {
+		tp, err := time.Parse("2006-01-02", expirationDate)
+		if err != nil {
+			return Error(c, NewRequestValidationError(PARSE_FAILED, "expiration_date"))
+		}
+
+		expDate = &tp
+	}
+
+	var n *string
+	if notes != "" {
+		n = &notes
+	}
+
+	var pb *string
+	if producedBy != "" {
+		pb = &producedBy
+	}
+
+	var isExpenseBool *bool
+	if isExpense != "" && isExpense == "true" {
+		b := true
+		isExpenseBool = &b
 	}
 
 	// Process //
@@ -771,10 +798,14 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	}
 
 	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)
-
 	if err != nil {
 		return Error(c, err)
 	}
+
+	material.ExpirationDate = expDate
+	material.Notes = n
+	material.ProducedBy = pb
+	material.IsExpense = isExpenseBool
 
 	// Persist //
 	err = <-s.MaterialRepo.Save(&material)
