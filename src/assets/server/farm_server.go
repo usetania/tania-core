@@ -67,7 +67,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 	g.GET("/inventories/plant_types", s.GetInventoryPlantTypes)
 	g.GET("/inventories", s.GetAvailableInventories)
-	g.POST("/inventories/material_seed", s.SaveMaterialSeed)
+	g.POST("/inventories/material/:type", s.SaveMaterial)
 
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
@@ -720,11 +720,13 @@ func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) SaveMaterialSeed(c echo.Context) error {
+func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	data := make(map[string]Material)
 
+	materialTypeParam := c.Param("type")
 	name := c.FormValue("name")
 	plantType := c.FormValue("plant_type")
+	chemicalType := c.FormValue("chemical_type")
 	pricePerUnit := c.FormValue("price_per_unit")
 	currencyCode := c.FormValue("currency_code")
 	quantity := c.FormValue("quantity")
@@ -735,23 +737,37 @@ func (s *FarmServer) SaveMaterialSeed(c echo.Context) error {
 	// producedBy := c.FormValue("produced_by")
 
 	// Validate //
-	pt := domain.GetPlantType(plantType)
-	if pt == (domain.PlantType{}) {
-		return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
-	}
-
 	q, err := strconv.ParseFloat(quantity, 32)
 	if err != nil {
 		return Error(c, NewRequestValidationError(INVALID_OPTION, "quantity"))
 	}
 
 	// Process //
-	mts, err := domain.CreateMaterialTypeSeed(pt.Code)
-	if err != nil {
-		return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+	var mt domain.MaterialType
+	switch materialTypeParam {
+	case "seed":
+		pt := domain.GetPlantType(plantType)
+		if pt == (domain.PlantType{}) {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+		}
+
+		mt, err = domain.CreateMaterialTypeSeed(pt.Code)
+		if err != nil {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+		}
+	case "agrochemical":
+		ct := domain.GetChemicalType(chemicalType)
+		if ct == (domain.ChemicalType{}) {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "chemical_type"))
+		}
+
+		mt, err = domain.CreateMaterialTypeAgrochemical(ct.Code)
+		if err != nil {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+		}
 	}
 
-	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mts, float32(q), quantityUnit)
+	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)
 
 	if err != nil {
 		return Error(c, err)

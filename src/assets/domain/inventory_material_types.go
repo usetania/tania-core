@@ -65,3 +65,53 @@ func GetPlantType(code string) PlantType {
 
 	return PlantType{}
 }
+
+type MaterialTypeAgrochemical struct {
+	ChemicalType ChemicalType
+}
+
+func (mt MaterialTypeAgrochemical) Code() string {
+	return MaterialTypeAgrochemicalCode
+}
+
+const (
+	ChemicalTypeDisinfectant = "DISINFECTANT"
+	ChemicalTypeFertilizer   = "FERTILIZER"
+	ChemicalTypeHormone      = "HORMONE"
+	ChemicalTypeManure       = "MANURE"
+	ChemicalTypePesticide    = "PESTICIDE"
+)
+
+type ChemicalType struct {
+	Code  string
+	Label string
+}
+
+func ChemicalTypes() []ChemicalType {
+	return []ChemicalType{
+		{Code: ChemicalTypeDisinfectant, Label: "Disinfectant and Sanitizer"},
+		{Code: ChemicalTypeFertilizer, Label: "Fertilizer"},
+		{Code: ChemicalTypeHormone, Label: "Hormone and Growth Agent"},
+		{Code: ChemicalTypeManure, Label: "Manure"},
+		{Code: ChemicalTypePesticide, Label: "Pesticide"},
+	}
+}
+
+func GetChemicalType(code string) ChemicalType {
+	for _, v := range ChemicalTypes() {
+		if v.Code == code {
+			return v
+		}
+	}
+
+	return ChemicalType{}
+}
+
+func CreateMaterialTypeAgrochemical(chemicalType string) (MaterialTypeAgrochemical, error) {
+	ct := GetChemicalType(chemicalType)
+	if ct == (ChemicalType{}) {
+		return MaterialTypeAgrochemical{}, errors.New("options wrong")
+	}
+
+	return MaterialTypeAgrochemical{ct}, nil
+}

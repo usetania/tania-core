@@ -73,6 +73,8 @@ const (
 	MaterialUnitPackets  = "PACKETS"
 	MaterialUnitGram     = "GRAM"
 	MaterialUnitKilogram = "KILOGRAM"
+	MaterialUnitBags     = "BAGS"
+	MaterialUnitBottles  = "BOTTLES"
 )
 
 type MaterialQuantity struct {
@@ -96,6 +98,24 @@ func MaterialTypeSeedQuantityUnits() []MaterialQuantityUnit {
 
 func GetMaterialTypeSeedQuantityUnit(code string) MaterialQuantityUnit {
 	for _, v := range MaterialTypeSeedQuantityUnits() {
+		if v.Code == code {
+			return v
+		}
+	}
+
+	return MaterialQuantityUnit{}
+}
+
+func MaterialTypeAgrochemicalQuantityUnits() []MaterialQuantityUnit {
+	return []MaterialQuantityUnit{
+		{Code: MaterialUnitPackets, Label: "Packets"},
+		{Code: MaterialUnitBottles, Label: "Bottles"},
+		{Code: MaterialUnitBags, Label: "Bags"},
+	}
+}
+
+func GetMaterialTypeAgrochemicalQuantityUnit(code string) MaterialQuantityUnit {
+	for _, v := range MaterialTypeAgrochemicalQuantityUnits() {
 		if v.Code == code {
 			return v
 		}
@@ -205,6 +225,8 @@ func validateQuantityUnit(quantityUnit string, materialType MaterialType) (Mater
 	switch materialType.(type) {
 	case MaterialTypeSeed:
 		qu = GetMaterialTypeSeedQuantityUnit(quantityUnit)
+	case MaterialTypeAgrochemical:
+		qu = GetMaterialTypeAgrochemicalQuantityUnit(quantityUnit)
 	}
 
 	if qu == (MaterialQuantityUnit{}) {
