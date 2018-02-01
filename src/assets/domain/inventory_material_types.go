@@ -122,3 +122,10 @@ type MaterialTypeGrowingMedium struct {
 func (mt MaterialTypeGrowingMedium) Code() string {
 	return MaterialTypeGrowingMediumCode
 }
+
+type MaterialTypeLabelAndCropSupport struct {
+}
+
+func (mt MaterialTypeLabelAndCropSupport) Code() string {
+	return MaterialTypeLabelAndCropSupportCode
+}

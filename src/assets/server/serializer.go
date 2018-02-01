@@ -349,6 +349,8 @@ func MapToMaterial(material domain.Material) Material {
 		}
 	case domain.MaterialTypeGrowingMedium:
 		m.Type = MaterialType{Code: v.Code()}
+	case domain.MaterialTypeLabelAndCropSupport:
+		m.Type = MaterialType{Code: v.Code()}
 	}
 
 	m.Quantity = MaterialQuantity{

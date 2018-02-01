@@ -795,6 +795,8 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 		}
 	case strings.ToLower(domain.MaterialTypeGrowingMediumCode):
 		mt = domain.MaterialTypeGrowingMedium{}
+	case strings.ToLower(domain.MaterialTypeLabelAndCropSupportCode):
+		mt = domain.MaterialTypeLabelAndCropSupport{}
 	}
 
 	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)
