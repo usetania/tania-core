@@ -173,3 +173,10 @@ func CreateMaterialTypeSeedingContainer(containerType string) (MaterialTypeSeedi
 
 	return MaterialTypeSeedingContainer{ContainerType: ct}, nil
 }
+
+type MaterialTypePostHarvestSupply struct {
+}
+
+func (mt MaterialTypePostHarvestSupply) Code() string {
+	return MaterialTypePostHarvestSupplyCode
+}

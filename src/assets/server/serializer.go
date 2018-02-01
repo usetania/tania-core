@@ -362,6 +362,8 @@ func MapToMaterial(material domain.Material) Material {
 				ContainerType: v.ContainerType,
 			},
 		}
+	case domain.MaterialTypePostHarvestSupply:
+		m.Type = MaterialType{Code: v.Code()}
 	}
 
 	m.Quantity = MaterialQuantity{

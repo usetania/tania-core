@@ -810,6 +810,8 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 		if err != nil {
 			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
 		}
+	case strings.ToLower(domain.MaterialTypePostHarvestSupplyCode):
+		mt = domain.MaterialTypePostHarvestSupply{}
 	}
 
 	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)
