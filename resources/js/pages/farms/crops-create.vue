@@ -33,10 +33,10 @@
           .col-xs-6
             .form-group
               label.control-label Crop Variety
-              select.form-control#variety(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('variety') }" v-model="crop.name" name="variety")
+              select.form-control#name(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="crop.name" name="name")
                 option(value="") - select crop variety -
                 option(v-for="variety in cropVarieties" v-bind:value="variety") {{ variety }}
-              span.help-block.text-danger(v-show="errors.has('variety')") {{ errors.first('variety') }}
+              span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
         .row
 
           .col-xs-6
