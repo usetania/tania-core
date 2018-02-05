@@ -132,6 +132,7 @@ type InitialArea struct {
 	AreaUID         uuid.UUID `json:"area_id"`
 	InitialQuantity int       `json:"initial_quantity"`
 	CurrentQuantity int       `json:"current_quantity"`
+	LastWatered     time.Time `json:"last_watered"`
 }
 
 type MovedArea struct {
@@ -141,6 +142,7 @@ type MovedArea struct {
 	CurrentQuantity int
 	CreatedDate     time.Time
 	LastUpdated     time.Time
+	LastWatered     time.Time
 }
 
 type HarvestedStorage struct {
@@ -593,6 +595,38 @@ func (c *Crop) Prune() error {
 
 func (c *Crop) Pesticide() error {
 	c.LastPesticided = time.Now()
+
+	return nil
+}
+
+func (c *Crop) Water(cropService CropService, sourceAreaUID uuid.UUID, wateringDate time.Time) error {
+	serviceResult := cropService.FindAreaByID(sourceAreaUID)
+	if serviceResult.Error != nil {
+		return serviceResult.Error
+	}
+
+	srcArea, ok := serviceResult.Result.(query.CropAreaQueryResult)
+	if !ok {
+		return CropError{Code: CropDumpErrorInvalidSourceArea}
+	}
+
+	if srcArea == (query.CropAreaQueryResult{}) {
+		return CropError{Code: CropDumpErrorSourceAreaNotFound}
+	}
+
+	if wateringDate.IsZero() {
+		return CropError{Code: CropWaterErrorInvalidWateringDate}
+	}
+
+	if c.InitialArea.AreaUID == sourceAreaUID {
+		c.InitialArea.LastWatered = wateringDate
+	}
+
+	for i, v := range c.MovedArea {
+		if v.AreaUID == sourceAreaUID {
+			c.MovedArea[i].LastWatered = wateringDate
+		}
+	}
 
 	return nil
 }

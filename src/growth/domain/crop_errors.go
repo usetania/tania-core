@@ -27,6 +27,11 @@ const (
 	CropDumpErrorSourceAreaNotFound
 	CropDumpErrorInvalidQuantity
 
+	// Crop water errors
+	CropWaterErrorInvalidWateringDate
+	CropWaterErrorInvalidSourceArea
+	CropWaterErrorSourceAreaNotFound
+
 	// Crop Batch ID errors
 	CropErrorInvalidBatchID
 	CropErrorBatchIDAlreadyCreated
@@ -94,6 +99,13 @@ func (e CropError) Error() string {
 		return "Source area not found"
 	case CropDumpErrorInvalidQuantity:
 		return "Invalid quantity"
+
+	case CropWaterErrorInvalidWateringDate:
+		return "Invalid watering date"
+	case CropWaterErrorInvalidSourceArea:
+		return "Invalid source area"
+	case CropWaterErrorSourceAreaNotFound:
+		return "Source area not found"
 
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"

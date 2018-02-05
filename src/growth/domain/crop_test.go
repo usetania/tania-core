@@ -143,3 +143,54 @@ func TestHarvestCropBatch(t *testing.T) {
 	// crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 0, )
 
 }
+
+func TestWaterCrop(t *testing.T) {
+	// Given
+	cropServiceMock := new(CropServiceMock)
+
+	areaAUID, _ := uuid.NewV4()
+	areaBUID, _ := uuid.NewV4()
+	areaAServiceResult := ServiceResult{
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
+	}
+	areaBServiceResult := ServiceResult{
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
+	}
+	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
+	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
+
+	inventoryUID, _ := uuid.NewV4()
+	inventoryServiceResult := ServiceResult{
+		Result: query.CropMaterialQueryResult{
+			UID:  inventoryUID,
+			Name: "Tomato Super One",
+		},
+	}
+	cropServiceMock.On("FindMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(ServiceResult{})
+
+	containerType := Tray{Cell: 15}
+
+	wateringDate := "2018-Jan-15"
+	wDate, _ := time.Parse("2006-Jan-02", wateringDate)
+	fmt.Println(wDate)
+
+	// When
+	crop, errCrop := CreateCropBatch(cropServiceMock, areaAUID, CropTypeSeeding, inventoryUID, 20, containerType)
+	errMove := crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
+	errWater1 := crop.Water(cropServiceMock, areaAUID, wDate)
+	errWater2 := crop.Water(cropServiceMock, areaBUID, wDate)
+
+	// Then
+	cropServiceMock.AssertExpectations(t)
+
+	assert.Nil(t, errCrop)
+	assert.Nil(t, errMove)
+	assert.Nil(t, errWater1)
+	assert.Nil(t, errWater2)
+	assert.Equal(t, wDate, crop.InitialArea.LastWatered)
+	assert.Equal(t, wDate, crop.MovedArea[0].LastWatered)
+}
