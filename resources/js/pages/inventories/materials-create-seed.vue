@@ -46,10 +46,7 @@
             .row
               .col-xs-6
                 select.form-control#quantity_unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity_unit') }" v-model="inventory.quantity_unit" name="quantity_unit")
-                  option(value="SEEDS") Seeds
-                  option(value="PACKETS") Packets
-                  option(value="GRAM") Gram
-                  option(value="KILOGRAM") Kilogram
+                  option(v-for="unit in options.quantityUnits" v-bind:value="unit.key") {{ unit.label }}
                 span.help-block.text-danger(v-show="errors.has('quantity_unit')") {{ errors.first('quantity_unit') }}
               .col-xs-6
                 input.form-control#quantity(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
@@ -76,6 +73,7 @@
 <script>
 import { StubInventory } from '@/stores/stubs'
 import { PlantTypes } from '@/stores/helpers/farms/plant'
+import { QuantityUnits } from '@/stores/helpers/inventories/inventory'
 import { mapGetters, mapActions } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
 import moment from 'moment';
@@ -89,6 +87,7 @@ export default {
       inventory: Object.assign({}, StubInventory),
       options: {
         plantTypes: Array.from(PlantTypes),
+        quantityUnits: Array.from(QuantityUnits),
       }
     }
   },

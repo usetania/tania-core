@@ -19,12 +19,18 @@
               th(style="width: 15%") Produced By
               th(style="width: 12%") Quantity
           tbody
-
+            tr(v-for="material in materials")
+              td {{ getType(material.type.code) }}
+              td {{ material.name }}
+              td {{ material.price_per_unit.amount }} {{ material.price_per_unit.symbol}}
+              td {{ material.produced_by }}
+              td {{ material.quantity.value }} {{ getQuantityUnit(material.quantity.unit) }}
 </template>
 
 <script>
 import Modal from '@/components/modal.vue'
 import { mapActions, mapGetters } from 'vuex'
+import { FindInventoryType, FindQuantityUnit } from '@/stores/helpers/inventories/inventory'
 export default {
   name: 'InventoriesMaterial',
   computed: {
@@ -45,6 +51,12 @@ export default {
     ...mapActions([
       'fetchMaterials'
     ]),
+    getType(key) {
+      return FindInventoryType(key)
+    },
+    getQuantityUnit(key) {
+      return FindQuantityUnit(key)
+    },
   },
   mounted () {
     this.fetchMaterials()
