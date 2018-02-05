@@ -24,17 +24,30 @@
 
 <script>
 import Modal from '@/components/modal.vue'
+import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'InventoriesMaterial',
-  data () {
-    return {
-      showModal: false
-    }
+  computed: {
+    ...mapGetters({
+      materials: 'getAllMaterials'
+    })
   },
   components: {
     Modal,
     InventoriesMaterialCreate: () => import('./materials-create.vue'),
   },
-
+  data () {
+    return {
+      showModal: false
+    }
+  },
+  methods: {
+    ...mapActions([
+      'fetchMaterials'
+    ]),
+  },
+  mounted () {
+    this.fetchMaterials()
+  },
 }
 </script>
