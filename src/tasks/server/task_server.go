@@ -43,21 +43,8 @@ func NewTaskServer(
 
 // Mount defines the TaskServer's endpoints with its handlers
 func (s *TaskServer) Mount(g *echo.Group) {
-	//g.POST("", s.SaveTask)
-	// Seed
-	g.POST("/seed", s.SaveSeedActivity)
-	// Fertilize
-	g.POST("/fertilize", s.SaveFertilizeActivity)
-	// Prune
-	g.POST("/prune", s.SavePruneActivity)
-	// Pesticide
-	g.POST("/pesticide", s.SavePesticideActivity)
-	// MoveToArea
-	g.POST("/movetoarea", s.SaveMoveToAreaActivity)
-	// Dump
-	g.POST("/dump", s.SaveDumpActivity)
-	// Harvest
-	g.POST("/harvest", s.SaveHarvestActivity)
+	g.POST("", s.SaveTask)
+
 	g.GET("", s.FindAllTask)
 	g.GET("/:id", s.FindTaskByID)
 	//g.PUT("/:id/start", s.StartTask)
@@ -86,122 +73,8 @@ func (s TaskServer) FindAllTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-// SeedActivity
-func (s *TaskServer) SaveSeedActivity(c echo.Context) error {
-
-	activity, err := domain.CreateSeedActivity()
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
-// Crop: FertilizeActivity
-func (s *TaskServer) SaveFertilizeActivity(c echo.Context) error {
-
-	validateTaskActivity(c, domain.TaskTypeCrop)
-	activity, err := domain.CreateFertilizeActivity()
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
-// Crop: PruneActivity
-func (s *TaskServer) SavePruneActivity(c echo.Context) error {
-
-	validateTaskActivity(c, domain.TaskTypeCrop)
-	activity, err := domain.CreatePruneActivity()
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
-// Crop: PesticideActivity
-func (s *TaskServer) SavePesticideActivity(c echo.Context) error {
-
-	validateTaskActivity(c, domain.TaskTypeCrop)
-	activity, err := domain.CreatePesticideActivity()
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
-// Crop: MoveToAreaActivity
-func (s *TaskServer) SaveMoveToAreaActivity(c echo.Context) error {
-
-	validateTaskActivity(c, domain.TaskTypeCrop)
-	activity, err := domain.CreateMoveToAreaActivity(
-		s.TaskService,
-		c.FormValue("source_area_id"),
-		c.FormValue("dest_area_id"),
-		c.FormValue("quantity"))
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
-// Crop: DumpActivity
-func (s *TaskServer) SaveDumpActivity(c echo.Context) error {
-
-	validateTaskActivity(c, domain.TaskTypeCrop)
-	activity, err := domain.CreateDumpActivity(
-		s.TaskService,
-		c.FormValue("source_area_id"),
-		c.FormValue("quantity"))
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
-// Crop: HarvestActivity
-func (s *TaskServer) SaveHarvestActivity(c echo.Context) error {
-
-	validateTaskActivity(c, domain.TaskTypeCrop)
-	activity, err := domain.CreateHarvestActivity(
-		s.TaskService,
-		c.FormValue("source_area_id"),
-		c.FormValue("quantity"))
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	result := s.SaveTask(c, activity)
-
-	return result
-}
-
 // SaveTask is a TaskServer's handler to save new Task
-func (s *TaskServer) SaveTask(c echo.Context, a domain.Activity) error {
+func (s *TaskServer) SaveTask(c echo.Context) error {
 	data := make(map[string]domain.Task)
 
 	form_date := c.FormValue("due_date")
@@ -221,8 +94,7 @@ func (s *TaskServer) SaveTask(c echo.Context, a domain.Activity) error {
 		due_ptr,
 		c.FormValue("priority"),
 		c.FormValue("type"),
-		c.FormValue("asset_id"),
-		a)
+		c.FormValue("asset_id"))
 
 	if err != nil {
 		return Error(c, err)
@@ -364,11 +236,4 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	data["data"] = task
 
 	return c.JSON(http.StatusOK, data)
-}
-
-func validateTaskActivity(c echo.Context, task_type string) error {
-	if c.FormValue("type") != task_type {
-		return Error(c, NewRequestValidationError(UNSUPPORTED_ACTIVITY, "type"))
-	}
-	return nil
 }

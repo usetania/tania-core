@@ -17,20 +17,19 @@ type ServiceResult struct {
 }
 
 type Task struct {
-	UID          uuid.UUID  `json:"uid"`
-	Description  string     `json:"description"`
-	CreatedDate  time.Time  `json:"created_date"`
-	DueDate      *time.Time `json:"due_date,omitempty"`
-	Priority     string     `json:"priority"`
-	Status       string     `json:"status"`
-	TaskType     string     `json:"type"`
-	IsDue        bool       `json:"is_due"`
-	AssetID      uuid.UUID  `json:"asset_id"`
-	TaskActivity Activity   `json:"Activity"`
+	UID         uuid.UUID  `json:"uid"`
+	Description string     `json:"description"`
+	CreatedDate time.Time  `json:"created_date"`
+	DueDate     *time.Time `json:"due_date,omitempty"`
+	Priority    string     `json:"priority"`
+	Status      string     `json:"status"`
+	TaskType    string     `json:"type"`
+	IsDue       bool       `json:"is_due"`
+	AssetID     uuid.UUID  `json:"asset_id"`
 }
 
 // CreateTask
-func CreateTask(task_service TaskService, description string, due_date *time.Time, priority string, tasktype string, asset_id string, activity Activity) (Task, error) {
+func CreateTask(task_service TaskService, description string, due_date *time.Time, priority string, tasktype string, asset_id string) (Task, error) {
 	// add validation
 
 	err := validateTaskDueDate(due_date)
@@ -66,16 +65,15 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 	}
 
 	return Task{
-		UID:          uid,
-		Description:  description,
-		CreatedDate:  time.Now(),
-		DueDate:      due_date,
-		Priority:     priority,
-		Status:       TaskStatusCreated,
-		TaskType:     tasktype,
-		IsDue:        false,
-		AssetID:      asset,
-		TaskActivity: activity,
+		UID:         uid,
+		Description: description,
+		CreatedDate: time.Now(),
+		DueDate:     due_date,
+		Priority:    priority,
+		Status:      TaskStatusCreated,
+		TaskType:    tasktype,
+		IsDue:       false,
+		AssetID:     asset,
 	}, nil
 }
 

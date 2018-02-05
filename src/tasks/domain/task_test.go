@@ -21,8 +21,6 @@ func TestCreateTask(t *testing.T) {
 
 	tasktype := "crop"
 
-	act, _ := CreatePruneActivity()
-
 	var tests = []struct {
 		description        string
 		duedate            *time.Time
@@ -49,14 +47,14 @@ func TestCreateTask(t *testing.T) {
 		taskServiceMock.On("FindCropByID", test.assetid).Return(ServiceResult{Result: query.TaskCropQueryResult{}})
 
 		_, err := CreateTask(
-			taskServiceMock, test.description, test.duedate, test.priority, test.tasktype, test.assetid.String(), act)
+			taskServiceMock, test.description, test.duedate, test.priority, test.tasktype, test.assetid.String())
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
 
 	//empty assetid
 	_, err := CreateTask(
-		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", "", act)
+		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", "")
 
 	assert.Equal(t, TaskError{TaskErrorAssetIDEmptyCode}, err)
 
@@ -64,7 +62,7 @@ func TestCreateTask(t *testing.T) {
 	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}, Error: TaskError{TaskErrorInvalidAssetIDCode}})
 
 	_, err = CreateTask(
-		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", assetID_notexist.String(), act)
+		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", assetID_notexist.String())
 
 	assert.Equal(t, TaskError{TaskErrorInvalidAssetIDCode}, err)
 }
