@@ -21,10 +21,26 @@ const actions = {
           resolve(data)
         }, error => reject(error.response))
     })
-  }
+  },
+  createMaterialSeed ({ commit, state, getters }, payload) {
+    const farm = getters.getCurrentFarm
+
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiCreateMaterialSeed(payload, ({ data }) => {
+          payload = data.data
+          commit(types.CREATE_INVENTORY, payload)
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
+  [types.CREATE_INVENTORY] (state, payload) {
+    state.inventories.push(payload)
+  },
   [types.FETCH_FARM_INVENTORIES] (state, payload) {
     state.inventories = payload
   },
