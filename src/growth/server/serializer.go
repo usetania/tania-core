@@ -90,6 +90,7 @@ func (sn SortedCropNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(s
 type CropActivityType struct {
 	TotalSeeding int `json:"total_seeding"`
 	TotalGrowing int `json:"total_growing"`
+	TotalDumped  int `json:"total_dumped"`
 }
 
 func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
@@ -105,6 +106,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 
 	totalSeeding := 0
 	totalGrowing := 0
+	totalDumped := 0
 
 	queryResult = <-s.AreaQuery.FindByID(crop.InitialArea.AreaUID)
 	if queryResult.Error != nil {
@@ -194,6 +196,8 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
+		totalDumped += v.Quantity
+
 		trash = append(trash, Trash{
 			SourceArea:  area,
 			Quantity:    v.Quantity,
@@ -259,6 +263,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	cropBatch.ActivityType = CropActivityType{
 		TotalSeeding: totalSeeding,
 		TotalGrowing: totalGrowing,
+		TotalDumped:  totalDumped,
 	}
 
 	notes := make(SortedCropNotes, 0, len(crop.Notes))
