@@ -74,8 +74,8 @@ func TestCropInMemorySave(t *testing.T) {
 	// When
 	var err1, err2 error
 	go func() {
-		err1 = <-repo.Save(&crop1)
-		err2 = <-repo.Save(&crop2)
+		err1 = <-repo.Save(crop1)
+		err2 = <-repo.Save(crop2)
 
 		done <- true
 	}()
@@ -133,8 +133,8 @@ func TestCropInMemoryFindAll(t *testing.T) {
 	var result, foundOne RepositoryResult
 	go func() {
 		// Given
-		<-repo.Save(&crop1)
-		<-repo.Save(&crop2)
+		<-repo.Save(crop1)
+		<-repo.Save(crop2)
 
 		// When
 		result = <-repo.FindAll()
@@ -201,8 +201,8 @@ func TestCropInMemoryFindByID(t *testing.T) {
 	var found1, found2 RepositoryResult
 	go func() {
 		// Given
-		<-repo.Save(&crop1)
-		<-repo.Save(&crop2)
+		<-repo.Save(crop1)
+		<-repo.Save(crop2)
 
 		// When
 		found1 = <-repo.FindByID(crop1.UID.String())
