@@ -33,6 +33,10 @@ type Crop struct {
 
 	// Notes
 	Notes map[uuid.UUID]CropNote
+
+	// Events
+	Version            int
+	UncommittedChanges []interface{}
 }
 
 // CropService handles crop behaviours that needs external interaction to be worked
@@ -228,35 +232,55 @@ type CropPhoto struct {
 	Height   int    `json:"height"`
 }
 
+func (state *Crop) TrackChange(event interface{}) {
+	state.UncommittedChanges = append(state.UncommittedChanges, event)
+	state.Transition(event)
+}
+
+func (state *Crop) Transition(event interface{}) {
+	switch e := event.(type) {
+	case CropBatchCreated:
+		state.UID = e.UID
+		state.BatchID = e.BatchID
+		state.Status = e.Status
+		state.Type = e.Type
+		state.Container = e.Container
+		state.InventoryUID = e.InventoryUID
+		state.CreatedDate = e.CreatedDate
+		state.InitialArea = e.InitialArea
+		state.FarmUID = e.FarmUID
+	}
+}
+
 func CreateCropBatch(
 	cropService CropService,
 	areaUID uuid.UUID,
 	cropType string,
 	inventoryUID uuid.UUID,
-	quantity int, containerType CropContainerType) (Crop, error) {
+	quantity int, containerType CropContainerType) (*Crop, error) {
 
 	serviceResult := cropService.FindAreaByID(areaUID)
 	if serviceResult.Error != nil {
-		return Crop{}, serviceResult.Error
+		return nil, serviceResult.Error
 	}
 
 	area := serviceResult.Result.(query.CropAreaQueryResult)
 
 	ct := GetCropType(cropType)
 	if ct == (CropType{}) {
-		return Crop{}, CropError{Code: CropErrorInvalidCropType}
+		return nil, CropError{Code: CropErrorInvalidCropType}
 	}
 
 	serviceResult = cropService.FindMaterialByID(inventoryUID)
 	if serviceResult.Error != nil {
-		return Crop{}, serviceResult.Error
+		return nil, serviceResult.Error
 	}
 
 	inv := serviceResult.Result.(query.CropMaterialQueryResult)
 
 	err := validateContainer(quantity, containerType)
 	if err != nil {
-		return Crop{}, err
+		return nil, err
 	}
 
 	cropContainer := CropContainer{
@@ -268,15 +292,17 @@ func CreateCropBatch(
 
 	batchID, err := generateBatchID(cropService, inv, createdDate)
 	if err != nil {
-		return Crop{}, err
+		return nil, err
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return Crop{}, err
+		return nil, err
 	}
 
-	return Crop{
+	initial := &Crop{}
+
+	initial.TrackChange(CropBatchCreated{
 		UID:          uid,
 		BatchID:      batchID,
 		Status:       GetCropStatus(CropActive),
@@ -290,7 +316,9 @@ func CreateCropBatch(
 			CurrentQuantity: quantity,
 		},
 		FarmUID: area.FarmUID,
-	}, nil
+	})
+
+	return initial, nil
 }
 
 func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, destinationAreaUID uuid.UUID, quantity int) error {

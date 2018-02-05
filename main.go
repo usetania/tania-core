@@ -36,6 +36,7 @@ func main() {
 	reservoirStorage := assetsstorage.CreateReservoirStorage()
 	materialStorage := assetsstorage.CreateMaterialStorage()
 	cropStorage := growthstorage.CreateCropStorage()
+	cropEventStorage := growthstorage.CreateCropEventStorage()
 
 	farmServer, err := server.NewFarmServer(
 		farmStorage,
@@ -58,6 +59,7 @@ func main() {
 
 	growthServer, err := growthserver.NewGrowthServer(
 		cropStorage,
+		cropEventStorage,
 		areaStorage,
 		materialStorage,
 		farmStorage,

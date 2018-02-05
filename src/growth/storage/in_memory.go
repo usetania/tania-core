@@ -23,3 +23,18 @@ func CreateCropStorage() *CropStorage {
 
 	return &CropStorage{CropMap: make(map[uuid.UUID]domain.Crop), Lock: &rwMutex}
 }
+
+type CropEventStorage struct {
+	Lock         *deadlock.RWMutex
+	CropEventMap map[uuid.UUID]interface{}
+}
+
+func CreateCropEventStorage() *CropEventStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("CROP EVENT STORAGE DEADLOCK!")
+	}
+
+	return &CropEventStorage{CropEventMap: make(map[uuid.UUID]interface{}), Lock: &rwMutex}
+}

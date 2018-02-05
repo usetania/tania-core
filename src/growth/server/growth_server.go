@@ -23,6 +23,7 @@ import (
 // GrowthServer ties the routes and handlers with injected dependencies
 type GrowthServer struct {
 	CropRepo      repository.CropRepository
+	CropEventRepo repository.CropEventRepository
 	CropQuery     query.CropQuery
 	CropService   domain.CropService
 	AreaQuery     query.AreaQuery
@@ -34,10 +35,12 @@ type GrowthServer struct {
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
 func NewGrowthServer(
 	cropStorage *storage.CropStorage,
+	cropEventStorage *storage.CropEventStorage,
 	areaStorage *assetsstorage.AreaStorage,
 	materialStorage *assetsstorage.MaterialStorage,
 	farmStorage *assetsstorage.FarmStorage,
 ) (*GrowthServer, error) {
+	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
@@ -53,6 +56,7 @@ func NewGrowthServer(
 
 	return &GrowthServer{
 		CropRepo:      cropRepo,
+		CropEventRepo: cropEventRepo,
 		CropQuery:     cropQuery,
 		CropService:   cropService,
 		AreaQuery:     areaQuery,
@@ -147,13 +151,13 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	}
 
 	// Persists //
-	err = <-s.CropRepo.Save(&cropBatch)
+	err = <-s.CropEventRepo.Save(cropBatch.UID, cropBatch.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	data := make(map[string]CropBatch)
-	cb, err := MapToCropBatch(s, cropBatch)
+	cb, err := MapToCropBatch(s, *cropBatch)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -164,23 +168,30 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 }
 
 func (s *GrowthServer) FindCropByID(c echo.Context) error {
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	// Validate //
-	result := <-s.CropRepo.FindByID(c.Param("id"))
+	result := <-s.CropEventRepo.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropEvents, ok := result.Result.([]interface{})
 	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
+
+	crop := repository.NewCropBatchFromHistory(cropEvents)
 
 	if crop.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
 	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, crop)
+	cropBatch, err := MapToCropBatch(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}
