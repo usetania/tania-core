@@ -22,13 +22,13 @@ const actions = {
         }, error => reject(error.response))
     })
   },
-  createMaterialSeed ({ commit, state, getters }, payload) {
+  createMaterial ({ commit, state, getters }, payload) {
     const farm = getters.getCurrentFarm
 
     NProgress.start()
     return new Promise((resolve, reject) => {
       FarmApi
-        .ApiCreateMaterialSeed(payload, ({ data }) => {
+        .ApiCreateMaterial(payload, ({ data }) => {
           payload = data.data
           commit(types.CREATE_INVENTORY, payload)
           resolve(payload)

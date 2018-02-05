@@ -94,12 +94,14 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createMaterialSeed',
+      'createMaterial',
       'openPicker',
     ]),
     create () {
       this.inventory.expiration_date = moment(this.inventory.expiration_date).format('YYYY-MM-DD')
-      this.createMaterialSeed(this.inventory)
+      this.inventory.type = "seed"
+      console.log(this.inventory)
+      this.createMaterial(this.inventory)
         .then(this.$emit('closeModal'))
         .catch(({ data }) => this.message = data)
     },

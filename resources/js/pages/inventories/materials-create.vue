@@ -4,7 +4,7 @@
       span.h4.font-bold Add Material to Inventory
     .modal-body
       p.text-muted Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on.
-      form(@submit.prevent="validateBeforeSubmit")
+      form
         .line.line-dashed.b-b.line-lg
         .form-group
           label.control-label Choose type of material
@@ -64,15 +64,15 @@ export default {
       this.showSeedContainer = false
       if (type == "seed") {
         this.showSeed = true
-      } else if (type == "growingmedium") {
+      } else if (type == "growing_medium") {
         this.showGrowingMedium = true
       } else if (type == "agrochemical") {
         this.showAgrochemical = true
-      } else if (type == "labelcrop") {
+      } else if (type == "label_and_crop_support") {
         this.showLabelCrop = true
-      } else if (type == "seedingcontainer") {
+      } else if (type == "seeding_container") {
         this.showSeedContainer = true
-      } else if (type == "postharvest") {
+      } else if (type == "post_harvest_supply") {
         this.showPotHarvest = true
       } else if (type == "other") {
         this.showOther = true

@@ -11,4 +11,5 @@ export default {
   notes: '',
   is_expense: '',
   produced_by: '',
+  type: '',
 }

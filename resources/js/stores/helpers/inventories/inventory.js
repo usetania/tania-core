@@ -1,9 +1,9 @@
 export const InventoryTypes = [
   { key: 'seed',  label: 'Seed' },
-  { key: 'growingmedium', label: 'Growing Medium' },
+  { key: 'growing_medium', label: 'Growing Medium' },
   { key: 'agrochemical', label: 'Agrochemical' },
-  { key: 'labelcrop', label: 'Label and Crop Support' },
-  { key: 'seedingcontainer', label: 'Seeding Container' },
-  { key: 'postharvest', label: 'Post Harvest Supply' },
+  { key: 'label_and_crop_support', label: 'Label and Crop Support' },
+  { key: 'seeding_container', label: 'Seeding Container' },
+  { key: 'post_harvest_supply', label: 'Post Harvest Supply' },
   { key: 'other', label: 'Other Material' },
 ]

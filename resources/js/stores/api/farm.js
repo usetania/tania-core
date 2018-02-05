@@ -60,7 +60,7 @@ export default {
   ApiDeleteCropNotes: (cropid, noteid, payload, cbSuccess, cbError) => {
     http.delete('farms/crops/' + cropid + '/notes/' + noteid, payload, cbSuccess, cbError)
   },
-  ApiCreateMaterialSeed: (payload, cbSuccess, cbError) => {
-    http.post('farms/inventories/materials/seed', payload, cbSuccess, cbError)
+  ApiCreateMaterial: (payload, cbSuccess, cbError) => {
+    http.post('farms/inventories/materials/' + payload.type, payload, cbSuccess, cbError)
   },
 }
