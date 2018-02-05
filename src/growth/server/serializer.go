@@ -30,9 +30,9 @@ type CropBatch struct {
 	Trash            []Trash            `json:"trash"`
 
 	// Fields to track care crop
-	LastFertilized string `json:"last_fertilized"`
-	LastPruned     string `json:"last_pruned"`
-	LastPesticided string `json:"last_pesticided"`
+	LastFertilized *time.Time `json:"last_fertilized"`
+	LastPruned     *time.Time `json:"last_pruned"`
+	LastPesticided *time.Time `json:"last_pesticided"`
 
 	Notes SortedCropNotes `json:"notes"`
 }
@@ -50,6 +50,7 @@ type InitialArea struct {
 	Area            query.CropAreaQueryResult `json:"area"`
 	InitialQuantity int                       `json:"initial_quantity"`
 	CurrentQuantity int                       `json:"current_quantity"`
+	LastWatered     *time.Time                `json:"last_watered"`
 }
 
 type MovedArea struct {
@@ -59,6 +60,7 @@ type MovedArea struct {
 	CurrentQuantity int                       `json:"current_quantity"`
 	CreatedDate     time.Time                 `json:"created_date"`
 	LastUpdated     time.Time                 `json:"last_updated"`
+	LastWatered     *time.Time                `json:"last_watered"`
 }
 
 type HarvestedStorage struct {
@@ -153,6 +155,11 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 			totalGrowing += v.CurrentQuantity
 		}
 
+		var lastWatered *time.Time
+		if !v.LastWatered.IsZero() {
+			lastWatered = &v.LastWatered
+		}
+
 		movedAreas = append(movedAreas, MovedArea{
 			Area:            area,
 			SourceArea:      sourceArea,
@@ -160,6 +167,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 			CurrentQuantity: v.CurrentQuantity,
 			CreatedDate:     v.CreatedDate,
 			LastUpdated:     v.LastUpdated,
+			LastWatered:     lastWatered,
 		})
 	}
 
@@ -237,27 +245,33 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	cropBatch.CreatedDate = crop.CreatedDate
 	cropBatch.DaysSinceSeeding = crop.CalculateDaysSinceSeeding()
 
+	var lastWatered *time.Time
+	if !crop.InitialArea.LastWatered.IsZero() {
+		lastWatered = &crop.InitialArea.LastWatered
+	}
+
 	cropBatch.InitialArea = InitialArea{
 		Area:            initialArea,
 		InitialQuantity: crop.InitialArea.InitialQuantity,
 		CurrentQuantity: crop.InitialArea.CurrentQuantity,
+		LastWatered:     lastWatered,
 	}
 
 	cropBatch.MovedArea = movedAreas
 	cropBatch.HarvestedStorage = harvestedStorage
 	cropBatch.Trash = trash
 
-	cropBatch.LastFertilized = ""
+	cropBatch.LastFertilized = nil
 	if !crop.LastFertilized.IsZero() {
-		cropBatch.LastFertilized = crop.LastFertilized.String()
+		cropBatch.LastFertilized = &crop.LastFertilized
 	}
-	cropBatch.LastPesticided = ""
+	cropBatch.LastPesticided = nil
 	if !crop.LastPesticided.IsZero() {
-		cropBatch.LastPesticided = crop.LastPesticided.String()
+		cropBatch.LastPesticided = &crop.LastPesticided
 	}
-	cropBatch.LastPruned = ""
+	cropBatch.LastPruned = nil
 	if !crop.LastPruned.IsZero() {
-		cropBatch.LastPruned = crop.LastPruned.String()
+		cropBatch.LastPruned = &crop.LastPruned
 	}
 
 	cropBatch.ActivityType = CropActivityType{

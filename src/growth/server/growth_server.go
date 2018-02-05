@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -70,6 +71,7 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.POST("/crops/:id/move", s.MoveCrop)
 	g.POST("/crops/:id/harvest", s.HarvestCrop)
 	g.POST("/crops/:id/dump", s.DumpCrop)
+	g.POST("/crops/:id/water", s.WaterCrop)
 	g.POST("/crops/:id/notes", s.SaveCropNotes)
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.POST("/crops/:id/photos", s.UploadCropPhotos)
@@ -345,6 +347,58 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 
 	// PROCESS //
 	err = crop.Dump(s.CropService, srcAreaUID, qty)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// PERSIST //
+	err = <-s.CropRepo.Save(&crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string]CropBatch)
+	cropBatch, err := MapToCropBatch(s, crop)
+	if err != nil {
+		return Error(c, err)
+	}
+	data["data"] = cropBatch
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) WaterCrop(c echo.Context) error {
+	cropID := c.Param("id")
+	srcAreaID := c.FormValue("source_area_id")
+	wateringDate := c.FormValue("watering_date")
+
+	// VALIDATE //
+	result := <-s.CropRepo.FindByID(cropID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(domain.Crop)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	srcAreaUID, err := uuid.FromString(srcAreaID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	wDate, err := time.Parse("2006-01-02", wateringDate)
+	if err != nil {
+		return Error(c, NewRequestValidationError(PARSE_FAILED, "watering_date"))
+	}
+
+	// PROCESS //
+	err = crop.Water(s.CropService, srcAreaUID, wDate)
 	if err != nil {
 		return Error(c, err)
 	}

@@ -176,7 +176,6 @@ func TestWaterCrop(t *testing.T) {
 
 	wateringDate := "2018-Jan-15"
 	wDate, _ := time.Parse("2006-Jan-02", wateringDate)
-	fmt.Println(wDate)
 
 	// When
 	crop, errCrop := CreateCropBatch(cropServiceMock, areaAUID, CropTypeSeeding, inventoryUID, 20, containerType)
