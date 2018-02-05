@@ -4,9 +4,23 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
 )
+
+type TaskServiceMock struct {
+	mock.Mock
+}
+
+func (m TaskServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
+	args := m.Called(uid)
+	return args.Get(0).(ServiceResult)
+}
+func (m TaskServiceMock) FindCropByID(uid uuid.UUID) ServiceResult {
+	args := m.Called(uid)
+	return args.Get(0).(ServiceResult)
+}
 
 func TestCreateTask(t *testing.T) {
 	taskServiceMock := new(TaskServiceMock)
