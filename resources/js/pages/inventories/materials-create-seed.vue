@@ -49,7 +49,7 @@
                   option(v-for="unit in options.quantityUnits" v-bind:value="unit.key") {{ unit.label }}
                 span.help-block.text-danger(v-show="errors.has('quantity_unit')") {{ errors.first('quantity_unit') }}
               .col-xs-6
-                input.form-control#quantity(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
+                input.form-control#quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
                 span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
           .col-xs-6
             label.control-label(for="expiration_date") Expiration date
@@ -99,7 +99,6 @@ export default {
     create () {
       this.inventory.expiration_date = moment(this.inventory.expiration_date).format('YYYY-MM-DD')
       this.inventory.type = "seed"
-      console.log(this.inventory)
       this.createMaterial(this.inventory)
         .then(this.$emit('closeModal'))
         .catch(({ data }) => this.message = data)

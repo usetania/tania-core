@@ -12,4 +12,5 @@ export default {
   is_expense: '',
   produced_by: '',
   type: '',
+  chemical_type: '',
 }

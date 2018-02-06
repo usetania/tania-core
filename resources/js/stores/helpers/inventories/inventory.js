@@ -24,3 +24,27 @@ export function FindQuantityUnit(key) {
   var quantityUnit =  QuantityUnits.find(item => item.key === key.toLowerCase())
   return quantityUnit ? quantityUnit.label : ''
 }
+
+export const AgrochemicalQuantityUnits = [
+  { key: 'PACKETS',  label: 'Packets' },
+  { key: 'BOTTLES', label: 'Bottles' },
+  { key: 'BAGS', label: 'Bags' },
+]
+
+export function FindAgrochemicalQuantityUnit(key) {
+  var quantityUnit =  AgrochemicalQuantityUnits.find(item => item.key === key.toLowerCase())
+  return quantityUnit ? quantityUnit.label : ''
+}
+
+export const ChemicalTypes = [
+  { key: 'DISINFECTANT',  label: 'Disinfectant & Sanitizer' },
+  { key: 'FERTILIZER', label: 'Fertilizer' },
+  { key: 'HORMONE', label: 'Hormone & Growth Agent' },
+  { key: 'MANURE', label: 'Manure' },
+  { key: 'PESTICIDE', label: 'Pesticide' },
+]
+
+export function FindChemicalType(key) {
+  var chemicalType =  ChemicalTypes.find(item => item.key === key.toLowerCase())
+  return chemicalType ? chemicalType.label : ''
+}
