@@ -1,16 +1,16 @@
 package domain
 
 const (
-	TaskCategoryArea        = "area"
-	TaskCategoryCrop        = "crop"
-	TaskCategoryFinance     = "finance"
-	TaskCategoryGeneral     = "general"
-	TaskCategoryInventory   = "inventory"
-	TaskCategoryNutrient    = "nutrient"
-	TaskCategoryPestControl = "pestcontrol"
-	TaskCategoryReservoir   = "reservoir"
-	TaskCategorySafety      = "safety"
-	TaskCategorySanitation  = "sanitation"
+	TaskCategoryArea        = "AREA"
+	TaskCategoryCrop        = "CROP"
+	TaskCategoryFinance     = "FINANCE"
+	TaskCategoryGeneral     = "GENERAL"
+	TaskCategoryInventory   = "INVENTORY"
+	TaskCategoryNutrient    = "NUTRIENT"
+	TaskCategoryPestControl = "PESTCONTROL"
+	TaskCategoryReservoir   = "RESERVOIR"
+	TaskCategorySafety      = "SAFETY"
+	TaskCategorySanitation  = "SANITATION"
 )
 
 type TaskCategory struct {

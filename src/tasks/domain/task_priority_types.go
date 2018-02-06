@@ -1,8 +1,8 @@
 package domain
 
 const (
-	TaskPriorityUrgent = "urgent"
-	TaskPriorityNormal = "normal"
+	TaskPriorityUrgent = "URGENT"
+	TaskPriorityNormal = "NORMAL"
 )
 
 type TaskPriority struct {

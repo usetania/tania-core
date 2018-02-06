@@ -33,7 +33,7 @@ func TestCreateTask(t *testing.T) {
 	due_date, _ := time.Parse(time.RFC3339, "2019-01-23T17:37:39.697328206+01:00")
 	due_ptr := &due_date
 
-	taskcategory := "crop"
+	taskcategory := "CROP"
 
 	var tests = []struct {
 		description        string
@@ -44,17 +44,17 @@ func TestCreateTask(t *testing.T) {
 		eexpectedTaskError error
 	}{
 		//emptyduedate
-		{"MyDescription", nil, "urgent", taskcategory, &assetID, nil},
+		{"MyDescription", nil, "URGENT", taskcategory, &assetID, nil},
 		//duedatepassed
-		{"MyDescription", due_ptr_invalid, "urgent", taskcategory, &assetID, TaskError{TaskErrorDueDateInvalidCode}},
+		{"MyDescription", due_ptr_invalid, "NORMAL", taskcategory, &assetID, TaskError{TaskErrorDueDateInvalidCode}},
 		//empty priority
 		{"MyDescription", due_ptr, "", taskcategory, &assetID, TaskError{TaskErrorPriorityEmptyCode}},
 		//invalidpriority
-		{"MyDescription", due_ptr, "later", taskcategory, &assetID, TaskError{TaskErrorInvalidPriorityCode}},
+		{"MyDescription", due_ptr, "urgent", taskcategory, &assetID, TaskError{TaskErrorInvalidPriorityCode}},
 		//empty category
-		{"MyDescription", due_ptr, "urgent", "", &assetID, TaskError{TaskErrorCategoryEmptyCode}},
+		{"MyDescription", due_ptr, "URGENT", "", &assetID, TaskError{TaskErrorCategoryEmptyCode}},
 		//invalid category
-		{"MyDescription", due_ptr, "urgent", "vegetable", &assetID, TaskError{TaskErrorInvalidCategoryCode}},
+		{"MyDescription", due_ptr, "NORMAL", "VEGETABLE", &assetID, TaskError{TaskErrorInvalidCategoryCode}},
 	}
 
 	for _, test := range tests {
@@ -68,7 +68,7 @@ func TestCreateTask(t *testing.T) {
 
 	//nil assetid
 	_, err := CreateTask(
-		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", nil)
+		taskServiceMock, "MyDescription", due_ptr, "URGENT", taskcategory, nil)
 
 	assert.Equal(t, nil, err)
 
@@ -76,7 +76,7 @@ func TestCreateTask(t *testing.T) {
 	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}, Error: TaskError{TaskErrorInvalidAssetIDCode}})
 
 	_, err = CreateTask(
-		taskServiceMock, "MyDescription", due_ptr, "urgent", "crop", &assetID_notexist)
+		taskServiceMock, "MyDescription", due_ptr, "NORMAL", taskcategory, &assetID_notexist)
 
 	assert.Equal(t, TaskError{TaskErrorInvalidAssetIDCode}, err)
 }
