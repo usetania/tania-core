@@ -38,3 +38,55 @@ func CreateCropEventStorage() *CropEventStorage {
 
 	return &CropEventStorage{CropEventMap: make(map[uuid.UUID]interface{}), Lock: &rwMutex}
 }
+
+type CropList struct {
+	UID          uuid.UUID
+	VarietyName  string
+	BatchID      string
+	InventoryUID uuid.UUID
+	InitialArea  InitialArea
+	MovedArea    []MovedArea
+	AreaStatus   AreaStatus
+	CreatedDate  time.Time
+	FarmUID      uuid.UUID
+}
+
+type InitialArea struct {
+	AreaUID         uuid.UUID
+	Name            string
+	InitialQuantity Container
+	CurrentQuantity Container
+}
+
+type MovedArea struct {
+	AreaUID         uuid.UUID
+	Name            string
+	CurrentQuantity Container
+}
+
+type Container struct {
+	Type     string
+	Quantity int
+	Cell     int
+}
+
+type AreaStatus struct {
+	Seeding int
+	Growing int
+	Dumped  int
+}
+
+type CropListStorage struct {
+	Lock        *deadlock.RWMutex
+	CropListMap map[uuid.UUID]CropList
+}
+
+func CreateCropListStorage() *CropListStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("CROP LIST STORAGE DEADLOCK!")
+	}
+
+	return &CropListStorage{CropListMap: make(map[uuid.UUID]CropList), Lock: &rwMutex}
+}

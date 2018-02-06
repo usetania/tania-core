@@ -247,7 +247,11 @@ func (state *Crop) Transition(event interface{}) {
 		state.Container = e.Container
 		state.InventoryUID = e.InventoryUID
 		state.CreatedDate = e.CreatedDate
-		state.InitialArea = e.InitialArea
+		state.InitialArea = InitialArea{
+			AreaUID:         e.InitialAreaUID,
+			InitialQuantity: e.Quantity,
+			CurrentQuantity: e.Quantity,
+		}
 		state.FarmUID = e.FarmUID
 	}
 }
@@ -288,6 +292,16 @@ func CreateCropBatch(
 		Type:     containerType,
 	}
 
+	containerTypeStr := ""
+	containerCell := 0
+	switch v := containerType.(type) {
+	case Tray:
+		containerTypeStr = v.Code()
+		containerCell = v.Cell
+	case Pot:
+		containerTypeStr = v.Code()
+	}
+
 	createdDate := time.Now()
 
 	batchID, err := generateBatchID(cropService, inv, createdDate)
@@ -303,19 +317,20 @@ func CreateCropBatch(
 	initial := &Crop{}
 
 	initial.TrackChange(CropBatchCreated{
-		UID:          uid,
-		BatchID:      batchID,
-		Status:       GetCropStatus(CropActive),
-		Type:         ct,
-		Container:    cropContainer,
-		InventoryUID: inv.UID,
-		CreatedDate:  createdDate,
-		InitialArea: InitialArea{
-			AreaUID:         area.UID,
-			InitialQuantity: quantity,
-			CurrentQuantity: quantity,
-		},
-		FarmUID: area.FarmUID,
+		UID:             uid,
+		BatchID:         batchID,
+		Status:          GetCropStatus(CropActive),
+		Type:            ct,
+		Container:       cropContainer,
+		ContainerType:   containerTypeStr,
+		ContainerCell:   containerCell,
+		InventoryUID:    inv.UID,
+		VarietyName:     inv.Name,
+		CreatedDate:     createdDate,
+		InitialAreaUID:  area.UID,
+		InitialAreaName: area.Name,
+		Quantity:        quantity,
+		FarmUID:         area.FarmUID,
 	})
 
 	return initial, nil

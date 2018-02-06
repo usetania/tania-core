@@ -15,6 +15,7 @@ import (
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
+	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/labstack/gommon/log"
@@ -37,6 +38,10 @@ func main() {
 	materialStorage := assetsstorage.CreateMaterialStorage()
 	cropStorage := growthstorage.CreateCropStorage()
 	cropEventStorage := growthstorage.CreateCropEventStorage()
+	cropListStorage := growthstorage.CreateCropListStorage()
+
+	// Initialize Event Bus
+	bus := EventBus.New()
 
 	farmServer, err := server.NewFarmServer(
 		farmStorage,
@@ -58,8 +63,10 @@ func main() {
 	}
 
 	growthServer, err := growthserver.NewGrowthServer(
+		bus,
 		cropStorage,
 		cropEventStorage,
+		cropListStorage,
 		areaStorage,
 		materialStorage,
 		farmStorage,

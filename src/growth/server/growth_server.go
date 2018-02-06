@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,11 +12,13 @@ import (
 	"github.com/Tanibox/tania-server/src/growth/query/inmemory"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/repository"
 	"github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -25,17 +28,22 @@ type GrowthServer struct {
 	CropRepo      repository.CropRepository
 	CropEventRepo repository.CropEventRepository
 	CropQuery     query.CropQuery
+	CropListRepo  repository.CropListRepository
+	CropListQuery query.CropListQuery
 	CropService   domain.CropService
 	AreaQuery     query.AreaQuery
 	MaterialQuery query.MaterialQuery
 	FarmQuery     query.FarmQuery
+	EventBus      EventBus.Bus
 	File          File
 }
 
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
 func NewGrowthServer(
+	bus EventBus.Bus,
 	cropStorage *storage.CropStorage,
 	cropEventStorage *storage.CropEventStorage,
+	cropListStorage *storage.CropListStorage,
 	areaStorage *assetsstorage.AreaStorage,
 	materialStorage *assetsstorage.MaterialStorage,
 	farmStorage *assetsstorage.FarmStorage,
@@ -43,6 +51,8 @@ func NewGrowthServer(
 	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
+	cropListRepo := repository.NewCropListRepositoryInMemory(cropListStorage)
+	cropListQuery := inmemory.NewCropListQueryInMemory(cropListStorage)
 
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
@@ -54,16 +64,28 @@ func NewGrowthServer(
 		AreaQuery:     areaQuery,
 	}
 
-	return &GrowthServer{
+	growthServer := &GrowthServer{
 		CropRepo:      cropRepo,
 		CropEventRepo: cropEventRepo,
 		CropQuery:     cropQuery,
+		CropListRepo:  cropListRepo,
+		CropListQuery: cropListQuery,
 		CropService:   cropService,
 		AreaQuery:     areaQuery,
 		MaterialQuery: materialQuery,
 		FarmQuery:     farmQuery,
 		File:          LocalFile{},
-	}, nil
+		EventBus:      bus,
+	}
+
+	growthServer.InitSubscriber()
+
+	return growthServer, nil
+}
+
+// InitSubscriber defines the mapping of which event this domain listen with their handler
+func (s *GrowthServer) InitSubscriber() {
+	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropListReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
@@ -150,6 +172,13 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	// Trigger Events
+	for _, v := range cropBatch.UncommittedChanges {
+		fmt.Println("EVENT TRIGGERED")
+		name := structhelper.GetName(v)
+		s.EventBus.Publish(name, v)
+	}
+
 	// Persists //
 	err = <-s.CropEventRepo.Save(cropBatch.UID, cropBatch.UncommittedChanges)
 	if err != nil {
@@ -174,28 +203,23 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 	}
 
 	// Validate //
-	result := <-s.CropEventRepo.FindByID(cropUID)
+	result := <-s.CropListQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	cropEvents, ok := result.Result.([]interface{})
+	crop, ok := result.Result.(storage.CropList)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
-
-	crop := repository.NewCropBatchFromHistory(cropEvents)
 
 	if crop.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
-	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, *crop)
-	if err != nil {
-		return Error(c, err)
-	}
-	data["data"] = cropBatch
+	data := make(map[string]storage.CropList)
+
+	data["data"] = crop
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -512,7 +536,7 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 
 // TODO: The crops should be found by its Farm
 func (s *GrowthServer) FindAllCrops(c echo.Context) error {
-	data := make(map[string][]CropBatch)
+	data := make(map[string][]storage.CropList)
 
 	// Params //
 	farmID := c.Param("id")
@@ -534,23 +558,19 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	}
 
 	// Process //
-	resultQuery := <-s.CropQuery.FindAllCropsByFarm(farm.UID)
+	resultQuery := <-s.CropListQuery.FindAllCropsByFarm(farm.UID)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
 
-	crops, ok := resultQuery.Result.([]domain.Crop)
+	crops, ok := resultQuery.Result.([]storage.CropList)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = []CropBatch{}
+	data["data"] = []storage.CropList{}
 	for _, v := range crops {
-		cropBatch, err := MapToCropBatch(s, v)
-		if err != nil {
-			return Error(c, err)
-		}
-		data["data"] = append(data["data"], cropBatch)
+		data["data"] = append(data["data"], v)
 	}
 
 	return c.JSON(http.StatusOK, data)
