@@ -48,3 +48,13 @@ export function FindChemicalType(key) {
   var chemicalType =  ChemicalTypes.find(item => item.key === key.toLowerCase())
   return chemicalType ? chemicalType.label : ''
 }
+
+export const GrowingMediumQuantityUnits = [
+  { key: 'BAGS',  label: 'Bags' },
+  { key: 'CUBIC_METRE', label: 'Cubic Metre' },
+]
+
+export function FindGrowingMediumQuantityUnit(key) {
+  var quantityUnit =  GrowingMediumQuantityUnits.find(item => item.key === key.toLowerCase())
+  return quantityUnit ? quantityUnit.label : ''
+}
