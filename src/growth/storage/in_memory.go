@@ -56,12 +56,14 @@ type InitialArea struct {
 	Name            string
 	InitialQuantity Container
 	CurrentQuantity Container
+	LastWatered     *time.Time
 }
 
 type MovedArea struct {
 	AreaUID         uuid.UUID
 	Name            string
 	CurrentQuantity Container
+	LastWatered     *time.Time
 }
 
 type Container struct {

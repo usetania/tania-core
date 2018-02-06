@@ -18,8 +18,14 @@ type CropBatchCreated struct {
 	VarietyName     string
 	FarmUID         uuid.UUID
 	CreatedDate     time.Time
-	Photo           CropPhoto
 	InitialAreaUID  uuid.UUID
 	InitialAreaName string
 	Quantity        int
+}
+
+type CropBatchWatered struct {
+	UID          uuid.UUID
+	AreaUID      uuid.UUID
+	AreaName     string
+	WateringDate time.Time
 }

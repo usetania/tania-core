@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -86,6 +85,7 @@ func NewGrowthServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropListReadModel)
+	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropListReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
@@ -172,18 +172,14 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	// Trigger Events
-	for _, v := range cropBatch.UncommittedChanges {
-		fmt.Println("EVENT TRIGGERED")
-		name := structhelper.GetName(v)
-		s.EventBus.Publish(name, v)
-	}
-
 	// Persists //
 	err = <-s.CropEventRepo.Save(cropBatch.UID, cropBatch.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
+
+	// Trigger Events
+	s.publishUncommittedEvents(cropBatch)
 
 	data := make(map[string]CropBatch)
 	cb, err := MapToCropBatch(s, *cropBatch)
@@ -403,22 +399,26 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 }
 
 func (s *GrowthServer) WaterCrop(c echo.Context) error {
-	cropID := c.Param("id")
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	srcAreaID := c.FormValue("source_area_id")
 	wateringDate := c.FormValue("watering_date")
 
 	// VALIDATE //
-	result := <-s.CropRepo.FindByID(cropID)
+	result := <-s.CropListQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropList, ok := result.Result.(storage.CropList)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	if crop.UID == (uuid.UUID{}) {
+	if cropList.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
@@ -433,19 +433,31 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	}
 
 	// PROCESS //
+	eventRepoResult := <-s.CropEventRepo.FindByID(cropUID)
+	if eventRepoResult.Error != nil {
+		return Error(c, eventRepoResult.Error)
+	}
+
+	events := eventRepoResult.Result.([]interface{})
+
+	crop := repository.NewCropBatchFromHistory(events)
+
 	err = crop.Water(s.CropService, srcAreaUID, wDate)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// PERSIST //
-	err = <-s.CropRepo.Save(&crop)
+	err = <-s.CropEventRepo.Save(crop.UID, crop.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
+	// TRIGGER EVENTS //
+	s.publishUncommittedEvents(crop)
+
 	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, crop)
+	cropBatch, err := MapToCropBatch(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -701,4 +713,16 @@ func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
 	srcPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", crop.Photo.Filename)
 
 	return c.File(srcPath)
+}
+
+func (s *GrowthServer) publishUncommittedEvents(entity interface{}) error {
+	switch e := entity.(type) {
+	case *domain.Crop:
+		for _, v := range e.UncommittedChanges {
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
+		}
+	}
+
+	return nil
 }

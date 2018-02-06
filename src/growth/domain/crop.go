@@ -671,6 +671,13 @@ func (c *Crop) Water(cropService CropService, sourceAreaUID uuid.UUID, wateringD
 		}
 	}
 
+	c.TrackChange(CropBatchWatered{
+		UID:          c.UID,
+		AreaUID:      srcArea.UID,
+		AreaName:     srcArea.Name,
+		WateringDate: wateringDate,
+	})
+
 	return nil
 }
 
