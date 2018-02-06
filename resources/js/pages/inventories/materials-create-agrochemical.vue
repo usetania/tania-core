@@ -1,7 +1,4 @@
 <template lang="pug">
-
-</template>
-<template lang="pug">
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
@@ -44,7 +41,7 @@
                 input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="false")
                 i
                 | No
-              span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
+            span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
       .form-group
         .row
           .col-xs-6

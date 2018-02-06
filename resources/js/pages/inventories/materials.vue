@@ -18,6 +18,8 @@
               th(style="width: 10%") Price
               th(style="width: 15%") Produced By
               th(style="width: 12%") Quantity
+              th Additional Notes
+              th 
           tbody
             tr(v-for="material in materials")
               td {{ getType(material.type.code) }}
@@ -25,6 +27,10 @@
               td {{ material.price_per_unit.amount }} {{ material.price_per_unit.symbol}}
               td {{ material.produced_by }}
               td {{ material.quantity.value }} {{ getQuantityUnit(material.quantity.unit) }}
+              td {{ material.notes }}
+              td
+                a(href="#")
+                  i.fa.fa-edit
 </template>
 
 <script>

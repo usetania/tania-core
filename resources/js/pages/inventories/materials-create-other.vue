@@ -1,7 +1,4 @@
 <template lang="pug">
-
-</template>
-<template lang="pug">
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group

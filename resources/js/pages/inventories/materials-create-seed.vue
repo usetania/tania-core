@@ -1,7 +1,4 @@
 <template lang="pug">
-
-</template>
-<template lang="pug">
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
@@ -14,7 +11,7 @@
             label.control-label(for="plant_type") Plant Type
             select.form-control#plant_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('plant_type') }" v-model="inventory.plant_type" name="plant_type")
               option(v-for="plant in options.plantTypes" v-bind:value="plant.key") {{ plant.label }}
-              span.help-block.text-danger(v-show="errors.has('plant_type')") {{ errors.first('plant_type') }}
+            span.help-block.text-danger(v-show="errors.has('plant_type')") {{ errors.first('plant_type') }}
           .col-xs-6
             label.control-label Produced by
             input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
@@ -38,7 +35,7 @@
                 input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="false")
                 i
                 | No
-              span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
+            span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
       .form-group
         .row
           .col-xs-6
