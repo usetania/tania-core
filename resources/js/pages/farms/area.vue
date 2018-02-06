@@ -1,7 +1,7 @@
 <template lang="pug">
   .area-detail.col(v-if="loading === false")
     modal(v-if="showModal" @close="showModal = false")
-      farmAreaTaskCreate
+      farmAreaTaskCreate(:area="area")
     .wrapper-md
       .pull-right
         a.btn.btn-sm.m-b-xs.btn-addon.btn-primary.m-r(style="cursor: pointer;" id="show-modal" @click="showModal = true")

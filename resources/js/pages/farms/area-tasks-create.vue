@@ -1,14 +1,10 @@
 <template lang="pug">
   .area-tasks-create
     .modal-header
-      h4.text-lt Add Task
+      h4.font-bold Area: Add New Task on 
+        span.areatag {{ area.name }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
-        .form-group
-          small.text-muted.pull-right (max. 200 char)
-          label(for="description") Task Description
-          textarea.form-control#description(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" placeholder="What task do you want to work on?" rows="3")
-          span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .row
           .col-xs-6
             .form-group
@@ -33,21 +29,42 @@
                   i
                   | No
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit") Save
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          label(for="category") 
+            | Task Category
+          select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
+            option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
+          span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
+        .form-group
+          label(for="title") Title
+          input.form-control#title(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('title') }" v-model="task.title" name="title")
+          span.help-block.text-danger(v-show="errors.has('title')") {{ errors.first('title') }}
+        .form-group
+          label(for="description") Description
+          textarea.form-control#description(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
+          span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
+        .form-group
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            i.fa.fa-long-arrow-right
+            | Save
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fa.fa-close
+            | Cancel
 </template>
 
 <script>
-import { AreaTypes, AreaLocations, AreaSizeUnits } from '@/stores/helpers/farms/area'
 import { StubTask } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
+import { TaskCategories } from '@/stores/helpers/farms/task'
 
 export default {
   name: "FarmAreaTasksCreate",
   data () {
     return {
       task: Object.assign({}, StubTask),
+      options: {
+        taskCategories: Array.from(TaskCategories),
+      }
     }
   },
   components: {
@@ -70,7 +87,8 @@ export default {
     },
     create () {
     },
-  }
+  },
+  props: ['area'],
 }
 </script>
 
