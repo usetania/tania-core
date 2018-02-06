@@ -1,16 +1,8 @@
 <template lang="pug">
   .crop-task
     .modal-header
-      span.h4.font-bold(v-if="isfertilizer") Fertilize 
+      span.h4.font-bold Crop: Add New Task for 
         span.identifier {{ crop.batch_id }}
-      span.h4.font-bold(v-if="ispesticide") Pesticide 
-        span.identifier {{ crop.batch_id }}
-      span.h4.font-bold(v-if="isprune") Prune 
-        span.identifier {{ crop.batch_id }}
-      span.h4.font-bold(v-if="isother") Other Task for 
-        span.identifier {{ crop.batch_id }}
-      span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
-        i.fa.fa-close
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
@@ -28,12 +20,12 @@
               label(for="priority") Is this task urgent?
               .radio
                 label.i-checks.i-checks-sm
-                  input#priority(type="radio" name="priority" value="yes" checked="checked" v-model="task.priority" v-validate="'required'")
+                  input#priority(type="radio" name="priority" value="true" checked="checked" v-model="task.priority" v-validate="'required'")
                   i
                   | Yes
               .radio
                 label.i-checks.i-checks-sm
-                  input#priority(type="radio" name="priority" value="no" v-model="task.priority" v-validate="'required'")
+                  input#priority(type="radio" name="priority" value="false" v-model="task.priority" v-validate="'required'")
                   i
                   | No
         .row
@@ -49,12 +41,8 @@
             .form-group
               label(for="category") 
                 | Task Category
-              select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
-                option(value="Nutrient" v-if="isfertilizer") Nutrient
-                option(value="Pest Control" v-if="ispesticide") Pest Control
-                option(value="Crop" v-if="isprune") Crop
-                option(value="Sanitation" v-if="isprune") Sanitation
-                option(v-if="isother" v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
+              select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category" @change="typeChanged($event.target.value)")
+                option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
               span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group(v-if="isfertilizer")
           label(for="fertilizer") 
@@ -79,10 +67,12 @@
           textarea.form-control#description(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
-          .text-center.m-t
-            button.btn.btn-primary(type="submit")
-              i.fa.fa-check
-              |  OK
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            i.fa.fa-long-arrow-right
+            | Save
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+            i.fa.fa-close
+            | Cancel
 </template>
 
 
@@ -103,6 +93,8 @@ export default {
   },
   data () {
     return {
+      isfertilizer: false,
+      ispesticide: false,
       fertilizers: [],
       pesticides: [],
       task: Object.assign({}, StubTask),
@@ -111,20 +103,11 @@ export default {
       }
     }
   },
-  props: ['crop', 'isfertilizer', 'ispesticide', 'isprune', 'isother'],
+  props: ['crop'],
   mounted () {
     this.fetchAreas()
   },
   created () {
-    if (this.isfertilizer) {
-      this.task.category = "Nutrient"
-    } else if(this.ispesticide) {
-      this.task.category = "Pest Control"
-    } else if(this.isprune) {
-      this.task.category = "Crop"
-    } else {
-      this.task.category = "General"
-    }
   },
   methods: {
     ...mapActions([
@@ -143,6 +126,15 @@ export default {
     openPicker () {
       this.$refs.openCal.showCalendar()
     },
+    typeChanged (type) {
+      this.isfertilizer = false
+      this.ispesticide = false
+      if (type == "CROP") {
+        this.isfertilizer = true
+      } else if (type == "PEST_CONTROL") {
+        this.ispesticide = true
+      }
+    }
   }
 }
 </script>

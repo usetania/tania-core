@@ -1,12 +1,8 @@
 export const TaskCategories = [
-  { key: 'Area',  label: 'Area' },
-  { key: 'Crop',  label: 'Crop' },
-  { key: 'Finance',  label: 'Finance' },
-  { key: 'General',  label: 'General' },
-  { key: 'Inventory',  label: 'Inventory' },
-  { key: 'Nutrient',  label: 'Nutrient' },
-  { key: 'Pest Control',  label: 'Pest Control' },
-  { key: 'Reservoir',  label: 'Reservoir' },
-  { key: 'Safety',  label: 'Safety' },
-  { key: 'Sanitation',  label: 'Sanitation' },
+  { key: 'CROP',  label: 'Crop' },
+  { key: 'GENERAL',  label: 'General' },
+  { key: 'NUTRIENT',  label: 'Nutrient' },
+  { key: 'PEST_CONTROL',  label: 'Pest Control' },
+  { key: 'SAFETY',  label: 'Safety' },
+  { key: 'SANITATION',  label: 'Sanitation' },
 ]
