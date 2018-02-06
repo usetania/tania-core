@@ -1,12 +1,16 @@
 package domain
 
 const (
-	TaskCategoryArea      = "area"
-	TaskCategoryReservoir = "reservoir"
-	TaskCategoryCrop      = "crop"
-	TaskCategoryInventory = "inventory"
-	TaskCategoryDevice    = "device"
-	TaskCategoryFinance   = "finance"
+	TaskCategoryArea        = "area"
+	TaskCategoryCrop        = "crop"
+	TaskCategoryFinance     = "finance"
+	TaskCategoryGeneral     = "general"
+	TaskCategoryInventory   = "inventory"
+	TaskCategoryNutrient    = "nutrient"
+	TaskCategoryPestControl = "pestcontrol"
+	TaskCategoryReservoir   = "reservoir"
+	TaskCategorySafety      = "safety"
+	TaskCategorySanitation  = "sanitation"
 )
 
 type TaskCategory struct {
@@ -17,11 +21,15 @@ type TaskCategory struct {
 func FindAllTaskCategories() []TaskCategory {
 	return []TaskCategory{
 		TaskCategory{Code: TaskCategoryArea, Name: "Area"},
-		TaskCategory{Code: TaskCategoryReservoir, Name: "Reservoir"},
 		TaskCategory{Code: TaskCategoryCrop, Name: "Crop"},
-		TaskCategory{Code: TaskCategoryInventory, Name: "Inventory"},
-		TaskCategory{Code: TaskCategoryDevice, Name: "Device"},
 		TaskCategory{Code: TaskCategoryFinance, Name: "Finance"},
+		TaskCategory{Code: TaskCategoryGeneral, Name: "General"},
+		TaskCategory{Code: TaskCategoryInventory, Name: "Inventory"},
+		TaskCategory{Code: TaskCategoryNutrient, Name: "Nutrient"},
+		TaskCategory{Code: TaskCategoryPestControl, Name: "Pest Control"},
+		TaskCategory{Code: TaskCategoryReservoir, Name: "Reservoir"},
+		TaskCategory{Code: TaskCategorySafety, Name: "Safety"},
+		TaskCategory{Code: TaskCategorySanitation, Name: "Sanitation"},
 	}
 }
 
