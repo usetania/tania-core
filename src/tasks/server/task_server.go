@@ -88,13 +88,23 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		due_ptr = &due_date
 	}
 
+	asset_id := c.FormValue("asset_id")
+	asset_id_ptr := (*uuid.UUID)(nil)
+	if len(asset_id) != 0 {
+		asset_id, err := uuid.FromString(asset_id)
+		if err != nil {
+			return Error(c, err)
+		}
+		asset_id_ptr = &asset_id
+	}
+
 	task, err := domain.CreateTask(
 		s.TaskService,
 		c.FormValue("description"),
 		due_ptr,
 		c.FormValue("priority"),
-		c.FormValue("type"),
-		c.FormValue("asset_id"))
+		c.FormValue("category"),
+		asset_id_ptr)
 
 	if err != nil {
 		return Error(c, err)

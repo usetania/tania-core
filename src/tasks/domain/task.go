@@ -17,22 +17,23 @@ type ServiceResult struct {
 }
 
 type Task struct {
-	UID         uuid.UUID  `json:"uid"`
-	Description string     `json:"description"`
-	CreatedDate time.Time  `json:"created_date"`
-	DueDate     *time.Time `json:"due_date,omitempty"`
-	Priority    string     `json:"priority"`
-	Status      string     `json:"status"`
-	TaskType    string     `json:"type"`
-	IsDue       bool       `json:"is_due"`
-	AssetID     uuid.UUID  `json:"asset_id"`
+	UID           uuid.UUID  `json:"uid"`
+	Description   string     `json:"description"`
+	CreatedDate   time.Time  `json:"created_date"`
+	DueDate       *time.Time `json:"due_date,omitempty"`
+	CompletedDate *time.Time `json:"completed_date"`
+	Priority      string     `json:"priority"`
+	Status        string     `json:"status"`
+	TaskCategory  string     `json:"category"`
+	IsDue         bool       `json:"is_due"`
+	AssetID       *uuid.UUID `json:"asset_id"`
 }
 
 // CreateTask
-func CreateTask(task_service TaskService, description string, due_date *time.Time, priority string, tasktype string, asset_id string) (Task, error) {
+func CreateTask(taskservice TaskService, description string, duedate *time.Time, priority string, taskcategory string, assetid *uuid.UUID) (Task, error) {
 	// add validation
 
-	err := validateTaskDueDate(due_date)
+	err := validateTaskDueDate(duedate)
 	if err != nil {
 		return Task{}, err
 	}
@@ -42,19 +43,12 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 		return Task{}, err
 	}
 
-	err = validateTaskType(tasktype)
+	err = validateTaskCategory(taskcategory)
 	if err != nil {
 		return Task{}, err
 	}
-	if asset_id == "" {
-		return Task{}, TaskError{TaskErrorAssetIDEmptyCode}
-	}
-	asset, err := uuid.FromString(asset_id)
-	if err != nil {
-		return Task{}, TaskError{TaskErrorInvalidAssetIDCode}
-	}
 
-	err = validateAssetID(task_service, asset, tasktype)
+	err = validateAssetID(taskservice, assetid, taskcategory)
 	if err != nil {
 		return Task{}, err
 	}
@@ -65,15 +59,15 @@ func CreateTask(task_service TaskService, description string, due_date *time.Tim
 	}
 
 	return Task{
-		UID:         uid,
-		Description: description,
-		CreatedDate: time.Now(),
-		DueDate:     due_date,
-		Priority:    priority,
-		Status:      TaskStatusCreated,
-		TaskType:    tasktype,
-		IsDue:       false,
-		AssetID:     asset,
+		UID:          uid,
+		Description:  description,
+		CreatedDate:  time.Now(),
+		DueDate:      duedate,
+		Priority:     priority,
+		Status:       TaskStatusCreated,
+		TaskCategory: taskcategory,
+		IsDue:        false,
+		AssetID:      assetid,
 	}, nil
 }
 
@@ -123,13 +117,13 @@ func (t *Task) ChangeTaskStatus(newstatus string) error {
 }
 
 // ChangeCategory
-func (t *Task) ChangeTaskType(newtasktype string) error {
+func (t *Task) ChangeTaskCategory(newtaskcategory string) error {
 
-	err := validateTaskType(newtasktype)
+	err := validateTaskCategory(newtaskcategory)
 	if err != nil {
 		return err
 	}
-	t.TaskType = newtasktype
+	t.TaskCategory = newtaskcategory
 
 	return nil
 }
@@ -181,14 +175,14 @@ func validateTaskStatus(status string) error {
 	return nil
 }
 
-// validateTaskType
-func validateTaskType(tasktype string) error {
+// validateTaskCategory
+func validateTaskCategory(taskcategory string) error {
 
-	if tasktype == "" {
-		return TaskError{TaskErrorTypeEmptyCode}
+	if taskcategory == "" {
+		return TaskError{TaskErrorCategoryEmptyCode}
 	}
 
-	_, err := FindTaskTypeByCode(tasktype)
+	_, err := FindTaskCategoryByCode(taskcategory)
 	if err != nil {
 		return err
 	}
@@ -197,30 +191,31 @@ func validateTaskType(tasktype string) error {
 }
 
 // validateAssetID
-func validateAssetID(taskService TaskService, asset_id uuid.UUID, tasktype string) error {
+func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskcategory string) error {
 
-	if tasktype == "" {
-		return TaskError{TaskErrorTypeEmptyCode}
-	}
-	//Find asset in repository
-	// if not found return error
-
-	switch tasktype {
-	case TaskTypeArea:
-		serviceResult := taskService.FindAreaByID(asset_id)
-
-		if serviceResult.Error != nil {
-			return serviceResult.Error
+	if assetid != nil {
+		if taskcategory == "" {
+			return TaskError{TaskErrorCategoryEmptyCode}
 		}
-	case TaskTypeCrop:
+		//Find asset in repository
+		// if not found return error
 
-		serviceResult := taskService.FindCropByID(asset_id)
+		switch taskcategory {
+		case TaskCategoryArea:
+			serviceResult := taskService.FindAreaByID(*assetid)
 
-		if serviceResult.Error != nil {
-			return serviceResult.Error
+			if serviceResult.Error != nil {
+				return serviceResult.Error
+			}
+		case TaskCategoryCrop:
+
+			serviceResult := taskService.FindCropByID(*assetid)
+
+			if serviceResult.Error != nil {
+				return serviceResult.Error
+			}
+		default:
 		}
-	default:
 	}
-
 	return nil
 }
