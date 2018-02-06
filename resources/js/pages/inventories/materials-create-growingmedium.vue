@@ -20,11 +20,11 @@
             label(for="is_expense") Add this Expense?
             .radio
               label.i-checks.i-checks-sm
-                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="yes")
+                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="true")
                 i
                 | Yes
               label.i-checks.i-checks-sm
-                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="no")
+                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="false")
                 i
                 | No
               span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
