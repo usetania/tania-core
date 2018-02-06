@@ -1,5 +1,5 @@
 <template lang="pug">
-  .crop-detail.hbox(v-if="loading === false")
+  .crop-detail(v-if="loading === false")
     modal(v-if="showMoveCropModal" @close="showMoveCropModal = false")
       moveCropTask(:crop="crop")
     modal(v-if="showDumpCropModal" @close="showDumpCropModal = false")
@@ -16,143 +16,97 @@
       cropTask(:crop="crop" :isprune="true")
     modal(v-if="showOtherCropModal" @close="showOtherCropModal = false")
       cropTask(:crop="crop" :isother="true")
-    .hbox
-      .col
-        .vbox
-          .row-row
-            .cell
-              .cell-inner
-                .wrapper-md
-                  .m-b
-                    a.h5.text-lt.m-b(href="#/crops")
-                      i.fa.fa-long-arrow-left
-                      |  Back to Crop Batches
+    .col
+      .row.wrapper-md
+        .col-xs-8.col-xs-offset-2
+          .m-t.m-b
+            a.h5.text-lt.m-b(href="#/crops")
+              i.fa.fa-long-arrow-alt-left.m-r
+              | Back to Crop Batches
+          ul.nav.nav-tabs.h4
+            li.active
+              router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") Basic Info
+            li
+              router-link(:to="{ name: 'FarmCropNotes', params: { id: crop.uid } }")  Tasks & Notes
+          .panel
+            .panel-heading.b-b.b-light.wrapper
+              .row
+                .col-sm-7.m-t.m-b
+                  .h3.text-lt.m-b {{ crop.inventory.name }}
+                  .identifier {{ crop.batch_id }}
+                  small.text-muted.m-t.clear {{ crop.activity_type.total_seeding }} Seeding, {{ crop.activity_type.total_growing }} Growing, 5 Dumped
+                .col-sm-5.m-t.m-b
                   .row
-                    .panel
-                      .panel-heading.b-b.b-light.wrapper
+                    .col-sm-6.m-b
+                      button.btn.btn-success.btn-block(style="cursor: pointer;" @click="showHarvestCropModal = true")
+                        i.fa.fa-cut.m-r
+                        | Harvest
+                    .col-sm-6.m-b
+                      button.btn.btn-danger.btn-block(style="cursor: pointer;" @click="showDumpCropModal = true")
+                        i.fa.fa-trash.m-r
+                        | Dump
+                  .row
+                    .col-sm-6
+                      button.btn.btn-primary.btn-block(style="cursor: pointer;" @click="showMoveCropModal = true")
+                        i.fa.fa-exchange.m-r
+                        | Move
+                    .col-sm-6
+                      button.btn.btn-default.btn-block(style="cursor: pointer;" @click="showUploadCropModal = true")
+                        i.fa.fa-camera.m-r
+                        | Take Picture
+            .panel-body.bg-white-only.b-light
+              .row
+                // STATUS
+                .col-sm-12
+                  .hbox.bg-light.lter.wrapper-md
+                    .row
+                      .col-sm-6
+                        small.text-muted Seeding Date
+                        .h4.m-b {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                        small.text-muted Last Watering
+                        .h4.m-b
+                          | 05/12/2017 at 16:42 on 
+                          span.areatag Frontyard Garden
+                      .col-sm-6
+                        small.text-muted Initial Planting
+                        .h4.m-b
+                          | {{ crop.initial_area.initial_quantity }} {{ getCropContainer(crop.container.type.code, crop.container.quantity) }} on 
+                          span.areatag {{ crop.initial_area.area.name }}
+                        small.text-muted Current Quantity
+                        .h4.m-b
+                          | 12 Pots on 
+                          span.areatag Florania
+                        .h4
+                          | 13 Pots on 
+                          span.areatag Frontyard Garden
+              .row.m-t
+                // ACTIVITY FEEDS
+                .col-sm-12
+                  .cropactivity
+                    // ACTIVITY
+                    .h4.font-bold.m-b.clearfix Activity
+                    ul.list-group.no-bg.no-borders.pull-in
+                      li.list-group-item
                         .row
-                          .col-sm-7
-                            .h3.m-b {{ crop.inventory.variety }}
-                            .identifier {{ crop.batch_id }}
-                          .col-sm-5
-                            small.text-muted Activity Type
-                            .h4.m-b.m-t {{ crop.activity_type.total_seeding }} Seeding, {{ crop.activity_type.total_growing }} Growing
-                      .panel-body.bg-light.lter.b-b.b-light.m-l-n-xxs.m-r-n-xxs
-                        .row
-                          .col-sm-6.h5
-                            | Seeded on 
-                            b {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                            |  at 
-                            u {{ crop.initial_area.area.name }}
-                          .col-sm-6.text-right.h5
-                            | Initial Qty: 
-                            b {{ crop.container.quantity }} {{ getCropContainer(crop.container.type.code, crop.container.quantity) }}
-                      .panel-body.bg-white-only
-                        .row.m-t
-                          .col-sm-7
-                            .m-b
-                              .h4.font-bold.m-b Notes
-                              form(@submit.prevent="validateBeforeSubmit")
-                                textarea.form-control.m-b#content(placeholder="Leave a note here..." rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
-                                span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
-                                button.btn.btn-xs.btn-success.m-b(type="submit") Add Note
-                              ul.list-group.list-group-lg.no-bg.auto
-                                li.list-group-item.row(v-for="cropNote in crop.notes")
-                                  .col-sm-9
-                                    .pull-left.m-r
-                                      i.fa.fa-file.block.m-b.m-t
-                                    span {{ cropNote.content }}
-                                    small.text-muted.clear.text-ellipsis {{ cropNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                                  .col-sm-3
-                                    button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(cropNote.uid)")
-                                      i.fa.fa-trash
-                            .cropactivity
-                              .h4.font-bold.m-b.clearfix Activity
-                              ul.list-group.no-bg.no-borders.pull-in
-                                li.list-group-item
-                                  .pull-left.m-r
-                                    i.fa.fa-bug.block.m-b.m-t
-                                  .clear
-                                    div
-                                      | Apply 
-                                      u Neem Oil
-                                      |  on 
-                                      span.areatag-sm Frontyard Garden
-                                    small.text-muted 05/12/2017 at 09:31
-                          .col-sm-5
-                            // QTY & TASK
-                            .hbox.bg-light.lter.wrapper(style="min-height: 40px;")
-                              small.text-muted Current Quantity
-                              .h4.m-b.m-t 
-                                | {{ crop.initial_area.current_quantity }} Plants at 
-                                span.areatag-sm {{ crop.initial_area.area.name }}
-                              .h4(v-for="area in crop.moved_area")
-                                | {{ area.current_quantity }} Plants at 
-                                span.areatag-sm {{ area.area.name }}
-                            .m-t
-                              .h4.font-bold Tasks
-                              ul.list-group.no-bg.no-borders.pull-in
-                                li.list-group-item
-                                  .pull-left.m-r
-                                    .checkbox
-                                      label.i-checks
-                                        input(type="checkbox" name="")
-                                        i
-                                  .clear
-                                    div
-                                      | Fertilize with 
-                                      u Trifecta Plus
-                                      |  on 
-                                      span.areatag-sm Frontyard Garden
-                                    small.text-muted Due 20/12/2017
-                                li.list-group-item
-                                  .pull-left.m-r
-                                    .checkbox
-                                      label.i-checks
-                                        input(type="checkbox" name="")
-                                        i
-                                  .clear
-                                    div
-                                      | Prune leaves on 
-                                      span.areatag-sm Frontyard Garden
-                                    small.text-muted Due 24/12/2017
-      .col.w-md.bg-light.lter.b-l.bg-auto.no-border-xs
-        .wrapper-md
-          .m-b.text-md Activity
-          .m-b
-            button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="showMoveCropModal = true")
-              i.fa.fa-exchange
-              | Move
-          .m-b
-            button.btn.btn-addon.btn-primary(style="cursor: pointer;" @click="showDumpCropModal = true")
-              i.fa.fa-trash
-              | Dump
-          .m-b
-            button.btn.btn-addon.btn-success(style="cursor: pointer;" @click="showHarvestCropModal = true")
-              i.fa.fa-scissors
-              | Harvest
-          .m-b
-            button.btn.btn-addon.btn-dark(style="cursor: pointer;" @click="showUploadCropModal = true")
-              i.fa.fa-camera
-              | Upload Photo
-        .wrapper-md
-          .m-b.text-md Tasks
-          .m-b
-            button.btn.btn-addon.btn-warning(style="cursor: pointer;" @click="showFertilizerCropModal = true")
-              i.fa.fa-flask
-              | Fertilize
-          .m-b
-            button.btn.btn-addon.btn-danger(style="cursor: pointer;" @click="showPesticideCropModal = true")
-              i.fa.fa-bug
-              | Pesticide
-          .m-b
-            button.btn.btn-addon.btn-dark(style="cursor: pointer;" @click="showPruneCropModal = true")
-              i.fa.fa-scissors
-              | Prune
-          .m-b
-            button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="showOtherCropModal = true")
-              i.fa.fa-tasks
-              | Other Task
+                          .col-xs-1.text-center
+                            i.fa.fa-medkit.block.m-b.m-t
+                          .col-xs-11
+                            div
+                              span.areatag-sm Frontyard Garden
+                              i.fa.fa-long-arrow-alt-right
+                              |  Prune leaves from bottom part to center, and bend the stems.
+                            p.small
+                              span#moreless4.hide
+                                | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            div
+                              a(href="" ui-toggle-class="show" target="#moreless4")
+                                small.text
+                                  | Read details 
+                                  i.fa.fa-angle-down
+                                small.text-active
+                                  | Close details 
+                                  i.fa.fa-angle-up
+                            small.text-muted 02/02/2018 at 16:21
 </template>
 <script>
 import { FindContainer } from '@/stores/helpers/farms/crop'
@@ -196,18 +150,9 @@ export default {
   methods: {
     ...mapActions([
       'getCropByUid',
-      'createCropNotes',
-      'deleteCropNote'
     ]),
     getCropContainer(key, count) {
       return FindContainer(key).label + ((count != 1)? 's':'')
-    },
-    deleteNote(note_uid) {
-      this.note.obj_uid = this.$route.params.id
-      this.note.uid = note_uid
-      this.deleteCropNote(this.note)
-        .then(data => this.crop = data)
-        .catch(({ data }) => this.message = data)
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -215,12 +160,6 @@ export default {
           this.create()
         }
       })
-    },
-    create () {
-      this.note.obj_uid = this.$route.params.id
-      this.createCropNotes(this.note)
-        .then(data => this.crop = data)
-        .catch(({ data }) => this.message = data)
     },
   }
 }
