@@ -24,17 +24,19 @@ import (
 
 // GrowthServer ties the routes and handlers with injected dependencies
 type GrowthServer struct {
-	CropRepo      repository.CropRepository
-	CropEventRepo repository.CropEventRepository
-	CropQuery     query.CropQuery
-	CropListRepo  repository.CropListRepository
-	CropListQuery query.CropListQuery
-	CropService   domain.CropService
-	AreaQuery     query.AreaQuery
-	MaterialQuery query.MaterialQuery
-	FarmQuery     query.FarmQuery
-	EventBus      EventBus.Bus
-	File          File
+	CropRepo          repository.CropRepository
+	CropEventRepo     repository.CropEventRepository
+	CropQuery         query.CropQuery
+	CropListRepo      repository.CropListRepository
+	CropListQuery     query.CropListQuery
+	CropActivityRepo  repository.CropActivityRepository
+	CropActivityQuery query.CropActivityQuery
+	CropService       domain.CropService
+	AreaQuery         query.AreaQuery
+	MaterialQuery     query.MaterialQuery
+	FarmQuery         query.FarmQuery
+	EventBus          EventBus.Bus
+	File              File
 }
 
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
@@ -43,6 +45,7 @@ func NewGrowthServer(
 	cropStorage *storage.CropStorage,
 	cropEventStorage *storage.CropEventStorage,
 	cropListStorage *storage.CropListStorage,
+	cropActivityStorage *storage.CropActivityStorage,
 	areaStorage *assetsstorage.AreaStorage,
 	materialStorage *assetsstorage.MaterialStorage,
 	farmStorage *assetsstorage.FarmStorage,
@@ -52,6 +55,8 @@ func NewGrowthServer(
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	cropListRepo := repository.NewCropListRepositoryInMemory(cropListStorage)
 	cropListQuery := inmemory.NewCropListQueryInMemory(cropListStorage)
+	cropActivityRepo := repository.NewCropActivityRepositoryInMemory(cropActivityStorage)
+	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
 
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
@@ -64,17 +69,19 @@ func NewGrowthServer(
 	}
 
 	growthServer := &GrowthServer{
-		CropRepo:      cropRepo,
-		CropEventRepo: cropEventRepo,
-		CropQuery:     cropQuery,
-		CropListRepo:  cropListRepo,
-		CropListQuery: cropListQuery,
-		CropService:   cropService,
-		AreaQuery:     areaQuery,
-		MaterialQuery: materialQuery,
-		FarmQuery:     farmQuery,
-		File:          LocalFile{},
-		EventBus:      bus,
+		CropRepo:          cropRepo,
+		CropEventRepo:     cropEventRepo,
+		CropQuery:         cropQuery,
+		CropListRepo:      cropListRepo,
+		CropListQuery:     cropListQuery,
+		CropActivityRepo:  cropActivityRepo,
+		CropActivityQuery: cropActivityQuery,
+		CropService:       cropService,
+		AreaQuery:         areaQuery,
+		MaterialQuery:     materialQuery,
+		FarmQuery:         farmQuery,
+		File:              LocalFile{},
+		EventBus:          bus,
 	}
 
 	growthServer.InitSubscriber()
@@ -85,6 +92,7 @@ func NewGrowthServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropListReadModel)
+	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropListReadModel)
 }
 
@@ -102,6 +110,7 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.POST("/crops/:id/photos", s.UploadCropPhotos)
 	g.GET("/crops/:id/photos", s.GetCropPhotos)
+	g.GET("/crops/:id/activities", s.GetCropActivities)
 
 }
 
@@ -713,6 +722,40 @@ func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
 	srcPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", crop.Photo.Filename)
 
 	return c.File(srcPath)
+}
+
+func (s *GrowthServer) GetCropActivities(c echo.Context) error {
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.CropListQuery.FindByID(cropUID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	crop, ok := result.Result.(storage.CropList)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	if crop.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	// Process //
+	queryResult := <-s.CropActivityQuery.FindAllByCropID(cropUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	activities := queryResult.Result.([]storage.CropActivity)
+
+	data := make(map[string][]storage.CropActivity)
+	data["data"] = activities
+
+	return c.JSON(http.StatusOK, data)
 }
 
 func (s *GrowthServer) publishUncommittedEvents(entity interface{}) error {

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -10,7 +9,6 @@ import (
 )
 
 func (s *GrowthServer) SaveToCropListReadModel(event interface{}) error {
-	fmt.Println(event)
 	cropList := &storage.CropList{}
 
 	switch e := event.(type) {
@@ -51,7 +49,6 @@ func (s *GrowthServer) SaveToCropListReadModel(event interface{}) error {
 		cropList.FarmUID = e.FarmUID
 
 	case domain.CropBatchWatered:
-		fmt.Println("CROP BATCH WATERED")
 		queryResult := <-s.CropListQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
 			return queryResult.Error
@@ -68,8 +65,32 @@ func (s *GrowthServer) SaveToCropListReadModel(event interface{}) error {
 			cropList.InitialArea.LastWatered = &e.WateringDate
 		}
 	}
-	fmt.Println(cropList)
+
 	err := <-s.CropListRepo.Save(cropList)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
+	cropActivity := &storage.CropActivity{}
+
+	switch e := event.(type) {
+	case domain.CropBatchCreated:
+		cropActivity.UID = e.UID
+		cropActivity.CreatedDate = e.CreatedDate
+		cropActivity.ActivityType = storage.SeedActivity{
+			Quantity:      e.Quantity,
+			ContainerType: e.ContainerType,
+			AreaUID:       e.InitialAreaUID,
+			AreaName:      e.InitialAreaName,
+			BatchID:       e.BatchID,
+		}
+	}
+
+	err := <-s.CropActivityRepo.Save(cropActivity)
 	if err != nil {
 		return err
 	}

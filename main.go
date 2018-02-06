@@ -39,6 +39,7 @@ func main() {
 	cropStorage := growthstorage.CreateCropStorage()
 	cropEventStorage := growthstorage.CreateCropEventStorage()
 	cropListStorage := growthstorage.CreateCropListStorage()
+	cropActivityStorage := growthstorage.CreateCropActivityStorage()
 
 	// Initialize Event Bus
 	bus := EventBus.New()
@@ -67,6 +68,7 @@ func main() {
 		cropStorage,
 		cropEventStorage,
 		cropListStorage,
+		cropActivityStorage,
 		areaStorage,
 		materialStorage,
 		farmStorage,

@@ -92,3 +92,45 @@ func CreateCropListStorage() *CropListStorage {
 
 	return &CropListStorage{CropListMap: make(map[uuid.UUID]CropList), Lock: &rwMutex}
 }
+
+const (
+	SeedActivityCode = "SEED"
+)
+
+type CropActivity struct {
+	UID          uuid.UUID
+	ActivityType ActivityType
+	CreatedDate  time.Time
+	Description  string
+}
+
+type ActivityType interface {
+	Code() string
+}
+
+type SeedActivity struct {
+	Quantity      int
+	ContainerType string
+	AreaUID       uuid.UUID
+	AreaName      string
+	BatchID       string
+}
+
+func (a SeedActivity) Code() string {
+	return SeedActivityCode
+}
+
+type CropActivityStorage struct {
+	Lock            *deadlock.RWMutex
+	CropActivityMap map[uuid.UUID]CropActivity
+}
+
+func CreateCropActivityStorage() *CropActivityStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("CROP LIST STORAGE DEADLOCK!")
+	}
+
+	return &CropActivityStorage{CropActivityMap: make(map[uuid.UUID]CropActivity), Lock: &rwMutex}
+}

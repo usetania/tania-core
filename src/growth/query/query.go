@@ -19,6 +19,10 @@ type CropListQuery interface {
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
+type CropActivityQuery interface {
+	FindAllByCropID(uid uuid.UUID) <-chan QueryResult
+}
+
 type MaterialQuery interface {
 	FindByID(inventoryUID uuid.UUID) <-chan QueryResult
 	FindMaterialByPlantTypeCodeAndName(plantType string, name string) <-chan QueryResult
