@@ -50,7 +50,7 @@ const actions = {
 
 const mutations = {
   [types.CREATE_MATERIAL] (state, payload) {
-    state.inventories.push(payload)
+    state.materials.push(payload)
   },
   [types.FETCH_MATERIALS] (state, payload) {
     state.materials = payload
