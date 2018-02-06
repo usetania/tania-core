@@ -49,7 +49,7 @@
               label.control-label Container Type
               select.form-control#container_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('container_type') }" v-model="crop.container_type" name="container_type" @change="typeChanged($event.target.value)")
                 option(value="") - select unit -
-                option(v-for="container in options.cropContainers" v-bind:value="container.key") {{ container.label }}s
+                option(v-for="container in options.containers" v-bind:value="container.key") {{ container.label }}s
               span.help-block.text-danger(v-show="errors.has('container_type')") {{ errors.first('container_type') }}
         .row(v-if="crop.container_type == 'tray'")
           .col-xs-6.pull-right
@@ -65,7 +65,7 @@
 
 <script>
 import { AreaTypes } from '@/stores/helpers/farms/area'
-import { CropContainers } from '@/stores/helpers/farms/crop'
+import { Containers } from '@/stores/helpers/farms/crop'
 import { StubCrop } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 export default {
@@ -97,7 +97,7 @@ export default {
       loading: true,
       options: {
         areaTypes: Array.from(AreaTypes),
-        cropContainers: Array.from(CropContainers)
+        containers: Array.from(Containers)
       }
     }
   },

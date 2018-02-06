@@ -155,7 +155,7 @@
               | Other Task
 </template>
 <script>
-import { FindCropContainer } from '@/stores/helpers/farms/crop'
+import { FindContainer } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop, StubNote } from '@/stores/stubs'
 import Modal from '@/components/modal'
@@ -200,7 +200,7 @@ export default {
       'deleteCropNote'
     ]),
     getCropContainer(key, count) {
-      return FindCropContainer(key).label + ((count != 1)? 's':'')
+      return FindContainer(key).label + ((count != 1)? 's':'')
     },
     deleteNote(note_uid) {
       this.note.obj_uid = this.$route.params.id

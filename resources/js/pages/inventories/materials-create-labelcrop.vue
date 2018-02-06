@@ -17,7 +17,7 @@
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
               span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
           .col-xs-6
-            label() Add this Expense?
+            label(for="is_expense") Add this Expense?
             .radio
               label.i-checks.i-checks-sm
                 input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="true")
@@ -31,7 +31,7 @@
       .form-group
         .row
           .col-xs-6
-            label.control-labe Quantity
+            label.control-label(for="quantity") Quantity
             .input-group.m-b
               input.form-control#quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
               span.input-group-addon Pieces
