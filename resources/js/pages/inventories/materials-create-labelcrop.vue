@@ -12,7 +12,7 @@
             .input-group.m-b
               span.input-group-addon &euro;
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
-              span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
+            span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
           .col-xs-6
             label(for="is_expense") Add this Expense?
             .radio
@@ -35,7 +35,7 @@
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
           .col-xs-6
             label.control-label(for="notes") Additional Notes
-            textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
+            textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
             span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")
@@ -47,13 +47,9 @@
 <script>
 import { StubInventory } from '@/stores/stubs'
 import { mapGetters, mapActions } from 'vuex'
-import Datepicker from 'vuejs-datepicker';
 import moment from 'moment';
 export default {
   name: 'InventoriesMaterialsCreateLabelCrop',
-  components: {
-      Datepicker
-  },
   data () {
     return {
       inventory: Object.assign({}, StubInventory)
@@ -62,7 +58,6 @@ export default {
   methods: {
     ...mapActions([
       'createMaterial',
-      'openPicker',
     ]),
     create () {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
@@ -74,9 +69,6 @@ export default {
     },
     closeModal () {
       this.$emit('closeModal')
-    },
-    openPicker () {
-      this.$refs.openCal.showCalendar()
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {

@@ -19,7 +19,7 @@
             .input-group.m-b
               span.input-group-addon &euro;
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
-              span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
+            span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
           .col-xs-6
             label(for="is_expense") Add this Expense?
             .radio
@@ -73,7 +73,6 @@ export default {
   methods: {
     ...mapActions([
       'createMaterial',
-      'openPicker',
     ]),
     create () {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
@@ -85,9 +84,6 @@ export default {
     },
     closeModal () {
       this.$emit('closeModal')
-    },
-    openPicker () {
-      this.$refs.openCal.showCalendar()
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
