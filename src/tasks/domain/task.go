@@ -18,22 +18,29 @@ type ServiceResult struct {
 
 type Task struct {
 	UID           uuid.UUID  `json:"uid"`
+	Title         string     `json:"title"`
 	Description   string     `json:"description"`
 	CreatedDate   time.Time  `json:"created_date"`
 	DueDate       *time.Time `json:"due_date,omitempty"`
 	CompletedDate *time.Time `json:"completed_date"`
 	Priority      string     `json:"priority"`
 	Status        string     `json:"status"`
-	TaskCategory  string     `json:"category"`
+	Domain        string     `json:"domain"`
+	Category      string     `json:"category"`
 	IsDue         bool       `json:"is_due"`
 	AssetID       *uuid.UUID `json:"asset_id"`
 }
 
 // CreateTask
-func CreateTask(taskservice TaskService, description string, duedate *time.Time, priority string, taskcategory string, assetid *uuid.UUID) (Task, error) {
+func CreateTask(taskservice TaskService, title string, description string, duedate *time.Time, priority string, taskdomain string, taskcategory string, assetid *uuid.UUID) (Task, error) {
 	// add validation
 
-	err := validateTaskDueDate(duedate)
+	err := validateTaskTitle(title)
+	if err != nil {
+		return Task{}, err
+	}
+
+	err = validateTaskDueDate(duedate)
 	if err != nil {
 		return Task{}, err
 	}
@@ -43,12 +50,17 @@ func CreateTask(taskservice TaskService, description string, duedate *time.Time,
 		return Task{}, err
 	}
 
+	err = validateTaskDomain(taskdomain)
+	if err != nil {
+		return Task{}, err
+	}
+
 	err = validateTaskCategory(taskcategory)
 	if err != nil {
 		return Task{}, err
 	}
 
-	err = validateAssetID(taskservice, assetid, taskcategory)
+	err = validateAssetID(taskservice, assetid, taskdomain)
 	if err != nil {
 		return Task{}, err
 	}
@@ -59,15 +71,17 @@ func CreateTask(taskservice TaskService, description string, duedate *time.Time,
 	}
 
 	return Task{
-		UID:          uid,
-		Description:  description,
-		CreatedDate:  time.Now(),
-		DueDate:      duedate,
-		Priority:     priority,
-		Status:       TaskStatusCreated,
-		TaskCategory: taskcategory,
-		IsDue:        false,
-		AssetID:      assetid,
+		Title:       title,
+		UID:         uid,
+		Description: description,
+		CreatedDate: time.Now(),
+		DueDate:     duedate,
+		Priority:    priority,
+		Status:      TaskStatusCreated,
+		Domain:      taskdomain,
+		Category:    taskcategory,
+		IsDue:       false,
+		AssetID:     assetid,
 	}, nil
 }
 
@@ -123,7 +137,7 @@ func (t *Task) ChangeTaskCategory(newtaskcategory string) error {
 	if err != nil {
 		return err
 	}
-	t.TaskCategory = newtaskcategory
+	t.Category = newtaskcategory
 
 	return nil
 }
@@ -134,6 +148,14 @@ func (t *Task) SetTaskAsDue() {
 }
 
 // Validation
+
+// validateTaskTitle
+func validateTaskTitle(title string) error {
+	if title == "" {
+		return TaskError{TaskErrorTitleEmptyCode}
+	}
+	return nil
+}
 
 // validateTaskDueDate
 func validateTaskDueDate(newdate *time.Time) error {
@@ -175,6 +197,21 @@ func validateTaskStatus(status string) error {
 	return nil
 }
 
+// validateTaskDomain
+func validateTaskDomain(domain string) error {
+
+	if domain == "" {
+		return TaskError{TaskErrorDomainEmptyCode}
+	}
+
+	_, err := FindTaskDomainByCode(domain)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // validateTaskCategory
 func validateTaskCategory(taskcategory string) error {
 
@@ -191,23 +228,23 @@ func validateTaskCategory(taskcategory string) error {
 }
 
 // validateAssetID
-func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskcategory string) error {
+func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain string) error {
 
 	if assetid != nil {
-		if taskcategory == "" {
-			return TaskError{TaskErrorCategoryEmptyCode}
+		if taskdomain == "" {
+			return TaskError{TaskErrorDomainEmptyCode}
 		}
 		//Find asset in repository
 		// if not found return error
 
-		switch taskcategory {
-		case TaskCategoryArea:
+		switch taskdomain {
+		case TaskDomainArea:
 			serviceResult := taskService.FindAreaByID(*assetid)
 
 			if serviceResult.Error != nil {
 				return serviceResult.Error
 			}
-		case TaskCategoryCrop:
+		case TaskDomainCrop:
 
 			serviceResult := taskService.FindCropByID(*assetid)
 

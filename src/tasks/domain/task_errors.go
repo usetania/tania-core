@@ -1,9 +1,11 @@
 package domain
 
 const (
+	// Title Errors
+	TaskErrorTitleEmptyCode = iota
+
 	// Description Errors
-	TaskErrorDescriptionEmptyCode = iota
-	TaskErrorDescriptionAlphanumericOnlyCode
+	TaskErrorDescriptionEmptyCode
 
 	// Date Errors
 	TaskErrorDueDateEmptyCode
@@ -16,6 +18,10 @@ const (
 	// Status Errors
 	TaskErrorStatusEmptyCode
 	TaskErrorInvalidStatusCode
+
+	// Domain Errors
+	TaskErrorDomainEmptyCode
+	TaskErrorInvalidDomainCode
 
 	// Category Errors
 	TaskErrorCategoryEmptyCode
@@ -36,10 +42,10 @@ type TaskError struct {
 
 func (e TaskError) Error() string {
 	switch e.Code {
+	case TaskErrorTitleEmptyCode:
+		return "Task title is required."
 	case TaskErrorDescriptionEmptyCode:
 		return "Task description is required."
-	case TaskErrorDescriptionAlphanumericOnlyCode:
-		return "Task description should be alphanumeric."
 	case TaskErrorDueDateEmptyCode:
 		return "Task due date is required."
 	case TaskErrorDueDateInvalidCode:
@@ -52,6 +58,10 @@ func (e TaskError) Error() string {
 		return "Task status is required."
 	case TaskErrorInvalidStatusCode:
 		return "Task status is invalid."
+	case TaskErrorDomainEmptyCode:
+		return "Task domain is required."
+	case TaskErrorInvalidDomainCode:
+		return "Task domain is invalid."
 	case TaskErrorCategoryEmptyCode:
 		return "Task category is required."
 	case TaskErrorInvalidCategoryCode:

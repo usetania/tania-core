@@ -22,24 +22,28 @@ func MapToSimpleTask(Tasks []domain.Task) []SimpleTask {
 
 func (st SimpleTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		UID          uuid.UUID  `json:"uid"`
-		Description  string     `json:"description"`
-		CreatedDate  time.Time  `json:"created_date"`
-		DueDate      *time.Time `json:"due_date, omitempty"`
-		Priority     string     `json:"priority"`
-		Status       string     `json:"status"`
-		TaskCategory string     `json:"category"`
-		IsDue        bool       `json:"is_due"`
-		AssetID      *uuid.UUID `json:"asset_id"`
+		Title       string     `json:"title"`
+		UID         uuid.UUID  `json:"uid"`
+		Description string     `json:"description"`
+		CreatedDate time.Time  `json:"created_date"`
+		DueDate     *time.Time `json:"due_date, omitempty"`
+		Priority    string     `json:"priority"`
+		Status      string     `json:"status"`
+		Domain      string     `json:"domain"`
+		Category    string     `json:"category"`
+		IsDue       bool       `json:"is_due"`
+		AssetID     *uuid.UUID `json:"asset_id"`
 	}{
-		UID:          st.UID,
-		Description:  st.Description,
-		CreatedDate:  st.CreatedDate,
-		DueDate:      st.DueDate,
-		Priority:     st.Priority,
-		Status:       st.Status,
-		TaskCategory: st.TaskCategory,
-		IsDue:        st.IsDue,
-		AssetID:      st.AssetID,
+		Title:       st.Title,
+		UID:         st.UID,
+		Description: st.Description,
+		CreatedDate: st.CreatedDate,
+		DueDate:     st.DueDate,
+		Priority:    st.Priority,
+		Status:      st.Status,
+		Domain:      st.Domain,
+		Category:    st.Category,
+		IsDue:       st.IsDue,
+		AssetID:     st.AssetID,
 	})
 }

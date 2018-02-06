@@ -100,9 +100,11 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 
 	task, err := domain.CreateTask(
 		s.TaskService,
+		c.FormValue("title"),
 		c.FormValue("description"),
 		due_ptr,
 		c.FormValue("priority"),
+		c.FormValue("domain"),
 		c.FormValue("category"),
 		asset_id_ptr)
 
