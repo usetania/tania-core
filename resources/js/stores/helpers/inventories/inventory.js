@@ -5,6 +5,7 @@ export const InventoryTypes = [
   { key: 'label_and_crop_support', label: 'Label and Crop Support' },
   { key: 'seeding_container', label: 'Seeding Container' },
   { key: 'post_harvest_supply', label: 'Post Harvest Supply' },
+  { key: 'plant', label: 'Plant' },
   { key: 'other', label: 'Other Material' },
 ]
 
@@ -56,5 +57,16 @@ export const GrowingMediumQuantityUnits = [
 
 export function FindGrowingMediumQuantityUnit(key) {
   var quantityUnit =  GrowingMediumQuantityUnits.find(item => item.key === key.toLowerCase())
+  return quantityUnit ? quantityUnit.label : ''
+}
+
+
+export const PlantUnits = [
+  { key: 'UNITS',  label: 'Units' },
+  { key: 'PACKETS', label: 'Packets' },
+]
+
+export function FindPlantUnit(key) {
+  var quantityUnit =  PlantUnits.find(item => item.key === key.toLowerCase())
   return quantityUnit ? quantityUnit.label : ''
 }

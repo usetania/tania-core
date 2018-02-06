@@ -14,6 +14,7 @@
         InventoriesMaterialCreateGrowingMedium(v-if="showGrowingMedium" @closeModal="closeModal")
         InventoriesMaterialCreateLabelCrop(v-if="showLabelCrop" @closeModal="closeModal")
         InventoriesMaterialCreateOther(v-if="showOther" @closeModal="closeModal")
+        InventoriesMaterialCreatePlant(v-if="showPlant" @closeModal="closeModal")
         InventoriesMaterialCreatePotHarvest(v-if="showPotHarvest" @closeModal="closeModal")
         InventoriesMaterialCreateSeed(v-if="showSeed" @closeModal="closeModal")
         InventoriesMaterialCreateSeedContainer(v-if="showSeedContainer" @closeModal="closeModal")
@@ -29,6 +30,7 @@ export default {
     InventoriesMaterialCreateGrowingMedium: () => import('./materials-create-growingmedium.vue'),
     InventoriesMaterialCreateLabelCrop: () => import('./materials-create-labelcrop.vue'),
     InventoriesMaterialCreateOther: () => import('./materials-create-other.vue'),
+    InventoriesMaterialCreatePlant: () => import('./materials-create-plant.vue'),
     InventoriesMaterialCreatePotHarvest: () => import('./materials-create-potharvest.vue'),
     InventoriesMaterialCreateSeed: () => import('./materials-create-seed.vue'),
     InventoriesMaterialCreateSeedContainer: () => import('./materials-create-seedcontainer.vue')
@@ -39,6 +41,7 @@ export default {
       showGrowingMedium: false,
       showLabelCrop: false,
       showOther: false,
+      showPlant: false,
       showPotHarvest: false,
       showSeed: true,
       showSeedContainer: false,
@@ -59,6 +62,7 @@ export default {
       this.showGrowingMedium = false
       this.showLabelCrop = false
       this.showOther = false
+      this.showPlant = false
       this.showPotHarvest = false
       this.showSeed = false
       this.showSeedContainer = false
@@ -76,6 +80,8 @@ export default {
         this.showPotHarvest = true
       } else if (type == "other") {
         this.showOther = true
+      } else if (type == "plant") {
+        this.showPlant = true
       }
     }
   }
