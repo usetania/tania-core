@@ -16,7 +16,6 @@ const actions = {
 
   createCrop ({ commit, state, getters }, payload) {
     const farm = getters.getCurrentFarm
-
     NProgress.start()
     return new Promise((resolve, reject) => {
       let areaId = payload.initial_area
@@ -76,6 +75,39 @@ const actions = {
     })
   },
   moveCrop ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiMoveCrop(cropId, payload, ({ data }) => {
+          payload = data.data
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
+  harvestCrop ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiHarvestCrop(cropId, payload, ({ data }) => {
+          payload = data.data
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
+  dumpCrop ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiDumpCrop(cropId, payload, ({ data }) => {
+          payload = data.data
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
+  ApiPhotoCrop ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
       let cropId = payload.obj_uid

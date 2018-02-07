@@ -64,7 +64,9 @@ export default {
     http.post('farms/crops/'+cropid+'/dump', payload, cbSuccess, cbError)
   },
   ApiPhotoCrop: (cropid, payload, cbSuccess, cbError) => {
-    http.post('farms/crops/'+cropid+'/photos', payload, cbSuccess, cbError)
+    http.post('farms/crops/'+cropid+'/photos', payload, cbSuccess, cbError, {
+      'Content-Type': 'multipart/form-data'
+    })
   },
   ApiCreateCropNotes: (cropid, payload, cbSuccess, cbError) => {
     http.post('farms/crops/' + cropid + '/notes' , payload, cbSuccess, cbError)

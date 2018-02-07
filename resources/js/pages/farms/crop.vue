@@ -1,12 +1,12 @@
 <template lang="pug">
   .crop-detail.col(v-if="loading === false")
-    modal(v-if="showMoveCropModal" @close="showMoveCropModal = false")
+    modal(v-if="showMoveCropModal" @close="closeModal")
       moveCropTask(:crop="crop")
-    modal(v-if="showDumpCropModal" @close="showDumpCropModal = false")
+    modal(v-if="showDumpCropModal" @close="closeModal")
       dumpCropTask(:crop="crop")
-    modal(v-if="showHarvestCropModal" @close="showHarvestCropModal = false")
+    modal(v-if="showHarvestCropModal" @close="closeModal")
       harvestCropTask(:crop="crop")
-    modal(v-if="showUploadCropModal" @close="showUploadCropModal = false")
+    modal(v-if="showUploadCropModal" @close="closeModal")
       uploadCropTask(:crop="crop")
     .row.wrapper-md
       .col-xs-8.col-xs-offset-2
@@ -140,10 +140,21 @@ export default {
   },
   methods: {
     ...mapActions([
+      'closeMoveCrop',
       'getCropByUid',
     ]),
     getCropContainer(key, count) {
       return FindContainer(key).label + ((count != 1)? 's':'')
+    },
+    closeModal() {
+      this.showMoveCropModal = false
+      this.showDumpCropModal = false
+      this.showHarvestCropModal = false
+      this.showUploadCropModal = false
+      this.getCropByUid(this.crop.uid)
+        .then(({ data }) =>  {
+          this.crop = data
+        })
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -155,4 +166,3 @@ export default {
   }
 }
 </script>
-
