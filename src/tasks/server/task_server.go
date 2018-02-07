@@ -49,6 +49,7 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	g.POST("", s.SaveTask)
 
 	g.GET("", s.FindAllTask)
+	g.GET("/search", s.FindFilteredTasks)
 	g.GET("/:id", s.FindTaskByID)
 	//g.PUT("/:id/start", s.StartTask)
 	g.PUT("/:id/cancel", s.CancelTask)
@@ -62,6 +63,32 @@ func (s TaskServer) FindAllTask(c echo.Context) error {
 	data := make(map[string][]SimpleTask)
 
 	result := <-s.TaskRepo.FindAll()
+	if result.Error != nil {
+		return result.Error
+	}
+
+	Tasks, ok := result.Result.([]domain.Task)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	data["data"] = MapToSimpleTask(Tasks)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s TaskServer) FindFilteredTasks(c echo.Context) error {
+	data := make(map[string][]SimpleTask)
+
+	queryparams := make(map[string]string)
+	queryparams["is_due"] = c.QueryParam("is_due")
+	queryparams["priority"] = c.QueryParam("priority")
+	queryparams["status"] = c.QueryParam("status")
+	queryparams["domain"] = c.QueryParam("domain")
+	queryparams["asset_id"] = c.QueryParam("asset_id")
+
+	result := <-s.TaskRepo.FindTasksWithFilter(queryparams)
+
 	if result.Error != nil {
 		return result.Error
 	}

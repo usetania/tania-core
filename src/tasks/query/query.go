@@ -19,6 +19,10 @@ type MaterialQuery interface {
 	FindMaterialByID(materialID uuid.UUID) <-chan QueryResult
 }
 
+type TaskQuery interface {
+	QueryTasksWithFilter(params map[string]string) <-chan QueryResult
+}
+
 /*
 TODO
 

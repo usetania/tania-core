@@ -4,12 +4,14 @@ import (
 	domain "github.com/Tanibox/tania-server/src/tasks/domain"
 	storage "github.com/Tanibox/tania-server/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
+	"strconv"
 )
 
 type TaskRepository interface {
 	Save(val *domain.Task) <-chan error
 	FindAll() <-chan RepositoryResult
 	FindByID(uid string) <-chan RepositoryResult
+	FindTasksWithFilter(params map[string]string) <-chan RepositoryResult
 }
 
 // TaskRepositoryInMemory is in-memory TaskRepository db implementation
@@ -34,6 +36,75 @@ func (r *TaskRepositoryInMemory) FindAll() <-chan RepositoryResult {
 		}
 
 		result <- RepositoryResult{Result: Tasks}
+
+		close(result)
+	}()
+
+	return result
+}
+
+func (s *TaskRepositoryInMemory) FindTasksWithFilter(params map[string]string) <-chan RepositoryResult {
+	result := make(chan RepositoryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		tasks := []domain.Task{}
+		for _, val := range s.Storage.TaskMap {
+
+			is_match := true
+
+			if len(params) > 0 {
+				// Is Due
+				if value, ok := params["is_due"]; ok {
+					b, _ := strconv.ParseBool(value)
+					if val.IsDue != b {
+						is_match = false
+					}
+				}
+				if is_match {
+					// Priority
+					if value, ok := params["priority"]; ok {
+						if value != "" && val.Priority != value {
+							is_match = false
+						}
+					}
+					if is_match {
+						// Status
+						if value, ok := params["status"]; ok {
+							if value != "" && val.Status != value {
+								is_match = false
+							}
+						}
+						if is_match {
+							// Domain
+							if value, ok := params["domain"]; ok {
+								if value != "" && val.Domain != value {
+									is_match = false
+								}
+							}
+							if is_match {
+								// Asset ID
+								if value, ok := params["asset_id"]; ok {
+									if value != "" {
+										asset_id, _ := uuid.FromString(value)
+										if *val.AssetID != asset_id {
+											is_match = false
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			if is_match {
+				tasks = append(tasks, val)
+			}
+		}
+
+		result <- RepositoryResult{Result: tasks}
 
 		close(result)
 	}()
