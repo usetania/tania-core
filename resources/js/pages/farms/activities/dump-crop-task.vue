@@ -1,9 +1,8 @@
 <template lang="pug">
   .dump-crop-task
     .modal-header
-      span.h4.font-bold Dump Crops
-      span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
-        i.fa.fa-close
+      span.h4.font-bold Dump 
+        span.identifier {{ crop.batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
@@ -23,10 +22,12 @@
           textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
           span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
         .form-group
-          .text-center.m-t
-            button.btn.btn-primary(type="submit")
-              i.fa.fa-check
-              |  OK
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            i.fa.fa-long-arrow-right
+            | Save
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fa.fa-close
+            | Cancel
 </template>
 
 
