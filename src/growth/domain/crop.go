@@ -298,6 +298,50 @@ func (state *Crop) Transition(event interface{}) {
 				LastUpdated:     e.MovedDate,
 			})
 		}
+	case CropBatchHarvested:
+		// If harvestType All, then empty the quantity in the area because it has been all harvested
+		// Else if harvestType Partial, then we assume that the quantity of moved plant is 0
+		harvestedQuantity := 0
+		if e.HarvestType == HarvestTypeAll {
+			if state.InitialArea.AreaUID == e.SrcAreaUID {
+				harvestedQuantity = state.InitialArea.CurrentQuantity
+				state.InitialArea.CurrentQuantity = 0
+			}
+			for i, v := range state.MovedArea {
+				if v.AreaUID == e.SrcAreaUID {
+					harvestedQuantity = state.MovedArea[i].CurrentQuantity
+					state.MovedArea[i].CurrentQuantity = 0
+				}
+			}
+		}
+
+		// Check source area existance. If already exist, then just update it
+		isExist := false
+		for i, v := range state.HarvestedStorage {
+			if v.SourceAreaUID == e.SrcAreaUID {
+				state.HarvestedStorage[i].Quantity += harvestedQuantity
+				state.HarvestedStorage[i].LastUpdated = e.HarvestDate
+				isExist = true
+			}
+		}
+
+		if !isExist {
+			hs := HarvestedStorage{
+				Quantity:      harvestedQuantity,
+				SourceAreaUID: e.SrcAreaUID,
+				CreatedDate:   e.HarvestDate,
+				LastUpdated:   e.HarvestDate,
+			}
+			state.HarvestedStorage = append(state.HarvestedStorage, hs)
+		}
+
+		// Calculate the produced harvest
+		for i, v := range state.HarvestedStorage {
+			if v.SourceAreaUID == e.SrcAreaUID {
+				state.HarvestedStorage[i].ProducedGramQuantity += e.ProducedGramQuantity
+			}
+		}
+
 	case CropBatchWatered:
 		if state.InitialArea.AreaUID == e.AreaUID {
 			state.InitialArea.LastWatered = e.WateringDate
@@ -540,48 +584,16 @@ func (c *Crop) Harvest(
 	}
 
 	// Process //
-	// If harvestType All, then empty the quantity in the area because it has been all harvested
-	// Else if harvestType Partial, then we assume that the quantity of moved plant is 0
-	harvestedQuantity := 0
-	if ht.Code == HarvestTypeAll {
-		if c.InitialArea.AreaUID == sourceAreaUID {
-			harvestedQuantity = c.InitialArea.CurrentQuantity
-			c.InitialArea.CurrentQuantity = 0
-		}
-		for i, v := range c.MovedArea {
-			if v.AreaUID == sourceAreaUID {
-				harvestedQuantity = c.MovedArea[i].CurrentQuantity
-				c.MovedArea[i].CurrentQuantity = 0
-			}
-		}
-	}
-
-	// Check source area existance. If already exist, then just update it
-	isExist := false
-	for i, v := range c.HarvestedStorage {
-		if v.SourceAreaUID == sourceAreaUID {
-			c.HarvestedStorage[i].Quantity += harvestedQuantity
-			c.HarvestedStorage[i].LastUpdated = time.Now()
-			isExist = true
-		}
-	}
-
-	if !isExist {
-		hs := HarvestedStorage{
-			Quantity:      harvestedQuantity,
-			SourceAreaUID: sourceAreaUID,
-			CreatedDate:   time.Now(),
-			LastUpdated:   time.Now(),
-		}
-		c.HarvestedStorage = append(c.HarvestedStorage, hs)
-	}
-
-	// Calculate the produced harvest
-	for i, v := range c.HarvestedStorage {
-		if v.SourceAreaUID == srcArea.UID {
-			c.HarvestedStorage[i].ProducedGramQuantity += totalProduced
-		}
-	}
+	c.TrackChange(CropBatchHarvested{
+		UID:                  c.UID,
+		BatchID:              c.BatchID,
+		ContainerType:        c.Container.Type.Code(),
+		HarvestType:          ht.Code,
+		ProducedGramQuantity: totalProduced,
+		SrcAreaUID:           srcArea.UID,
+		SrcAreaName:          srcArea.Name,
+		HarvestDate:          time.Now(),
+	})
 
 	return nil
 }

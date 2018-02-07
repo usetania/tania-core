@@ -143,9 +143,10 @@ func CreateCropReadStorage() *CropReadStorage {
 }
 
 const (
-	SeedActivityCode  = "SEED"
-	MoveActivityCode  = "MOVE"
-	WaterActivityCode = "WATER"
+	SeedActivityCode    = "SEED"
+	MoveActivityCode    = "MOVE"
+	HarvestActivityCode = "HARVEST"
+	WaterActivityCode   = "WATER"
 )
 
 type CropActivity struct {
@@ -183,6 +184,19 @@ type MoveActivity struct {
 
 func (a MoveActivity) Code() string {
 	return MoveActivityCode
+}
+
+type HarvestActivity struct {
+	HarvestType          string    `json:"type"`
+	SrcAreaUID           uuid.UUID `json:"source_area_id"`
+	SrcAreaName          string    `json:"source_area_name"`
+	Quantity             int       `json:"quantity"`
+	ProducedGramQuantity float32   `json:"produced_gram_quantity"`
+	HarvestDate          time.Time `json:"harvest_date"`
+}
+
+func (a HarvestActivity) Code() string {
+	return HarvestActivityCode
 }
 
 type WaterActivity struct {

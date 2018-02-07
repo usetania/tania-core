@@ -99,6 +99,8 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropActivityReadModel)
+	s.EventBus.Subscribe("CropBatchHarvested", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchHarvested", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropActivityReadModel)
 }
@@ -311,24 +313,28 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 }
 
 func (s *GrowthServer) HarvestCrop(c echo.Context) error {
-	cropID := c.Param("id")
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	srcAreaID := c.FormValue("source_area_id")
 	harvestType := c.FormValue("harvest_type")
 	producedQuantity := c.FormValue("produced_quantity")
 	producedUnit := c.FormValue("produced_unit")
 
 	// VALIDATE //
-	result := <-s.CropRepo.FindByID(cropID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	if crop.UID == (uuid.UUID{}) {
+	if cropRead.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
@@ -357,19 +363,31 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 	}
 
 	// PROCESS //
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.CropEvent)
+
+	crop := repository.NewCropBatchFromHistory(events)
+
 	err = crop.Harvest(s.CropService, srcAreaUID, harvestType, float32(prodQty), prodUnit)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// PERSIST //
-	err = <-s.CropRepo.Save(&crop)
+	err = <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
+	// TRIGGER EVENTS
+	s.publishUncommittedEvents(crop)
+
 	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, crop)
+	cropBatch, err := MapToCropBatch(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}

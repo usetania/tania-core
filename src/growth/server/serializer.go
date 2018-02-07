@@ -102,6 +102,7 @@ type CropActivityType struct {
 type CropActivity storage.CropActivity
 type SeedActivity struct{ *storage.SeedActivity }
 type MoveActivity struct{ *storage.MoveActivity }
+type HarvestActivity struct{ *storage.HarvestActivity }
 type WaterActivity struct{ *storage.WaterActivity }
 
 func MapToCropActivity(activity storage.CropActivity) CropActivity {
@@ -112,6 +113,8 @@ func MapToCropActivity(activity storage.CropActivity) CropActivity {
 		ca.ActivityType = SeedActivity{&v}
 	case storage.MoveActivity:
 		ca.ActivityType = MoveActivity{&v}
+	case storage.HarvestActivity:
+		ca.ActivityType = HarvestActivity{&v}
 	case storage.WaterActivity:
 		ca.ActivityType = WaterActivity{&v}
 	}
@@ -333,6 +336,17 @@ func (a SeedActivity) MarshalJSON() ([]byte, error) {
 
 func (a MoveActivity) MarshalJSON() ([]byte, error) {
 	type Alias MoveActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a HarvestActivity) MarshalJSON() ([]byte, error) {
+	type Alias HarvestActivity
 	return json.Marshal(struct {
 		*Alias
 		Code string
