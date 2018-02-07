@@ -264,13 +264,50 @@ func (state *Crop) Transition(event interface{}) {
 		}
 		state.FarmUID = e.FarmUID
 	case CropBatchMoved:
-		state.UID = e.UID
-		state.InitialArea = e.InitialArea
-		state.MovedArea = e.MovedArea
+		if state.InitialArea.AreaUID == e.SrcAreaUID {
+			state.InitialArea.CurrentQuantity -= e.Quantity
+		}
+
+		for i, v := range state.MovedArea {
+			if v.AreaUID == e.SrcAreaUID {
+				state.MovedArea[i].CurrentQuantity -= e.Quantity
+			}
+		}
+
+		isDstExist := false
+		for _, v := range state.MovedArea {
+			if v.AreaUID == e.DstAreaUID {
+				isDstExist = true
+			}
+		}
+
+		if isDstExist {
+			for i, v := range state.MovedArea {
+				if v.AreaUID == e.DstAreaUID {
+					state.MovedArea[i].CurrentQuantity += e.Quantity
+					state.MovedArea[i].LastUpdated = e.MovedDate
+				}
+			}
+		} else {
+			state.MovedArea = append(state.MovedArea, MovedArea{
+				AreaUID:         e.DstAreaUID,
+				SourceAreaUID:   e.SrcAreaUID,
+				InitialQuantity: e.Quantity,
+				CurrentQuantity: e.Quantity,
+				CreatedDate:     e.MovedDate,
+				LastUpdated:     e.MovedDate,
+			})
+		}
 	case CropBatchWatered:
-		state.UID = e.UID
-		state.InitialArea = e.InitialArea
-		state.MovedArea = e.MovedArea
+		if state.InitialArea.AreaUID == e.AreaUID {
+			state.InitialArea.LastWatered = e.WateringDate
+		}
+
+		for i, v := range state.MovedArea {
+			if v.AreaUID == e.AreaUID {
+				state.MovedArea[i].LastWatered = e.WateringDate
+			}
+		}
 	}
 }
 
@@ -431,45 +468,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		return CropError{Code: CropMoveToAreaErrorInvalidQuantity}
 	}
 
-	// Check existance of the destination area input to the existing crop destination area.
-	isDstExist := false
-	for _, v := range c.MovedArea {
-		if v.AreaUID == dstArea.UID {
-			isDstExist = true
-		}
-	}
-
 	// Process //
-	movedDate := time.Now()
-
-	if c.InitialArea.AreaUID == srcArea.UID {
-		c.InitialArea.CurrentQuantity -= quantity
-	}
-
-	for i, v := range c.MovedArea {
-		if v.AreaUID == srcArea.UID {
-			c.MovedArea[i].CurrentQuantity -= quantity
-		}
-	}
-
-	if isDstExist {
-		for i, v := range c.MovedArea {
-			if v.AreaUID == dstArea.UID {
-				c.MovedArea[i].CurrentQuantity += quantity
-				c.MovedArea[i].LastUpdated = movedDate
-			}
-		}
-	} else {
-		c.MovedArea = append(c.MovedArea, MovedArea{
-			AreaUID:         dstArea.UID,
-			SourceAreaUID:   srcArea.UID,
-			InitialQuantity: quantity,
-			CurrentQuantity: quantity,
-			CreatedDate:     movedDate,
-			LastUpdated:     movedDate,
-		})
-	}
-
 	c.TrackChange(CropBatchMoved{
 		UID:           c.UID,
 		BatchID:       c.BatchID,
@@ -479,7 +478,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		SrcAreaName:   srcArea.Name,
 		DstAreaUID:    dstArea.UID,
 		DstAreaName:   dstArea.Name,
-		MovedDate:     movedDate,
+		MovedDate:     time.Now(),
 		InitialArea:   c.InitialArea,
 		MovedArea:     c.MovedArea,
 	})
@@ -692,16 +691,6 @@ func (c *Crop) Water(cropService CropService, sourceAreaUID uuid.UUID, wateringD
 
 	if wateringDate.IsZero() {
 		return CropError{Code: CropWaterErrorInvalidWateringDate}
-	}
-
-	if c.InitialArea.AreaUID == sourceAreaUID {
-		c.InitialArea.LastWatered = wateringDate
-	}
-
-	for i, v := range c.MovedArea {
-		if v.AreaUID == sourceAreaUID {
-			c.MovedArea[i].LastWatered = wateringDate
-		}
 	}
 
 	c.TrackChange(CropBatchWatered{
