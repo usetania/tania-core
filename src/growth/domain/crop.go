@@ -479,8 +479,6 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		DstAreaUID:    dstArea.UID,
 		DstAreaName:   dstArea.Name,
 		MovedDate:     time.Now(),
-		InitialArea:   c.InitialArea,
-		MovedArea:     c.MovedArea,
 	})
 
 	return nil

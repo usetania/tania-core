@@ -10,7 +10,7 @@ type CropReadQueryInMemory struct {
 	Storage *storage.CropReadStorage
 }
 
-func NewCropListQueryInMemory(s *storage.CropReadStorage) query.CropListQuery {
+func NewCropReadQueryInMemory(s *storage.CropReadStorage) query.CropReadQuery {
 	return CropReadQueryInMemory{Storage: s}
 }
 
@@ -65,14 +65,14 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan quer
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		cropList := []storage.CropRead{}
+		cropRead := []storage.CropRead{}
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-				cropList = append(cropList, val)
+				cropRead = append(cropRead, val)
 			}
 		}
 
-		result <- query.QueryResult{Result: cropList}
+		result <- query.QueryResult{Result: cropRead}
 
 		close(result)
 	}()

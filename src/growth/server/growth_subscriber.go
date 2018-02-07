@@ -50,7 +50,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		cropRead.FarmUID = e.FarmUID
 
 	case domain.CropBatchWatered:
-		queryResult := <-s.CropListQuery.FindByID(e.UID)
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}

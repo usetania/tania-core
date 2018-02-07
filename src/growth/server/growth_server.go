@@ -29,7 +29,7 @@ type GrowthServer struct {
 	CropEventRepo     repository.CropEventRepository
 	CropQuery         query.CropQuery
 	CropReadRepo      repository.CropReadRepository
-	CropListQuery     query.CropListQuery
+	CropReadQuery     query.CropReadQuery
 	CropActivityRepo  repository.CropActivityRepository
 	CropActivityQuery query.CropActivityQuery
 	CropService       domain.CropService
@@ -54,8 +54,8 @@ func NewGrowthServer(
 	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
-	cropListRepo := repository.NewCropReadRepositoryInMemory(cropReadStorage)
-	cropListQuery := inmemory.NewCropListQueryInMemory(cropReadStorage)
+	cropReadRepo := repository.NewCropReadRepositoryInMemory(cropReadStorage)
+	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
 	cropActivityRepo := repository.NewCropActivityRepositoryInMemory(cropActivityStorage)
 	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
 
@@ -73,8 +73,8 @@ func NewGrowthServer(
 		CropRepo:          cropRepo,
 		CropEventRepo:     cropEventRepo,
 		CropQuery:         cropQuery,
-		CropReadRepo:      cropListRepo,
-		CropListQuery:     cropListQuery,
+		CropReadRepo:      cropReadRepo,
+		CropReadQuery:     cropReadQuery,
 		CropActivityRepo:  cropActivityRepo,
 		CropActivityQuery: cropActivityQuery,
 		CropService:       cropService,
@@ -210,7 +210,7 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 	}
 
 	// Validate //
-	result := <-s.CropListQuery.FindByID(cropUID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
@@ -242,17 +242,17 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	quantity := c.FormValue("quantity")
 
 	// VALIDATE //
-	result := <-s.CropListQuery.FindByID(cropUID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	cropList, ok := result.Result.(storage.CropRead)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	if cropList.UID == (uuid.UUID{}) {
+	if cropRead.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
@@ -435,17 +435,17 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	wateringDate := c.FormValue("watering_date")
 
 	// VALIDATE //
-	result := <-s.CropListQuery.FindByID(cropUID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	cropList, ok := result.Result.(storage.CropRead)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	if cropList.UID == (uuid.UUID{}) {
+	if cropRead.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
@@ -597,7 +597,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	}
 
 	// Process //
-	resultQuery := <-s.CropListQuery.FindAllCropsByFarm(farm.UID)
+	resultQuery := <-s.CropReadQuery.FindAllCropsByFarm(farm.UID)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
@@ -748,7 +748,7 @@ func (s *GrowthServer) GetCropActivities(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	result := <-s.CropListQuery.FindByID(cropUID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}

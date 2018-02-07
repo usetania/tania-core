@@ -12,7 +12,7 @@ type CropQuery interface {
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
-type CropListQuery interface {
+type CropReadQuery interface {
 	FindByID(uid uuid.UUID) <-chan QueryResult
 	FindByBatchID(batchID string) <-chan QueryResult
 	FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryResult

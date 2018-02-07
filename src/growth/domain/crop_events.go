@@ -34,9 +34,6 @@ type CropBatchMoved struct {
 	DstAreaUID    uuid.UUID
 	DstAreaName   string
 	MovedDate     time.Time
-
-	InitialArea InitialArea
-	MovedArea   []MovedArea
 }
 
 type CropBatchWatered struct {
@@ -44,7 +41,4 @@ type CropBatchWatered struct {
 	AreaUID      uuid.UUID
 	AreaName     string
 	WateringDate time.Time
-
-	InitialArea InitialArea
-	MovedArea   []MovedArea
 }
