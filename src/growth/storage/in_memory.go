@@ -146,6 +146,7 @@ const (
 	SeedActivityCode    = "SEED"
 	MoveActivityCode    = "MOVE"
 	HarvestActivityCode = "HARVEST"
+	DumpActivityCode    = "DUMP"
 	WaterActivityCode   = "WATER"
 )
 
@@ -197,6 +198,17 @@ type HarvestActivity struct {
 
 func (a HarvestActivity) Code() string {
 	return HarvestActivityCode
+}
+
+type DumpActivity struct {
+	SrcAreaUID  uuid.UUID `json:"source_area_id"`
+	SrcAreaName string    `json:"source_area_name"`
+	Quantity    int       `json:"quantity"`
+	DumpDate    time.Time `json:"dump_date"`
+}
+
+func (a DumpActivity) Code() string {
+	return DumpActivityCode
 }
 
 type WaterActivity struct {

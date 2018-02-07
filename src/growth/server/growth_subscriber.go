@@ -170,6 +170,56 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		// Because Harvest should only be done in the GROWING area
 		cropRead.AreaStatus.Growing -= e.Quantity
 
+	case domain.CropBatchDumped:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cl, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cl
+
+		// Check source area existance. If already exist, then just update it
+		isExist := false
+		for i, v := range cropRead.Trash {
+			if v.SourceAreaUID == e.SrcAreaUID {
+				cropRead.Trash[i].Quantity += e.Quantity
+				cropRead.Trash[i].LastUpdated = e.DumpDate
+				isExist = true
+			}
+		}
+
+		if !isExist {
+			t := storage.Trash{
+				Quantity:      e.Quantity,
+				SourceAreaUID: e.SrcAreaUID,
+				CreatedDate:   e.DumpDate,
+				LastUpdated:   e.DumpDate,
+			}
+			cropRead.Trash = append(cropRead.Trash, t)
+		}
+
+		// Reduce the quantity in the area because it has been dumped
+		if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
+			cropRead.InitialArea.CurrentQuantity -= e.Quantity
+		}
+		for i, v := range cropRead.MovedArea {
+			if v.AreaUID == e.SrcAreaUID {
+				cropRead.MovedArea[i].CurrentQuantity -= e.Quantity
+			}
+		}
+
+		if e.SrcAreaType == "SEEDING" {
+			cropRead.AreaStatus.Seeding -= e.Quantity
+		}
+		if e.SrcAreaType == "GROWING" {
+			cropRead.AreaStatus.Growing -= e.Quantity
+		}
+
 	case domain.CropBatchWatered:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
@@ -242,6 +292,17 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			ProducedGramQuantity: e.ProducedGramQuantity,
 			HarvestType:          e.HarvestType,
 			HarvestDate:          e.HarvestDate,
+		}
+	case domain.CropBatchDumped:
+		cropActivity.UID = e.UID
+		cropActivity.BatchID = e.BatchID
+		cropActivity.ContainerType = e.ContainerType
+		cropActivity.CreatedDate = time.Now()
+		cropActivity.ActivityType = storage.DumpActivity{
+			SrcAreaUID:  e.SrcAreaUID,
+			SrcAreaName: e.SrcAreaName,
+			Quantity:    e.Quantity,
+			DumpDate:    e.DumpDate,
 		}
 	case domain.CropBatchWatered:
 		cropActivity.UID = e.UID

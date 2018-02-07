@@ -342,6 +342,37 @@ func (state *Crop) Transition(event interface{}) {
 			}
 		}
 
+	case CropBatchDumped:
+		// Check source area existance. If already exist, then just update it
+		isExist := false
+		for i, v := range state.Trash {
+			if v.SourceAreaUID == e.SrcAreaUID {
+				state.Trash[i].Quantity += e.Quantity
+				state.Trash[i].LastUpdated = e.DumpDate
+				isExist = true
+			}
+		}
+
+		if !isExist {
+			t := Trash{
+				Quantity:      e.Quantity,
+				SourceAreaUID: e.SrcAreaUID,
+				CreatedDate:   e.DumpDate,
+				LastUpdated:   e.DumpDate,
+			}
+			state.Trash = append(state.Trash, t)
+		}
+
+		// Reduce the quantity in the area because it has been dumped
+		if state.InitialArea.AreaUID == e.SrcAreaUID {
+			state.InitialArea.CurrentQuantity -= e.Quantity
+		}
+		for i, v := range state.MovedArea {
+			if v.AreaUID == e.SrcAreaUID {
+				state.MovedArea[i].CurrentQuantity -= e.Quantity
+			}
+		}
+
 	case CropBatchWatered:
 		if state.InitialArea.AreaUID == e.AreaUID {
 			state.InitialArea.LastWatered = e.WateringDate
@@ -635,35 +666,16 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	}
 
 	// Process //
-	// Check source area existance. If already exist, then just update it
-	isExist := false
-	for i, v := range c.Trash {
-		if v.SourceAreaUID == srcArea.UID {
-			c.Trash[i].Quantity += quantity
-			c.Trash[i].LastUpdated = time.Now()
-			isExist = true
-		}
-	}
-
-	if !isExist {
-		t := Trash{
-			Quantity:      quantity,
-			SourceAreaUID: srcArea.UID,
-			CreatedDate:   time.Now(),
-			LastUpdated:   time.Now(),
-		}
-		c.Trash = append(c.Trash, t)
-	}
-
-	// Reduce the quantity in the area because it has been dumped
-	if c.InitialArea.AreaUID == sourceAreaUID {
-		c.InitialArea.CurrentQuantity -= quantity
-	}
-	for i, v := range c.MovedArea {
-		if v.AreaUID == sourceAreaUID {
-			c.MovedArea[i].CurrentQuantity -= quantity
-		}
-	}
+	c.TrackChange(CropBatchDumped{
+		UID:           c.UID,
+		BatchID:       c.BatchID,
+		ContainerType: c.Container.Type.Code(),
+		Quantity:      quantity,
+		SrcAreaUID:    srcArea.UID,
+		SrcAreaName:   srcArea.Name,
+		SrcAreaType:   srcArea.Type,
+		DumpDate:      time.Now(),
+	})
 
 	return nil
 }
