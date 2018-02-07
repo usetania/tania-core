@@ -78,11 +78,6 @@ func TestCreateCropBatch(t *testing.T) {
 	// Dump
 	assert.Equal(t, areaBUID, crop.Trash[0].SourceAreaUID)
 	assert.Equal(t, 5, crop.Trash[0].Quantity)
-
-	// Care
-	assert.Equal(t, false, crop.LastFertilized.IsZero())
-	assert.Equal(t, false, crop.LastPesticided.IsZero())
-	assert.Equal(t, false, crop.LastPruned.IsZero())
 }
 
 func TestHarvestCropBatch(t *testing.T) {
