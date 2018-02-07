@@ -1,7 +1,8 @@
 <template lang="pug">
   .move-crop-task
     .modal-header
-      span.h4.font-bold Move Crops
+      span.h4.font-bold Move 
+        span.identifier {{ crop.batch_id }}
       span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
         i.fa.fa-close
     .modal-body
@@ -14,16 +15,16 @@
           span.help-block.text-danger(v-show="errors.has('dest_area_id')") {{ errors.first('dest_area_id') }}
         .form-group
           label(for="quantity")
-            | How many of 
-            span.identifier-sm {{ crop.batch_id }}
-            |  do you want to move?
+            | How many plants do you want to move?
           input.form-control#quantity(type="text" v-validate="'required|alpha_num_space|min:1'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
-          .text-center.m-t
-            button.btn.btn-primary(type="submit")
-              i.fa.fa-check
-              |  OK
+          button.btn.btn-primary.pull-right(type="submit")
+            i.fa.fa-check
+            |  OK
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fa.fa-close
+            | Cancel
 </template>
 
 
