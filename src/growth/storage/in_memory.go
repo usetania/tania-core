@@ -25,8 +25,14 @@ func CreateCropStorage() *CropStorage {
 }
 
 type CropEventStorage struct {
-	Lock         *deadlock.RWMutex
-	CropEventMap map[uuid.UUID]interface{}
+	Lock       *deadlock.RWMutex
+	CropEvents []CropEvent
+}
+
+type CropEvent struct {
+	CropUID uuid.UUID
+	Version int
+	Event   interface{}
 }
 
 func CreateCropEventStorage() *CropEventStorage {
@@ -36,7 +42,7 @@ func CreateCropEventStorage() *CropEventStorage {
 		fmt.Println("CROP EVENT STORAGE DEADLOCK!")
 	}
 
-	return &CropEventStorage{CropEventMap: make(map[uuid.UUID]interface{}), Lock: &rwMutex}
+	return &CropEventStorage{Lock: &rwMutex}
 }
 
 type CropRead struct {

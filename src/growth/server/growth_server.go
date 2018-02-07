@@ -25,8 +25,9 @@ import (
 
 // GrowthServer ties the routes and handlers with injected dependencies
 type GrowthServer struct {
-	CropRepo          repository.CropRepository
 	CropEventRepo     repository.CropEventRepository
+	CropEventQuery    query.CropEventQuery
+	CropRepo          repository.CropRepository
 	CropQuery         query.CropQuery
 	CropReadRepo      repository.CropReadRepository
 	CropReadQuery     query.CropReadQuery
@@ -52,6 +53,7 @@ func NewGrowthServer(
 	farmStorage *assetsstorage.FarmStorage,
 ) (*GrowthServer, error) {
 	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
+	cropEventQuery := inmemory.NewCropEventQueryInMemory(cropEventStorage)
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	cropReadRepo := repository.NewCropReadRepositoryInMemory(cropReadStorage)
@@ -70,8 +72,9 @@ func NewGrowthServer(
 	}
 
 	growthServer := &GrowthServer{
-		CropRepo:          cropRepo,
 		CropEventRepo:     cropEventRepo,
+		CropEventQuery:    cropEventQuery,
+		CropRepo:          cropRepo,
 		CropQuery:         cropQuery,
 		CropReadRepo:      cropReadRepo,
 		CropReadQuery:     cropReadQuery,
@@ -184,7 +187,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	}
 
 	// Persists //
-	err = <-s.CropEventRepo.Save(cropBatch.UID, cropBatch.UncommittedChanges)
+	err = <-s.CropEventRepo.Save(cropBatch.UID, 0, cropBatch.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -272,12 +275,12 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	}
 
 	// PROCESS //
-	eventRepoResult := <-s.CropEventRepo.FindByID(cropUID)
-	if eventRepoResult.Error != nil {
-		return Error(c, eventRepoResult.Error)
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
 	}
 
-	events := eventRepoResult.Result.([]interface{})
+	events := eventQueryResult.Result.([]storage.CropEvent)
 
 	crop := repository.NewCropBatchFromHistory(events)
 
@@ -287,7 +290,7 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	}
 
 	// PERSIST //
-	err = <-s.CropEventRepo.Save(crop.UID, &crop)
+	err = <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -460,12 +463,12 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	}
 
 	// PROCESS //
-	eventRepoResult := <-s.CropEventRepo.FindByID(cropUID)
-	if eventRepoResult.Error != nil {
-		return Error(c, eventRepoResult.Error)
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
 	}
 
-	events := eventRepoResult.Result.([]interface{})
+	events := eventQueryResult.Result.([]storage.CropEvent)
 
 	crop := repository.NewCropBatchFromHistory(events)
 
@@ -475,7 +478,7 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	}
 
 	// PERSIST //
-	err = <-s.CropEventRepo.Save(crop.UID, crop.UncommittedChanges)
+	err = <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}

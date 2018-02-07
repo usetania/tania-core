@@ -12,6 +12,10 @@ type CropQuery interface {
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
+type CropEventQuery interface {
+	FindAllByCropID(uid uuid.UUID) <-chan QueryResult
+}
+
 type CropReadQuery interface {
 	FindByID(uid uuid.UUID) <-chan QueryResult
 	FindByBatchID(batchID string) <-chan QueryResult
