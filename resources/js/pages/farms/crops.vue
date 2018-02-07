@@ -43,7 +43,7 @@
               td {{ crop.type }}
               td: span.areatag {{ crop.initial_area.area.name }}
               td(v-if="crop.moved_area.length > 0")
-                span.areatag(v-for="area in crop.moved_area") {{ area.name }}
+                span.areatag {{ crop.moved_area[crop.moved_area.length-1].area.name }}
               td(v-else)
                 span.areatag {{ crop.initial_area.area.name }}
 </template>

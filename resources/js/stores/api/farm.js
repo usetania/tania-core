@@ -57,6 +57,15 @@ export default {
   ApiMoveCrop: (cropid, payload, cbSuccess, cbError) => {
     http.post('farms/crops/'+cropid+'/move', payload, cbSuccess, cbError)
   },
+  ApiHarvestCrop: (cropid, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/'+cropid+'/harvest', payload, cbSuccess, cbError)
+  },
+  ApiDumpCrop: (cropid, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/'+cropid+'/dump', payload, cbSuccess, cbError)
+  },
+  ApiPhotoCrop: (cropid, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/'+cropid+'/photos', payload, cbSuccess, cbError)
+  },
   ApiCreateCropNotes: (cropid, payload, cbSuccess, cbError) => {
     http.post('farms/crops/' + cropid + '/notes' , payload, cbSuccess, cbError)
   },
