@@ -140,9 +140,15 @@ func (t *Task) ChangeTaskCategory(newtaskcategory string) error {
 	return nil
 }
 
-//SetTaskAsDue
+// SetTaskAsDue
 func (t *Task) SetTaskAsDue() {
 	t.IsDue = true
+}
+
+// SetTaskCompletedDate()
+func (t *Task) SetTaskCompletedDate() {
+	currenttime := time.Now()
+	t.CompletedDate = &currenttime
 }
 
 // Validation

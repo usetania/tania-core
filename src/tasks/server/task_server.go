@@ -244,6 +244,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	}
 
 	task.ChangeTaskStatus(domain.TaskStatusComplete)
+	task.SetTaskCompletedDate()
 
 	err = <-s.TaskRepo.Save(&task)
 	if err != nil {

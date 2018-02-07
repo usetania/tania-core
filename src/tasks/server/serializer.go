@@ -27,6 +27,7 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		Description   string            `json:"description"`
 		CreatedDate   time.Time         `json:"created_date"`
 		DueDate       *time.Time        `json:"due_date, omitempty"`
+		CompletedDate *time.Time        `json:"completed_date"`
 		Priority      string            `json:"priority"`
 		Status        string            `json:"status"`
 		Domain        string            `json:"domain"`
@@ -40,6 +41,7 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		Description:   st.Description,
 		CreatedDate:   st.CreatedDate,
 		DueDate:       st.DueDate,
+		CompletedDate: st.CompletedDate,
 		Priority:      st.Priority,
 		Status:        st.Status,
 		Domain:        st.DomainDetails.Code(),
