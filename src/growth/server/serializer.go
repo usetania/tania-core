@@ -1,11 +1,13 @@
 package server
 
 import (
+	"encoding/json"
 	"net/http"
 	"sort"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/query"
+	"github.com/Tanibox/tania-server/src/growth/storage"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/labstack/echo"
@@ -93,6 +95,23 @@ type CropActivityType struct {
 	TotalSeeding int `json:"total_seeding"`
 	TotalGrowing int `json:"total_growing"`
 	TotalDumped  int `json:"total_dumped"`
+}
+
+type CropActivity storage.CropActivity
+type SeedActivity struct{ *storage.SeedActivity }
+type MoveActivity struct{ *storage.MoveActivity }
+
+func MapToCropActivity(activity storage.CropActivity) CropActivity {
+	ca := CropActivity(activity)
+
+	switch v := ca.ActivityType.(type) {
+	case storage.SeedActivity:
+		ca.ActivityType = SeedActivity{&v}
+	case storage.MoveActivity:
+		ca.ActivityType = MoveActivity{&v}
+	}
+
+	return ca
 }
 
 func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
@@ -292,4 +311,26 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	cropBatch.Photo = crop.Photo
 
 	return cropBatch, nil
+}
+
+func (a SeedActivity) MarshalJSON() ([]byte, error) {
+	type Alias SeedActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a MoveActivity) MarshalJSON() ([]byte, error) {
+	type Alias MoveActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
 }

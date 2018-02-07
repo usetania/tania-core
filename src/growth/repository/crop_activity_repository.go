@@ -24,7 +24,7 @@ func (f *CropActivityRepositoryInMemory) Save(cropActivity *storage.CropActivity
 		f.Storage.Lock.Lock()
 		defer f.Storage.Lock.Unlock()
 
-		f.Storage.CropActivityMap[cropActivity.UID] = *cropActivity
+		f.Storage.CropActivityMap = append(f.Storage.CropActivityMap, *cropActivity)
 
 		result <- nil
 

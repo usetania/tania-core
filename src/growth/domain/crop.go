@@ -137,6 +137,9 @@ type InitialArea struct {
 	InitialQuantity int       `json:"initial_quantity"`
 	CurrentQuantity int       `json:"current_quantity"`
 	LastWatered     time.Time `json:"last_watered"`
+	LastFertilized  time.Time `json:"last_fertilized"`
+	LastPruned      time.Time `json:"last_pruned"`
+	LastPesticided  time.Time `json:"last_pesticided"`
 }
 
 type MovedArea struct {
@@ -146,7 +149,11 @@ type MovedArea struct {
 	CurrentQuantity int
 	CreatedDate     time.Time
 	LastUpdated     time.Time
-	LastWatered     time.Time
+
+	LastWatered    time.Time
+	LastFertilized time.Time
+	LastPruned     time.Time
+	LastPesticided time.Time
 }
 
 type HarvestedStorage struct {
@@ -253,6 +260,10 @@ func (state *Crop) Transition(event interface{}) {
 			CurrentQuantity: e.Quantity,
 		}
 		state.FarmUID = e.FarmUID
+	case CropBatchMoved:
+		state.UID = e.UID
+		state.InitialArea = e.InitialArea
+		state.MovedArea = e.MovedArea
 	}
 }
 
@@ -292,14 +303,12 @@ func CreateCropBatch(
 		Type:     containerType,
 	}
 
-	containerTypeStr := ""
 	containerCell := 0
 	switch v := containerType.(type) {
 	case Tray:
-		containerTypeStr = v.Code()
 		containerCell = v.Cell
 	case Pot:
-		containerTypeStr = v.Code()
+
 	}
 
 	createdDate := time.Now()
@@ -322,7 +331,7 @@ func CreateCropBatch(
 		Status:          GetCropStatus(CropActive),
 		Type:            ct,
 		Container:       cropContainer,
-		ContainerType:   containerTypeStr,
+		ContainerType:   containerType.Code(),
 		ContainerCell:   containerCell,
 		InventoryUID:    inv.UID,
 		VarietyName:     inv.Name,
@@ -423,6 +432,8 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	}
 
 	// Process //
+	movedDate := time.Now()
+
 	if c.InitialArea.AreaUID == srcArea.UID {
 		c.InitialArea.CurrentQuantity -= quantity
 	}
@@ -437,7 +448,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		for i, v := range c.MovedArea {
 			if v.AreaUID == dstArea.UID {
 				c.MovedArea[i].CurrentQuantity += quantity
-				c.MovedArea[i].LastUpdated = time.Now()
+				c.MovedArea[i].LastUpdated = movedDate
 			}
 		}
 	} else {
@@ -446,10 +457,24 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 			SourceAreaUID:   srcArea.UID,
 			InitialQuantity: quantity,
 			CurrentQuantity: quantity,
-			CreatedDate:     time.Now(),
-			LastUpdated:     time.Now(),
+			CreatedDate:     movedDate,
+			LastUpdated:     movedDate,
 		})
 	}
+
+	c.TrackChange(CropBatchMoved{
+		UID:           c.UID,
+		BatchID:       c.BatchID,
+		ContainerType: c.Container.Type.Code(),
+		Quantity:      quantity,
+		SrcAreaUID:    srcArea.UID,
+		SrcAreaName:   srcArea.Name,
+		DstAreaUID:    dstArea.UID,
+		DstAreaName:   dstArea.Name,
+		MovedDate:     movedDate,
+		InitialArea:   c.InitialArea,
+		MovedArea:     c.MovedArea,
+	})
 
 	return nil
 }
@@ -625,19 +650,19 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 }
 
 func (c *Crop) Fertilize() error {
-	c.LastFertilized = time.Now()
+	// c.LastFertilized = time.Now()
 
 	return nil
 }
 
 func (c *Crop) Prune() error {
-	c.LastPruned = time.Now()
+	// c.LastPruned = time.Now()
 
 	return nil
 }
 
 func (c *Crop) Pesticide() error {
-	c.LastPesticided = time.Now()
+	// c.LastPesticided = time.Now()
 
 	return nil
 }

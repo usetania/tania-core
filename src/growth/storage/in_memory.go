@@ -41,14 +41,26 @@ func CreateCropEventStorage() *CropEventStorage {
 
 type CropList struct {
 	UID          uuid.UUID
-	VarietyName  string
 	BatchID      string
+	Status       string
+	Type         string
+	Container    Container
 	InventoryUID uuid.UUID
-	InitialArea  InitialArea
-	MovedArea    []MovedArea
-	AreaStatus   AreaStatus
-	CreatedDate  time.Time
+	VarietyName  string
 	FarmUID      uuid.UUID
+	FarmName     string
+	CreatedDate  time.Time
+	Photos       []domain.CropPhoto
+	AreaStatus   AreaStatus
+
+	// Fields to track crop's movement
+	InitialArea      InitialArea
+	MovedArea        []MovedArea
+	HarvestedStorage []HarvestedStorage
+	Trash            []Trash
+
+	// Notes
+	Notes map[uuid.UUID]domain.CropNote
 }
 
 type InitialArea struct {
@@ -64,6 +76,23 @@ type MovedArea struct {
 	Name            string
 	CurrentQuantity Container
 	LastWatered     *time.Time
+}
+
+type HarvestedStorage struct {
+	Quantity             int
+	ProducedGramQuantity float32
+	SourceAreaUID        uuid.UUID
+	SourceAreaName       string
+	CreatedDate          time.Time
+	LastUpdated          time.Time
+}
+
+type Trash struct {
+	Quantity       int
+	SourceAreaUID  uuid.UUID
+	SourceAreaName string
+	CreatedDate    time.Time
+	LastUpdated    time.Time
 }
 
 type Container struct {
@@ -94,14 +123,20 @@ func CreateCropListStorage() *CropListStorage {
 }
 
 const (
-	SeedActivityCode = "SEED"
+	SeedActivityCode    = "SEED"
+	MoveActivityCode    = "MOVE"
+	HarvestActivityCode = "HARVEST"
+	DumpActivityCode    = "DUMP"
 )
 
 type CropActivity struct {
-	UID          uuid.UUID
-	ActivityType ActivityType
-	CreatedDate  time.Time
-	Description  string
+	UID           uuid.UUID
+	BatchID       string
+	VarietyName   string
+	ContainerType string
+	ActivityType  ActivityType
+	CreatedDate   time.Time
+	Description   string
 }
 
 type ActivityType interface {
@@ -109,20 +144,30 @@ type ActivityType interface {
 }
 
 type SeedActivity struct {
-	Quantity      int
-	ContainerType string
-	AreaUID       uuid.UUID
-	AreaName      string
-	BatchID       string
+	AreaUID  uuid.UUID
+	AreaName string
+	Quantity int
 }
 
 func (a SeedActivity) Code() string {
 	return SeedActivityCode
 }
 
+type MoveActivity struct {
+	SrcAreaUID  uuid.UUID
+	SrcAreaName string
+	DstAreaUID  uuid.UUID
+	DstAreaName string
+	Quantity    int
+}
+
+func (a MoveActivity) Code() string {
+	return MoveActivityCode
+}
+
 type CropActivityStorage struct {
 	Lock            *deadlock.RWMutex
-	CropActivityMap map[uuid.UUID]CropActivity
+	CropActivityMap []CropActivity
 }
 
 func CreateCropActivityStorage() *CropActivityStorage {
@@ -132,5 +177,5 @@ func CreateCropActivityStorage() *CropActivityStorage {
 		fmt.Println("CROP LIST STORAGE DEADLOCK!")
 	}
 
-	return &CropActivityStorage{CropActivityMap: make(map[uuid.UUID]CropActivity), Lock: &rwMutex}
+	return &CropActivityStorage{CropActivityMap: []CropActivity{}, Lock: &rwMutex}
 }

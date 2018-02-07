@@ -80,13 +80,25 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	switch e := event.(type) {
 	case domain.CropBatchCreated:
 		cropActivity.UID = e.UID
+		cropActivity.BatchID = e.BatchID
+		cropActivity.ContainerType = e.ContainerType
 		cropActivity.CreatedDate = e.CreatedDate
 		cropActivity.ActivityType = storage.SeedActivity{
-			Quantity:      e.Quantity,
-			ContainerType: e.ContainerType,
-			AreaUID:       e.InitialAreaUID,
-			AreaName:      e.InitialAreaName,
-			BatchID:       e.BatchID,
+			AreaUID:  e.InitialAreaUID,
+			AreaName: e.InitialAreaName,
+			Quantity: e.Quantity,
+		}
+	case domain.CropBatchMoved:
+		cropActivity.UID = e.UID
+		cropActivity.BatchID = e.BatchID
+		cropActivity.ContainerType = e.ContainerType
+		cropActivity.CreatedDate = e.MovedDate
+		cropActivity.ActivityType = storage.MoveActivity{
+			SrcAreaUID:  e.SrcAreaUID,
+			SrcAreaName: e.SrcAreaName,
+			DstAreaUID:  e.DstAreaUID,
+			DstAreaName: e.DstAreaName,
+			Quantity:    e.Quantity,
 		}
 	}
 
