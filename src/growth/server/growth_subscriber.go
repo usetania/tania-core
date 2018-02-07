@@ -186,6 +186,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		if cropRead.InitialArea.AreaUID == e.AreaUID {
 			cropRead.InitialArea.LastWatered = &e.WateringDate
 		}
+
+		for i, v := range cropRead.MovedArea {
+			if v.AreaUID == e.AreaUID {
+				cropRead.MovedArea[i].LastWatered = &e.WateringDate
+			}
+		}
 	}
 
 	err := <-s.CropReadRepo.Save(cropRead)
