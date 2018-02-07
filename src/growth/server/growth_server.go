@@ -28,7 +28,7 @@ type GrowthServer struct {
 	CropRepo          repository.CropRepository
 	CropEventRepo     repository.CropEventRepository
 	CropQuery         query.CropQuery
-	CropListRepo      repository.CropListRepository
+	CropReadRepo      repository.CropReadRepository
 	CropListQuery     query.CropListQuery
 	CropActivityRepo  repository.CropActivityRepository
 	CropActivityQuery query.CropActivityQuery
@@ -45,7 +45,7 @@ func NewGrowthServer(
 	bus EventBus.Bus,
 	cropStorage *storage.CropStorage,
 	cropEventStorage *storage.CropEventStorage,
-	cropListStorage *storage.CropListStorage,
+	cropReadStorage *storage.CropReadStorage,
 	cropActivityStorage *storage.CropActivityStorage,
 	areaStorage *assetsstorage.AreaStorage,
 	materialStorage *assetsstorage.MaterialStorage,
@@ -54,8 +54,8 @@ func NewGrowthServer(
 	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
 	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
-	cropListRepo := repository.NewCropListRepositoryInMemory(cropListStorage)
-	cropListQuery := inmemory.NewCropListQueryInMemory(cropListStorage)
+	cropListRepo := repository.NewCropReadRepositoryInMemory(cropReadStorage)
+	cropListQuery := inmemory.NewCropListQueryInMemory(cropReadStorage)
 	cropActivityRepo := repository.NewCropActivityRepositoryInMemory(cropActivityStorage)
 	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
 
@@ -73,7 +73,7 @@ func NewGrowthServer(
 		CropRepo:          cropRepo,
 		CropEventRepo:     cropEventRepo,
 		CropQuery:         cropQuery,
-		CropListRepo:      cropListRepo,
+		CropReadRepo:      cropListRepo,
 		CropListQuery:     cropListQuery,
 		CropActivityRepo:  cropActivityRepo,
 		CropActivityQuery: cropActivityQuery,
@@ -92,10 +92,10 @@ func NewGrowthServer(
 
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *GrowthServer) InitSubscriber() {
-	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropListReadModel)
+	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropActivityReadModel)
-	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropListReadModel)
+	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
@@ -215,7 +215,7 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(storage.CropList)
+	crop, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
@@ -224,7 +224,7 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
-	data := make(map[string]storage.CropList)
+	data := make(map[string]storage.CropRead)
 
 	data["data"] = crop
 
@@ -247,7 +247,7 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	cropList, ok := result.Result.(storage.CropList)
+	cropList, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -440,7 +440,7 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	cropList, ok := result.Result.(storage.CropList)
+	cropList, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -575,7 +575,7 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 
 // TODO: The crops should be found by its Farm
 func (s *GrowthServer) FindAllCrops(c echo.Context) error {
-	data := make(map[string][]storage.CropList)
+	data := make(map[string][]storage.CropRead)
 
 	// Params //
 	farmID := c.Param("id")
@@ -602,12 +602,12 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 		return Error(c, resultQuery.Error)
 	}
 
-	crops, ok := resultQuery.Result.([]storage.CropList)
+	crops, ok := resultQuery.Result.([]storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = []storage.CropList{}
+	data["data"] = []storage.CropRead{}
 	for _, v := range crops {
 		data["data"] = append(data["data"], v)
 	}
@@ -753,7 +753,7 @@ func (s *GrowthServer) GetCropActivities(c echo.Context) error {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(storage.CropList)
+	crop, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}

@@ -77,8 +77,8 @@ func (q CropQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Que
 						AreaUID: val.InitialArea.AreaUID,
 						Name:    "",
 					},
-					MovingDate:  val.CreatedDate,
-					CreatedDate: val.CreatedDate,
+					MovingDate:  val.InitialArea.CreatedDate,
+					CreatedDate: val.InitialArea.CreatedDate,
 					Inventory: query.Inventory{
 						UID: val.InventoryUID,
 					},
@@ -111,8 +111,8 @@ func (q CropQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Que
 						InitialArea: query.InitialArea{
 							AreaUID: v.SourceAreaUID,
 						},
-						MovingDate:  val.CreatedDate,
-						CreatedDate: val.CreatedDate,
+						MovingDate:  val.InitialArea.CreatedDate,
+						CreatedDate: val.InitialArea.CreatedDate,
 						Inventory: query.Inventory{
 							UID: val.InventoryUID,
 						},

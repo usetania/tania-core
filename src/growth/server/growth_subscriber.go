@@ -8,28 +8,30 @@ import (
 	"github.com/labstack/echo"
 )
 
-func (s *GrowthServer) SaveToCropListReadModel(event interface{}) error {
-	cropList := &storage.CropList{}
+func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
+	cropRead := &storage.CropRead{}
 
 	switch e := event.(type) {
 	case domain.CropBatchCreated:
-		cropList.UID = e.UID
-		cropList.BatchID = e.BatchID
-		cropList.VarietyName = e.VarietyName
-		cropList.InventoryUID = e.InventoryUID
-		cropList.InitialArea = storage.InitialArea{
-			AreaUID: e.InitialAreaUID,
-			Name:    e.InitialAreaName,
-			InitialQuantity: storage.Container{
-				Type:     e.ContainerType,
-				Quantity: e.Quantity,
-				Cell:     e.ContainerCell,
-			},
-			CurrentQuantity: storage.Container{
-				Type:     e.ContainerType,
-				Quantity: e.Quantity,
-				Cell:     e.ContainerCell,
-			},
+		cropRead.UID = e.UID
+		cropRead.BatchID = e.BatchID
+		cropRead.Status = e.Status.Code
+		cropRead.Type = e.Type.Code
+		cropRead.Container = storage.Container{
+			Type:     e.ContainerType,
+			Cell:     e.ContainerCell,
+			Quantity: e.Quantity,
+		}
+		cropRead.Inventory = storage.Inventory{
+			UID:       e.InventoryUID,
+			Name:      e.VarietyName,
+			PlantType: e.PlantType,
+		}
+		cropRead.InitialArea = storage.InitialArea{
+			AreaUID:         e.InitialAreaUID,
+			Name:            e.InitialAreaName,
+			InitialQuantity: e.Quantity,
+			CurrentQuantity: e.Quantity,
 		}
 
 		seeding := 0
@@ -40,13 +42,12 @@ func (s *GrowthServer) SaveToCropListReadModel(event interface{}) error {
 			growing += e.Quantity
 		}
 
-		cropList.AreaStatus = storage.AreaStatus{
+		cropRead.AreaStatus = storage.AreaStatus{
 			Seeding: seeding,
 			Growing: growing,
 		}
 
-		cropList.CreatedDate = e.CreatedDate
-		cropList.FarmUID = e.FarmUID
+		cropRead.FarmUID = e.FarmUID
 
 	case domain.CropBatchWatered:
 		queryResult := <-s.CropListQuery.FindByID(e.UID)
@@ -54,19 +55,19 @@ func (s *GrowthServer) SaveToCropListReadModel(event interface{}) error {
 			return queryResult.Error
 		}
 
-		cl, ok := queryResult.Result.(storage.CropList)
+		cl, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		cropList = &cl
+		cropRead = &cl
 
-		if cropList.InitialArea.AreaUID == e.AreaUID {
-			cropList.InitialArea.LastWatered = &e.WateringDate
+		if cropRead.InitialArea.AreaUID == e.AreaUID {
+			cropRead.InitialArea.LastWatered = &e.WateringDate
 		}
 	}
 
-	err := <-s.CropListRepo.Save(cropList)
+	err := <-s.CropReadRepo.Save(cropRead)
 	if err != nil {
 		return err
 	}

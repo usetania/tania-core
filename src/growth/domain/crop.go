@@ -17,7 +17,6 @@ type Crop struct {
 	Container    CropContainer
 	InventoryUID uuid.UUID
 	FarmUID      uuid.UUID
-	CreatedDate  time.Time
 	Photo        CropPhoto
 
 	// Fields to track crop's movement
@@ -136,10 +135,13 @@ type InitialArea struct {
 	AreaUID         uuid.UUID `json:"area_id"`
 	InitialQuantity int       `json:"initial_quantity"`
 	CurrentQuantity int       `json:"current_quantity"`
-	LastWatered     time.Time `json:"last_watered"`
-	LastFertilized  time.Time `json:"last_fertilized"`
-	LastPruned      time.Time `json:"last_pruned"`
-	LastPesticided  time.Time `json:"last_pesticided"`
+	CreatedDate     time.Time `json:"created_date"`
+	LastUpdated     time.Time `json:"last_updated"`
+
+	LastWatered    time.Time `json:"last_watered"`
+	LastFertilized time.Time `json:"last_fertilized"`
+	LastPruned     time.Time `json:"last_pruned"`
+	LastPesticided time.Time `json:"last_pesticided"`
 }
 
 type MovedArea struct {
@@ -253,14 +255,19 @@ func (state *Crop) Transition(event interface{}) {
 		state.Type = e.Type
 		state.Container = e.Container
 		state.InventoryUID = e.InventoryUID
-		state.CreatedDate = e.CreatedDate
 		state.InitialArea = InitialArea{
 			AreaUID:         e.InitialAreaUID,
 			InitialQuantity: e.Quantity,
 			CurrentQuantity: e.Quantity,
+			CreatedDate:     e.CreatedDate,
+			LastUpdated:     e.CreatedDate,
 		}
 		state.FarmUID = e.FarmUID
 	case CropBatchMoved:
+		state.UID = e.UID
+		state.InitialArea = e.InitialArea
+		state.MovedArea = e.MovedArea
+	case CropBatchWatered:
 		state.UID = e.UID
 		state.InitialArea = e.InitialArea
 		state.MovedArea = e.MovedArea
@@ -335,6 +342,7 @@ func CreateCropBatch(
 		ContainerCell:   containerCell,
 		InventoryUID:    inv.UID,
 		VarietyName:     inv.Name,
+		PlantType:       inv.MaterialSeedPlantTypeCode,
 		CreatedDate:     createdDate,
 		InitialAreaUID:  area.UID,
 		InitialAreaName: area.Name,
@@ -751,7 +759,7 @@ func (c *Crop) ChangeInventory(cropService CropService, inventoryUID uuid.UUID) 
 
 	inventory := serviceResult.Result.(query.CropMaterialQueryResult)
 
-	batchID, err := generateBatchID(cropService, inventory, c.CreatedDate)
+	batchID, err := generateBatchID(cropService, inventory, c.InitialArea.CreatedDate)
 	if err != nil {
 		return err
 	}
@@ -812,7 +820,7 @@ func (c *Crop) RemoveNote(uid uuid.UUID) error {
 func (c Crop) CalculateDaysSinceSeeding() int {
 	now := time.Now()
 
-	diff := now.Sub(c.CreatedDate)
+	diff := now.Sub(c.InitialArea.CreatedDate)
 
 	days := int(diff.Hours()) / 24
 

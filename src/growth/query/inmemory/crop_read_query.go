@@ -6,23 +6,23 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type CropListQueryInMemory struct {
-	Storage *storage.CropListStorage
+type CropReadQueryInMemory struct {
+	Storage *storage.CropReadStorage
 }
 
-func NewCropListQueryInMemory(s *storage.CropListStorage) query.CropListQuery {
-	return CropListQueryInMemory{Storage: s}
+func NewCropListQueryInMemory(s *storage.CropReadStorage) query.CropListQuery {
+	return CropReadQueryInMemory{Storage: s}
 }
 
-func (s CropListQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		crop := storage.CropList{}
-		for _, val := range s.Storage.CropListMap {
+		crop := storage.CropRead{}
+		for _, val := range s.Storage.CropReadMap {
 			if val.UID == uid {
 				crop = val
 			}
@@ -36,15 +36,15 @@ func (s CropListQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 	return result
 }
 
-func (s CropListQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		crop := storage.CropList{}
-		for _, val := range s.Storage.CropListMap {
+		crop := storage.CropRead{}
+		for _, val := range s.Storage.CropReadMap {
 			if val.BatchID == batchID {
 				crop = val
 			}
@@ -58,15 +58,15 @@ func (s CropListQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryR
 	return result
 }
 
-func (s CropListQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		cropList := []storage.CropList{}
-		for _, val := range s.Storage.CropListMap {
+		cropList := []storage.CropRead{}
+		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 				cropList = append(cropList, val)
 			}
@@ -80,15 +80,15 @@ func (s CropListQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan quer
 	return result
 }
 
-func (s CropListQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		crops := []storage.CropList{}
-		for _, val := range s.Storage.CropListMap {
+		crops := []storage.CropRead{}
+		for _, val := range s.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
 				crops = append(crops, val)
 			}

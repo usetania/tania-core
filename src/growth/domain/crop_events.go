@@ -16,6 +16,7 @@ type CropBatchCreated struct {
 	ContainerCell   int
 	InventoryUID    uuid.UUID
 	VarietyName     string
+	PlantType       string
 	FarmUID         uuid.UUID
 	CreatedDate     time.Time
 	InitialAreaUID  uuid.UUID
@@ -43,4 +44,7 @@ type CropBatchWatered struct {
 	AreaUID      uuid.UUID
 	AreaName     string
 	WateringDate time.Time
+
+	InitialArea InitialArea
+	MovedArea   []MovedArea
 }

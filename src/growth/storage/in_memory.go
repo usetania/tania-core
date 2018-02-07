@@ -39,19 +39,16 @@ func CreateCropEventStorage() *CropEventStorage {
 	return &CropEventStorage{CropEventMap: make(map[uuid.UUID]interface{}), Lock: &rwMutex}
 }
 
-type CropList struct {
-	UID          uuid.UUID
-	BatchID      string
-	Status       string
-	Type         string
-	Container    Container
-	InventoryUID uuid.UUID
-	VarietyName  string
-	FarmUID      uuid.UUID
-	FarmName     string
-	CreatedDate  time.Time
-	Photos       []domain.CropPhoto
-	AreaStatus   AreaStatus
+type CropRead struct {
+	UID        uuid.UUID  `json:"uid"`
+	BatchID    string     `json:"batch_id"`
+	Status     string     `json:"status"`
+	Type       string     `json:"type"`
+	Container  Container  `json:"container"`
+	Inventory  Inventory  `json:"inventory"`
+	AreaStatus AreaStatus `json:"area_status"`
+	Photos     []domain.CropPhoto
+	FarmUID    uuid.UUID
 
 	// Fields to track crop's movement
 	InitialArea      InitialArea
@@ -66,16 +63,22 @@ type CropList struct {
 type InitialArea struct {
 	AreaUID         uuid.UUID
 	Name            string
-	InitialQuantity Container
-	CurrentQuantity Container
-	LastWatered     *time.Time
+	InitialQuantity int
+	CurrentQuantity int
+	LastWatered     *time.Time `json:"last_watered"`
+	LastFertilized  *time.Time `json:"last_fertilized"`
+	LastPruned      *time.Time `json:"last_pruned"`
+	LastPesticided  *time.Time `json:"last_pesticided"`
 }
 
 type MovedArea struct {
 	AreaUID         uuid.UUID
 	Name            string
-	CurrentQuantity Container
+	CurrentQuantity int
 	LastWatered     *time.Time
+	LastFertilized  *time.Time `json:"last_fertilized"`
+	LastPruned      *time.Time `json:"last_pruned"`
+	LastPesticided  *time.Time `json:"last_pesticided"`
 }
 
 type HarvestedStorage struct {
@@ -107,19 +110,25 @@ type AreaStatus struct {
 	Dumped  int
 }
 
-type CropListStorage struct {
-	Lock        *deadlock.RWMutex
-	CropListMap map[uuid.UUID]CropList
+type Inventory struct {
+	UID       uuid.UUID `json:"uid"`
+	PlantType string    `json:"plant_type"`
+	Name      string    `json:"name"`
 }
 
-func CreateCropListStorage() *CropListStorage {
+type CropReadStorage struct {
+	Lock        *deadlock.RWMutex
+	CropReadMap map[uuid.UUID]CropRead
+}
+
+func CreateCropReadStorage() *CropReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("CROP LIST STORAGE DEADLOCK!")
+		fmt.Println("CROP READ STORAGE DEADLOCK!")
 	}
 
-	return &CropListStorage{CropListMap: make(map[uuid.UUID]CropList), Lock: &rwMutex}
+	return &CropReadStorage{CropReadMap: make(map[uuid.UUID]CropRead), Lock: &rwMutex}
 }
 
 const (

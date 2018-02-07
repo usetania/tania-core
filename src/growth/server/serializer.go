@@ -52,6 +52,8 @@ type InitialArea struct {
 	Area            query.CropAreaQueryResult `json:"area"`
 	InitialQuantity int                       `json:"initial_quantity"`
 	CurrentQuantity int                       `json:"current_quantity"`
+	CreatedDate     time.Time                 `json:"created_date"`
+	LastUpdated     time.Time                 `json:"last_updated"`
 	LastWatered     *time.Time                `json:"last_watered"`
 }
 
@@ -261,7 +263,7 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		MaterialSeedPlantTypeCode: cropInventory.MaterialSeedPlantTypeCode,
 		Name: cropInventory.Name,
 	}
-	cropBatch.CreatedDate = crop.CreatedDate
+
 	cropBatch.DaysSinceSeeding = crop.CalculateDaysSinceSeeding()
 
 	var lastWatered *time.Time
@@ -274,6 +276,8 @@ func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 		InitialQuantity: crop.InitialArea.InitialQuantity,
 		CurrentQuantity: crop.InitialArea.CurrentQuantity,
 		LastWatered:     lastWatered,
+		CreatedDate:     crop.InitialArea.CreatedDate,
+		LastUpdated:     crop.InitialArea.LastUpdated,
 	}
 
 	cropBatch.MovedArea = movedAreas
