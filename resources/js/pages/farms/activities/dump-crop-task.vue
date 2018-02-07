@@ -7,20 +7,21 @@
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
-          label(for="type")
-            | Choose area where you want to dump 
-            span.identifier-sm {{ crop.batch_id }}
-          select.form-control#dest_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.dest_area_id" name="dest_area_id")
-            option(value="") Please select area
-            option(v-for="area in areas" :value="area.uid") {{ area.name }}
-          span.help-block.text-danger(v-show="errors.has('dest_area_id')") {{ errors.first('dest_area_id') }}
-        .form-group
           label(for="quantity")
-            | How many of 
-            span.identifier-sm {{ crop.batch_id }}
-            |  do you want to dump?
+            | How many plants you want to dump?
           input.form-control#quantity(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
+        .form-group
+          label(for="type")
+            | Choose area
+          select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.source_area_id" name="source_area_id")
+            option(value="") Please select area
+            option(v-for="area in areas" :value="area.uid") {{ area.name }}
+          span.help-block.text-danger(v-show="errors.has('source_area_id')") {{ errors.first('source_area_id') }}
+        .form-group
+          label(for="notes") Notes
+          textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
+          span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
         .form-group
           .text-center.m-t
             button.btn.btn-primary(type="submit")
@@ -53,6 +54,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchAreas',
+      'dumpCrop',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -62,6 +64,10 @@ export default {
       })
     },
     create () {
+      this.task.obj_uid = this.crop.uid
+      this.dumpCrop(this.task)
+        .then(this.$parent.$emit('close'))
+        .catch(({ data }) => this.message = data)
     },
   }
 }
