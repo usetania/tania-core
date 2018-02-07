@@ -75,6 +75,17 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  moveCrop ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiMoveCrop(cropId, payload, ({ data }) => {
+          payload = data.data
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {

@@ -5,7 +5,7 @@ export default {
   priority: '',
   type: '',
   source_area_id: '',
-  dest_area_id: '',
+  destination_area_id: '',
   quantity: '',
   type: '',
   units: '',

@@ -9,14 +9,14 @@
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label(for="dest_area_id") Select area to move this crop
-          select.form-control#dest_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('dest_area_id') }" v-model="task.dest_area_id" name="dest_area_id")
+          select.form-control#destination_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('destination_area_id') }" v-model="task.destination_area_id" name="destination_area_id")
             option(value="") Please select area
             option(v-for="area in areas" :value="area.uid") {{ area.name }}
-          span.help-block.text-danger(v-show="errors.has('dest_area_id')") {{ errors.first('dest_area_id') }}
+          span.help-block.text-danger(v-show="errors.has('destination_area_id')") {{ errors.first('destination_area_id') }}
         .form-group
           label(for="quantity")
             | How many plants do you want to move?
-          input.form-control#quantity(type="text" v-validate="'required|alpha_num_space|min:1'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
+          input.form-control#quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
           button.btn.btn-primary.pull-right(type="submit")
@@ -47,11 +47,10 @@ export default {
   mounted () {
     this.fetchAreas()
   },
-  created () {
-  },
   methods: {
     ...mapActions([
       'fetchAreas',
+      'moveCrop',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -61,6 +60,15 @@ export default {
       })
     },
     create () {
+      if (this.crop.moved_area.length > 0) {
+        this.task.source_area_id = this.crop.moved_area[this.crop.moved_area.length - 1].area.uid;
+      } else {
+        this.task.source_area_id = this.crop.initial_area.area.uid;
+      }
+      this.task.obj_uid = this.crop.uid
+      this.moveCrop(this.task)
+        .then(this.$parent.$emit('close'))
+        .catch(({ data }) => this.message = data)
     },
   }
 }
