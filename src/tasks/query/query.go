@@ -15,11 +15,12 @@ type CropQuery interface {
 	FindCropByID(cropUID uuid.UUID) <-chan QueryResult
 }
 
+type MaterialQuery interface {
+	FindMaterialByID(materialID uuid.UUID) <-chan QueryResult
+}
+
 /*
 TODO
-type InventoryQuery interface {
-	FindInventoryByID(inventoryUID uuid.UUID) <-chan QueryResult
-}
 
 type ReservoirQuery interface {
 	FindReservoiryByID(reservoirUID uuid.UUID) <-chan QueryResult
@@ -57,4 +58,9 @@ type TaskCropQueryResult struct {
 	} `json:"container"`
 	InventoryUID uuid.UUID `json:"inventory_uid"`
 	FarmUID      uuid.UUID `json:"farm_uid"`
+}
+
+type TaskMaterialQueryResult struct {
+	UID  uuid.UUID `json:"uid"`
+	Name string    `json:"name"`
 }

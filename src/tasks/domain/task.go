@@ -8,6 +8,7 @@ import (
 type TaskService interface {
 	FindAreaByID(uid uuid.UUID) ServiceResult
 	FindCropByID(uid uuid.UUID) ServiceResult
+	FindMaterialByID(uid uuid.UUID) ServiceResult
 }
 
 // ServiceResult is the container for service result
@@ -25,14 +26,14 @@ type Task struct {
 	CompletedDate *time.Time `json:"completed_date"`
 	Priority      string     `json:"priority"`
 	Status        string     `json:"status"`
-	Domain        string     `json:"domain"`
+	Domain        TaskDomain `json:"domain"`
 	Category      string     `json:"category"`
 	IsDue         bool       `json:"is_due"`
 	AssetID       *uuid.UUID `json:"asset_id"`
 }
 
 // CreateTask
-func CreateTask(taskservice TaskService, title string, description string, duedate *time.Time, priority string, taskdomain string, taskcategory string, assetid *uuid.UUID) (Task, error) {
+func CreateTask(taskservice TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (Task, error) {
 	// add validation
 
 	err := validateTaskTitle(title)
@@ -50,17 +51,12 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 		return Task{}, err
 	}
 
-	err = validateTaskDomain(taskdomain)
-	if err != nil {
-		return Task{}, err
-	}
-
 	err = validateTaskCategory(taskcategory)
 	if err != nil {
 		return Task{}, err
 	}
 
-	err = validateAssetID(taskservice, assetid, taskdomain)
+	err = validateAssetID(taskservice, assetid, taskdomain.Code())
 	if err != nil {
 		return Task{}, err
 	}
@@ -197,21 +193,6 @@ func validateTaskStatus(status string) error {
 	return nil
 }
 
-// validateTaskDomain
-func validateTaskDomain(domain string) error {
-
-	if domain == "" {
-		return TaskError{TaskErrorDomainEmptyCode}
-	}
-
-	_, err := FindTaskDomainByCode(domain)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // validateTaskCategory
 func validateTaskCategory(taskcategory string) error {
 
@@ -238,20 +219,28 @@ func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain str
 		// if not found return error
 
 		switch taskdomain {
-		case TaskDomainArea:
+		case TaskDomainAreaCode:
 			serviceResult := taskService.FindAreaByID(*assetid)
 
 			if serviceResult.Error != nil {
 				return serviceResult.Error
 			}
-		case TaskDomainCrop:
+		case TaskDomainCropCode:
 
 			serviceResult := taskService.FindCropByID(*assetid)
 
 			if serviceResult.Error != nil {
 				return serviceResult.Error
 			}
+		case TaskDomainInventoryCode:
+
+			serviceResult := taskService.FindMaterialByID(*assetid)
+
+			if serviceResult.Error != nil {
+				return serviceResult.Error
+			}
 		default:
+			return TaskError{TaskErrorInvalidDomainCode}
 		}
 	}
 	return nil

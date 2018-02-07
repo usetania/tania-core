@@ -23,17 +23,20 @@ type TaskServer struct {
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
 func NewTaskServer(
 	cropStorage *cropstorage.CropStorage,
-	areaStorage *assetsstorage.AreaStorage) (*TaskServer, error) {
+	areaStorage *assetsstorage.AreaStorage,
+	materialStorage *assetsstorage.MaterialStorage) (*TaskServer, error) {
 
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
 	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
 
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
+	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
 
 	taskService := service.TaskServiceInMemory{
-		CropQuery: cropQuery,
-		AreaQuery: areaQuery,
+		CropQuery:     cropQuery,
+		AreaQuery:     areaQuery,
+		MaterialQuery: materialQuery,
 	}
 	return &TaskServer{
 		TaskRepo:    taskRepo,
@@ -75,6 +78,7 @@ func (s TaskServer) FindAllTask(c echo.Context) error {
 
 // SaveTask is a TaskServer's handler to save new Task
 func (s *TaskServer) SaveTask(c echo.Context) error {
+
 	data := make(map[string]domain.Task)
 
 	form_date := c.FormValue("due_date")
@@ -98,13 +102,19 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		asset_id_ptr = &asset_id
 	}
 
+	domaintask, err := s.CreateTaskDomainByCode(c)
+
+	if err != nil {
+		return Error(c, err)
+	}
+
 	task, err := domain.CreateTask(
 		s.TaskService,
 		c.FormValue("title"),
 		c.FormValue("description"),
 		due_ptr,
 		c.FormValue("priority"),
-		c.FormValue("domain"),
+		domaintask,
 		c.FormValue("category"),
 		asset_id_ptr)
 
@@ -120,6 +130,35 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	data["data"] = task
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) CreateTaskDomainByCode(c echo.Context) (domain.TaskDomain, error) {
+	domainvalue := c.FormValue("domain")
+	if domainvalue == "" {
+		return nil, NewRequestValidationError(REQUIRED, "domain")
+	}
+
+	switch domainvalue {
+	case domain.TaskDomainAreaCode:
+		return domain.CreateTaskDomainArea()
+	case domain.TaskDomainCropCode:
+
+		uid, err := uuid.FromString(c.FormValue("inventory_id"))
+		if err != nil {
+			return nil, Error(c, err)
+		}
+		return domain.CreateTaskDomainCrop(s.TaskService, uid)
+	case domain.TaskDomainFinanceCode:
+		return domain.CreateTaskDomainFinance()
+	case domain.TaskDomainGeneralCode:
+		return domain.CreateTaskDomainGeneral()
+	case domain.TaskDomainInventoryCode:
+		return domain.CreateTaskDomainInventory()
+	case domain.TaskDomainReservoirCode:
+		return domain.CreateTaskDomainReservoir()
+	default:
+		return nil, NewRequestValidationError(INVALID_OPTION, "domain")
+	}
 }
 
 func (s *TaskServer) FindTaskByID(c echo.Context) error {

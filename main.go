@@ -50,7 +50,8 @@ func main() {
 
 	taskServer, err := taskserver.NewTaskServer(
 		cropStorage,
-		areaStorage)
+		areaStorage,
+		materialStorage)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
