@@ -476,8 +476,10 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		Quantity:      quantity,
 		SrcAreaUID:    srcArea.UID,
 		SrcAreaName:   srcArea.Name,
+		SrcAreaType:   srcArea.Type,
 		DstAreaUID:    dstArea.UID,
 		DstAreaName:   dstArea.Name,
+		DstAreaType:   dstArea.Type,
 		MovedDate:     time.Now(),
 	})
 
@@ -692,10 +694,12 @@ func (c *Crop) Water(cropService CropService, sourceAreaUID uuid.UUID, wateringD
 	}
 
 	c.TrackChange(CropBatchWatered{
-		UID:          c.UID,
-		AreaUID:      srcArea.UID,
-		AreaName:     srcArea.Name,
-		WateringDate: wateringDate,
+		UID:           c.UID,
+		BatchID:       c.BatchID,
+		ContainerType: c.Container.Type.Code(),
+		AreaUID:       srcArea.UID,
+		AreaName:      srcArea.Name,
+		WateringDate:  wateringDate,
 	})
 
 	return nil

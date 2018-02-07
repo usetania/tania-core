@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/storage"
@@ -49,6 +50,66 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead.FarmUID = e.FarmUID
 
+	case domain.CropBatchMoved:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
+			cropRead.InitialArea.CurrentQuantity -= e.Quantity
+		}
+
+		for i, v := range cropRead.MovedArea {
+			if v.AreaUID == e.SrcAreaUID {
+				cropRead.MovedArea[i].CurrentQuantity -= e.Quantity
+			}
+		}
+
+		isDstExist := false
+		for _, v := range cropRead.MovedArea {
+			if v.AreaUID == e.DstAreaUID {
+				isDstExist = true
+			}
+		}
+
+		if isDstExist {
+			for i, v := range cropRead.MovedArea {
+				if v.AreaUID == e.DstAreaUID {
+					cropRead.MovedArea[i].CurrentQuantity += e.Quantity
+					cropRead.MovedArea[i].LastUpdated = e.MovedDate
+				}
+			}
+		} else {
+			cropRead.MovedArea = append(cropRead.MovedArea, storage.MovedArea{
+				AreaUID:         e.DstAreaUID,
+				InitialQuantity: e.Quantity,
+				CurrentQuantity: e.Quantity,
+				CreatedDate:     e.MovedDate,
+				LastUpdated:     e.MovedDate,
+			})
+		}
+
+		if e.DstAreaType == "SEEDING" {
+			cropRead.AreaStatus.Seeding += e.Quantity
+		}
+		if e.DstAreaType == "GROWING" {
+			cropRead.AreaStatus.Growing += e.Quantity
+		}
+		if e.SrcAreaType == "SEEDING" {
+			cropRead.AreaStatus.Seeding -= e.Quantity
+		}
+		if e.SrcAreaType == "GROWING" {
+			cropRead.AreaStatus.Growing -= e.Quantity
+		}
+
 	case domain.CropBatchWatered:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
@@ -83,23 +144,35 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 		cropActivity.UID = e.UID
 		cropActivity.BatchID = e.BatchID
 		cropActivity.ContainerType = e.ContainerType
-		cropActivity.CreatedDate = e.CreatedDate
+		cropActivity.CreatedDate = time.Now()
 		cropActivity.ActivityType = storage.SeedActivity{
-			AreaUID:  e.InitialAreaUID,
-			AreaName: e.InitialAreaName,
-			Quantity: e.Quantity,
+			AreaUID:     e.InitialAreaUID,
+			AreaName:    e.InitialAreaName,
+			Quantity:    e.Quantity,
+			SeedingDate: e.CreatedDate,
 		}
 	case domain.CropBatchMoved:
 		cropActivity.UID = e.UID
 		cropActivity.BatchID = e.BatchID
 		cropActivity.ContainerType = e.ContainerType
-		cropActivity.CreatedDate = e.MovedDate
+		cropActivity.CreatedDate = time.Now()
 		cropActivity.ActivityType = storage.MoveActivity{
 			SrcAreaUID:  e.SrcAreaUID,
 			SrcAreaName: e.SrcAreaName,
 			DstAreaUID:  e.DstAreaUID,
 			DstAreaName: e.DstAreaName,
 			Quantity:    e.Quantity,
+			MovedDate:   e.MovedDate,
+		}
+	case domain.CropBatchWatered:
+		cropActivity.UID = e.UID
+		cropActivity.BatchID = e.BatchID
+		cropActivity.ContainerType = e.ContainerType
+		cropActivity.CreatedDate = time.Now()
+		cropActivity.ActivityType = storage.WaterActivity{
+			AreaUID:      e.AreaUID,
+			AreaName:     e.AreaName,
+			WateringDate: e.WateringDate,
 		}
 	}
 

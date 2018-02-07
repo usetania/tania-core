@@ -46,74 +46,79 @@ func CreateCropEventStorage() *CropEventStorage {
 }
 
 type CropRead struct {
-	UID        uuid.UUID  `json:"uid"`
-	BatchID    string     `json:"batch_id"`
-	Status     string     `json:"status"`
-	Type       string     `json:"type"`
-	Container  Container  `json:"container"`
-	Inventory  Inventory  `json:"inventory"`
-	AreaStatus AreaStatus `json:"area_status"`
-	Photos     []domain.CropPhoto
-	FarmUID    uuid.UUID
+	UID        uuid.UUID          `json:"uid"`
+	BatchID    string             `json:"batch_id"`
+	Status     string             `json:"status"`
+	Type       string             `json:"type"`
+	Container  Container          `json:"container"`
+	Inventory  Inventory          `json:"inventory"`
+	AreaStatus AreaStatus         `json:"area_status"`
+	Photos     []domain.CropPhoto `json:"photos"`
+	FarmUID    uuid.UUID          `json:"farm_id"`
 
 	// Fields to track crop's movement
-	InitialArea      InitialArea
-	MovedArea        []MovedArea
-	HarvestedStorage []HarvestedStorage
-	Trash            []Trash
+	InitialArea      InitialArea        `json:"initial_area"`
+	MovedArea        []MovedArea        `json:"moved_area"`
+	HarvestedStorage []HarvestedStorage `json:"harvested_storage"`
+	Trash            []Trash            `json:"trash"`
 
 	// Notes
-	Notes map[uuid.UUID]domain.CropNote
+	Notes map[uuid.UUID]domain.CropNote `json:"notes"`
 }
 
 type InitialArea struct {
-	AreaUID         uuid.UUID
-	Name            string
-	InitialQuantity int
-	CurrentQuantity int
+	AreaUID         uuid.UUID  `json:"area_id"`
+	Name            string     `json:"name"`
+	InitialQuantity int        `json:"initial_quantity"`
+	CurrentQuantity int        `json:"current_quantity"`
 	LastWatered     *time.Time `json:"last_watered"`
 	LastFertilized  *time.Time `json:"last_fertilized"`
 	LastPruned      *time.Time `json:"last_pruned"`
 	LastPesticided  *time.Time `json:"last_pesticided"`
+	CreatedDate     time.Time  `json:"created_date"`
+	LastUpdated     time.Time  `json:"last_updated"`
 }
 
 type MovedArea struct {
-	AreaUID         uuid.UUID
-	Name            string
-	CurrentQuantity int
-	LastWatered     *time.Time
+	AreaUID         uuid.UUID  `json:"area_id"`
+	Name            string     `json:"name"`
+	InitialQuantity int        `json:"initial_quantity"`
+	CurrentQuantity int        `json:"current_quantity"`
+	LastWatered     *time.Time `json:"last_watered"`
 	LastFertilized  *time.Time `json:"last_fertilized"`
 	LastPruned      *time.Time `json:"last_pruned"`
 	LastPesticided  *time.Time `json:"last_pesticided"`
+	CreatedDate     time.Time  `json:"created_date"`
+	LastUpdated     time.Time  `json:"last_updated"`
 }
 
 type HarvestedStorage struct {
-	Quantity             int
-	ProducedGramQuantity float32
-	SourceAreaUID        uuid.UUID
-	SourceAreaName       string
-	CreatedDate          time.Time
-	LastUpdated          time.Time
+	Quantity             int       `json:"quantity"`
+	ProducedGramQuantity float32   `json:"produced_gram_quantity"`
+	SourceAreaUID        uuid.UUID `json:"source_area_id"`
+	SourceAreaName       string    `json:"source_area_name"`
+	CreatedDate          time.Time `json:"created_date"`
+	LastUpdated          time.Time `json:"last_updated"`
 }
 
 type Trash struct {
-	Quantity       int
-	SourceAreaUID  uuid.UUID
-	SourceAreaName string
-	CreatedDate    time.Time
-	LastUpdated    time.Time
+	Quantity       int       `json:"quantity"`
+	SourceAreaUID  uuid.UUID `json:"source_area_id"`
+	SourceAreaName string    `json:"source_area_name"`
+	CreatedDate    time.Time `json:"created_date"`
+	LastUpdated    time.Time `json:"last_updated"`
 }
 
 type Container struct {
-	Type     string
-	Quantity int
-	Cell     int
+	Type     string `json:"type"`
+	Quantity int    `json:"quantity"`
+	Cell     int    `json:"cell"`
 }
 
 type AreaStatus struct {
-	Seeding int
-	Growing int
-	Dumped  int
+	Seeding int `json:"seeding"`
+	Growing int `json:"growing"`
+	Dumped  int `json:"dumped"`
 }
 
 type Inventory struct {
@@ -138,20 +143,18 @@ func CreateCropReadStorage() *CropReadStorage {
 }
 
 const (
-	SeedActivityCode    = "SEED"
-	MoveActivityCode    = "MOVE"
-	HarvestActivityCode = "HARVEST"
-	DumpActivityCode    = "DUMP"
+	SeedActivityCode  = "SEED"
+	MoveActivityCode  = "MOVE"
+	WaterActivityCode = "WATER"
 )
 
 type CropActivity struct {
-	UID           uuid.UUID
-	BatchID       string
-	VarietyName   string
-	ContainerType string
-	ActivityType  ActivityType
-	CreatedDate   time.Time
-	Description   string
+	UID           uuid.UUID    `json:"uid"`
+	BatchID       string       `json:"batch_id"`
+	ContainerType string       `json:"container_type"`
+	ActivityType  ActivityType `json:"activity_type"`
+	CreatedDate   time.Time    `json:"created_date"`
+	Description   string       `json:"description"`
 }
 
 type ActivityType interface {
@@ -159,9 +162,10 @@ type ActivityType interface {
 }
 
 type SeedActivity struct {
-	AreaUID  uuid.UUID
-	AreaName string
-	Quantity int
+	AreaUID     uuid.UUID `json:"area_id"`
+	AreaName    string    `json:"area_name"`
+	Quantity    int       `json:"quantity"`
+	SeedingDate time.Time `json:"seeding_date"`
 }
 
 func (a SeedActivity) Code() string {
@@ -169,15 +173,26 @@ func (a SeedActivity) Code() string {
 }
 
 type MoveActivity struct {
-	SrcAreaUID  uuid.UUID
-	SrcAreaName string
-	DstAreaUID  uuid.UUID
-	DstAreaName string
-	Quantity    int
+	SrcAreaUID  uuid.UUID `json:"source_area_id"`
+	SrcAreaName string    `json:"source_area_name"`
+	DstAreaUID  uuid.UUID `json:"destination_area_id"`
+	DstAreaName string    `json:"destination_area_name"`
+	Quantity    int       `json:"quantity"`
+	MovedDate   time.Time `json:"moved_date"`
 }
 
 func (a MoveActivity) Code() string {
 	return MoveActivityCode
+}
+
+type WaterActivity struct {
+	AreaUID      uuid.UUID `json:"area_id"`
+	AreaName     string    `json:"area_name"`
+	WateringDate time.Time `json:"watering_date"`
+}
+
+func (a WaterActivity) Code() string {
+	return WaterActivityCode
 }
 
 type CropActivityStorage struct {

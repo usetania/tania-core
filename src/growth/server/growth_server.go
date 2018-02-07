@@ -97,8 +97,10 @@ func NewGrowthServer(
 func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
+	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropActivityReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
