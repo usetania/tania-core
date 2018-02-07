@@ -26,7 +26,8 @@ type Task struct {
 	CompletedDate *time.Time `json:"completed_date"`
 	Priority      string     `json:"priority"`
 	Status        string     `json:"status"`
-	Domain        TaskDomain `json:"domain"`
+	Domain        string     `json:"domain"`
+	DomainDetails TaskDomain `json:"domain_details"`
 	Category      string     `json:"category"`
 	IsDue         bool       `json:"is_due"`
 	AssetID       *uuid.UUID `json:"asset_id"`
@@ -67,17 +68,18 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 	}
 
 	return Task{
-		Title:       title,
-		UID:         uid,
-		Description: description,
-		CreatedDate: time.Now(),
-		DueDate:     duedate,
-		Priority:    priority,
-		Status:      TaskStatusCreated,
-		Domain:      taskdomain,
-		Category:    taskcategory,
-		IsDue:       false,
-		AssetID:     assetid,
+		Title:         title,
+		UID:           uid,
+		Description:   description,
+		CreatedDate:   time.Now(),
+		DueDate:       duedate,
+		Priority:      priority,
+		Status:        TaskStatusCreated,
+		Domain:        taskdomain.Code(),
+		DomainDetails: taskdomain,
+		Category:      taskcategory,
+		IsDue:         false,
+		AssetID:       assetid,
 	}, nil
 }
 
