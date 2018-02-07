@@ -1,46 +1,52 @@
 <template lang="pug">
   .harvest-crop-task
     .modal-header
-      span.h4.font-bold Move Crops
-      span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
-        i.fa.fa-close
+      span.h4.font-bold Harvest 
+        span.identifier {{ crop.batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
-        .form-group
-          label(for="source_area_id") 
-            | Choose area where you want to harvest 
-            span.identifier-sm {{ crop.batch_id }}
-          select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('source_area_id') }" v-model="task.source_area_id" name="source_area_id")
-            option(value="") Please select area
-            option(v-for="area in areas" :value="area.uid") {{ area.name }}
-          span.help-block.text-danger(v-show="errors.has('source_area_id')") {{ errors.first('source_area_id') }}
-        .form-group
-          label(for="type")
-            | Choose type of harvesting
-          select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.type" name="type")
-            option(value="all") All
-            option(value="partial") Partial
-          span.help-block.text-danger(v-show="errors.has('type')") {{ errors.first('type') }}
         .row
           .col-xs-6
             .form-group
-              label(for="quantity") Quantity
-              input.form-control#quantity(type="text" v-validate="'required|alpha_num_space|min:1'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
-              span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
+              label(for="source_area_id") 
+                | Choose area to be harvested
+              select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('source_area_id') }" v-model="task.source_area_id" name="source_area_id")
+                option(value="") Please select area
+                option(v-for="area in areas" :value="area.uid") {{ area.name }}
+              span.help-block.text-danger(v-show="errors.has('source_area_id')") {{ errors.first('source_area_id') }}
+          .col-xs-6
+            .form-group
+              label(for="harvest_type")
+                | Choose type of harvesting
+              select.form-control#harvest_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('harvest_type') }" v-model="task.harvest_type" name="harvest_type")
+                option(value="ALL") All
+                option(value="PARTIAL") Partial
+              span.help-block.text-danger(v-show="errors.has('harvest_type')") {{ errors.first('harvest_type') }}
+        .row
+          .col-xs-6
+            .form-group
+              label(for="produced_quantity") Quantity
+              input.form-control#produced_quantity(type="text" v-validate="'required|alpha_num_space|min:1'" :class="{'input': true, 'text-danger': errors.has('produced_quantity') }" v-model="task.produced_quantity" name="produced_quantity")
+              span.help-block.text-danger(v-show="errors.has('produced_quantity')") {{ errors.first('produced_quantity') }}
           .col-xs-6
             .form-group
               label(for="units") Units
-              select.form-control#unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('unit') }" v-model="task.unit" name="unit")
-                option(value="g") Grams
-                option(value="kg") Kilograms
-              span.help-block.text-danger(v-show="errors.has('unit')") {{ errors.first('unit') }}
+              select.form-control#produced_unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_unit') }" v-model="task.produced_unit" name="produced_unit")
+                option(value="Gr") Grams
+                option(value="Kg") Kilograms
+              span.help-block.text-danger(v-show="errors.has('produced_unit')") {{ errors.first('produced_unit') }}
         .form-group
-          .text-center.m-t
-            button.btn.btn-primary(type="submit")
-              i.fa.fa-check
-              |  OK
+          label(for="notes") Notes
+          textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
+          span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
+        .form-group
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            i.fa.fa-long-arrow-right
+            | Save
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fa.fa-close
+            | Cancel
 </template>
-
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
@@ -66,6 +72,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchAreas',
+      'harvestCrop',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -75,6 +82,10 @@ export default {
       })
     },
     create () {
+      this.task.obj_uid = this.crop.uid
+      this.harvestCrop(this.task)
+        .then(this.$parent.$emit('close'))
+        .catch(({ data }) => this.message = data)
     },
   }
 }

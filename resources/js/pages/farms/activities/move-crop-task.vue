@@ -19,9 +19,9 @@
           input.form-control#quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
-          button.btn.btn-primary.pull-right(type="submit")
-            i.fa.fa-check
-            |  OK
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            i.fa.fa-long-arrow-right
+            | Save
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fa.fa-close
             | Cancel
