@@ -64,51 +64,71 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead = &cr
 
+		queryResult = <-s.AreaQuery.FindByID(e.SrcAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.AreaQuery.FindByID(e.DstAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		dstArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
 		if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
-			cropRead.InitialArea.CurrentQuantity -= e.Quantity
+			ia := e.UpdatedSrcArea.(domain.InitialArea)
+			cropRead.InitialArea.CurrentQuantity = ia.CurrentQuantity
+			cropRead.InitialArea.LastUpdated = ia.LastUpdated
+		}
+		for i, v := range cropRead.MovedArea {
+			ma := e.UpdatedSrcArea.(domain.MovedArea)
+
+			if v.AreaUID == ma.AreaUID {
+				cropRead.MovedArea[i].CurrentQuantity = ma.CurrentQuantity
+				cropRead.MovedArea[i].LastUpdated = ma.LastUpdated
+			}
+		}
+
+		isFound := false
+		updatedDstArea := storage.MovedArea{
+			AreaUID:         dstArea.UID,
+			Name:            dstArea.Name,
+			InitialQuantity: e.UpdatedDstArea.InitialQuantity,
+			CurrentQuantity: e.UpdatedDstArea.CurrentQuantity,
+			CreatedDate:     e.UpdatedDstArea.CreatedDate,
+			LastUpdated:     e.UpdatedDstArea.LastUpdated,
 		}
 
 		for i, v := range cropRead.MovedArea {
-			if v.AreaUID == e.SrcAreaUID {
-				cropRead.MovedArea[i].CurrentQuantity -= e.Quantity
+			if v.AreaUID == e.UpdatedDstArea.AreaUID {
+				cropRead.MovedArea[i] = updatedDstArea
+				isFound = true
 			}
 		}
 
-		isDstExist := false
-		for _, v := range cropRead.MovedArea {
-			if v.AreaUID == e.DstAreaUID {
-				isDstExist = true
-			}
+		if !isFound {
+			cropRead.MovedArea = append(cropRead.MovedArea, updatedDstArea)
 		}
 
-		if isDstExist {
-			for i, v := range cropRead.MovedArea {
-				if v.AreaUID == e.DstAreaUID {
-					cropRead.MovedArea[i].CurrentQuantity += e.Quantity
-					cropRead.MovedArea[i].LastUpdated = e.MovedDate
-				}
-			}
-		} else {
-			cropRead.MovedArea = append(cropRead.MovedArea, storage.MovedArea{
-				AreaUID:         e.DstAreaUID,
-				Name:            e.DstAreaName,
-				InitialQuantity: e.Quantity,
-				CurrentQuantity: e.Quantity,
-				CreatedDate:     e.MovedDate,
-				LastUpdated:     e.MovedDate,
-			})
-		}
-
-		if e.DstAreaType == "SEEDING" {
+		if dstArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding += e.Quantity
 		}
-		if e.DstAreaType == "GROWING" {
+		if dstArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing += e.Quantity
 		}
-		if e.SrcAreaType == "SEEDING" {
+		if srcArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding -= e.Quantity
 		}
-		if e.SrcAreaType == "GROWING" {
+		if srcArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing -= e.Quantity
 		}
 
@@ -292,18 +312,49 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			SeedingDate: e.CreatedDate,
 		}
 	case domain.CropBatchMoved:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.AreaQuery.FindByID(e.SrcAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.AreaQuery.FindByID(e.DstAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		dstArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
 		cropActivity.UID = e.UID
-		cropActivity.BatchID = e.BatchID
-		cropActivity.ContainerType = e.ContainerType
+		cropActivity.BatchID = cr.BatchID
+		cropActivity.ContainerType = cr.Container.Type
 		cropActivity.CreatedDate = time.Now()
 		cropActivity.ActivityType = storage.MoveActivity{
-			SrcAreaUID:  e.SrcAreaUID,
-			SrcAreaName: e.SrcAreaName,
-			DstAreaUID:  e.DstAreaUID,
-			DstAreaName: e.DstAreaName,
+			SrcAreaUID:  srcArea.UID,
+			SrcAreaName: srcArea.Name,
+			DstAreaUID:  dstArea.UID,
+			DstAreaName: dstArea.Name,
 			Quantity:    e.Quantity,
 			MovedDate:   e.MovedDate,
 		}
+
 	case domain.CropBatchHarvested:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {

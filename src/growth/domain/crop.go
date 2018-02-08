@@ -265,39 +265,29 @@ func (state *Crop) Transition(event interface{}) {
 		state.FarmUID = e.FarmUID
 	case CropBatchMoved:
 		if state.InitialArea.AreaUID == e.SrcAreaUID {
-			state.InitialArea.CurrentQuantity -= e.Quantity
+			ia := e.UpdatedSrcArea.(InitialArea)
+			state.InitialArea = ia
 		}
-
 		for i, v := range state.MovedArea {
-			if v.AreaUID == e.SrcAreaUID {
-				state.MovedArea[i].CurrentQuantity -= e.Quantity
+			ma := e.UpdatedSrcArea.(MovedArea)
+
+			if v.AreaUID == ma.AreaUID {
+				state.MovedArea[i] = ma
 			}
 		}
 
-		isDstExist := false
-		for _, v := range state.MovedArea {
-			if v.AreaUID == e.DstAreaUID {
-				isDstExist = true
+		isFound := false
+		for i, v := range state.MovedArea {
+			if v.AreaUID == e.UpdatedDstArea.AreaUID {
+				state.MovedArea[i] = e.UpdatedDstArea
+				isFound = true
 			}
 		}
 
-		if isDstExist {
-			for i, v := range state.MovedArea {
-				if v.AreaUID == e.DstAreaUID {
-					state.MovedArea[i].CurrentQuantity += e.Quantity
-					state.MovedArea[i].LastUpdated = e.MovedDate
-				}
-			}
-		} else {
-			state.MovedArea = append(state.MovedArea, MovedArea{
-				AreaUID:         e.DstAreaUID,
-				SourceAreaUID:   e.SrcAreaUID,
-				InitialQuantity: e.Quantity,
-				CurrentQuantity: e.Quantity,
-				CreatedDate:     e.MovedDate,
-				LastUpdated:     e.MovedDate,
-			})
+		if !isFound {
+			state.MovedArea = append(state.MovedArea, e.UpdatedDstArea)
 		}
+
 	case CropBatchHarvested:
 		isFound := false
 		for i, v := range state.HarvestedStorage {
@@ -520,18 +510,61 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	}
 
 	// Process //
+	movedDate := time.Now()
+
+	var updatedSrcArea interface{}
+	if c.InitialArea.AreaUID == srcArea.UID {
+		ia := c.InitialArea
+		ia.CurrentQuantity -= quantity
+
+		updatedSrcArea = ia
+	}
+
+	for _, v := range c.MovedArea {
+		if v.AreaUID == srcArea.UID {
+			ma := v
+			ma.CurrentQuantity -= quantity
+
+			updatedSrcArea = ma
+		}
+	}
+
+	isDstExist := false
+	for _, v := range c.MovedArea {
+		if v.AreaUID == dstArea.UID {
+			isDstExist = true
+		}
+	}
+
+	updatedDstArea := MovedArea{}
+	if isDstExist {
+		for _, v := range c.MovedArea {
+			if v.AreaUID == dstArea.UID {
+				updatedDstArea = v
+				updatedDstArea.CurrentQuantity += quantity
+				updatedDstArea.LastUpdated = movedDate
+			}
+		}
+	} else {
+		updatedDstArea = MovedArea{
+			AreaUID:         dstArea.UID,
+			SourceAreaUID:   srcArea.UID,
+			InitialQuantity: quantity,
+			CurrentQuantity: quantity,
+			CreatedDate:     movedDate,
+			LastUpdated:     movedDate,
+		}
+	}
+
+	// Process //
 	c.TrackChange(CropBatchMoved{
-		UID:           c.UID,
-		BatchID:       c.BatchID,
-		ContainerType: c.Container.Type.Code(),
-		Quantity:      quantity,
-		SrcAreaUID:    srcArea.UID,
-		SrcAreaName:   srcArea.Name,
-		SrcAreaType:   srcArea.Type,
-		DstAreaUID:    dstArea.UID,
-		DstAreaName:   dstArea.Name,
-		DstAreaType:   dstArea.Type,
-		MovedDate:     time.Now(),
+		UID:            c.UID,
+		Quantity:       quantity,
+		SrcAreaUID:     srcArea.UID,
+		DstAreaUID:     dstArea.UID,
+		MovedDate:      movedDate,
+		UpdatedSrcArea: updatedSrcArea,
+		UpdatedDstArea: updatedDstArea,
 	})
 
 	return nil
