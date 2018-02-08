@@ -613,7 +613,6 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-// TODO: The crops should be found by its Farm
 func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	data := make(map[string][]storage.CropRead)
 
@@ -656,7 +655,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 }
 
 func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
-	data := make(map[string][]CropBatch)
+	data := make(map[string][]storage.CropRead)
 
 	// Params //
 	areaID := c.Param("id")
@@ -678,23 +677,19 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 	}
 
 	// Process //
-	resultQuery := <-s.CropQuery.FindAllCropsByArea(area.UID)
+	resultQuery := <-s.CropReadQuery.FindAllCropsByArea(area.UID)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
 
-	crops, ok := resultQuery.Result.([]domain.Crop)
+	crops, ok := resultQuery.Result.([]storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = []CropBatch{}
+	data["data"] = []storage.CropRead{}
 	for _, v := range crops {
-		cropBatch, err := MapToCropBatch(s, v)
-		if err != nil {
-			return Error(c, err)
-		}
-		data["data"] = append(data["data"], cropBatch)
+		data["data"] = append(data["data"], v)
 	}
 
 	return c.JSON(http.StatusOK, data)
