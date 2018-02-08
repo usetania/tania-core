@@ -322,7 +322,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 	case domain.CropBatchNoteCreated:
-		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -345,7 +345,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		})
 
 	case domain.CropBatchNoteRemoved:
-		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
