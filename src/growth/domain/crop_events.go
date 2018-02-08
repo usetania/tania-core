@@ -7,21 +7,16 @@ import (
 )
 
 type CropBatchCreated struct {
-	UID             uuid.UUID
-	BatchID         string
-	Status          CropStatus
-	Type            CropType
-	Container       CropContainer
-	ContainerType   string
-	ContainerCell   int
-	InventoryUID    uuid.UUID
-	VarietyName     string
-	PlantType       string
-	FarmUID         uuid.UUID
-	CreatedDate     time.Time
-	InitialAreaUID  uuid.UUID
-	InitialAreaName string
-	Quantity        int
+	UID            uuid.UUID
+	BatchID        string
+	Status         CropStatus
+	Type           CropType
+	Container      CropContainer
+	InventoryUID   uuid.UUID
+	FarmUID        uuid.UUID
+	CreatedDate    time.Time
+	InitialAreaUID uuid.UUID
+	Quantity       int
 }
 
 type CropBatchMoved struct {

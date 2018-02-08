@@ -388,14 +388,6 @@ func CreateCropBatch(
 		Type:     containerType,
 	}
 
-	containerCell := 0
-	switch v := containerType.(type) {
-	case Tray:
-		containerCell = v.Cell
-	case Pot:
-
-	}
-
 	createdDate := time.Now()
 
 	batchID, err := generateBatchID(cropService, inv, createdDate)
@@ -411,21 +403,16 @@ func CreateCropBatch(
 	initial := &Crop{}
 
 	initial.TrackChange(CropBatchCreated{
-		UID:             uid,
-		BatchID:         batchID,
-		Status:          GetCropStatus(CropActive),
-		Type:            ct,
-		Container:       cropContainer,
-		ContainerType:   containerType.Code(),
-		ContainerCell:   containerCell,
-		InventoryUID:    inv.UID,
-		VarietyName:     inv.Name,
-		PlantType:       inv.MaterialSeedPlantTypeCode,
-		CreatedDate:     createdDate,
-		InitialAreaUID:  area.UID,
-		InitialAreaName: area.Name,
-		Quantity:        quantity,
-		FarmUID:         area.FarmUID,
+		UID:            uid,
+		BatchID:        batchID,
+		Status:         GetCropStatus(CropActive),
+		Type:           ct,
+		Container:      cropContainer,
+		InventoryUID:   inv.UID,
+		CreatedDate:    createdDate,
+		InitialAreaUID: area.UID,
+		Quantity:       quantity,
+		FarmUID:        area.FarmUID,
 	})
 
 	return initial, nil
