@@ -16,7 +16,7 @@
         .form-group
           label(for="quantity")
             | How many plants do you want to move?
-          input.form-control#quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="task.quantity" name="quantity")
+          vue-slider(v-model="task.quantity" v-bind:min="1" v-bind:max="max_value")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit")
@@ -31,12 +31,20 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { StubTask } from '@/stores/stubs'
+import vueSlider from 'vue-slider-component';
 export default {
   name: "MoveCropTask",
+  components: {
+    vueSlider
+  },
   computed : {
     ...mapGetters({
       areas: 'getAllAreas',
     })
+  },
+  created () {
+    this.task.quantity = 1
+    this.current_areas = this.areas
   },
   data () {
     return {
@@ -51,6 +59,7 @@ export default {
     ...mapActions([
       'fetchAreas',
       'moveCrop',
+      'areaChange',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -69,6 +78,9 @@ export default {
       this.moveCrop(this.task)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
+    },
+    areaChange (area_id) {
+      // TODO: change the max value here
     },
   }
 }

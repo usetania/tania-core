@@ -45,6 +45,10 @@ export default {
       areas: 'getAllAreas',
     })
   },
+  created () {
+    this.task.quantity = 1
+    this.current_areas = this.areas
+  },
   data () {
     return {
       max_value: 100,
@@ -55,10 +59,6 @@ export default {
   props: ['crop'],
   mounted () {
     this.fetchAreas()
-  },
-  created () {
-    this.task.quantity = 1
-    this.current_areas = this.areas
   },
   methods: {
     ...mapActions([
