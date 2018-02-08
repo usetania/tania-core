@@ -323,8 +323,8 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 	cropRead.HarvestedStorage = harvestedStorage
 	cropRead.Trash = trash
 
-	for i, v := range crop.Notes {
-		cropRead.Notes[i] = v
+	for _, v := range crop.Notes {
+		cropRead.Notes = append(cropRead.Notes, v)
 	}
 
 	return cropRead, nil

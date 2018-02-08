@@ -104,6 +104,7 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchDumped", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropActivityReadModel)
+	s.EventBus.Subscribe("CropBatchNoteCreated", s.SaveToCropReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
@@ -538,18 +539,26 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 }
 
 func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
-	cropID := c.Param("id")
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	content := c.FormValue("content")
 
 	// Validate //
-	result := <-s.CropRepo.FindByID(cropID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if cropRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
 	if content == "" {
@@ -557,20 +566,33 @@ func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
 	}
 
 	// Process //
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.CropEvent)
+
+	crop := repository.NewCropBatchFromHistory(events)
+
 	crop.AddNewNote(content)
 
 	// Persists //
-	resultSave := <-s.CropRepo.Save(&crop)
+	resultSave := <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, crop)
+	// TRIGGER EVENTS //
+	s.publishUncommittedEvents(crop)
+
+	data := make(map[string]storage.CropRead)
+	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}
-	data["data"] = cropBatch
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }

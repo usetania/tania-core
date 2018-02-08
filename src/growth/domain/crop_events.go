@@ -56,3 +56,10 @@ type CropBatchWatered struct {
 	AreaName      string
 	WateringDate  time.Time
 }
+
+type CropBatchNoteCreated struct {
+	UID         uuid.UUID
+	CropUID     uuid.UUID
+	Content     string
+	CreatedDate time.Time
+}

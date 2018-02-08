@@ -339,6 +339,7 @@ func (state *Crop) Transition(event interface{}) {
 				}
 			}
 		}
+
 	case CropBatchWatered:
 		if state.InitialArea.AreaUID == e.AreaUID {
 			state.InitialArea.LastWatered = e.WateringDate
@@ -348,6 +349,17 @@ func (state *Crop) Transition(event interface{}) {
 			if v.AreaUID == e.AreaUID {
 				state.MovedArea[i].LastWatered = e.WateringDate
 			}
+		}
+
+	case CropBatchNoteCreated:
+		if len(state.Notes) == 0 {
+			state.Notes = make(map[uuid.UUID]CropNote)
+		}
+
+		state.Notes[e.UID] = CropNote{
+			UID:         e.UID,
+			Content:     e.Content,
+			CreatedDate: e.CreatedDate,
 		}
 	}
 }
@@ -892,17 +904,12 @@ func (c *Crop) AddNewNote(content string) error {
 		return err
 	}
 
-	cropNote := CropNote{
+	c.TrackChange(CropBatchNoteCreated{
 		UID:         uid,
+		CropUID:     c.UID,
 		Content:     content,
 		CreatedDate: time.Now(),
-	}
-
-	if len(c.Notes) == 0 {
-		c.Notes = make(map[uuid.UUID]CropNote)
-	}
-
-	c.Notes[uid] = cropNote
+	})
 
 	return nil
 }

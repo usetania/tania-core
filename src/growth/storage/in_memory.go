@@ -63,7 +63,7 @@ type CropRead struct {
 	Trash            []Trash            `json:"trash"`
 
 	// Notes
-	Notes map[uuid.UUID]domain.CropNote `json:"notes"`
+	Notes []domain.CropNote `json:"notes"`
 }
 
 type InitialArea struct {

@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -319,6 +320,29 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 				cropRead.MovedArea[i].LastWatered = &e.WateringDate
 			}
 		}
+
+	case domain.CropBatchNoteCreated:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		cropRead.Notes = append(cropRead.Notes, domain.CropNote{
+			UID:         e.UID,
+			Content:     e.Content,
+			CreatedDate: e.CreatedDate,
+		})
+
+		sort.Slice(cropRead.Notes, func(i, j int) bool {
+			return cropRead.Notes[i].CreatedDate.After(cropRead.Notes[j].CreatedDate)
+		})
 	}
 
 	err := <-s.CropReadRepo.Save(cropRead)
