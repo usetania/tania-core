@@ -387,10 +387,13 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "55bb9604-03f3-44aa-9b11-f7b6bc77cc61",
+						"id": "d67255a2-b399-4c1d-882d-f7d83f954032",
 						"type": "text/javascript",
 						"exec": [
-							""
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    pm.environment.set(\"AGROCHEM_ID\", data.data.uid);",
+							"}"
 						]
 					}
 				}
@@ -1400,9 +1403,15 @@
 					"formdata": [
 						{
 							"key": "photo",
-							"value": "",
-							"description": "",
-							"type": "file"
+							"description": "Required",
+							"type": "file",
+							"src": "Screen Shot 2018-02-08 at 8.58.50 PM.png"
+						},
+						{
+							"key": "description",
+							"value": "Mantab djiwa",
+							"description": "Required. String.",
+							"type": "text"
 						}
 					]
 				},
@@ -1429,7 +1438,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/photos",
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/photos/{{CROP_PHOTO_ID}}",
 					"host": [
 						"{{API_HOST}}"
 					],
@@ -1437,7 +1446,8 @@
 						"farms",
 						"crops",
 						"{{CROP_ID}}",
-						"photos"
+						"photos",
+						"{{CROP_PHOTO_ID}}"
 					]
 				},
 				"description": ""
@@ -1699,45 +1709,62 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
+							"key": "title",
+							"value": "Clean up area",
+							"description": "required string",
+							"type": "text"
+						},
+						{
 							"key": "description",
-							"value": "Water area",
+							"value": "Sweep up leaves",
 							"type": "text",
-							"description": "required string"
+							"description": "optional string"
 						},
 						{
 							"key": "due_date",
 							"value": "2019-01-23T17:37:39.697328206+01:00",
 							"type": "text",
-							"description": "required time equal to or later than current time"
+							"description": "optional time must be equal to or later than current time"
 						},
 						{
 							"key": "priority",
-							"value": "normal",
+							"value": "URGENT",
 							"type": "text",
-							"description": "required string. Options: normal, urgent"
+							"description": "required string. Options: NORMAL, URGENT"
 						},
 						{
 							"key": "asset_id",
-							"value": "{{AREA_ID}}",
+							"value": "{{CROP_ID}}",
 							"type": "text",
-							"description": "required asset uid"
+							"description": "optional asset id: required if domain is not GENERAL"
 						},
 						{
-							"key": "type",
-							"value": "area",
+							"key": "domain",
+							"value": "CROP",
 							"type": "text",
-							"description": "required string. Options: area, reservoir, crop, inventory, device, finance"
+							"description": "required string. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR"
+						},
+						{
+							"key": "category",
+							"value": "SANITATION",
+							"description": "required string. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION",
+							"type": "text"
+						},
+						{
+							"key": "inventory_id",
+							"value": "{{CROP_ID}}",
+							"description": "",
+							"type": "text"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{API_HOST}}/tasks/",
+					"raw": "{{API_HOST}}/tasks",
 					"host": [
 						"{{API_HOST}}"
 					],
 					"path": [
-						"tasks",
-						""
+						"tasks"
 					]
 				},
 				"description": null
@@ -1763,6 +1790,25 @@
 			"response": []
 		},
 		{
+			"name": "Get Filtered Tasks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/tasks",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
 			"name": "Get Task By ID",
 			"request": {
 				"method": "GET",
@@ -1784,6 +1830,27 @@
 		},
 		{
 			"name": "Set Task As Due",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/tasks/{{TASK_ID}}/due",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"tasks",
+						"{{TASK_ID}}",
+						"due"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Set Task As Complete",
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -1886,19 +1953,19 @@
 					"urlencoded": [
 						{
 							"key": "source_area_id",
-							"value": "{{AREA_ID}}",
+							"value": "{{DST_AREA_ID}}",
 							"description": "Required. The UID of crop's area",
 							"type": "text"
 						},
 						{
 							"key": "harvest_type",
-							"value": "PARTIAL",
+							"value": "ALL",
 							"description": "Required. Options: ALL, PARTIAL",
 							"type": "text"
 						},
 						{
 							"key": "produced_quantity",
-							"value": "5",
+							"value": "2",
 							"description": "Required. float",
 							"type": "text"
 						},
@@ -2006,6 +2073,28 @@
 						"crops",
 						"{{CROP_ID}}",
 						"water"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Crop Activities",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/activities",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}",
+						"activities"
 					]
 				},
 				"description": ""
