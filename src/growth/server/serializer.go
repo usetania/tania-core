@@ -327,6 +327,10 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 		cropRead.Notes = append(cropRead.Notes, v)
 	}
 
+	sort.Slice(cropRead.Notes, func(i, j int) bool {
+		return cropRead.Notes[i].CreatedDate.After(cropRead.Notes[j].CreatedDate)
+	})
+
 	return cropRead, nil
 }
 

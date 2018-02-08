@@ -105,6 +105,7 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchNoteCreated", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchNoteRemoved", s.SaveToCropReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
@@ -575,7 +576,10 @@ func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
 
 	crop := repository.NewCropBatchFromHistory(events)
 
-	crop.AddNewNote(content)
+	err = crop.AddNewNote(content)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Persists //
 	resultSave := <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
@@ -598,25 +602,40 @@ func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
 }
 
 func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
-	cropID := c.Param("crop_id")
-	noteID := c.Param("note_id")
+	cropUID, err := uuid.FromString(c.Param("crop_id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	noteUID, err := uuid.FromString(c.Param("note_id"))
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Validate //
-	result := <-s.CropRepo.FindByID(cropID)
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	// Process //
-	noteUID, err := uuid.FromString(noteID)
-	if err != nil {
-		return Error(c, err)
+	if cropRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
+
+	// Process //
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.CropEvent)
+
+	crop := repository.NewCropBatchFromHistory(events)
 
 	err = crop.RemoveNote(noteUID)
 	if err != nil {
@@ -624,17 +643,21 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 	}
 
 	// Persists //
-	resultSave := <-s.CropRepo.Save(&crop)
+	resultSave := <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, crop)
+	// TRIGGER EVENTS //
+	s.publishUncommittedEvents(crop)
+
+	data := make(map[string]storage.CropRead)
+	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}
-	data["data"] = cropBatch
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }

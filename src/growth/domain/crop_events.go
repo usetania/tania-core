@@ -63,3 +63,10 @@ type CropBatchNoteCreated struct {
 	Content     string
 	CreatedDate time.Time
 }
+
+type CropBatchNoteRemoved struct {
+	UID         uuid.UUID
+	CropUID     uuid.UUID
+	Content     string
+	CreatedDate time.Time
+}

@@ -361,6 +361,9 @@ func (state *Crop) Transition(event interface{}) {
 			Content:     e.Content,
 			CreatedDate: e.CreatedDate,
 		}
+
+	case CropBatchNoteRemoved:
+		delete(state.Notes, e.UID)
 	}
 }
 
@@ -919,17 +922,23 @@ func (c *Crop) RemoveNote(uid uuid.UUID) error {
 		return CropError{Code: CropNoteErrorNotFound}
 	}
 
-	found := false
+	found := CropNote{}
 	for _, v := range c.Notes {
 		if v.UID == uid {
-			delete(c.Notes, uid)
-			found = true
+			found = v
 		}
 	}
 
-	if !found {
+	if found == (CropNote{}) {
 		return CropError{Code: CropNoteErrorNotFound}
 	}
+
+	c.TrackChange(CropBatchNoteRemoved{
+		UID:         found.UID,
+		CropUID:     c.UID,
+		Content:     found.Content,
+		CreatedDate: found.CreatedDate,
+	})
 
 	return nil
 }

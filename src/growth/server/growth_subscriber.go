@@ -343,6 +343,28 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		sort.Slice(cropRead.Notes, func(i, j int) bool {
 			return cropRead.Notes[i].CreatedDate.After(cropRead.Notes[j].CreatedDate)
 		})
+
+	case domain.CropBatchNoteRemoved:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		cropNoteTmp := []domain.CropNote{}
+		for _, v := range cropRead.Notes {
+			if v.UID != e.UID {
+				cropNoteTmp = append(cropNoteTmp, v)
+			}
+		}
+
+		cropRead.Notes = cropNoteTmp
 	}
 
 	err := <-s.CropReadRepo.Save(cropRead)
