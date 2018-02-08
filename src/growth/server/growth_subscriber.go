@@ -125,51 +125,54 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead = &cr
 
-		// If harvestType All, then empty the quantity in the area because it has been all harvested
-		// Else if harvestType Partial, then we assume that the quantity of moved plant is 0
-		harvestedQuantity := 0
-		if e.HarvestType == domain.HarvestTypeAll {
-			if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
-				harvestedQuantity = cropRead.InitialArea.CurrentQuantity
-				cropRead.InitialArea.CurrentQuantity = 0
+		queryResult = <-s.AreaQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		hs := storage.HarvestedStorage{
+			Quantity:             e.UpdatedHarvestedStorage.Quantity,
+			ProducedGramQuantity: e.UpdatedHarvestedStorage.ProducedGramQuantity,
+			SourceAreaUID:        srcArea.UID,
+			SourceAreaName:       srcArea.Name,
+			CreatedDate:          e.UpdatedHarvestedStorage.CreatedDate,
+			LastUpdated:          e.UpdatedHarvestedStorage.LastUpdated,
+		}
+
+		isFound := false
+		for i, v := range cropRead.HarvestedStorage {
+			if v.SourceAreaUID == e.UpdatedHarvestedStorage.SourceAreaUID {
+				cropRead.HarvestedStorage[i] = hs
+				isFound = true
 			}
+		}
+
+		if !isFound {
+			cropRead.HarvestedStorage = append(cropRead.HarvestedStorage, hs)
+		}
+
+		if e.HarvestedAreaType == "INITIAL_AREA" {
+			ha := e.HarvestedArea.(domain.InitialArea)
+			cropRead.InitialArea.CurrentQuantity = ha.CurrentQuantity
+			cropRead.InitialArea.LastUpdated = ha.LastUpdated
+		} else if e.HarvestedAreaType == "MOVED_AREA" {
+			ma := e.HarvestedArea.(domain.MovedArea)
+
 			for i, v := range cropRead.MovedArea {
-				if v.AreaUID == e.SrcAreaUID {
-					harvestedQuantity = cropRead.MovedArea[i].CurrentQuantity
-					cropRead.MovedArea[i].CurrentQuantity = 0
+				if v.AreaUID == ma.AreaUID {
+					cropRead.MovedArea[i].CurrentQuantity = ma.CurrentQuantity
+					cropRead.MovedArea[i].LastUpdated = ma.LastUpdated
 				}
 			}
 		}
 
-		// Check source area existance. If already exist, then just update it
-		isExist := false
-		for i, v := range cropRead.HarvestedStorage {
-			if v.SourceAreaUID == e.SrcAreaUID {
-				cropRead.HarvestedStorage[i].Quantity += harvestedQuantity
-				cropRead.HarvestedStorage[i].LastUpdated = e.HarvestDate
-				isExist = true
-			}
-		}
-
-		if !isExist {
-			hs := storage.HarvestedStorage{
-				Quantity:      harvestedQuantity,
-				SourceAreaUID: e.SrcAreaUID,
-				CreatedDate:   e.HarvestDate,
-				LastUpdated:   e.HarvestDate,
-			}
-			cropRead.HarvestedStorage = append(cropRead.HarvestedStorage, hs)
-		}
-
-		// Calculate the produced harvest
-		for i, v := range cropRead.HarvestedStorage {
-			if v.SourceAreaUID == e.SrcAreaUID {
-				cropRead.HarvestedStorage[i].ProducedGramQuantity += e.ProducedGramQuantity
-			}
-		}
-
 		// Because Harvest should only be done in the GROWING area
-		cropRead.AreaStatus.Growing -= e.Quantity
+		cropRead.AreaStatus.Growing -= e.HarvestedQuantity
 
 	case domain.CropBatchDumped:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
@@ -302,18 +305,38 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			MovedDate:   e.MovedDate,
 		}
 	case domain.CropBatchHarvested:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.AreaQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
 		cropActivity.UID = e.UID
-		cropActivity.BatchID = e.BatchID
-		cropActivity.ContainerType = e.ContainerType
+		cropActivity.BatchID = cr.BatchID
+		cropActivity.ContainerType = cr.Container.Type
 		cropActivity.CreatedDate = time.Now()
 		cropActivity.ActivityType = storage.HarvestActivity{
-			SrcAreaUID:           e.SrcAreaUID,
-			SrcAreaName:          e.SrcAreaName,
-			Quantity:             e.Quantity,
+			SrcAreaUID:           srcArea.UID,
+			SrcAreaName:          srcArea.Name,
+			Quantity:             e.HarvestedQuantity,
 			ProducedGramQuantity: e.ProducedGramQuantity,
-			HarvestType:          e.HarvestType,
 			HarvestDate:          e.HarvestDate,
 		}
+
 	case domain.CropBatchDumped:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
@@ -345,6 +368,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			Quantity:    e.Quantity,
 			DumpDate:    e.DumpDate,
 		}
+
 	case domain.CropBatchWatered:
 		cropActivity.UID = e.UID
 		cropActivity.BatchID = e.BatchID

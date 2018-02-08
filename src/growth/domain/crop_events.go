@@ -41,15 +41,13 @@ type CropBatchMoved struct {
 }
 
 type CropBatchHarvested struct {
-	UID                  uuid.UUID
-	BatchID              string
-	ContainerType        string
-	HarvestType          string
-	Quantity             int
-	ProducedGramQuantity float32
-	SrcAreaUID           uuid.UUID
-	SrcAreaName          string
-	HarvestDate          time.Time
+	UID                     uuid.UUID
+	HarvestedQuantity       int
+	ProducedGramQuantity    float32
+	UpdatedHarvestedStorage HarvestedStorage
+	HarvestedArea           interface{}
+	HarvestedAreaType       string
+	HarvestDate             time.Time
 }
 
 type CropBatchDumped struct {
