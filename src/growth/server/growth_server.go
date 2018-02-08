@@ -309,12 +309,18 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	// TRIGGER EVENTS
 	s.publishUncommittedEvents(crop)
 
-	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, *crop)
-	if err != nil {
-		return Error(c, err)
+	result = <-s.CropReadQuery.FindByID(crop.UID)
+	if result.Error != nil {
+		return Error(c, result.Error)
 	}
-	data["data"] = cropBatch
+
+	cropRead, ok = result.Result.(storage.CropRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]storage.CropRead)
+	data["data"] = cropRead
 
 	return c.JSON(http.StatusOK, data)
 }
