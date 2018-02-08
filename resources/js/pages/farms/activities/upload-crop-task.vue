@@ -2,8 +2,6 @@
   .upload-crop-task
     .modal-header
       span.h4.font-bold Upload Photo
-      span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
-        i.fa.fa-close
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
@@ -12,13 +10,15 @@
         .form-group
           small.text-muted.pull-right (max. 200 char)
           label(for="description") Describe a bit about this photo
-          textarea.form-control#description(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
+          textarea.form-control#description(type="text" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
-          .text-center.m-t
-            button.btn.btn-primary(type="submit")
-              i.fa.fa-check
-              |  OK
+          button.btn.btn-primary.btn-addon.pull-right(type="submit")
+            i.fa.fa-check
+            |  OK
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fa.fa-close
+            |  Cancel
 </template>
 
 

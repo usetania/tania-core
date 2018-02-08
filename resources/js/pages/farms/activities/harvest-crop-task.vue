@@ -37,15 +37,15 @@
               span.help-block.text-danger(v-show="errors.has('produced_unit')") {{ errors.first('produced_unit') }}
         .form-group
           label(for="notes") Notes
-          textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
+          textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
           span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit")
-            i.fa.fa-long-arrow-right
-            | Save
+          button.btn.btn-primary.btn-addon.pull-right(type="submit")
+            i.fas.fa-check
+            |  OK
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fa.fa-close
-            | Cancel
+            |  Cancel
 </template>
 
 <script>
