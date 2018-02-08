@@ -17,7 +17,7 @@ type Crop struct {
 	Container    CropContainer
 	InventoryUID uuid.UUID
 	FarmUID      uuid.UUID
-	Photo        CropPhoto
+	Photos       []CropPhoto
 
 	// Fields to track crop's movement
 	InitialArea      InitialArea
@@ -234,11 +234,13 @@ type CropNote struct {
 }
 
 type CropPhoto struct {
-	Filename string `json:"filename"`
-	MimeType string `json:"mime_type"`
-	Size     int    `json:"size"`
-	Width    int    `json:"width"`
-	Height   int    `json:"height"`
+	UID         uuid.UUID `json:"uid"`
+	Filename    string    `json:"filename"`
+	MimeType    string    `json:"mime_type"`
+	Size        int       `json:"size"`
+	Width       int       `json:"width"`
+	Height      int       `json:"height"`
+	Description string    `json:"description"`
 }
 
 func (state *Crop) TrackChange(event interface{}) {
@@ -364,6 +366,17 @@ func (state *Crop) Transition(event interface{}) {
 
 	case CropBatchNoteRemoved:
 		delete(state.Notes, e.UID)
+
+	case CropBatchPhotoCreated:
+		state.Photos = append(state.Photos, CropPhoto{
+			UID:         e.UID,
+			Filename:    e.Filename,
+			MimeType:    e.MimeType,
+			Size:        e.Size,
+			Width:       e.Width,
+			Height:      e.Height,
+			Description: e.Description,
+		})
 	}
 }
 
@@ -938,6 +951,42 @@ func (c *Crop) RemoveNote(uid uuid.UUID) error {
 		CropUID:     c.UID,
 		Content:     found.Content,
 		CreatedDate: found.CreatedDate,
+	})
+
+	return nil
+}
+
+func (c *Crop) AddPhoto(filename, mimeType string, size, width, height int, description string) error {
+	if filename == "" {
+		return CropError{CropErrorPhotoInvalidFilename}
+	}
+
+	if mimeType == "" {
+		return CropError{CropErrorPhotoInvalidMimeType}
+	}
+
+	if size <= 0 {
+		return CropError{CropErrorPhotoInvalidSize}
+	}
+
+	if description == "" {
+		return CropError{CropErrorPhotoInvalidDescription}
+	}
+
+	uid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
+	c.TrackChange(CropBatchPhotoCreated{
+		UID:         uid,
+		CropUID:     c.UID,
+		Filename:    filename,
+		MimeType:    mimeType,
+		Size:        size,
+		Width:       width,
+		Height:      height,
+		Description: description,
 	})
 
 	return nil

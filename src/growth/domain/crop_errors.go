@@ -37,6 +37,12 @@ const (
 	CropErrorInvalidBatchID
 	CropErrorBatchIDAlreadyCreated
 
+	// Crop Photo errros
+	CropErrorPhotoInvalidFilename
+	CropErrorPhotoInvalidMimeType
+	CropErrorPhotoInvalidSize
+	CropErrorPhotoInvalidDescription
+
 	CropContainerErrorInvalidType
 	CropContainerErrorInvalidQuantity
 	CropContainerErrorInvalidTrayCell
@@ -109,6 +115,15 @@ func (e CropError) Error() string {
 		return "Invalid source area"
 	case CropWaterErrorSourceAreaNotFound:
 		return "Source area not found"
+
+	case CropErrorPhotoInvalidFilename:
+		return "Invalid filename"
+	case CropErrorPhotoInvalidMimeType:
+		return "Invalid mime type"
+	case CropErrorPhotoInvalidSize:
+		return "Invalid size"
+	case CropErrorPhotoInvalidDescription:
+		return "Invalid description"
 
 	case CropContainerErrorInvalidType:
 		return "Invalid crop container type"

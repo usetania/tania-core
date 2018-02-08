@@ -70,3 +70,14 @@ type CropBatchNoteRemoved struct {
 	Content     string
 	CreatedDate time.Time
 }
+
+type CropBatchPhotoCreated struct {
+	UID         uuid.UUID
+	CropUID     uuid.UUID
+	Filename    string
+	MimeType    string
+	Size        int
+	Width       int
+	Height      int
+	Description string
+}

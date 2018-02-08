@@ -104,6 +104,7 @@ type SeedActivity struct{ *storage.SeedActivity }
 type MoveActivity struct{ *storage.MoveActivity }
 type HarvestActivity struct{ *storage.HarvestActivity }
 type DumpActivity struct{ *storage.DumpActivity }
+type PhotoActivity struct{ *storage.PhotoActivity }
 type WaterActivity struct{ *storage.WaterActivity }
 
 func MapToCropActivity(activity storage.CropActivity) CropActivity {
@@ -118,6 +119,8 @@ func MapToCropActivity(activity storage.CropActivity) CropActivity {
 		ca.ActivityType = HarvestActivity{&v}
 	case storage.DumpActivity:
 		ca.ActivityType = DumpActivity{&v}
+	case storage.PhotoActivity:
+		ca.ActivityType = PhotoActivity{&v}
 	case storage.WaterActivity:
 		ca.ActivityType = WaterActivity{&v}
 	}
@@ -283,7 +286,18 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 		Dumped:  totalDumped,
 	}
 
-	cropRead.Photos = append(cropRead.Photos, crop.Photo)
+	for _, v := range crop.Photos {
+		cropRead.Photos = append(cropRead.Photos, storage.CropPhoto{
+			UID:         v.UID,
+			Filename:    v.Filename,
+			MimeType:    v.MimeType,
+			Size:        v.Size,
+			Width:       v.Width,
+			Height:      v.Height,
+			Description: v.Description,
+		})
+	}
+
 	cropRead.FarmUID = crop.FarmUID
 
 	var lastWatered *time.Time
@@ -334,207 +348,6 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 	return cropRead, nil
 }
 
-func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
-	queryResult := <-s.MaterialQuery.FindByID(crop.InventoryUID)
-	if queryResult.Error != nil {
-		return CropBatch{}, queryResult.Error
-	}
-
-	cropInventory, ok := queryResult.Result.(query.CropMaterialQueryResult)
-	if !ok {
-		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-	}
-
-	totalSeeding := 0
-	totalGrowing := 0
-	totalDumped := 0
-
-	queryResult = <-s.AreaQuery.FindByID(crop.InitialArea.AreaUID)
-	if queryResult.Error != nil {
-		return CropBatch{}, queryResult.Error
-	}
-
-	initialArea, ok := queryResult.Result.(query.CropAreaQueryResult)
-	if !ok {
-		return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-	}
-
-	if initialArea.Type == "SEEDING" {
-		totalSeeding += crop.InitialArea.CurrentQuantity
-	} else if initialArea.Type == "GROWING" {
-		totalGrowing += crop.InitialArea.CurrentQuantity
-	}
-
-	movedAreas := []MovedArea{}
-	for _, v := range crop.MovedArea {
-		queryResult = <-s.AreaQuery.FindByID(v.AreaUID)
-		if queryResult.Error != nil {
-			return CropBatch{}, queryResult.Error
-		}
-
-		area, ok := queryResult.Result.(query.CropAreaQueryResult)
-		if !ok {
-			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
-
-		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
-		if queryResult.Error != nil {
-			return CropBatch{}, queryResult.Error
-		}
-
-		sourceArea, ok := queryResult.Result.(query.CropAreaQueryResult)
-		if !ok {
-			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
-
-		if area.Type == "SEEDING" {
-			totalSeeding += v.CurrentQuantity
-		}
-		if area.Type == "GROWING" {
-			totalGrowing += v.CurrentQuantity
-		}
-
-		var lastWatered *time.Time
-		if !v.LastWatered.IsZero() {
-			lastWatered = &v.LastWatered
-		}
-
-		movedAreas = append(movedAreas, MovedArea{
-			Area:            area,
-			SourceArea:      sourceArea,
-			InitialQuantity: v.InitialQuantity,
-			CurrentQuantity: v.CurrentQuantity,
-			CreatedDate:     v.CreatedDate,
-			LastUpdated:     v.LastUpdated,
-			LastWatered:     lastWatered,
-		})
-	}
-
-	harvestedStorage := []HarvestedStorage{}
-	for _, v := range crop.HarvestedStorage {
-		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
-		if queryResult.Error != nil {
-			return CropBatch{}, queryResult.Error
-		}
-
-		area, ok := queryResult.Result.(query.CropAreaQueryResult)
-		if !ok {
-			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
-
-		harvestedStorage = append(harvestedStorage, HarvestedStorage{
-			SourceArea:           area,
-			Quantity:             v.Quantity,
-			ProducedGramQuantity: v.ProducedGramQuantity,
-			CreatedDate:          v.CreatedDate,
-			LastUpdated:          v.LastUpdated,
-		})
-	}
-
-	trash := []Trash{}
-	for _, v := range crop.Trash {
-		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
-		if queryResult.Error != nil {
-			return CropBatch{}, queryResult.Error
-		}
-
-		area, ok := queryResult.Result.(query.CropAreaQueryResult)
-		if !ok {
-			return CropBatch{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
-
-		totalDumped += v.Quantity
-
-		trash = append(trash, Trash{
-			SourceArea:  area,
-			Quantity:    v.Quantity,
-			CreatedDate: v.CreatedDate,
-			LastUpdated: v.LastUpdated,
-		})
-	}
-
-	cropBatch := CropBatch{}
-	cropBatch.UID = crop.UID
-	cropBatch.BatchID = crop.BatchID
-	cropBatch.Status = crop.Status.Code
-	cropBatch.Type = crop.Type.Code
-
-	code := ""
-	cell := 0
-	switch v := crop.Container.Type.(type) {
-	case domain.Tray:
-		code = v.Code()
-		cell = v.Cell
-	case domain.Pot:
-		code = v.Code()
-	}
-	cropBatch.Container = CropContainer{
-		Quantity: crop.Container.Quantity,
-		Type: CropContainerType{
-			Code: code,
-			Cell: cell,
-		},
-	}
-
-	cropBatch.Inventory = query.CropMaterialQueryResult{
-		UID: cropInventory.UID,
-		MaterialSeedPlantTypeCode: cropInventory.MaterialSeedPlantTypeCode,
-		Name: cropInventory.Name,
-	}
-
-	cropBatch.DaysSinceSeeding = crop.CalculateDaysSinceSeeding()
-
-	var lastWatered *time.Time
-	if !crop.InitialArea.LastWatered.IsZero() {
-		lastWatered = &crop.InitialArea.LastWatered
-	}
-
-	cropBatch.InitialArea = InitialArea{
-		Area:            initialArea,
-		InitialQuantity: crop.InitialArea.InitialQuantity,
-		CurrentQuantity: crop.InitialArea.CurrentQuantity,
-		LastWatered:     lastWatered,
-		CreatedDate:     crop.InitialArea.CreatedDate,
-		LastUpdated:     crop.InitialArea.LastUpdated,
-	}
-
-	cropBatch.MovedArea = movedAreas
-	cropBatch.HarvestedStorage = harvestedStorage
-	cropBatch.Trash = trash
-
-	cropBatch.LastFertilized = nil
-	if !crop.LastFertilized.IsZero() {
-		cropBatch.LastFertilized = &crop.LastFertilized
-	}
-	cropBatch.LastPesticided = nil
-	if !crop.LastPesticided.IsZero() {
-		cropBatch.LastPesticided = &crop.LastPesticided
-	}
-	cropBatch.LastPruned = nil
-	if !crop.LastPruned.IsZero() {
-		cropBatch.LastPruned = &crop.LastPruned
-	}
-
-	cropBatch.ActivityType = CropActivityType{
-		TotalSeeding: totalSeeding,
-		TotalGrowing: totalGrowing,
-		TotalDumped:  totalDumped,
-	}
-
-	notes := make(SortedCropNotes, 0, len(crop.Notes))
-	for _, v := range crop.Notes {
-		notes = append(notes, v)
-	}
-
-	sort.Sort(notes)
-
-	cropBatch.Notes = notes
-
-	cropBatch.Photo = crop.Photo
-
-	return cropBatch, nil
-}
-
 func (a SeedActivity) MarshalJSON() ([]byte, error) {
 	type Alias SeedActivity
 	return json.Marshal(struct {
@@ -570,6 +383,17 @@ func (a HarvestActivity) MarshalJSON() ([]byte, error) {
 
 func (a DumpActivity) MarshalJSON() ([]byte, error) {
 	type Alias DumpActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string `json:"code"`
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a PhotoActivity) MarshalJSON() ([]byte, error) {
+	type Alias PhotoActivity
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`

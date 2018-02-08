@@ -46,15 +46,15 @@ func CreateCropEventStorage() *CropEventStorage {
 }
 
 type CropRead struct {
-	UID        uuid.UUID          `json:"uid"`
-	BatchID    string             `json:"batch_id"`
-	Status     string             `json:"status"`
-	Type       string             `json:"type"`
-	Container  Container          `json:"container"`
-	Inventory  Inventory          `json:"inventory"`
-	AreaStatus AreaStatus         `json:"area_status"`
-	Photos     []domain.CropPhoto `json:"photos"`
-	FarmUID    uuid.UUID          `json:"farm_id"`
+	UID        uuid.UUID   `json:"uid"`
+	BatchID    string      `json:"batch_id"`
+	Status     string      `json:"status"`
+	Type       string      `json:"type"`
+	Container  Container   `json:"container"`
+	Inventory  Inventory   `json:"inventory"`
+	AreaStatus AreaStatus  `json:"area_status"`
+	Photos     []CropPhoto `json:"photos"`
+	FarmUID    uuid.UUID   `json:"farm_id"`
 
 	// Fields to track crop's movement
 	InitialArea      InitialArea        `json:"initial_area"`
@@ -127,6 +127,16 @@ type Inventory struct {
 	Name      string    `json:"name"`
 }
 
+type CropPhoto struct {
+	UID         uuid.UUID `json:"uid"`
+	Filename    string    `json:"filename"`
+	MimeType    string    `json:"mime_type"`
+	Size        int       `json:"size"`
+	Width       int       `json:"width"`
+	Height      int       `json:"height"`
+	Description string    `json:"description"`
+}
+
 type CropReadStorage struct {
 	Lock        *deadlock.RWMutex
 	CropReadMap map[uuid.UUID]CropRead
@@ -147,6 +157,7 @@ const (
 	MoveActivityCode    = "MOVE"
 	HarvestActivityCode = "HARVEST"
 	DumpActivityCode    = "DUMP"
+	PhotoActivityCode   = "PHOTO"
 	WaterActivityCode   = "WATER"
 )
 
@@ -218,6 +229,20 @@ type WaterActivity struct {
 
 func (a WaterActivity) Code() string {
 	return WaterActivityCode
+}
+
+type PhotoActivity struct {
+	UID         uuid.UUID `json:"uid"`
+	Filename    string    `json:"filename"`
+	MimeType    string    `json:"mime_type"`
+	Size        int       `json:"size"`
+	Width       int       `json:"width"`
+	Height      int       `json:"height"`
+	Description string    `json:"description"`
+}
+
+func (a PhotoActivity) Code() string {
+	return PhotoActivityCode
 }
 
 type CropActivityStorage struct {

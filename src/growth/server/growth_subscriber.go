@@ -365,6 +365,29 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		cropRead.Notes = cropNoteTmp
+
+	case domain.CropBatchPhotoCreated:
+		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		cropRead.Photos = append(cropRead.Photos, storage.CropPhoto{
+			UID:         e.UID,
+			Filename:    e.Filename,
+			MimeType:    e.MimeType,
+			Size:        e.Size,
+			Width:       e.Width,
+			Height:      e.Height,
+			Description: e.Description,
+		})
 	}
 
 	err := <-s.CropReadRepo.Save(cropRead)
@@ -519,6 +542,31 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			AreaUID:      e.AreaUID,
 			AreaName:     e.AreaName,
 			WateringDate: e.WateringDate,
+		}
+
+	case domain.CropBatchPhotoCreated:
+		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropActivity.UID = e.CropUID
+		cropActivity.BatchID = cr.BatchID
+		cropActivity.ContainerType = cr.Container.Type
+		cropActivity.CreatedDate = time.Now()
+		cropActivity.ActivityType = storage.PhotoActivity{
+			UID:         e.UID,
+			Filename:    e.Filename,
+			MimeType:    e.MimeType,
+			Size:        e.Size,
+			Width:       e.Width,
+			Height:      e.Height,
+			Description: e.Description,
 		}
 	}
 

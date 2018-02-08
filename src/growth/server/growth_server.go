@@ -106,6 +106,8 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchWatered", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchNoteCreated", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchNoteRemoved", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchPhotoCreated", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchPhotoCreated", s.SaveToCropActivityReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers
@@ -121,7 +123,7 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.POST("/crops/:id/notes", s.SaveCropNotes)
 	g.DELETE("/crops/:crop_id/notes/:note_id", s.RemoveCropNotes)
 	g.POST("/crops/:id/photos", s.UploadCropPhotos)
-	g.GET("/crops/:id/photos", s.GetCropPhotos)
+	g.GET("/crops/:crop_id/photos/:photo_id", s.GetCropPhotos)
 	g.GET("/crops/:id/activities", s.GetCropActivities)
 
 }
@@ -745,30 +747,44 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 }
 
 func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
+	description := c.FormValue("description")
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	// Validate //
 	photo, err := c.FormFile("photo")
 	if err != nil {
 		return Error(c, NewRequestValidationError(REQUIRED, "photo"))
 	}
 
-	result := <-s.CropRepo.FindByID(c.Param("id"))
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	if crop.UID == (uuid.UUID{}) {
+	if cropRead.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
 	// Process
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.CropEvent)
+
+	crop := repository.NewCropBatchFromHistory(events)
+
 	destPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", photo.Filename)
 	err = s.File.Upload(photo, destPath)
-
 	if err != nil {
 		return Error(c, err)
 	}
@@ -778,50 +794,77 @@ func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	cropPhoto := domain.CropPhoto{
-		Filename: photo.Filename,
-		MimeType: photo.Header["Content-Type"][0],
-		Size:     int(photo.Size),
-		Width:    width,
-		Height:   height,
+	err = crop.AddPhoto(
+		photo.Filename,
+		photo.Header["Content-Type"][0],
+		int(photo.Size),
+		width,
+		height,
+		description,
+	)
+	if err != nil {
+		return Error(c, err)
 	}
 
-	crop.Photo = cropPhoto
-
 	// Persists //
-	resultSave := <-s.CropRepo.Save(&crop)
+	resultSave := <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data := make(map[string]CropBatch)
-	cropBatch, err := MapToCropBatch(s, crop)
+	// TRIGGER EVENTS //
+	s.publishUncommittedEvents(crop)
+
+	data := make(map[string]storage.CropRead)
+	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}
-	data["data"] = cropBatch
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
+	cropUID, err := uuid.FromString(c.Param("crop_id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	photoUID, err := uuid.FromString(c.Param("photo_id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
 	// Validate //
-	result := <-s.CropRepo.FindByID(c.Param("id"))
+	result := <-s.CropReadQuery.FindByID(cropUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	crop, ok := result.Result.(domain.Crop)
+	cropRead, ok := result.Result.(storage.CropRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	if crop.Photo.Filename == "" {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "photo"))
+	if cropRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "crop_id"))
+	}
+
+	found := storage.CropPhoto{}
+	for _, v := range cropRead.Photos {
+		if v.UID == photoUID {
+			found = v
+		}
+	}
+
+	if found == (storage.CropPhoto{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "photo_id"))
 	}
 
 	// Process //
-	srcPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", crop.Photo.Filename)
+	srcPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", found.Filename)
 
 	return c.File(srcPath)
 }
