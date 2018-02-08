@@ -343,36 +343,30 @@ func (state *Crop) Transition(event interface{}) {
 		}
 
 	case CropBatchDumped:
-		// Check source area existance. If already exist, then just update it
-		isExist := false
+		isFound := false
 		for i, v := range state.Trash {
-			if v.SourceAreaUID == e.SrcAreaUID {
-				state.Trash[i].Quantity += e.Quantity
-				state.Trash[i].LastUpdated = e.DumpDate
-				isExist = true
+			if v.SourceAreaUID == e.UpdatedTrash.SourceAreaUID {
+				state.Trash[i] = e.UpdatedTrash
+				isFound = true
 			}
 		}
 
-		if !isExist {
-			t := Trash{
-				Quantity:      e.Quantity,
-				SourceAreaUID: e.SrcAreaUID,
-				CreatedDate:   e.DumpDate,
-				LastUpdated:   e.DumpDate,
-			}
-			state.Trash = append(state.Trash, t)
+		if !isFound {
+			state.Trash = append(state.Trash, e.UpdatedTrash)
 		}
 
-		// Reduce the quantity in the area because it has been dumped
-		if state.InitialArea.AreaUID == e.SrcAreaUID {
-			state.InitialArea.CurrentQuantity -= e.Quantity
-		}
-		for i, v := range state.MovedArea {
-			if v.AreaUID == e.SrcAreaUID {
-				state.MovedArea[i].CurrentQuantity -= e.Quantity
+		if e.DumpedAreaType == "INITIAL_AREA" {
+			da := e.DumpedArea.(InitialArea)
+			state.InitialArea = da
+		} else if e.DumpedAreaType == "MOVED_AREA" {
+			da := e.DumpedArea.(MovedArea)
+
+			for i, v := range state.MovedArea {
+				if v.AreaUID == da.AreaUID {
+					state.MovedArea[i] = da
+				}
 			}
 		}
-
 	case CropBatchWatered:
 		if state.InitialArea.AreaUID == e.AreaUID {
 			state.InitialArea.LastWatered = e.WateringDate
@@ -665,16 +659,56 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 		return CropError{Code: CropDumpErrorInvalidQuantity}
 	}
 
+	// Check source area existance. If already exist, then just update it
+	var dumpedArea interface{}
+	updatedTrash := Trash{}
+	dumpDate := time.Now()
+
+	isExist := false
+	for i, v := range c.Trash {
+		if v.SourceAreaUID == srcArea.UID {
+			updatedTrash = v
+			updatedTrash.Quantity = c.Trash[i].Quantity + quantity
+			isExist = true
+		}
+	}
+
+	if !isExist {
+		updatedTrash.Quantity = quantity
+		updatedTrash.SourceAreaUID = srcArea.UID
+		updatedTrash.CreatedDate = dumpDate
+		updatedTrash.LastUpdated = dumpDate
+	}
+
+	// Reduce the quantity in the area because it has been dumped
+	dumpedAreaType := ""
+	if c.InitialArea.AreaUID == srcArea.UID {
+		ia := c.InitialArea
+		ia.CurrentQuantity -= quantity
+		ia.LastUpdated = dumpDate
+
+		dumpedArea = ia
+		dumpedAreaType = "INITIAL_AREA"
+	}
+	for _, v := range c.MovedArea {
+		if v.AreaUID == srcArea.UID {
+			ma := v
+			ma.CurrentQuantity -= quantity
+			ma.LastUpdated = dumpDate
+
+			dumpedArea = ma
+			dumpedAreaType = "MOVED_AREA"
+		}
+	}
+
 	// Process //
 	c.TrackChange(CropBatchDumped{
-		UID:           c.UID,
-		BatchID:       c.BatchID,
-		ContainerType: c.Container.Type.Code(),
-		Quantity:      quantity,
-		SrcAreaUID:    srcArea.UID,
-		SrcAreaName:   srcArea.Name,
-		SrcAreaType:   srcArea.Type,
-		DumpDate:      time.Now(),
+		UID:            c.UID,
+		Quantity:       quantity,
+		UpdatedTrash:   updatedTrash,
+		DumpedArea:     dumpedArea,
+		DumpedAreaType: dumpedAreaType,
+		DumpDate:       time.Now(),
 	})
 
 	return nil

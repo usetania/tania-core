@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/labstack/echo"
 )
@@ -183,40 +184,60 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead = &cl
 
-		// Check source area existance. If already exist, then just update it
-		isExist := false
+		queryResult = <-s.AreaQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		isFound := false
 		for i, v := range cropRead.Trash {
-			if v.SourceAreaUID == e.SrcAreaUID {
-				cropRead.Trash[i].Quantity += e.Quantity
-				cropRead.Trash[i].LastUpdated = e.DumpDate
-				isExist = true
+			if v.SourceAreaUID == e.UpdatedTrash.SourceAreaUID {
+				cropRead.Trash[i] = storage.Trash{
+					Quantity:       e.UpdatedTrash.Quantity,
+					SourceAreaUID:  srcArea.UID,
+					SourceAreaName: srcArea.Name,
+					LastUpdated:    e.DumpDate,
+				}
+
+				isFound = true
 			}
 		}
 
-		if !isExist {
-			t := storage.Trash{
-				Quantity:      e.Quantity,
-				SourceAreaUID: e.SrcAreaUID,
-				CreatedDate:   e.DumpDate,
-				LastUpdated:   e.DumpDate,
-			}
-			cropRead.Trash = append(cropRead.Trash, t)
+		if !isFound {
+			cropRead.Trash = append(cropRead.Trash, storage.Trash{
+				Quantity:       e.UpdatedTrash.Quantity,
+				SourceAreaUID:  srcArea.UID,
+				SourceAreaName: srcArea.Name,
+				CreatedDate:    e.DumpDate,
+				LastUpdated:    e.DumpDate,
+			})
 		}
 
-		// Reduce the quantity in the area because it has been dumped
-		if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
-			cropRead.InitialArea.CurrentQuantity -= e.Quantity
-		}
-		for i, v := range cropRead.MovedArea {
-			if v.AreaUID == e.SrcAreaUID {
-				cropRead.MovedArea[i].CurrentQuantity -= e.Quantity
+		if e.DumpedAreaType == "INITIAL_AREA" {
+			da := e.DumpedArea.(domain.InitialArea)
+			cropRead.InitialArea.CurrentQuantity = da.CurrentQuantity
+			cropRead.InitialArea.LastUpdated = da.LastUpdated
+
+		} else if e.DumpedAreaType == "MOVED_AREA" {
+			da := e.DumpedArea.(domain.MovedArea)
+
+			for i, v := range cropRead.MovedArea {
+				if v.AreaUID == da.AreaUID {
+					cropRead.MovedArea[i].CurrentQuantity = da.CurrentQuantity
+					cropRead.MovedArea[i].LastUpdated = da.LastUpdated
+				}
 			}
 		}
 
-		if e.SrcAreaType == "SEEDING" {
+		if srcArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding -= e.Quantity
 		}
-		if e.SrcAreaType == "GROWING" {
+		if srcArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing -= e.Quantity
 		}
 
@@ -294,13 +315,33 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			HarvestDate:          e.HarvestDate,
 		}
 	case domain.CropBatchDumped:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.AreaQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
 		cropActivity.UID = e.UID
-		cropActivity.BatchID = e.BatchID
-		cropActivity.ContainerType = e.ContainerType
+		cropActivity.BatchID = cr.BatchID
+		cropActivity.ContainerType = cr.Container.Type
 		cropActivity.CreatedDate = time.Now()
 		cropActivity.ActivityType = storage.DumpActivity{
-			SrcAreaUID:  e.SrcAreaUID,
-			SrcAreaName: e.SrcAreaName,
+			SrcAreaUID:  srcArea.UID,
+			SrcAreaName: srcArea.Name,
 			Quantity:    e.Quantity,
 			DumpDate:    e.DumpDate,
 		}

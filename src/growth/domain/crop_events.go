@@ -53,14 +53,12 @@ type CropBatchHarvested struct {
 }
 
 type CropBatchDumped struct {
-	UID           uuid.UUID
-	BatchID       string
-	ContainerType string
-	Quantity      int
-	SrcAreaUID    uuid.UUID
-	SrcAreaName   string
-	SrcAreaType   string
-	DumpDate      time.Time
+	UID            uuid.UUID
+	Quantity       int
+	UpdatedTrash   Trash
+	DumpedArea     interface{}
+	DumpedAreaType string
+	DumpDate       time.Time
 }
 
 type CropBatchWatered struct {
