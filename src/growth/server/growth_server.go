@@ -200,13 +200,19 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(cropBatch)
 
-	data := make(map[string]CropBatch)
-	cb, err := MapToCropBatch(s, *cropBatch)
-	if err != nil {
-		return Error(c, err)
+	// Get From Read Model
+	result := <-s.CropReadQuery.FindByID(cropBatch.UID)
+	if result.Error != nil {
+		return Error(c, result.Error)
 	}
 
-	data["data"] = cb
+	crop, ok := result.Result.(storage.CropRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]storage.CropRead)
+	data["data"] = crop
 
 	return c.JSON(http.StatusOK, data)
 }
