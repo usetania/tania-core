@@ -1,7 +1,7 @@
 <template lang="pug">
   .upload-crop-task
     .modal-header
-      span.h4.font-bold Upload Photo
+      span.h4.font-bold Take Pciture
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
@@ -23,6 +23,7 @@
 
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
 import { StubTask } from '@/stores/stubs'
 import UploadComponent from '@/components/upload'
 export default {
@@ -37,6 +38,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'photoCrop',
+    ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -45,10 +49,15 @@ export default {
       })
     },
     create () {
+      this.task.obj_uid = this.crop.uid
+      this.photoCrop(this.task)
+        .then(this.$parent.$emit('close'))
+        .catch(({ data }) => this.message = data)
     },
     fileSelelected (file) {
       this.task.photo = file
     }
-  }
+  },
+  props: ['crop'],
 }
 </script>

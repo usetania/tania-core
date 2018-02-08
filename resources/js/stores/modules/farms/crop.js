@@ -107,13 +107,15 @@ const actions = {
         }, error => reject(error.response))
     })
   },
-  ApiPhotoCrop ({ commit, state }, payload) {
+  photoCrop ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
       let cropId = payload.obj_uid
+      const formData = new FormData()
+      formData.set('photo', payload.photo)
+      formData.set('description', payload.description)
       FarmApi
-        .ApiMoveCrop(cropId, payload, ({ data }) => {
-          payload = data.data
+        .ApiPhotoCrop(cropId, formData, ({ data }) => {
           resolve(payload)
         }, error => reject(error.response))
     })
