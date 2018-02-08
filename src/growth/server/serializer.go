@@ -125,6 +125,211 @@ func MapToCropActivity(activity storage.CropActivity) CropActivity {
 	return ca
 }
 
+func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) {
+	queryResult := <-s.MaterialQuery.FindByID(crop.InventoryUID)
+	if queryResult.Error != nil {
+		return storage.CropRead{}, queryResult.Error
+	}
+
+	inv, ok := queryResult.Result.(query.CropMaterialQueryResult)
+	if !ok {
+		return storage.CropRead{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	queryResult = <-s.AreaQuery.FindByID(crop.InitialArea.AreaUID)
+	if queryResult.Error != nil {
+		return storage.CropRead{}, queryResult.Error
+	}
+
+	totalSeeding := 0
+	totalGrowing := 0
+	totalDumped := 0
+
+	initialArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+	if !ok {
+		return storage.CropRead{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	if initialArea.Type == "SEEDING" {
+		totalSeeding += crop.InitialArea.CurrentQuantity
+	} else if initialArea.Type == "GROWING" {
+		totalGrowing += crop.InitialArea.CurrentQuantity
+	}
+
+	movedAreas := []storage.MovedArea{}
+	for _, v := range crop.MovedArea {
+		queryResult = <-s.AreaQuery.FindByID(v.AreaUID)
+		if queryResult.Error != nil {
+			return storage.CropRead{}, queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return storage.CropRead{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		if area.Type == "SEEDING" {
+			totalSeeding += v.CurrentQuantity
+		} else if area.Type == "GROWING" {
+			totalGrowing += v.CurrentQuantity
+		}
+
+		var lastWatered *time.Time
+		if !crop.InitialArea.LastWatered.IsZero() {
+			lastWatered = &v.LastWatered
+		}
+
+		var lastFertilized *time.Time
+		if !crop.InitialArea.LastFertilized.IsZero() {
+			lastFertilized = &v.LastFertilized
+		}
+
+		var lastPesticided *time.Time
+		if !crop.InitialArea.LastPesticided.IsZero() {
+			lastPesticided = &v.LastPesticided
+		}
+
+		var lastPruned *time.Time
+		if !crop.InitialArea.LastPruned.IsZero() {
+			lastPruned = &v.LastPruned
+		}
+
+		movedAreas = append(movedAreas, storage.MovedArea{
+			AreaUID:         area.UID,
+			Name:            area.Name,
+			InitialQuantity: v.InitialQuantity,
+			CurrentQuantity: v.CurrentQuantity,
+			LastWatered:     lastWatered,
+			LastFertilized:  lastFertilized,
+			LastPesticided:  lastPesticided,
+			LastPruned:      lastPruned,
+			CreatedDate:     v.CreatedDate,
+			LastUpdated:     v.LastUpdated,
+		})
+	}
+
+	harvestedStorage := []storage.HarvestedStorage{}
+	for _, v := range crop.HarvestedStorage {
+		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
+		if queryResult.Error != nil {
+			return storage.CropRead{}, queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return storage.CropRead{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		harvestedStorage = append(harvestedStorage, storage.HarvestedStorage{
+			Quantity:             v.Quantity,
+			ProducedGramQuantity: v.ProducedGramQuantity,
+			SourceAreaUID:        area.UID,
+			SourceAreaName:       area.Name,
+			CreatedDate:          v.CreatedDate,
+			LastUpdated:          v.LastUpdated,
+		})
+	}
+
+	trash := []storage.Trash{}
+	for _, v := range crop.Trash {
+		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
+		if queryResult.Error != nil {
+			return storage.CropRead{}, queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			return storage.CropRead{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		totalDumped += v.Quantity
+
+		trash = append(trash, storage.Trash{
+			Quantity:       v.Quantity,
+			SourceAreaUID:  area.UID,
+			SourceAreaName: area.Name,
+			CreatedDate:    v.CreatedDate,
+			LastUpdated:    v.LastUpdated,
+		})
+	}
+
+	cropRead := storage.CropRead{}
+	cropRead.UID = crop.UID
+	cropRead.BatchID = crop.BatchID
+	cropRead.Status = crop.Status.Code
+	cropRead.Type = crop.Type.Code
+
+	containerCell := 0
+	switch v := crop.Container.Type.(type) {
+	case domain.Tray:
+		containerCell = v.Cell
+	}
+
+	cropRead.Container = storage.Container{
+		Type:     crop.Container.Type.Code(),
+		Quantity: crop.Container.Quantity,
+		Cell:     containerCell,
+	}
+
+	cropRead.Inventory = storage.Inventory{
+		UID:       inv.UID,
+		PlantType: inv.MaterialSeedPlantTypeCode,
+		Name:      inv.Name,
+	}
+
+	cropRead.AreaStatus = storage.AreaStatus{
+		Seeding: totalSeeding,
+		Growing: totalGrowing,
+		Dumped:  totalDumped,
+	}
+
+	cropRead.Photos = append(cropRead.Photos, crop.Photo)
+	cropRead.FarmUID = crop.FarmUID
+
+	var lastWatered *time.Time
+	if !crop.InitialArea.LastWatered.IsZero() {
+		lastWatered = &crop.InitialArea.LastWatered
+	}
+
+	var lastFertilized *time.Time
+	if !crop.InitialArea.LastFertilized.IsZero() {
+		lastFertilized = &crop.InitialArea.LastFertilized
+	}
+
+	var lastPesticided *time.Time
+	if !crop.InitialArea.LastPesticided.IsZero() {
+		lastPesticided = &crop.InitialArea.LastPesticided
+	}
+
+	var lastPruned *time.Time
+	if !crop.InitialArea.LastPruned.IsZero() {
+		lastPruned = &crop.InitialArea.LastPruned
+	}
+
+	cropRead.InitialArea = storage.InitialArea{
+		AreaUID:         initialArea.UID,
+		Name:            initialArea.Name,
+		InitialQuantity: crop.InitialArea.InitialQuantity,
+		CurrentQuantity: crop.InitialArea.CurrentQuantity,
+		LastWatered:     lastWatered,
+		LastFertilized:  lastFertilized,
+		LastPesticided:  lastPesticided,
+		LastPruned:      lastPruned,
+		CreatedDate:     crop.InitialArea.CreatedDate,
+		LastUpdated:     crop.InitialArea.LastUpdated,
+	}
+
+	cropRead.MovedArea = movedAreas
+	cropRead.HarvestedStorage = harvestedStorage
+	cropRead.Trash = trash
+
+	for i, v := range crop.Notes {
+		cropRead.Notes[i] = v
+	}
+
+	return cropRead, nil
+}
+
 func MapToCropBatch(s *GrowthServer, crop domain.Crop) (CropBatch, error) {
 	queryResult := <-s.MaterialQuery.FindByID(crop.InventoryUID)
 	if queryResult.Error != nil {

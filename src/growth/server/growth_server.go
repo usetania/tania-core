@@ -200,19 +200,13 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(cropBatch)
 
-	// Get From Read Model
-	result := <-s.CropReadQuery.FindByID(cropBatch.UID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	crop, ok := result.Result.(storage.CropRead)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
 	data := make(map[string]storage.CropRead)
-	data["data"] = crop
+	cr, err := MapToCropRead(s, *cropBatch)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -309,18 +303,13 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	// TRIGGER EVENTS
 	s.publishUncommittedEvents(crop)
 
-	result = <-s.CropReadQuery.FindByID(crop.UID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	cropRead, ok = result.Result.(storage.CropRead)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
 	data := make(map[string]storage.CropRead)
-	data["data"] = cropRead
+	cr, err := MapToCropRead(s, *crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -399,18 +388,13 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 	// TRIGGER EVENTS
 	s.publishUncommittedEvents(crop)
 
-	result = <-s.CropReadQuery.FindByID(crop.UID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	cropRead, ok = result.Result.(storage.CropRead)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
 	data := make(map[string]storage.CropRead)
-	data["data"] = cropRead
+	cr, err := MapToCropRead(s, *crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -473,18 +457,13 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 	// TRIGGER EVENTS
 	s.publishUncommittedEvents(crop)
 
-	result = <-s.CropReadQuery.FindByID(crop.UID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	cropRead, ok = result.Result.(storage.CropRead)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
 	data := make(map[string]storage.CropRead)
-	data["data"] = cropRead
+	cr, err := MapToCropRead(s, *crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -547,18 +526,13 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	// TRIGGER EVENTS //
 	s.publishUncommittedEvents(crop)
 
-	result = <-s.CropReadQuery.FindByID(crop.UID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	cropRead, ok = result.Result.(storage.CropRead)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
 	data := make(map[string]storage.CropRead)
-	data["data"] = cropRead
+	cr, err := MapToCropRead(s, *crop)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cr
 
 	return c.JSON(http.StatusOK, data)
 }

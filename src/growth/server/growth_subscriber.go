@@ -65,6 +65,8 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			Name:            srcArea.Name,
 			InitialQuantity: e.Quantity,
 			CurrentQuantity: e.Quantity,
+			CreatedDate:     e.CreatedDate,
+			LastUpdated:     e.CreatedDate,
 		}
 
 		seeding := 0
