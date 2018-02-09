@@ -20,12 +20,12 @@
               label(for="priority") Is this task urgent?
               .radio
                 label.i-checks.i-checks-sm
-                  input#priority(type="radio" name="priority" value="yes" checked="checked" v-model="task.priority" v-validate="'required'")
+                  input#priority(type="radio" name="priority" value="URGENT" checked="checked" v-model="task.priority" v-validate="'required'")
                   i
                   | Yes
               .radio
                 label.i-checks.i-checks-sm
-                  input#priority(type="radio" name="priority" value="no" v-model="task.priority" v-validate="'required'")
+                  input#priority(type="radio" name="priority" value="NORMAL" v-model="task.priority" v-validate="'required'")
                   i
                   | No
         .form-group
@@ -55,7 +55,7 @@
 import { StubTask } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
-import { TaskCategories } from '@/stores/helpers/farms/task'
+import { TaskDomainCategories } from '@/stores/helpers/farms/task'
 
 export default {
   name: "FarmAreaTasksCreate",
@@ -63,7 +63,7 @@ export default {
     return {
       task: Object.assign({}, StubTask),
       options: {
-        taskCategories: Array.from(TaskCategories),
+        taskCategories: Array.from(TaskDomainCategories),
       }
     }
   },
@@ -72,8 +72,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createAreaTask',
       'openPicker',
+      'createTask',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -86,6 +86,11 @@ export default {
       this.$refs.openCal.showCalendar()
     },
     create () {
+      this.task.asset_id = this.area.uid
+      this.task.domain = "AREA"
+      this.createTask(this.task)
+        .then(this.$parent.$emit('close'))
+        .catch(({ data }) => this.message = data)
     },
   },
   props: ['area'],

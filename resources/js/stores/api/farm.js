@@ -80,4 +80,10 @@ export default {
   ApiCreateMaterial: (payload, cbSuccess, cbError) => {
     http.post('farms/inventories/materials/' + payload.type, payload, cbSuccess, cbError)
   },
+  ApiCreateTask: (payload, cbSuccess, cbError) => {
+    http.post('tasks', payload, cbSuccess, cbError)
+  },
+  ApiFetchTask: (cbSuccess, cbError) => {
+    http.get('tasks', cbSuccess, cbError)
+  },
 }
