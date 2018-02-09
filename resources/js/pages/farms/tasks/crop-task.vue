@@ -20,12 +20,12 @@
               label(for="priority") Is this task urgent?
               .radio
                 label.i-checks.i-checks-sm
-                  input#priority(type="radio" name="priority" value="true" checked="checked" v-model="task.priority" v-validate="'required'")
+                  input#priority(type="radio" name="priority" value="URGENT" checked="checked" v-model="task.priority" v-validate="'required'")
                   i
                   | Yes
               .radio
                 label.i-checks.i-checks-sm
-                  input#priority(type="radio" name="priority" value="false" v-model="task.priority" v-validate="'required'")
+                  input#priority(type="radio" name="priority" value="NORMAL" v-model="task.priority" v-validate="'required'")
                   i
                   | No
         .row
