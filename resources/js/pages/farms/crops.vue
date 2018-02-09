@@ -29,23 +29,19 @@
         table.table.m-b
           thead
             tr
-              th(style="width: 13%") Crop Variety
-              th(style="width: 12%") Batch ID
-              th(style="width: 10%") Creation Date
-              th(style="width: 10%") Activity Type
-              th(style="width: 10%") Initial Area
-              th(style="width: 10%") Current Area
+              th Crop Variety
+              th Batch ID
+              th Days Since Seeding
+              th Initial Quantity
+              th Status
           tbody
             tr(v-for="crop in crops")
               td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
               td: span.identifier {{ crop.batch_id }}
-              td {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-              td {{ crop.type }}
-              td: span.areatag {{ crop.initial_area.area.name }}
-              td(v-if="crop.moved_area.length > 0")
-                span.areatag {{ crop.moved_area[crop.moved_area.length-1].area.name }}
-              td(v-else)
-                span.areatag {{ crop.initial_area.area.name }}
+              td {{ crop.initial_area.created_date | moment("from", new Date()) }}
+              td {{ crop.initial_area.initial_quantity }}
+              td {{ crop.area_status.seeding }} Seeding, {{ crop.area_status.growing }} Growing, {{ crop.area_status.dumped }} Dumped
+
 </template>
 
 <script>

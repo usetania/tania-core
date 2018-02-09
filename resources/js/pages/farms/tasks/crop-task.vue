@@ -79,7 +79,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import { StubTask } from '@/stores/stubs'
-import { TaskCategories } from '@/stores/helpers/farms/task'
+import { TaskDomainCategories } from '@/stores/helpers/farms/task'
 import Datepicker from 'vuejs-datepicker';
 export default {
   name: "CropTask",
@@ -99,20 +99,15 @@ export default {
       pesticides: [],
       task: Object.assign({}, StubTask),
       options: {
-        taskCategories: Array.from(TaskCategories),
+        taskCategories: Array.from(TaskDomainCategories),
       }
     }
-  },
-  props: ['crop'],
-  mounted () {
-    this.fetchAreas()
-  },
-  created () {
   },
   methods: {
     ...mapActions([
       'fetchAreas',
       'openPicker',
+      'createTask',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -122,6 +117,11 @@ export default {
       })
     },
     create () {
+      this.task.asset_id = this.crop.uid
+      this.task.domain = "CROP"
+      this.createTask(this.task)
+        .then(this.$parent.$emit('close'))
+        .catch(({ data }) => this.message = data)
     },
     openPicker () {
       this.$refs.openCal.showCalendar()
@@ -135,6 +135,10 @@ export default {
         this.ispesticide = true
       }
     }
-  }
+  },
+  mounted () {
+    this.fetchAreas()
+  },
+  props: ['crop'],
 }
 </script>
