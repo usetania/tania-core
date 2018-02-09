@@ -55,34 +55,39 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 
 	category := "SANITATION"
 
-	assetID, _ := uuid.NewV4()
+	assetID1, _ := uuid.NewV4()
+	assetID2, _ := uuid.NewV4()
+	assetID3, _ := uuid.NewV4()
+	assetID4, _ := uuid.NewV4()
 
-	taskServiceMock.On("FindCropByID", assetID).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
+	taskServiceMock.On("FindCropByID", assetID1).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
 	task1, taskErr1 := domain.CreateTask(
 		taskServiceMock, title, description, due_ptr, priority, taskdomain_crop,
-		category, &assetID)
+		category, &assetID1)
 
-	taskServiceMock.On("FindCropByID", assetID).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
+	taskServiceMock.On("FindCropByID", assetID2).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
 	task2, taskErr2 := domain.CreateTask(
 		taskServiceMock, title, description, due_ptr, priority, taskdomain_crop,
-		category, &assetID)
+		category, &assetID2)
+	task2.SetTaskAsDue()
 
-	taskServiceMock.On("FindAreaByID", assetID).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
+	taskServiceMock.On("FindAreaByID", assetID3).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
 	task3, taskErr3 := domain.CreateTask(
 		taskServiceMock, title, description, due_ptr, priority, taskdomain_area,
-		category, &assetID)
+		category, &assetID3)
 
-	taskServiceMock.On("FindAreaByID", assetID).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
+	taskServiceMock.On("FindAreaByID", assetID4).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
 	task4, taskErr4 := domain.CreateTask(
-		taskServiceMock, title, description, due_ptr, priority, taskdomain_area,
-		category, &assetID)
+		taskServiceMock, title, description, due_ptr, "NORMAL", taskdomain_area,
+		category, &assetID4)
+	task4.SetTaskAsDue()
 
-	taskServiceMock.On("FindAreaByID", assetID).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
+	taskServiceMock.On("FindAreaByID", assetID3).Return(domain.ServiceResult{Result: query.TaskCropQueryResult{UID: inventoryID}})
 	task5, taskErr5 := domain.CreateTask(
 		taskServiceMock, title, description, due_ptr, priority, taskdomain_area,
-		category, &assetID)
+		category, &assetID3)
 
-	var result, foundOne RepositoryResult
+	var result, tc1_result, tc2_result, tc3_result, tc4_result RepositoryResult
 	go func() {
 		// Given
 		<-repo.Save(&task1)
@@ -93,19 +98,45 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 
 		// When
 		result = <-repo.FindAll()
-		fmt.Println(result)
+
+		// Test Case 1
 
 		queryparams := make(map[string]string)
 		queryparams["is_due"] = "false"
 		queryparams["priority"] = "URGENT"
 		queryparams["status"] = "CREATED"
 		queryparams["domain"] = "CROP"
-		queryparams["asset_id"] = assetID.String()
+		queryparams["asset_id"] = assetID1.String()
 
-		foundOne = <-repo.FindTasksWithFilter(queryparams)
-		fmt.Println(foundOne)
+		tc1_result = <-repo.FindTasksWithFilter(queryparams)
+		fmt.Println(tc1_result)
 
+		// Test Case 2 Get all "Due" tasks
+
+		queryparams2 := make(map[string]string)
+		queryparams2["is_due"] = "true"
+
+		tc2_result = <-repo.FindTasksWithFilter(queryparams2)
+		fmt.Println(tc2_result)
+
+		// Test Case 3 Get all tasks under a specific asset
+
+		queryparams3 := make(map[string]string)
+		queryparams3["domain"] = "AREA"
+		queryparams3["asset_id"] = assetID3.String()
+
+		tc3_result = <-repo.FindTasksWithFilter(queryparams3)
+		fmt.Println(tc3_result)
+
+		// Test Case 4 Get all "urgent" tasks
+
+		queryparams4 := make(map[string]string)
+		queryparams4["priority"] = "URGENT"
+
+		tc4_result = <-repo.FindTasksWithFilter(queryparams4)
+		fmt.Println(tc4_result)
 		done <- true
+
 	}()
 
 	// Then
@@ -116,7 +147,19 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 	assert.Nil(t, taskErr4)
 	assert.Nil(t, taskErr5)
 
-	val, ok := foundOne.Result.([]domain.Task)
+	val1, ok := tc1_result.Result.([]domain.Task)
 	assert.Equal(t, ok, true)
-	assert.Equal(t, 2, len(val))
+	assert.Equal(t, 1, len(val1))
+
+	val2, ok := tc2_result.Result.([]domain.Task)
+	assert.Equal(t, ok, true)
+	assert.Equal(t, 2, len(val2))
+
+	val3, ok := tc3_result.Result.([]domain.Task)
+	assert.Equal(t, ok, true)
+	assert.Equal(t, 2, len(val3))
+
+	val4, ok := tc4_result.Result.([]domain.Task)
+	assert.Equal(t, ok, true)
+	assert.Equal(t, 4, len(val4))
 }
