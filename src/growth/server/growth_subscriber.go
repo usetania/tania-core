@@ -119,38 +119,61 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
-			ia := e.UpdatedSrcArea.(domain.InitialArea)
-			cropRead.InitialArea.CurrentQuantity = ia.CurrentQuantity
-			cropRead.InitialArea.LastUpdated = ia.LastUpdated
+			ia, ok := e.UpdatedSrcArea.(domain.InitialArea)
+			if ok {
+				cropRead.InitialArea.CurrentQuantity = ia.CurrentQuantity
+				cropRead.InitialArea.LastUpdated = ia.LastUpdated
+			}
 		}
-		for i, v := range cropRead.MovedArea {
-			ma := e.UpdatedSrcArea.(domain.MovedArea)
 
-			if v.AreaUID == ma.AreaUID {
-				cropRead.MovedArea[i].CurrentQuantity = ma.CurrentQuantity
-				cropRead.MovedArea[i].LastUpdated = ma.LastUpdated
+		for i, v := range cropRead.MovedArea {
+			ma, ok := e.UpdatedSrcArea.(domain.MovedArea)
+
+			if ok {
+				if v.AreaUID == ma.AreaUID {
+					cropRead.MovedArea[i].CurrentQuantity = ma.CurrentQuantity
+					cropRead.MovedArea[i].LastUpdated = ma.LastUpdated
+				}
+			}
+		}
+
+		if cropRead.InitialArea.AreaUID == e.DstAreaUID {
+			ia, ok := e.UpdatedDstArea.(domain.InitialArea)
+			if ok {
+				cropRead.InitialArea.CurrentQuantity = ia.CurrentQuantity
+				cropRead.InitialArea.LastUpdated = ia.LastUpdated
 			}
 		}
 
 		isFound := false
-		updatedDstArea := storage.MovedArea{
-			AreaUID:         dstArea.UID,
-			Name:            dstArea.Name,
-			InitialQuantity: e.UpdatedDstArea.InitialQuantity,
-			CurrentQuantity: e.UpdatedDstArea.CurrentQuantity,
-			CreatedDate:     e.UpdatedDstArea.CreatedDate,
-			LastUpdated:     e.UpdatedDstArea.LastUpdated,
-		}
-
 		for i, v := range cropRead.MovedArea {
-			if v.AreaUID == e.UpdatedDstArea.AreaUID {
-				cropRead.MovedArea[i] = updatedDstArea
-				isFound = true
+			ma, ok := e.UpdatedDstArea.(domain.MovedArea)
+			if ok {
+				if v.AreaUID == e.DstAreaUID {
+					cropRead.MovedArea[i].CurrentQuantity = ma.CurrentQuantity
+					cropRead.MovedArea[i].LastUpdated = ma.LastUpdated
+
+					isFound = true
+				}
 			}
 		}
 
 		if !isFound {
-			cropRead.MovedArea = append(cropRead.MovedArea, updatedDstArea)
+			ma, ok := e.UpdatedDstArea.(domain.MovedArea)
+			if ok {
+				cropRead.MovedArea = append(cropRead.MovedArea, storage.MovedArea{
+					AreaUID:         dstArea.UID,
+					Name:            dstArea.Name,
+					InitialQuantity: ma.InitialQuantity,
+					CurrentQuantity: ma.CurrentQuantity,
+					LastWatered:     &ma.LastWatered,
+					LastPesticided:  &ma.LastPesticided,
+					LastFertilized:  &ma.LastFertilized,
+					LastPruned:      &ma.LastPruned,
+					CreatedDate:     ma.CreatedDate,
+					LastUpdated:     ma.LastUpdated,
+				})
+			}
 		}
 
 		if dstArea.Type == "SEEDING" {

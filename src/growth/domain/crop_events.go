@@ -26,7 +26,7 @@ type CropBatchMoved struct {
 	DstAreaUID     uuid.UUID
 	MovedDate      time.Time
 	UpdatedSrcArea interface{}
-	UpdatedDstArea MovedArea
+	UpdatedDstArea interface{}
 }
 
 type CropBatchHarvested struct {

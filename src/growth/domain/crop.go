@@ -267,27 +267,45 @@ func (state *Crop) Transition(event interface{}) {
 		state.FarmUID = e.FarmUID
 	case CropBatchMoved:
 		if state.InitialArea.AreaUID == e.SrcAreaUID {
-			ia := e.UpdatedSrcArea.(InitialArea)
-			state.InitialArea = ia
+			ia, ok := e.UpdatedSrcArea.(InitialArea)
+			if ok {
+				state.InitialArea = ia
+			}
 		}
-		for i, v := range state.MovedArea {
-			ma := e.UpdatedSrcArea.(MovedArea)
 
-			if v.AreaUID == ma.AreaUID {
-				state.MovedArea[i] = ma
+		for i, v := range state.MovedArea {
+			ma, ok := e.UpdatedSrcArea.(MovedArea)
+			if ok {
+				if v.AreaUID == ma.AreaUID {
+					state.MovedArea[i] = ma
+				}
+			}
+		}
+
+		if state.InitialArea.AreaUID == e.DstAreaUID {
+			ia, ok := e.UpdatedDstArea.(InitialArea)
+			if ok {
+				state.InitialArea = ia
 			}
 		}
 
 		isFound := false
 		for i, v := range state.MovedArea {
-			if v.AreaUID == e.UpdatedDstArea.AreaUID {
-				state.MovedArea[i] = e.UpdatedDstArea
-				isFound = true
+			ma, ok := e.UpdatedDstArea.(MovedArea)
+
+			if ok {
+				if v.AreaUID == ma.AreaUID {
+					state.MovedArea[i] = ma
+					isFound = true
+				}
 			}
 		}
 
 		if !isFound {
-			state.MovedArea = append(state.MovedArea, e.UpdatedDstArea)
+			ma, ok := e.UpdatedDstArea.(MovedArea)
+			if ok {
+				state.MovedArea = append(state.MovedArea, ma)
+			}
 		}
 
 	case CropBatchHarvested:
@@ -544,23 +562,35 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		}
 	}
 
-	isDstExist := false
-	for _, v := range c.MovedArea {
-		if v.AreaUID == dstArea.UID {
-			isDstExist = true
+	var updatedDstArea interface{}
+	isDstFoundInInitial := false
+	isDstFoundInMoved := false
+
+	if c.InitialArea.AreaUID == dstArea.UID {
+		ia := c.InitialArea
+		ia.CurrentQuantity += quantity
+		ia.LastUpdated = movedDate
+
+		updatedDstArea = ia
+		isDstFoundInInitial = true
+	}
+
+	// If Destination not found in the Initial Area,
+	// then we will look at it next in the Moved Area
+	if !isDstFoundInInitial {
+		for _, v := range c.MovedArea {
+			if v.AreaUID == dstArea.UID {
+				da := v
+				da.CurrentQuantity += quantity
+				da.LastUpdated = movedDate
+
+				updatedDstArea = da
+				isDstFoundInMoved = true
+			}
 		}
 	}
 
-	updatedDstArea := MovedArea{}
-	if isDstExist {
-		for _, v := range c.MovedArea {
-			if v.AreaUID == dstArea.UID {
-				updatedDstArea = v
-				updatedDstArea.CurrentQuantity += quantity
-				updatedDstArea.LastUpdated = movedDate
-			}
-		}
-	} else {
+	if !isDstFoundInInitial && !isDstFoundInMoved {
 		updatedDstArea = MovedArea{
 			AreaUID:         dstArea.UID,
 			SourceAreaUID:   srcArea.UID,
