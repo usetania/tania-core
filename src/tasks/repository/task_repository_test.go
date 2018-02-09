@@ -87,7 +87,7 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 		taskServiceMock, title, description, due_ptr, priority, taskdomain_area,
 		category, &assetID3)
 
-	var result, tc1_result, tc2_result, tc3_result, tc4_result RepositoryResult
+	var result, tc1_result, tc2_result, tc3_result, tc4_result, tc5_result RepositoryResult
 	go func() {
 		// Given
 		<-repo.Save(&task1)
@@ -135,6 +135,14 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 
 		tc4_result = <-repo.FindTasksWithFilter(queryparams4)
 		fmt.Println(tc4_result)
+
+		// Test Case 5 Get all "CROP" tasks
+
+		queryparams5 := make(map[string]string)
+		queryparams5["domain"] = "CROP"
+
+		tc5_result = <-repo.FindTasksWithFilter(queryparams5)
+		fmt.Println(tc5_result)
 		done <- true
 
 	}()
@@ -162,4 +170,8 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 	val4, ok := tc4_result.Result.([]domain.Task)
 	assert.Equal(t, ok, true)
 	assert.Equal(t, 4, len(val4))
+
+	val5, ok := tc5_result.Result.([]domain.Task)
+	assert.Equal(t, ok, true)
+	assert.Equal(t, 2, len(val5))
 }
