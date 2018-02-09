@@ -54,7 +54,7 @@ type Material struct {
 	PricePerUnit   Money            `json:"price_per_unit"`
 	Type           MaterialType     `json:"type"`
 	Quantity       MaterialQuantity `json:"quantity"`
-	ExpirationDate *time.Time       `json:"expiration_date"`
+	ExpirationDate *time.Time       `json:"expiration_date,omitempty"`
 	Notes          *string          `json:"notes"`
 	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
@@ -336,6 +336,11 @@ func MapToMaterial(material domain.Material) Material {
 		Amount: material.PricePerUnit.Amount(),
 	}
 
+	m.ExpirationDate = nil
+	if material.ExpirationDate != nil {
+		m.ExpirationDate = material.ExpirationDate
+	}
+
 	switch v := material.Type.(type) {
 	case domain.MaterialTypeSeed:
 		m.Type = MaterialType{
@@ -353,6 +358,7 @@ func MapToMaterial(material domain.Material) Material {
 		}
 	case domain.MaterialTypeGrowingMedium:
 		m.Type = MaterialType{Code: v.Code()}
+		m.ExpirationDate = nil
 	case domain.MaterialTypeLabelAndCropSupport:
 		m.Type = MaterialType{Code: v.Code()}
 	case domain.MaterialTypeSeedingContainer:
@@ -371,11 +377,6 @@ func MapToMaterial(material domain.Material) Material {
 	m.Quantity = MaterialQuantity{
 		Value: material.Quantity.Value,
 		Unit:  material.Quantity.Unit.Code,
-	}
-
-	m.ExpirationDate = nil
-	if material.ExpirationDate != nil {
-		m.ExpirationDate = material.ExpirationDate
 	}
 
 	m.Notes = nil
