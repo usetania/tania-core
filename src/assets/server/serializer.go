@@ -413,15 +413,21 @@ func MapToAvailableSeedMaterial(materials []domain.Material) []AvailableSeedMate
 
 	// Convert domain.Material to AvailableSeedMaterial first with Map
 	for _, v := range materials {
-		s, ok := v.Type.(domain.MaterialTypeSeed)
-
-		if ok {
-			mat := AvailableSeedMaterial{
-				PlantType: s.PlantType.Code,
-				Names:     append(ai[s.PlantType.Code].Names, v.Name),
+		switch mt := v.Type.(type) {
+		case domain.MaterialTypeSeed:
+			asm := AvailableSeedMaterial{
+				PlantType: mt.PlantType.Code,
+				Names:     append(ai[mt.PlantType.Code].Names, v.Name),
 			}
 
-			ai[s.PlantType.Code] = mat
+			ai[mt.PlantType.Code] = asm
+		case domain.MaterialTypePlant:
+			asm := AvailableSeedMaterial{
+				PlantType: mt.PlantType.Code,
+				Names:     append(ai[mt.PlantType.Code].Names, v.Name),
+			}
+
+			ai[mt.PlantType.Code] = asm
 		}
 	}
 
