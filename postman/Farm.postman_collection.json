@@ -305,7 +305,7 @@
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "Brocolli Super Green 3",
+							"value": "Brocolli Super Green x",
 							"type": "text",
 							"description": "required. string."
 						},
@@ -375,6 +375,112 @@
 						"inventories",
 						"materials",
 						"seed"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Create Farm Material Plant",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e075d3c6-7ced-4ec4-82e8-551db06669ac",
+						"type": "text/javascript",
+						"exec": [
+							"var data = JSON.parse(responseBody)",
+							"if (data.data) {",
+							"    postman.setNextRequest(\"Create Area's Crop Batch\")",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "Brocolli Super Green 3",
+							"type": "text",
+							"description": "required. string."
+						},
+						{
+							"key": "plant_type",
+							"value": "VEGETABLE",
+							"type": "text",
+							"description": "required. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE."
+						},
+						{
+							"key": "price_per_unit",
+							"value": "10",
+							"description": "required. float.",
+							"type": "text"
+						},
+						{
+							"key": "currency_code",
+							"value": "EUR",
+							"description": "required. options: EUR",
+							"type": "text"
+						},
+						{
+							"key": "quantity",
+							"value": "10",
+							"description": "required. float.",
+							"type": "text"
+						},
+						{
+							"key": "quantity_unit",
+							"value": "PACKETS",
+							"description": "required. options: UNITS, PACKETS",
+							"type": "text"
+						},
+						{
+							"key": "expiration_date",
+							"value": "2018-01-25",
+							"description": "optional. YYYY-MM-DD",
+							"type": "text"
+						},
+						{
+							"key": "notes",
+							"value": "",
+							"description": "optional. string",
+							"type": "text"
+						},
+						{
+							"key": "is_expense",
+							"value": "false",
+							"description": "optional. boolean",
+							"type": "text"
+						},
+						{
+							"key": "produced_by",
+							"value": "",
+							"description": "optional. string",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/inventories/materials/plant",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"inventories",
+						"materials",
+						"plant"
 					]
 				},
 				"description": null
@@ -1293,7 +1399,7 @@
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{API_HOST}}/farms/inventories/materials/available_seed",
+					"raw": "{{API_HOST}}/farms/inventories/materials/available_plant_type",
 					"host": [
 						"{{API_HOST}}"
 					],
@@ -1301,7 +1407,7 @@
 						"farms",
 						"inventories",
 						"materials",
-						"available_seed"
+						"available_plant_type"
 					]
 				},
 				"description": ""
@@ -1916,7 +2022,7 @@
 						},
 						{
 							"key": "quantity",
-							"value": "5",
+							"value": "1",
 							"description": "Required. int. How much you want to move.",
 							"type": "text"
 						}
@@ -1960,7 +2066,7 @@
 						{
 							"key": "harvest_type",
 							"value": "ALL",
-							"description": "Required. Options: ALL, PARTIAL",
+							"description": "Required. Options: ALL, PARTIAL.\nPARTIAL options won't reduce the quantity of the plant. It just calculate the produced quantity.",
 							"type": "text"
 						},
 						{
