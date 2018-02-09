@@ -25,7 +25,7 @@
               .col-sm-7.m-t.m-b
                 .h3.text-lt.m-b {{ crop.inventory.name }}
                 .identifier {{ crop.batch_id }}
-                small.text-muted.m-t.clear {{ crop.activity_type.total_seeding }} Seeding, {{ crop.activity_type.total_growing }} Growing, 5 Dumped
+                small.text-muted.m-t.clear {{ crop.area_status.seeding }} Seeding, {{ crop.area_status.growing }} Growing, {{ crop.area_status.dumped }} Dumped
               .col-sm-5.m-t.m-b
                 .row
                   .col-sm-6.m-b
@@ -53,7 +53,7 @@
                   .row
                     .col-sm-6
                       small.text-muted Seeding Date
-                      .h4.m-b {{ crop.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                      .h4.m-b {{ crop.initial_area.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                       small.text-muted Last Watering
                       .h4.m-b
                         | 05/12/2017 at 16:42 on 
@@ -61,8 +61,8 @@
                     .col-sm-6
                       small.text-muted Initial Planting
                       .h4.m-b
-                        | {{ crop.initial_area.initial_quantity }} {{ getCropContainer(crop.container.type.code, crop.container.quantity) }} on 
-                        span.areatag {{ crop.initial_area.area.name }}
+                        | {{ crop.initial_area.initial_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
+                        span.areatag {{ crop.initial_area.name }}
                       small.text-muted Current Quantity
                       .h4.m-b
                         | 12 Pots on 
@@ -124,10 +124,6 @@ export default {
       showDumpCropModal: false,
       showHarvestCropModal: false,
       showUploadCropModal: false,
-      showFertilizerCropModal: false,
-      showPesticideCropModal: false,
-      showPruneCropModal: false,
-      showOtherCropModal: false,
     }
   },
   created () {
