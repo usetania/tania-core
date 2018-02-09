@@ -11,7 +11,7 @@ export default {
     http.get('farms/types', cbSuccess, cbError)
   },
   ApiFetchFarmInventories: (cbSuccess, cbError) => {
-    http.get('farms/inventories/materials/available_seed', cbSuccess, cbError)
+    http.get('farms/inventories/materials/available_plant_type', cbSuccess, cbError)
   },
   ApiCreateReservoir: (farmid, payload, cbSuccess, cbError) => {
     http.post('farms/' + farmid + '/reservoirs', payload, cbSuccess, cbError)
