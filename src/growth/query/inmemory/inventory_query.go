@@ -1,7 +1,7 @@
 package inmemory
 
 import (
-	assetdomain "github.com/Tanibox/tania-server/src/assets/domain"
+	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	uuid "github.com/satori/go.uuid"
@@ -24,13 +24,17 @@ func (s MaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.Que
 
 		ci := query.CropMaterialQueryResult{}
 		for _, val := range s.Storage.MaterialMap {
-			// WARNING, domain leakage
-			materialSeed, ok := val.Type.(assetdomain.MaterialTypeSeed)
-
-			if ok && val.UID == inventoryUID {
+			if val.UID == inventoryUID {
 				ci.UID = val.UID
 				ci.Name = val.Name
-				ci.MaterialSeedPlantTypeCode = materialSeed.PlantType.Code
+
+				// WARNING, domain leakage
+				switch v := val.Type.(type) {
+				case assetsdomain.MaterialTypeSeed:
+					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+				case assetsdomain.MaterialTypePlant:
+					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+				}
 			}
 		}
 
@@ -52,12 +56,19 @@ func (q MaterialQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode 
 		ci := query.CropMaterialQueryResult{}
 		for _, val := range q.Storage.MaterialMap {
 			// WARNING, domain leakage
-			materialSeed, ok := val.Type.(assetdomain.MaterialTypeSeed)
-
-			if ok && materialSeed.PlantType.Code == plantTypeCode && val.Name == name {
-				ci.UID = val.UID
-				ci.MaterialSeedPlantTypeCode = materialSeed.PlantType.Code
-				ci.Name = val.Name
+			switch v := val.Type.(type) {
+			case assetsdomain.MaterialTypeSeed:
+				if v.PlantType.Code == plantTypeCode && val.Name == name {
+					ci.UID = val.UID
+					ci.Name = val.Name
+					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+				}
+			case assetsdomain.MaterialTypePlant:
+				if v.PlantType.Code == plantTypeCode && val.Name == name {
+					ci.UID = val.UID
+					ci.Name = val.Name
+					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+				}
 			}
 		}
 
