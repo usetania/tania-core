@@ -80,6 +80,10 @@ type MaterialTypeSeed struct {
 	PlantType domain.PlantType `json:"plant_type"`
 }
 
+type MaterialTypePlant struct {
+	PlantType domain.PlantType `json:"plant_type"`
+}
+
 type MaterialTypeAgrochemical struct {
 	ChemicalType domain.ChemicalType `json:"chemical_type"`
 }
@@ -346,6 +350,13 @@ func MapToMaterial(material domain.Material) Material {
 		m.Type = MaterialType{
 			Code: v.Code(),
 			MaterialTypeDetail: MaterialTypeSeed{
+				PlantType: v.PlantType,
+			},
+		}
+	case domain.MaterialTypePlant:
+		m.Type = MaterialType{
+			Code: v.Code(),
+			MaterialTypeDetail: MaterialTypePlant{
 				PlantType: v.PlantType,
 			},
 		}

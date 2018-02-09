@@ -1,9 +1,8 @@
 package domain
 
-import "errors"
-
 const (
 	MaterialTypeSeedCode                = "SEED"
+	MaterialTypePlantCode               = "PLANT"
 	MaterialTypeGrowingMediumCode       = "GROWING_MEDIUM"
 	MaterialTypeAgrochemicalCode        = "AGROCHEMICAL"
 	MaterialTypeLabelAndCropSupportCode = "LABEL_AND_CROP_SUPPORT"
@@ -27,7 +26,7 @@ func (mt MaterialTypeSeed) Code() string {
 func CreateMaterialTypeSeed(plantType string) (MaterialTypeSeed, error) {
 	pt := GetPlantType(plantType)
 	if pt == (PlantType{}) {
-		return MaterialTypeSeed{}, errors.New("options wrong")
+		return MaterialTypeSeed{}, InventoryMaterialError{InventoryMaterialErrorWrongType}
 	}
 
 	return MaterialTypeSeed{pt}, nil
@@ -110,7 +109,7 @@ func GetChemicalType(code string) ChemicalType {
 func CreateMaterialTypeAgrochemical(chemicalType string) (MaterialTypeAgrochemical, error) {
 	ct := GetChemicalType(chemicalType)
 	if ct == (ChemicalType{}) {
-		return MaterialTypeAgrochemical{}, errors.New("options wrong")
+		return MaterialTypeAgrochemical{}, InventoryMaterialError{InventoryMaterialErrorWrongType}
 	}
 
 	return MaterialTypeAgrochemical{ct}, nil
@@ -168,7 +167,7 @@ func GetContainerType(code string) ContainerType {
 func CreateMaterialTypeSeedingContainer(containerType string) (MaterialTypeSeedingContainer, error) {
 	ct := GetContainerType(containerType)
 	if ct == (ContainerType{}) {
-		return MaterialTypeSeedingContainer{}, errors.New("options wrong")
+		return MaterialTypeSeedingContainer{}, InventoryMaterialError{InventoryMaterialErrorWrongType}
 	}
 
 	return MaterialTypeSeedingContainer{ContainerType: ct}, nil
@@ -186,4 +185,21 @@ type MaterialTypeOther struct {
 
 func (mt MaterialTypeOther) Code() string {
 	return MaterialTypeOtherCode
+}
+
+type MaterialTypePlant struct {
+	PlantType PlantType
+}
+
+func (mt MaterialTypePlant) Code() string {
+	return MaterialTypePlantCode
+}
+
+func CreateMaterialTypePlant(plantType string) (MaterialTypePlant, error) {
+	pt := GetPlantType(plantType)
+	if pt == (PlantType{}) {
+		return MaterialTypePlant{}, InventoryMaterialError{InventoryMaterialErrorWrongType}
+	}
+
+	return MaterialTypePlant{pt}, nil
 }

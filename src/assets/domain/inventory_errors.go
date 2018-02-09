@@ -3,6 +3,7 @@ package domain
 const (
 	InventoryMaterialInvalidPlantType = iota
 	InventoryMaterialInvalidVariety
+	InventoryMaterialErrorWrongType
 )
 
 // InventoryMaterialError is a custom error from Go built-in error
@@ -16,6 +17,8 @@ func (e InventoryMaterialError) Error() string {
 		return "Invalid plant type"
 	case InventoryMaterialInvalidVariety:
 		return "Invalid variety"
+	case InventoryMaterialErrorWrongType:
+		return "Wrong type"
 	default:
 		return "Unrecognized Inventory Material Error Code"
 	}

@@ -77,6 +77,7 @@ const (
 	MaterialUnitBottles    = "BOTTLES"
 	MaterialUnitCubicMetre = "CUBIC_METRE"
 	MaterialUnitPieces     = "PIECES"
+	MaterialUnitUnits      = "UNITS"
 )
 
 type MaterialQuantity struct {
@@ -120,6 +121,11 @@ func MaterialQuantityUnits(materialTypeCode string) []MaterialQuantityUnit {
 	case MaterialTypePostHarvestSupplyCode:
 		return []MaterialQuantityUnit{
 			{Code: MaterialUnitPieces, Label: "Pieces"},
+		}
+	case MaterialTypePlantCode:
+		return []MaterialQuantityUnit{
+			{Code: MaterialUnitUnits, Label: "Units"},
+			{Code: MaterialUnitPackets, Label: "Packets"},
 		}
 	case MaterialTypeOtherCode:
 		return []MaterialQuantityUnit{
