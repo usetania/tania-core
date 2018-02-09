@@ -26,7 +26,7 @@
           .col-xs-6
             .form-group
               label(for="produced_quantity") Quantity
-              input.form-control#produced_quantity(type="text" v-validate="'required|alpha_num_space|min:1'" :class="{'input': true, 'text-danger': errors.has('produced_quantity') }" v-model="task.produced_quantity" name="produced_quantity")
+              input.form-control#produced_quantity(type="text" v-validate="'required|numeric|min:1'" :class="{'input': true, 'text-danger': errors.has('produced_quantity') }" v-model="task.produced_quantity" name="produced_quantity")
               span.help-block.text-danger(v-show="errors.has('produced_quantity')") {{ errors.first('produced_quantity') }}
           .col-xs-6
             .form-group

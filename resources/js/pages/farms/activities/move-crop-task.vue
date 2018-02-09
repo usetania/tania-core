@@ -71,10 +71,10 @@ export default {
       })
     },
     create () {
-      if (this.crop.moved_area.length > 0) {
-        this.task.source_area_id = this.crop.moved_area[this.crop.moved_area.length - 1].area.uid;
+      if (this.crop.moved_area) {
+        this.task.source_area_id = this.crop.moved_area[this.crop.moved_area.length - 1].area_id
       } else {
-        this.task.source_area_id = this.crop.initial_area.area.uid;
+        this.task.source_area_id = this.crop.initial_area.area_id
       }
       this.task.obj_uid = this.crop.uid
       this.moveCrop(this.task)
