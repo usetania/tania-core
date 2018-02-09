@@ -34,7 +34,7 @@ func (q *MaterialQueryInMemory) FindAll() <-chan query.QueryResult {
 	return result
 }
 
-func (q *MaterialQueryInMemory) FindAllSeedMaterialByPlantType(plantType domain.PlantType) <-chan query.QueryResult {
+func (q *MaterialQueryInMemory) FindAllMaterialByPlantType(plantType domain.PlantType) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -43,10 +43,15 @@ func (q *MaterialQueryInMemory) FindAllSeedMaterialByPlantType(plantType domain.
 
 		materials := []domain.Material{}
 		for _, val := range q.Storage.MaterialMap {
-			s, ok := val.Type.(domain.MaterialTypeSeed)
-
-			if ok && s.PlantType == plantType {
-				materials = append(materials, val)
+			switch v := val.Type.(type) {
+			case domain.MaterialTypeSeed:
+				if v.PlantType == plantType {
+					materials = append(materials, val)
+				}
+			case domain.MaterialTypePlant:
+				if v.PlantType == plantType {
+					materials = append(materials, val)
+				}
 			}
 		}
 
@@ -58,7 +63,7 @@ func (q *MaterialQueryInMemory) FindAllSeedMaterialByPlantType(plantType domain.
 	return result
 }
 
-func (q *MaterialQueryInMemory) FindSeedMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan query.QueryResult {
+func (q *MaterialQueryInMemory) FindMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -67,10 +72,15 @@ func (q *MaterialQueryInMemory) FindSeedMaterialByPlantTypeAndName(plantType dom
 
 		material := domain.Material{}
 		for _, val := range q.Storage.MaterialMap {
-			s, ok := val.Type.(domain.MaterialTypeSeed)
-
-			if ok && s.PlantType == plantType && val.Name == name {
-				material = val
+			switch v := val.Type.(type) {
+			case domain.MaterialTypeSeed:
+				if v.PlantType == plantType && val.Name == name {
+					material = val
+				}
+			case domain.MaterialTypePlant:
+				if v.PlantType == plantType && val.Name == name {
+					material = val
+				}
 			}
 		}
 

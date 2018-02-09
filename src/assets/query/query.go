@@ -18,8 +18,8 @@ type CropQuery interface {
 
 type MaterialQuery interface {
 	FindAll() <-chan QueryResult
-	FindAllSeedMaterialByPlantType(plantType domain.PlantType) <-chan QueryResult
-	FindSeedMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan QueryResult
+	FindAllMaterialByPlantType(plantType domain.PlantType) <-chan QueryResult
+	FindMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan QueryResult
 }
 
 type QueryResult struct {
