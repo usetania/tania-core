@@ -1,8 +1,9 @@
 <template lang="pug">
-  .area-tasks-create
+  .tasks-create
     .modal-header
-      h4.font-bold Area: Add New Task on 
-        span.areatag {{ area.name }}
+      h4.font-bold 
+        | {{ asset }}: Add New Task on 
+        span.areatag {{ data.name }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
@@ -45,10 +46,10 @@
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit")
             i.fa.fa-long-arrow-right
-            | Save
+            |  Save
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fa.fa-close
-            | Cancel
+            |  Cancel
 </template>
 
 <script>
@@ -58,7 +59,10 @@ import Datepicker from 'vuejs-datepicker';
 import { TaskDomainCategories } from '@/stores/helpers/farms/task'
 
 export default {
-  name: "FarmAreaTasksCreate",
+  name: "FarmTasksCreate",
+  components: {
+      Datepicker
+  },
   data () {
     return {
       task: Object.assign({}, StubTask),
@@ -66,9 +70,6 @@ export default {
         taskCategories: Array.from(TaskDomainCategories),
       }
     }
-  },
-  components: {
-      Datepicker
   },
   methods: {
     ...mapActions([
@@ -86,14 +87,14 @@ export default {
       this.$refs.openCal.showCalendar()
     },
     create () {
-      this.task.asset_id = this.area.uid
-      this.task.domain = "AREA"
+      this.task.asset_id = this.data.uid
+      this.task.domain = this.asset.toUpperCase()
       this.createTask(this.task)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
   },
-  props: ['area'],
+  props: ['data', 'asset'],
 }
 </script>
 

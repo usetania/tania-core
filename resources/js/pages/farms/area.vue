@@ -1,7 +1,7 @@
 <template lang="pug">
   .area-detail.col(v-if="loading === false")
     modal(v-if="showModal" @close="showModal = false")
-      farmAreaTaskCreate(:area="area")
+      farmAreaTaskCreate(:data="area" :asset="asset")
     .wrapper-md
       .pull-right
         a.btn.btn-sm.m-b-xs.btn-addon.btn-primary.m-r(style="cursor: pointer;" id="show-modal" @click="showModal = true")
@@ -129,6 +129,7 @@ export default {
   name: 'Area',
   data () {
     return {
+      asset: "Area",
       loading: true,
       area: Object.assign({}, StubArea),
       note: Object.assign({}, StubNote),
@@ -137,7 +138,7 @@ export default {
     }
   },
   components: {
-    FarmAreaTaskCreate: () => import('./area-tasks-create.vue'),
+    FarmAreaTaskCreate: () => import('./tasks/task-create.vue'),
     Modal
   },
   computed: {
