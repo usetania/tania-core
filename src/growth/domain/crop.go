@@ -620,7 +620,8 @@ func (c *Crop) Harvest(
 	sourceAreaUID uuid.UUID,
 	harvestType string,
 	producedQuantity float32,
-	producedUnit ProducedUnit) error {
+	producedUnit ProducedUnit,
+	notes string) error {
 
 	// Validate //
 	// Check if source area is exist in DB
@@ -739,12 +740,13 @@ func (c *Crop) Harvest(
 		HarvestedArea:           harvestedArea,
 		HarvestedAreaType:       harvesterdAreaType,
 		HarvestDate:             harvestDate,
+		Notes:                   notes,
 	})
 
 	return nil
 }
 
-func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity int) error {
+func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity int, notes string) error {
 	// Validate //
 	// Check if source area is exist in DB
 	serviceResult := cropService.FindAreaByID(sourceAreaUID)
@@ -830,6 +832,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 		DumpedArea:     dumpedArea,
 		DumpedAreaType: dumpedAreaType,
 		DumpDate:       time.Now(),
+		Notes:          notes,
 	})
 
 	return nil

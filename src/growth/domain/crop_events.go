@@ -37,6 +37,7 @@ type CropBatchHarvested struct {
 	HarvestedArea           interface{}
 	HarvestedAreaType       string
 	HarvestDate             time.Time
+	Notes                   string
 }
 
 type CropBatchDumped struct {
@@ -46,6 +47,7 @@ type CropBatchDumped struct {
 	DumpedArea     interface{}
 	DumpedAreaType string
 	DumpDate       time.Time
+	Notes          string
 }
 
 type CropBatchWatered struct {

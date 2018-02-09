@@ -328,6 +328,7 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 	harvestType := c.FormValue("harvest_type")
 	producedQuantity := c.FormValue("produced_quantity")
 	producedUnit := c.FormValue("produced_unit")
+	notes := c.FormValue("notes")
 
 	// VALIDATE //
 	result := <-s.CropReadQuery.FindByID(cropUID)
@@ -378,7 +379,7 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 
 	crop := repository.NewCropBatchFromHistory(events)
 
-	err = crop.Harvest(s.CropService, srcAreaUID, harvestType, float32(prodQty), prodUnit)
+	err = crop.Harvest(s.CropService, srcAreaUID, harvestType, float32(prodQty), prodUnit, notes)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -411,6 +412,7 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 
 	srcAreaID := c.FormValue("source_area_id")
 	quantity := c.FormValue("quantity")
+	notes := c.FormValue("notes")
 
 	// VALIDATE //
 	result := <-s.CropReadQuery.FindByID(cropUID)
@@ -447,7 +449,7 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 
 	crop := repository.NewCropBatchFromHistory(events)
 
-	err = crop.Dump(s.CropService, srcAreaUID, qty)
+	err = crop.Dump(s.CropService, srcAreaUID, qty, notes)
 	if err != nil {
 		return Error(c, err)
 	}

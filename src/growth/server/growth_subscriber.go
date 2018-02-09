@@ -516,6 +516,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 		cropActivity.BatchID = cr.BatchID
 		cropActivity.ContainerType = cr.Container.Type
 		cropActivity.CreatedDate = time.Now()
+		cropActivity.Description = e.Notes
 		cropActivity.ActivityType = storage.HarvestActivity{
 			SrcAreaUID:           srcArea.UID,
 			SrcAreaName:          srcArea.Name,
@@ -549,6 +550,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 		cropActivity.BatchID = cr.BatchID
 		cropActivity.ContainerType = cr.Container.Type
 		cropActivity.CreatedDate = time.Now()
+		cropActivity.Description = e.Notes
 		cropActivity.ActivityType = storage.DumpActivity{
 			SrcAreaUID:  srcArea.UID,
 			SrcAreaName: srcArea.Name,
