@@ -16,7 +16,6 @@ func NewCropQueryInMemory(s *storage.CropReadStorage) query.CropQuery {
 
 func (s CropQueryInMemory) FindCropByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
-	fmt.Println(uid)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -25,7 +24,6 @@ func (s CropQueryInMemory) FindCropByID(uid uuid.UUID) <-chan query.QueryResult 
 		crop := query.TaskCropQueryResult{}
 
 		for _, val := range s.Storage.CropReadMap {
-			fmt.Println(val)
 			if val.UID == uid {
 				crop.UID = uid
 				crop.BatchID = val.BatchID
