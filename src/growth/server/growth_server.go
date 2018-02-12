@@ -125,6 +125,7 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.POST("/crops/:id/photos", s.UploadCropPhotos)
 	g.GET("/crops/:crop_id/photos/:photo_id", s.GetCropPhotos)
 	g.GET("/crops/:id/activities", s.GetCropActivities)
+	g.GET("/crops/information", s.GetCropsInformation)
 
 }
 
@@ -907,6 +908,23 @@ func (s *GrowthServer) GetCropActivities(c echo.Context) error {
 	for i := range activities {
 		data["data"] = append(data["data"], MapToCropActivity(activities[i]))
 	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) GetCropsInformation(c echo.Context) error {
+	result := <-s.CropReadQuery.FindCropsInformation()
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	cropInf, ok := result.Result.(query.CropInformationQueryResult)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	data := make(map[string]query.CropInformationQueryResult)
+	data["data"] = cropInf
 
 	return c.JSON(http.StatusOK, data)
 }

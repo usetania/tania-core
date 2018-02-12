@@ -25,6 +25,7 @@ type CropReadQuery interface {
 	FindByBatchID(batchID string) <-chan QueryResult
 	FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryResult
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
+	FindCropsInformation() <-chan QueryResult
 }
 
 type CropActivityQuery interface {
@@ -98,6 +99,11 @@ type Inventory struct {
 	UID       uuid.UUID `json:"uid"`
 	PlantType string    `json:"plant_type"`
 	Name      string    `json:"name"`
+}
+
+type CropInformationQueryResult struct {
+	TotalHarvestProduced float32 `json:"total_harvest_produced"`
+	TotalPlantVariety    int     `json:"total_plant_variety"`
 }
 
 type CropFarmQueryResult struct {
