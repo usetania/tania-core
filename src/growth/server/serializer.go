@@ -123,22 +123,22 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 		}
 
 		var lastWatered *time.Time
-		if !crop.InitialArea.LastWatered.IsZero() {
+		if !v.LastWatered.IsZero() {
 			lastWatered = &v.LastWatered
 		}
 
 		var lastFertilized *time.Time
-		if !crop.InitialArea.LastFertilized.IsZero() {
+		if !v.LastFertilized.IsZero() {
 			lastFertilized = &v.LastFertilized
 		}
 
 		var lastPesticided *time.Time
-		if !crop.InitialArea.LastPesticided.IsZero() {
+		if !v.LastPesticided.IsZero() {
 			lastPesticided = &v.LastPesticided
 		}
 
 		var lastPruned *time.Time
-		if !crop.InitialArea.LastPruned.IsZero() {
+		if !v.LastPruned.IsZero() {
 			lastPruned = &v.LastPruned
 		}
 
