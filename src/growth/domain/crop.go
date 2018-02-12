@@ -734,6 +734,7 @@ func (c *Crop) Harvest(
 	// Process //
 	c.TrackChange(CropBatchHarvested{
 		UID:                     c.UID,
+		HarvestType:             ht.Code,
 		HarvestedQuantity:       harvestedQuantity,
 		ProducedGramQuantity:    totalProduced,
 		UpdatedHarvestedStorage: harvestedStorage,

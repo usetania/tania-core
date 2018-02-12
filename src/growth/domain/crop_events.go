@@ -31,6 +31,7 @@ type CropBatchMoved struct {
 
 type CropBatchHarvested struct {
 	UID                     uuid.UUID
+	HarvestType             string
 	HarvestedQuantity       int
 	ProducedGramQuantity    float32
 	UpdatedHarvestedStorage HarvestedStorage

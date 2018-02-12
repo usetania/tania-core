@@ -199,6 +199,7 @@ func (a MoveActivity) Code() string {
 }
 
 type HarvestActivity struct {
+	Type                 string    `json:"type"`
 	SrcAreaUID           uuid.UUID `json:"source_area_id"`
 	SrcAreaName          string    `json:"source_area_name"`
 	Quantity             int       `json:"quantity"`

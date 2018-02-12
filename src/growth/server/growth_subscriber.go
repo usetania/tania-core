@@ -520,6 +520,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 		cropActivity.CreatedDate = time.Now()
 		cropActivity.Description = e.Notes
 		cropActivity.ActivityType = storage.HarvestActivity{
+			Type:                 e.HarvestType,
 			SrcAreaUID:           srcArea.UID,
 			SrcAreaName:          srcArea.Name,
 			Quantity:             e.HarvestedQuantity,
