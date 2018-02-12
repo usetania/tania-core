@@ -305,7 +305,7 @@
 					"urlencoded": [
 						{
 							"key": "name",
-							"value": "Brocolli Super Green x",
+							"value": "Brocolli Super Green 3",
 							"type": "text",
 							"description": "required. string."
 						},
@@ -1509,9 +1509,9 @@
 					"formdata": [
 						{
 							"key": "photo",
+							"value": "",
 							"description": "Required",
-							"type": "file",
-							"src": "Screen Shot 2018-02-08 at 8.58.50 PM.png"
+							"type": "file"
 						},
 						{
 							"key": "description",
@@ -1912,7 +1912,451 @@
 				},
 				"description": null
 			},
-			"response": []
+			"response": [
+				{
+					"id": "79f83289-d120-44fe-b380-219132ac4a3a",
+					"name": "Get Tasks under Asset",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/search?domain=CROP&asset_id={{AREA_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"search"
+							],
+							"query": [
+								{
+									"key": "is_due",
+									"value": "false",
+									"equals": true,
+									"description": "boolean: true or false",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"equals": true,
+									"description": "string: URGENT or NORMAL",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"equals": true,
+									"description": "string: CREATED, CANCELLED or COMPLETED",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"equals": true,
+									"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR"
+								},
+								{
+									"key": "asset_id",
+									"value": "{{AREA_ID}}",
+									"equals": true,
+									"description": "asset uid (must match domain)"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"name": "Access-Control-Allow-Origin",
+							"description": ""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, must-revalidate",
+							"name": "Cache-Control",
+							"description": ""
+						},
+						{
+							"key": "Content-Length",
+							"value": "489",
+							"name": "Content-Length",
+							"description": ""
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8",
+							"name": "Content-Type",
+							"description": ""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+							"name": "Date",
+							"description": ""
+						},
+						{
+							"key": "Expires",
+							"value": "0",
+							"name": "Expires",
+							"description": ""
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache",
+							"name": "Pragma",
+							"description": ""
+						},
+						{
+							"key": "Vary",
+							"value": "Origin",
+							"name": "Vary",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"responseTime": "78",
+					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+				},
+				{
+					"id": "239b5f6b-e821-4932-ac43-3f9f1f7aba65",
+					"name": "Get Tasks that are \"due\"",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/search?is_due=false",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"search"
+							],
+							"query": [
+								{
+									"key": "is_due",
+									"value": "false",
+									"equals": true,
+									"description": "boolean: true or false"
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"equals": true,
+									"description": "string: URGENT or NORMAL",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"equals": true,
+									"description": "string: CREATED, CANCELLED or COMPLETED",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"equals": true,
+									"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "{{AREA_ID}}",
+									"equals": true,
+									"description": "asset uid (must match domain)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"name": "Access-Control-Allow-Origin",
+							"description": ""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, must-revalidate",
+							"name": "Cache-Control",
+							"description": ""
+						},
+						{
+							"key": "Content-Length",
+							"value": "489",
+							"name": "Content-Length",
+							"description": ""
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8",
+							"name": "Content-Type",
+							"description": ""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+							"name": "Date",
+							"description": ""
+						},
+						{
+							"key": "Expires",
+							"value": "0",
+							"name": "Expires",
+							"description": ""
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache",
+							"name": "Pragma",
+							"description": ""
+						},
+						{
+							"key": "Vary",
+							"value": "Origin",
+							"name": "Vary",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"responseTime": "78",
+					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+				},
+				{
+					"id": "80394221-8698-4bb1-b981-55b71d9aeea4",
+					"name": "Get Tasks that are \"URGENT\"",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/search?priority=URGENT",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"search"
+							],
+							"query": [
+								{
+									"key": "is_due",
+									"value": "false",
+									"equals": true,
+									"description": "boolean: true or false",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"equals": true,
+									"description": "string: URGENT or NORMAL"
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"equals": true,
+									"description": "string: CREATED, CANCELLED or COMPLETED",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"equals": true,
+									"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "{{AREA_ID}}",
+									"equals": true,
+									"description": "asset uid (must match domain)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"name": "Access-Control-Allow-Origin",
+							"description": ""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, must-revalidate",
+							"name": "Cache-Control",
+							"description": ""
+						},
+						{
+							"key": "Content-Length",
+							"value": "489",
+							"name": "Content-Length",
+							"description": ""
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8",
+							"name": "Content-Type",
+							"description": ""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+							"name": "Date",
+							"description": ""
+						},
+						{
+							"key": "Expires",
+							"value": "0",
+							"name": "Expires",
+							"description": ""
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache",
+							"name": "Pragma",
+							"description": ""
+						},
+						{
+							"key": "Vary",
+							"value": "Origin",
+							"name": "Vary",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"responseTime": "78",
+					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+				},
+				{
+					"id": "f758c191-c521-4586-b702-cdc60a3267b8",
+					"name": "Get Tasks under \"CROP\"",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/search?domain=CROP",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"search"
+							],
+							"query": [
+								{
+									"key": "is_due",
+									"value": "false",
+									"equals": true,
+									"description": "boolean: true or false",
+									"disabled": true
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"equals": true,
+									"description": "string: URGENT or NORMAL",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"equals": true,
+									"description": "string: CREATED, CANCELLED or COMPLETED",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"equals": true,
+									"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR"
+								},
+								{
+									"key": "asset_id",
+									"value": "{{AREA_ID}}",
+									"equals": true,
+									"description": "asset uid (must match domain)",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*",
+							"name": "Access-Control-Allow-Origin",
+							"description": ""
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, must-revalidate",
+							"name": "Cache-Control",
+							"description": ""
+						},
+						{
+							"key": "Content-Length",
+							"value": "489",
+							"name": "Content-Length",
+							"description": ""
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8",
+							"name": "Content-Type",
+							"description": ""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+							"name": "Date",
+							"description": ""
+						},
+						{
+							"key": "Expires",
+							"value": "0",
+							"name": "Expires",
+							"description": ""
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache",
+							"name": "Pragma",
+							"description": ""
+						},
+						{
+							"key": "Vary",
+							"value": "Origin",
+							"name": "Vary",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"responseTime": "78",
+					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+				}
+			]
 		},
 		{
 			"name": "Get Task By ID",
@@ -2080,6 +2524,12 @@
 							"value": "Kg",
 							"description": "Required: Options: Kg, Gr",
 							"type": "text"
+						},
+						{
+							"key": "notes",
+							"value": "This is great season",
+							"description": "Optiona. String",
+							"type": "text"
 						}
 					]
 				},
@@ -2122,6 +2572,12 @@
 							"key": "quantity",
 							"value": "1",
 							"description": "Required. int.",
+							"type": "text"
+						},
+						{
+							"key": "notes",
+							"value": "Need to throw this plant it decays",
+							"description": "Optional. String",
 							"type": "text"
 						}
 					]
@@ -2201,6 +2657,27 @@
 						"crops",
 						"{{CROP_ID}}",
 						"activities"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Crops Information",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/information",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"information"
 					]
 				},
 				"description": ""
