@@ -29,6 +29,10 @@ func (m TaskServiceMock) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(domain.ServiceResult)
 }
+func (m TaskServiceMock) FindReservoirByID(uid uuid.UUID) domain.ServiceResult {
+	args := m.Called(uid)
+	return args.Get(0).(domain.ServiceResult)
+}
 
 func TestTaskInMemoryFindWithFilter(t *testing.T) {
 	taskServiceMock := new(TaskServiceMock)
