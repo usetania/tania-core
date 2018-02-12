@@ -104,7 +104,6 @@ func CreateTaskDomainReservoir() (TaskDomainReservoir, error) {
 
 // validateAssetID
 func validateDomainAssetID(taskService TaskService, assetid uuid.UUID, taskdomain string) error {
-
 	if taskdomain == "" {
 		return TaskError{TaskErrorDomainEmptyCode}
 	}
@@ -132,6 +131,14 @@ func validateDomainAssetID(taskService TaskService, assetid uuid.UUID, taskdomai
 		if serviceResult.Error != nil {
 			return serviceResult.Error
 		}
+	case TaskDomainReservoirCode:
+
+		serviceResult := taskService.FindReservoirByID(assetid)
+
+		if serviceResult.Error != nil {
+			return serviceResult.Error
+		}
+
 	default:
 		return TaskError{TaskErrorInvalidDomainCode}
 	}

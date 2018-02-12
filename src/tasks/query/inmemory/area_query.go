@@ -26,11 +26,6 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			if val.UID == uid {
 				area.UID = uid
 				area.Name = val.Name
-				area.Size.Value = val.Size.Value
-				area.Size.Symbol = val.Size.Unit.Symbol
-				area.Type = val.Type.Code
-				area.Location = val.Location.Code
-				area.FarmUID = val.Farm.UID
 			}
 		}
 

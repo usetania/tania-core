@@ -7,34 +7,30 @@ import (
 )
 
 type CropQueryInMemory struct {
-	Storage *storage.CropStorage
+	Storage *storage.CropReadStorage
 }
 
-func NewCropQueryInMemory(s *storage.CropStorage) query.CropQuery {
+func NewCropQueryInMemory(s *storage.CropReadStorage) query.CropQuery {
 	return CropQueryInMemory{Storage: s}
 }
 
 func (s CropQueryInMemory) FindCropByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
+	fmt.Println(uid)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		crop := query.TaskCropQueryResult{}
-		for _, val := range s.Storage.CropMap {
+
+		for _, val := range s.Storage.CropReadMap {
+			fmt.Println(val)
 			if val.UID == uid {
 				crop.UID = uid
 				crop.BatchID = val.BatchID
-				crop.Status = val.Status.Code
-				crop.Type = val.Type.Code
-				crop.Container.Quantity = val.Container.Quantity
-				crop.Container.Type = val.Container.Type.Code()
-				crop.InventoryUID = val.InventoryUID
-				crop.FarmUID = val.FarmUID
 			}
 		}
-
 		result <- query.QueryResult{Result: crop}
 
 		close(result)

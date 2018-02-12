@@ -6,29 +6,31 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type MaterialQueryInMemory struct {
-	Storage *storage.MaterialStorage
+type ReservoirQueryInMemory struct {
+	Storage *storage.ReservoirStorage
 }
 
-func NewMaterialQueryInMemory(s *storage.MaterialStorage) query.MaterialQuery {
-	return MaterialQueryInMemory{Storage: s}
+func NewReservoirQueryInMemory(s *storage.ReservoirStorage) query.ReservoirQuery {
+	return ReservoirQueryInMemory{Storage: s}
 }
 
-func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
+func (s ReservoirQueryInMemory) FindReservoirByID(reservoirUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
+
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		ci := query.TaskMaterialQueryResult{}
-		for _, val := range s.Storage.MaterialMap {
+		ci := query.TaskReservoirQueryResult{}
+		for _, val := range s.Storage.ReservoirMap {
 			// WARNING, domain leakage
 
-			if val.UID == inventoryUID {
+			if val.UID == reservoirUID {
 				ci.UID = val.UID
 				ci.Name = val.Name
 			}
 		}
+
 		result <- query.QueryResult{Result: ci}
 
 		close(result)

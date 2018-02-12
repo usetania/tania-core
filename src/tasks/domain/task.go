@@ -9,6 +9,7 @@ type TaskService interface {
 	FindAreaByID(uid uuid.UUID) ServiceResult
 	FindCropByID(uid uuid.UUID) ServiceResult
 	FindMaterialByID(uid uuid.UUID) ServiceResult
+	FindReservoirByID(uid uuid.UUID) ServiceResult
 }
 
 // ServiceResult is the container for service result
@@ -243,6 +244,12 @@ func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain str
 		case TaskDomainInventoryCode:
 
 			serviceResult := taskService.FindMaterialByID(*assetid)
+
+			if serviceResult.Error != nil {
+				return serviceResult.Error
+			}
+		case TaskDomainReservoirCode:
+			serviceResult := taskService.FindReservoirByID(*assetid)
 
 			if serviceResult.Error != nil {
 				return serviceResult.Error

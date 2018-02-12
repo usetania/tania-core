@@ -22,9 +22,10 @@ type TaskServer struct {
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
 func NewTaskServer(
-	cropStorage *cropstorage.CropStorage,
+	cropStorage *cropstorage.CropReadStorage,
 	areaStorage *assetsstorage.AreaStorage,
-	materialStorage *assetsstorage.MaterialStorage) (*TaskServer, error) {
+	materialStorage *assetsstorage.MaterialStorage,
+	reservoirStorage *assetsstorage.ReservoirStorage) (*TaskServer, error) {
 
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
 	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
@@ -32,11 +33,13 @@ func NewTaskServer(
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
+	reservoirQuery := inmemory.NewReservoirQueryInMemory(reservoirStorage)
 
 	taskService := service.TaskServiceInMemory{
-		CropQuery:     cropQuery,
-		AreaQuery:     areaQuery,
-		MaterialQuery: materialQuery,
+		CropQuery:      cropQuery,
+		AreaQuery:      areaQuery,
+		MaterialQuery:  materialQuery,
+		ReservoirQuery: reservoirQuery,
 	}
 	return &TaskServer{
 		TaskRepo:    taskRepo,

@@ -9,9 +9,10 @@ import (
 // TaskService handles task behaviours that needs external interaction to be worked
 
 type TaskServiceInMemory struct {
-	CropQuery     query.CropQuery
-	AreaQuery     query.AreaQuery
-	MaterialQuery query.MaterialQuery
+	CropQuery      query.CropQuery
+	AreaQuery      query.AreaQuery
+	MaterialQuery  query.MaterialQuery
+	ReservoirQuery query.ReservoirQuery
 }
 
 func (s TaskServiceInMemory) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
@@ -92,5 +93,32 @@ func (s TaskServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResul
 
 	return domain.ServiceResult{
 		Result: material,
+	}
+}
+
+func (s TaskServiceInMemory) FindReservoirByID(uid uuid.UUID) domain.ServiceResult {
+	result := <-s.ReservoirQuery.FindReservoirByID(uid)
+
+	if result.Error != nil {
+		return domain.ServiceResult{
+			Error: result.Error,
+		}
+	}
+
+	reservoir, ok := result.Result.(query.TaskReservoirQueryResult)
+	if !ok {
+		return domain.ServiceResult{
+			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
+		}
+	}
+
+	if reservoir == (query.TaskReservoirQueryResult{}) {
+		return domain.ServiceResult{
+			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
+		}
+	}
+
+	return domain.ServiceResult{
+		Result: reservoir,
 	}
 }

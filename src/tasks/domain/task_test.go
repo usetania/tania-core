@@ -25,6 +25,10 @@ func (m TaskServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
+func (m TaskServiceMock) FindReservoirByID(uid uuid.UUID) ServiceResult {
+	args := m.Called(uid)
+	return args.Get(0).(ServiceResult)
+}
 
 func TestCreateTask(t *testing.T) {
 	taskServiceMock := new(TaskServiceMock)
