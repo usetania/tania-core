@@ -6,6 +6,7 @@ import FarmApi from '@/stores/api/farm'
 const state = {
   crops: [],
   cropnotes: [],
+  cropactivities: [],
 }
 
 const getters = {
@@ -120,6 +121,14 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  fetchActivities ({ commit, state, getters }, cropId) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi.ApiFetchActivity(cropId, ({ data }) => {
+        resolve(data)
+      }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
@@ -137,7 +146,13 @@ const mutations = {
   },
   [types.DELETE_CROP_NOTES] (state, payload) {
     state.cropnotes.push(payload)
-  }
+  },
+  [types.FETCH_CROP_ACTIVITIES] (state, payload) {
+    state.cropactivities = payload
+  },
+  [types.CREATE_CROP_ACTIVITIES] (state, payload) {
+    state.cropactivities.push(payload)
+  },
 }
 
 export default {

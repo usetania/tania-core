@@ -86,4 +86,7 @@ export default {
   ApiFetchTask: (cbSuccess, cbError) => {
     http.get('tasks', cbSuccess, cbError)
   },
+  ApiFetchActivity: (cropid, cbSuccess, cbError) => {
+    http.get('farms/crops/'+ cropid +'/activities', cbSuccess, cbError)
+  },
 }

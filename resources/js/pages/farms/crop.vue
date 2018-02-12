@@ -77,30 +77,87 @@
                   // ACTIVITY
                   .h4.font-bold.m-b.clearfix Activity
                   ul.list-group.no-bg.no-borders.pull-in
-                    li.list-group-item
-                      .row
+                    li.list-group-item(v-for="activity in activities")
+                      // MOVE
+                      .row(v-if="activity.activity_type.code == 'MOVE'")
                         .col-xs-1.text-center
-                          i.fa.fa-medkit.block.m-b.m-t
+                          i.fa.fa-exchange-alt.block.m-b.m-t
                         .col-xs-11
                           div
-                            span.areatag-sm Frontyard Garden
-                            i.fa.fa-long-arrow-alt-right
-                            |  Prune leaves from bottom part to center, and bend the stems.
-                          p.small
-                            span#moreless4.hide
-                              | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            | Moved 
+                            u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
+                            |  from 
+                            span.areatag-sm {{ activity.activity_type.source_area_name }}
+                            |  to 
+                            span.areatag-sm {{ activity.activity_type.destination_area_name }}
+                          small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                      // SEEDING
+                      .row(v-if="activity.activity_type.code == 'SEED'")
+                        .col-xs-1.text-center
+                          i.fa.fa-utensil-spoon.block.m-b.m-t
+                        .col-xs-11
                           div
-                            a(href="" ui-toggle-class="show" target="#moreless4")
+                            | Seeded 
+                            u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
+                            |  of 
+                            span.identifier-sm {{ activity.batch_id }}
+                            |  on 
+                            span.areatag-sm {{ activity.activity_type.area_name }}
+                          small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                      // DUMP
+                      .row(v-if="activity.activity_type.code == 'DUMP'")
+                        .col-xs-1.text-center
+                          i.fa.fa-trash.block.m-b.m-t
+                        .col-xs-11
+                          div
+                            | Dumped 
+                            u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
+                            |  on 
+                            span.areatag-sm {{ activity.activity_type.source_area_name }}
+                          p.small(v-if="activity.clicked")
+                            span {{ activity.description }}
+                          p
+                            a(@click="toggle(activity)")
                               small.text
                                 | Read details 
                                 i.fa.fa-angle-down
                               small.text-active
                                 | Close details 
                                 i.fa.fa-angle-up
-                          small.text-muted 02/02/2018 at 16:21
+                          small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                      // PHOTO
+                      .row(v-if="activity.activity_type.code == 'PHOTO'")
+                        .col-xs-1.text-center
+                          i.fa.fa-camera.block.m-b.m-t
+                        .col-xs-11 
+                          p.small(v-if="activity.clicked")
+                            span {{ activity.activity_type.description }}
+                          div
+                            a(@click="toggle(activity)")
+                              small.text
+                                | Read details 
+                                i.fa.fa-angle-down
+                              small.text-active
+                                | Close details 
+                                i.fa.fa-angle-up
+                          small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                          img.img-full.m-t.m-b(:src="'/api/farms/crops/' + crop.uid + '/photos/' + activity.activity_type.uid")
+                      // HARVEST
+                      .row(v-if="activity.activity_type.code == 'HARVEST'")
+                        .col-xs-1.text-center
+                          i.fa.fa-cut.block.m-b.m-t
+                        .col-xs-11
+                          div
+                            | Harvested 
+                            u Partial
+                            |  of 
+                            b {{ activity.activity_type.produced_gram_quantity }} Grams
+                            |  on 
+                            span.areatag-sm {{ activity.activity_type.source_area_name }}
+                          small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
 </template>
 <script>
-import { FindContainer } from '@/stores/helpers/farms/crop'
+import { FindContainer, AddClicked } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop, StubNote } from '@/stores/stubs'
 import Modal from '@/components/modal'
@@ -124,33 +181,45 @@ export default {
       showDumpCropModal: false,
       showHarvestCropModal: false,
       showUploadCropModal: false,
+      activities: [],
     }
   },
   created () {
-    this.getCropByUid(this.$route.params.id)
-      .then(({ data }) =>  {
-        this.loading = false
-        this.crop = data
-      })
-      .catch(error => console.log(error))
+    this.loadActivities(this.$route.params.id)
   },
   methods: {
     ...mapActions([
       'closeMoveCrop',
+      'fetchActivities',
       'getCropByUid',
+      'loadActivities',
+      'toggle',
     ]),
-    getCropContainer(key, count) {
-      return FindContainer(key).label + ((count != 1)? 's':'')
-    },
-    closeModal() {
+    closeModal () {
       this.showMoveCropModal = false
       this.showDumpCropModal = false
       this.showHarvestCropModal = false
       this.showUploadCropModal = false
-      this.getCropByUid(this.crop.uid)
+      this.loadActivities (this.crop.uid)
+    },
+    getCropContainer (key, count) {
+      return FindContainer(key).label + ((count != 1)? 's':'')
+    },
+    loadActivities (cropId) {
+      this.getCropByUid(cropId)
         .then(({ data }) =>  {
           this.crop = data
+          this.fetchActivities(cropId)
+            .then(({ data }) =>  {
+              this.loading = false
+              this.activities = AddClicked(data)
+            })
+            .catch(error => console.log(error))
         })
+        .catch(error => console.log(error))
+    },
+    toggle (data) {
+      data.clicked = !data.clicked
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
