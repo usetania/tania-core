@@ -64,12 +64,12 @@
                         | {{ crop.initial_area.initial_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
                         span.areatag {{ crop.initial_area.name }}
                       small.text-muted Current Quantity
-                      .h4.m-b
-                        | 12 Pots on 
-                        span.areatag Florania
-                      .h4
-                        | 13 Pots on 
-                        span.areatag Frontyard Garden
+                      .h4(v-if="crop.initial_area.current_quantity > 0")
+                        | {{ crop.initial_area.current_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
+                        span.areatag {{ crop.initial_area.name }}
+                      .h4(v-for="area in crop.moved_area" v-if="area.current_quantity > 0")
+                        | {{ area.current_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
+                        span.areatag {{ area.name }}
             .row.m-t
               // ACTIVITY FEEDS
               .col-sm-12
