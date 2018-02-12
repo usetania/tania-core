@@ -321,6 +321,8 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			cropRead.AreaStatus.Growing -= e.Quantity
 		}
 
+		cropRead.AreaStatus.Dumped += e.Quantity
+
 	case domain.CropBatchWatered:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
