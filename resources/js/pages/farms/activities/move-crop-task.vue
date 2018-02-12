@@ -8,7 +8,13 @@
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
-          label(for="dest_area_id") Select area to move this crop
+          label(for="source_area_id") Select source area
+          select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('source_area_id') }" v-model="task.source_area_id" name="source_area_id" @change="areaChange($event.target.value)")
+            option(value="") Please select area
+            option(v-for="area in current_areas" :value="area.area_id") {{ area.name }}
+          span.help-block.text-danger(v-show="errors.has('source_area_id')") {{ errors.first('source_area_id') }}
+        .form-group
+          label(for="destination_area_id") Select destination area
           select.form-control#destination_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('destination_area_id') }" v-model="task.destination_area_id" name="destination_area_id")
             option(value="") Please select area
             option(v-for="area in areas" :value="area.uid") {{ area.name }}
@@ -44,7 +50,14 @@ export default {
   },
   created () {
     this.task.quantity = 1
-    this.current_areas = this.areas
+    if (this.crop.initial_area.current_quantity > 0) {
+      this.current_areas.push(this.crop.initial_area)
+    }
+    for (var i = 0; i < this.crop.moved_area.length; i++) {
+      if (this.crop.moved_area[i].current_quantity > 0) {
+        this.current_areas.push(this.crop.moved_area[i])
+      }
+    }
   },
   data () {
     return {
@@ -71,18 +84,19 @@ export default {
       })
     },
     create () {
-      if (this.crop.moved_area) {
-        this.task.source_area_id = this.crop.moved_area[this.crop.moved_area.length - 1].area_id
-      } else {
-        this.task.source_area_id = this.crop.initial_area.area_id
-      }
       this.task.obj_uid = this.crop.uid
       this.moveCrop(this.task)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
     areaChange (area_id) {
-      // TODO: change the max value here
+      for (var i = 0; i < this.current_areas.length; i++) {
+        if (this.current_areas[i].area_id == area_id) {
+          this.max_value = this.current_areas[i].current_quantity
+          this.task.quantity = 1
+          break
+        }
+      }
     },
   }
 }
