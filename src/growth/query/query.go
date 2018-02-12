@@ -1,6 +1,10 @@
 package query
 
-import uuid "github.com/satori/go.uuid"
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
 
 type AreaQuery interface {
 	FindByID(areaUID uuid.UUID) <-chan QueryResult
@@ -57,6 +61,43 @@ type CropAreaQueryResult struct {
 	Type     string    `json:"type"`
 	Location string    `json:"location"`
 	FarmUID  uuid.UUID `json:"farm_uid"`
+}
+
+type CropAreaByAreaQueryResult struct {
+	UID         uuid.UUID `json:"uid"`
+	BatchID     string    `json:"batch_id"`
+	Inventory   Inventory `json:"inventory"`
+	CreatedDate time.Time `json:"seeding_date"`
+	Area        Area      `json:"area"`
+	Container   Container `json:"container"`
+}
+
+type Area struct {
+	UID             uuid.UUID   `json:"uid"`
+	Name            string      `json:"name"`
+	InitialQuantity int         `json:"initial_quantity"`
+	CurrentQuantity int         `json:"current_quantity"`
+	InitialArea     InitialArea `json:"initial_area"`
+	LastWatered     *time.Time  `json:"last_watered"`
+	MovingDate      time.Time   `json:"moving_date"`
+}
+
+type InitialArea struct {
+	UID         uuid.UUID `json:"uid"`
+	Name        string    `json:"name"`
+	CreatedDate time.Time `json:"created_date"`
+}
+
+type Container struct {
+	Type     string `json:"type"`
+	Quantity int    `json:"quantity"`
+	Cell     int    `json:"cell"`
+}
+
+type Inventory struct {
+	UID       uuid.UUID `json:"uid"`
+	PlantType string    `json:"plant_type"`
+	Name      string    `json:"name"`
 }
 
 type CropFarmQueryResult struct {

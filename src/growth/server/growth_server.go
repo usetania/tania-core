@@ -708,7 +708,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 }
 
 func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
-	data := make(map[string][]storage.CropRead)
+	data := make(map[string][]CropListInArea)
 
 	// Params //
 	areaID := c.Param("id")
@@ -735,14 +735,18 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 		return Error(c, resultQuery.Error)
 	}
 
-	crops, ok := resultQuery.Result.([]storage.CropRead)
+	crops, ok := resultQuery.Result.([]query.CropAreaByAreaQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = []storage.CropRead{}
+	data["data"] = []CropListInArea{}
 	for _, v := range crops {
-		data["data"] = append(data["data"], v)
+		cl, err := MapToCropListInArea(v)
+		if err != nil {
+			return Error(c, err)
+		}
+		data["data"] = append(data["data"], cl)
 	}
 
 	return c.JSON(http.StatusOK, data)

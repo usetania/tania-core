@@ -87,15 +87,69 @@ func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan quer
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		crops := []storage.CropRead{}
+		crops := []query.CropAreaByAreaQueryResult{}
 		for _, val := range s.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
-				crops = append(crops, val)
+				crops = append(crops, query.CropAreaByAreaQueryResult{
+					UID:         val.UID,
+					BatchID:     val.BatchID,
+					CreatedDate: val.InitialArea.CreatedDate,
+					Area: query.Area{
+						UID:             val.InitialArea.AreaUID,
+						Name:            val.InitialArea.Name,
+						InitialQuantity: val.InitialArea.InitialQuantity,
+						CurrentQuantity: val.InitialArea.CurrentQuantity,
+						InitialArea: query.InitialArea{
+							UID:         val.InitialArea.AreaUID,
+							Name:        val.InitialArea.Name,
+							CreatedDate: val.InitialArea.CreatedDate,
+						},
+						LastWatered: val.InitialArea.LastWatered,
+						MovingDate:  val.InitialArea.CreatedDate,
+					},
+					Container: query.Container{
+						Type:     val.Container.Type,
+						Cell:     val.Container.Cell,
+						Quantity: val.Container.Quantity,
+					},
+					Inventory: query.Inventory{
+						UID:       val.Inventory.UID,
+						Name:      val.Inventory.Name,
+						PlantType: val.Inventory.PlantType,
+					},
+				})
 			}
 
-			for _, val2 := range val.MovedArea {
-				if val2.AreaUID == areaUID {
-					crops = append(crops, val)
+			for i := range val.MovedArea {
+				if val.MovedArea[i].AreaUID == areaUID {
+					crops = append(crops, query.CropAreaByAreaQueryResult{
+						UID:         val.UID,
+						BatchID:     val.BatchID,
+						CreatedDate: val.MovedArea[i].CreatedDate,
+						Area: query.Area{
+							UID:             val.MovedArea[i].AreaUID,
+							Name:            val.MovedArea[i].Name,
+							InitialQuantity: val.MovedArea[i].InitialQuantity,
+							CurrentQuantity: val.MovedArea[i].CurrentQuantity,
+							InitialArea: query.InitialArea{
+								UID:         val.InitialArea.AreaUID,
+								Name:        val.InitialArea.Name,
+								CreatedDate: val.InitialArea.CreatedDate,
+							},
+							LastWatered: val.MovedArea[i].LastWatered,
+							MovingDate:  val.MovedArea[i].CreatedDate,
+						},
+						Container: query.Container{
+							Type:     val.Container.Type,
+							Cell:     val.Container.Cell,
+							Quantity: val.Container.Quantity,
+						},
+						Inventory: query.Inventory{
+							UID:       val.Inventory.UID,
+							Name:      val.Inventory.Name,
+							PlantType: val.Inventory.PlantType,
+						},
+					})
 				}
 			}
 

@@ -8,78 +8,29 @@ import (
 
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
+	uuid "github.com/satori/go.uuid"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/labstack/echo"
-	uuid "github.com/satori/go.uuid"
 )
 
-type CropBatch struct {
-	UID              uuid.UUID                     `json:"uid"`
-	BatchID          string                        `json:"batch_id"`
-	Status           string                        `json:"status"`
-	Type             string                        `json:"type"`
-	Container        CropContainer                 `json:"container"`
-	Inventory        query.CropMaterialQueryResult `json:"inventory"`
-	CreatedDate      time.Time                     `json:"created_date"`
-	DaysSinceSeeding int                           `json:"days_since_seeding"`
-	Photo            domain.CropPhoto              `json:"photo"`
-	ActivityType     CropActivityType              `json:"activity_type"`
-
-	InitialArea      InitialArea        `json:"initial_area"`
-	MovedArea        []MovedArea        `json:"moved_area"`
-	HarvestedStorage []HarvestedStorage `json:"harvested_storage"`
-	Trash            []Trash            `json:"trash"`
-
-	// Fields to track care crop
-	LastFertilized *time.Time `json:"last_fertilized"`
-	LastPruned     *time.Time `json:"last_pruned"`
-	LastPesticided *time.Time `json:"last_pesticided"`
-
-	Notes SortedCropNotes `json:"notes"`
-}
-
-type CropContainer struct {
-	Quantity int               `json:"quantity"`
-	Type     CropContainerType `json:"type"`
-}
-type CropContainerType struct {
-	Code string `json:"code"`
-	Cell int    `json:"cell"`
+type CropListInArea struct {
+	UID              uuid.UUID       `json:"uid"`
+	BatchID          string          `json:"batch_id"`
+	DaysSinceSeeding int             `json:"days_since_seeding"`
+	InitialQuantity  int             `json:"initial_quantity"`
+	CurrentQuantity  int             `json:"current_quantity"`
+	Container        query.Container `json:"container"`
+	LastWatered      *time.Time      `json:"last_watered"`
+	SeedingDate      time.Time       `json:"seeding_date"`
+	MovingDate       time.Time       `json:"moving_date"`
+	InitialArea      InitialArea     `json:"initial_area"`
+	Inventory        query.Inventory `json:"inventory"`
 }
 
 type InitialArea struct {
-	Area            query.CropAreaQueryResult `json:"area"`
-	InitialQuantity int                       `json:"initial_quantity"`
-	CurrentQuantity int                       `json:"current_quantity"`
-	CreatedDate     time.Time                 `json:"created_date"`
-	LastUpdated     time.Time                 `json:"last_updated"`
-	LastWatered     *time.Time                `json:"last_watered"`
-}
-
-type MovedArea struct {
-	Area            query.CropAreaQueryResult `json:"area"`
-	SourceArea      query.CropAreaQueryResult `json:"source_area"`
-	InitialQuantity int                       `json:"initial_quantity"`
-	CurrentQuantity int                       `json:"current_quantity"`
-	CreatedDate     time.Time                 `json:"created_date"`
-	LastUpdated     time.Time                 `json:"last_updated"`
-	LastWatered     *time.Time                `json:"last_watered"`
-}
-
-type HarvestedStorage struct {
-	SourceArea           query.CropAreaQueryResult `json:"source_area"`
-	Quantity             int                       `json:"quantity"`
-	ProducedGramQuantity float32                   `json:"produced_quantity"`
-	CreatedDate          time.Time                 `json:"created_date"`
-	LastUpdated          time.Time                 `json:"last_updated"`
-}
-
-type Trash struct {
-	SourceArea  query.CropAreaQueryResult `json:"source_area"`
-	Quantity    int                       `json:"quantity"`
-	CreatedDate time.Time                 `json:"created_date"`
-	LastUpdated time.Time                 `json:"last_updated"`
+	AreaUID uuid.UUID `json:"area_id"`
+	Name    string    `json:"name"`
 }
 
 type SortedCropNotes []domain.CropNote
@@ -92,12 +43,6 @@ func (sn SortedCropNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
 
 // Less is part of sort.Interface.
 func (sn SortedCropNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
-
-type CropActivityType struct {
-	TotalSeeding int `json:"total_seeding"`
-	TotalGrowing int `json:"total_growing"`
-	TotalDumped  int `json:"total_dumped"`
-}
 
 type CropActivity storage.CropActivity
 type SeedActivity struct{ *storage.SeedActivity }
@@ -346,6 +291,35 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 	})
 
 	return cropRead, nil
+}
+
+func MapToCropListInArea(crop query.CropAreaByAreaQueryResult) (CropListInArea, error) {
+	cl := CropListInArea{}
+
+	cl.UID = crop.UID
+	cl.BatchID = crop.BatchID
+	cl.SeedingDate = crop.Area.InitialArea.CreatedDate
+
+	now := time.Now()
+	diff := now.Sub(cl.SeedingDate)
+	cl.DaysSinceSeeding = int(diff.Hours()) / 24
+
+	cl.InitialQuantity = crop.Area.InitialQuantity
+	cl.CurrentQuantity = crop.Area.CurrentQuantity
+	cl.Container = crop.Container
+	cl.Inventory = crop.Inventory
+
+	if crop.Area.LastWatered != nil && !crop.Area.LastWatered.IsZero() {
+		cl.LastWatered = crop.Area.LastWatered
+	}
+
+	cl.MovingDate = crop.Area.MovingDate
+	cl.InitialArea = InitialArea{
+		AreaUID: crop.Area.InitialArea.UID,
+		Name:    crop.Area.InitialArea.Name,
+	}
+
+	return cl, nil
 }
 
 func (a SeedActivity) MarshalJSON() ([]byte, error) {
