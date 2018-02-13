@@ -8,10 +8,7 @@ export const TaskCategories = [
 ]
 
 export const TaskDomainCategories = [
-  { key: 'AREA',  label: 'Area' },
-  { key: 'RESERVOIR',  label: 'Reservoir' },
-  { key: 'CROP',  label: 'Crop' },
-  { key: 'INVENTORY',  label: 'Inventory' },
-  { key: 'DEVICE',  label: 'Device' },
-  { key: 'FINANCE',  label: 'Finance' },
+  { key: 'PESTCONTROL',  label: 'Pest Control' },
+  { key: 'SAFETY',  label: 'Safety' },
+  { key: 'SANITATION',  label: 'Sanitation' },
 ]

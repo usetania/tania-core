@@ -42,6 +42,8 @@
               label(for="category") 
                 | Task Category
               select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category" @change="typeChanged($event.target.value)")
+                option(value="CROP") Crop
+                option(value="NUTRIENT") Nutrient
                 option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
               span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group(v-if="isfertilizer")

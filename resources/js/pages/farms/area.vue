@@ -80,23 +80,29 @@
             table.table.m-b-none
               thead
                 tr
+                  th 
                   th Status
-                  th Description
+                  th Category
               tbody
-                tr
+                tr(v-for="task in areaTasks")
                   td
-                    span.label.label-danger URGENT
+                    .checkbox
+                      label.i-checks
+                        input(type="checkbox")
+                        i
                   td
-                    a
-                      div Fumigating with Rentokil
-                      small.text-muted 01/01.2018
-                tr
+                    a(href="#")
+                      div {{ task.title }}
+                      small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                      span.status.status-urgent(v-if="task.priority == 'URGENT'") URGENT
+                      span.status.status-normal(v-if="task.priority == 'NORMAL'") NORMAL
+                      span.text-danger(v-if="task.is_due == true") Overdue!
+                      span.text-success(v-if="isToday(task.due_date)") Today
                   td
-                    span.label.label-info NORMAL
-                  td
-                    a
-                      div Fumigating with Rentokil
-                      small.text-muted 01/01.2018
+                    span.label.label-pestcontrol(v-if="task.category == 'PESTCONTROL'") PEST CONTROL
+                    span.label.label-sanitation(v-if="task.category == 'SANITATION'") SANITATION
+                    span.label.label-area(v-if="task.category == 'AREA'") AREA
+                    span.label.label-safety(v-if="task.category == 'SAFETY'") SAFETY
         .col-sm-6.col-xs-12
           .panel
             .panel-heading
@@ -125,15 +131,17 @@ import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpe
 import { StubArea, StubNote } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 import Modal from '@/components/modal'
+import moment from 'moment-timezone'
 export default {
   name: 'Area',
   data () {
     return {
+      area: Object.assign({}, StubArea),
+      areaNotes: [],
+      areaTasks: [],
       asset: "Area",
       loading: true,
-      area: Object.assign({}, StubArea),
       note: Object.assign({}, StubNote),
-      areaNotes: [],
       showModal: false,
     }
   },
@@ -149,40 +157,24 @@ export default {
   created () {
     this.getAreaByUid(this.$route.params.id)
       .then(({ data }) =>  {
-        this.loading = false
         this.area = data
+        this.getTasksByDomainAndAssetId({ domain: "AREA", assetId: data.uid })
+          .then(({ data }) =>  {
+            this.loading = false
+            this.areaTasks = data
+          })
+          .catch(error => console.log(error))
       })
       .catch(error => console.log(error))
   },
   methods: {
     ...mapActions([
-      'getAreaByUid',
       'createAreaNotes',
-      'deleteAreaNote'
+      'deleteAreaNote',
+      'getAreaByUid',
+      'getTasksByDomainAndAssetId',
+      'isToday'
     ]),
-    getType(key) {
-      return FindAreaType(key)
-    },
-    getSizeUnit(key) {
-      return FindAreaSizeUnit(key)
-    },
-    getLocation(key) {
-      return FindAreaLocation(key)
-    },
-    deleteNote(note_uid) {
-      this.note.obj_uid = this.$route.params.id
-      this.note.uid = note_uid
-      this.deleteAreaNote(this.note)
-        .then(data => this.area = data)
-        .catch(({ data }) => this.message = data)
-    },
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.create()
-        }
-      })
-    },
     create () {
       this.note.obj_uid = this.$route.params.id
       this.createAreaNotes(this.note)
@@ -192,6 +184,33 @@ export default {
         })
         .catch(({ data }) => this.message = data)
     },
+    deleteNote (note_uid) {
+      this.note.obj_uid = this.$route.params.id
+      this.note.uid = note_uid
+      this.deleteAreaNote(this.note)
+        .then(data => this.area = data)
+        .catch(({ data }) => this.message = data)
+    },
+    getLocation (key) {
+      return FindAreaLocation(key)
+    },
+    getSizeUnit (key) {
+      return FindAreaSizeUnit(key)
+    },
+    getType (key) {
+      return FindAreaType(key)
+    },
+    isToday (date) {
+      return moment(date).tz('Asia/Jakarta').isSame(moment(), 'day')
+    },
+    validateBeforeSubmit () {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.create()
+        }
+      })
+    },
+
   }
 }
 </script>

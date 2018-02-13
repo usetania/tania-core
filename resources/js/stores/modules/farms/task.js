@@ -22,6 +22,15 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  getTasksByDomainAndAssetId ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiFindTasksByDomainAndAssetId(payload.domain, payload.assetId, ({ data }) => {
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
   createTask ({ commit, state, getters }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {

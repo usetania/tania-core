@@ -62,8 +62,8 @@
 }
 
 /* Basic Info */
-.basicinfo .point {
-
+.basicinfo .photo {
+  max-height: 200px;
 }
 
 /* Current Area Status*/
@@ -84,9 +84,6 @@
 
 
 
-/* LABEL */
-
-
 /* TAGS */
 .identifier {
   display: inline;
@@ -94,7 +91,7 @@
   vertical-align: baseline;
   background-color: #EBF8F6;
   color: #21AD9C;
-  font-size: 14px;
+  font-size: 16px;
   padding: 4px 8px;
   margin-left: 0px;
   margin-top: 1px;
@@ -106,10 +103,70 @@
   vertical-align: baseline;
   background-color: #EBF8F6;
   color: #21AD9C;
-  font-size: 11px;
+  font-size: 12px;
   padding: 2px 4px;
   margin-left: 0px;
   margin-top: 1px;
+}
+
+.label-area {
+  background-color: #94661F;
+}
+
+.label-crop {
+  background-color: #84BA4B;
+}
+
+.label-finance {
+  background-color: #F1CE48;
+}
+
+.label-nutrient {
+  background-color: #06BAE1;
+}
+
+.label-safety {
+  background-color: #087306;
+}
+
+.label-pestcontrol {
+  background-color: #CF1F0D;
+}
+
+.label-water {
+  background-color: #2352D6;
+}
+
+.label-sanitation {
+  background-color: #E67423;
+}
+
+.label-inventory {
+  background-color: #7136A1;
+}
+
+.label-general {
+  background-color: #231A35;
+}
+
+.status {
+  display: inline;
+  padding: .2em .6em .3em;
+  font-size: 12px;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.status-normal {
+  color: #58666e;
+  font-weight: 500;
+}
+
+.status-urgent {
+  color: #d9534f;
+  font-weight: 700;
 }
 
 .taskarea {
@@ -232,7 +289,7 @@
   background-color: #EDE0CC;
   border-radius: 2px;
   color: #94661F;
-  font-size: 14px;
+  font-size: 16px;
   padding: 2px 8px;
   margin-left: 0px;
   margin-top: 1px;
@@ -283,6 +340,8 @@
   border: 1px solid transparent !important;
 }
 
+/* Modal*/
+
 .modal-header {
   margin-top: 0;
   background-color: #f6f8f8;
@@ -292,44 +351,4 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.label-area {
-  background-color: #94661F;
-}
-
-.label-crop {
-  background-color: #84BA4B;
-}
-
-.label-finance {
-  background-color: #F1CE48;
-}
-
-.label-nutrient {
-  background-color: #06BAE1;
-}
-
-.label-safety {
-  background-color: #087306;
-}
-
-.label-pestcontrol {
-  background-color: #CF1F0D;
-}
-
-.label-water {
-  background-color: #2352D6;
-}
-
-.label-sanitation {
-  background-color: #E67423;
-}
-
-.label-inventory {
-  background-color: #7136A1;
-}
-
-.label-general {
-  background-color: #231A35;
 }

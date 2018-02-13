@@ -92,4 +92,7 @@ export default {
   ApiFetchCropInformation: (cbSuccess, cbError) => {
     http.get('farms/crops/information', cbSuccess, cbError)
   },
+  ApiFindTasksByDomainAndAssetId: (domain, assetid, cbSuccess, cbError) => {
+    http.get('/tasks/search?domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
+  },
 }
