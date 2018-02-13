@@ -93,6 +93,12 @@ export default {
     http.get('farms/crops/information', cbSuccess, cbError)
   },
   ApiFindTasksByDomainAndAssetId: (domain, assetid, cbSuccess, cbError) => {
-    http.get('/tasks/search?domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
+    http.get('tasks/search?domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
+  },
+  ApiSetTaskDue: (taskid, cbSuccess, cbError) => {
+    http.put('tasks/' + taskid + '/due', {}, cbSuccess, cbError)
+  },
+  ApiSetTaskCompleted: (taskid, cbSuccess, cbError) => {
+    http.put('tasks/' + taskid + '/complete', {}, cbSuccess, cbError)
   },
 }

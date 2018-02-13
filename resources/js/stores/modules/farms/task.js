@@ -42,6 +42,24 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  setTaskDue ({ commit, state, getters }, taskId) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiSetTaskDue(taskId, ({ data }) => {
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
+  setTaskCompleted ({ commit, state, getters }, taskId) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiSetTaskCompleted(taskId, ({ data }) => {
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {

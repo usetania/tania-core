@@ -1,7 +1,7 @@
 <template lang="pug">
   .area-detail.col(v-if="loading === false")
-    modal(v-if="showModal" @close="showModal = false")
-      farmAreaTaskCreate(:data="area" :asset="asset")
+    modal(v-if="showModal" @close="closeModal")
+      farmAreaTaskCreate(:data="area" :asset="'Area'")
     .wrapper-md
       .pull-right
         a.btn.btn-sm.m-b-xs.btn-addon.btn-primary.m-r(style="cursor: pointer;" id="show-modal" @click="showModal = true")
@@ -73,36 +73,7 @@
 
       //- Starting row
       .row
-        .col-sm-6.col-xs-12
-          .panel
-            .panel-heading
-              span.h4.text-lt Tasks
-            table.table.m-b-none
-              thead
-                tr
-                  th 
-                  th Status
-                  th Category
-              tbody
-                tr(v-for="task in areaTasks")
-                  td
-                    .checkbox
-                      label.i-checks
-                        input(type="checkbox")
-                        i
-                  td
-                    a(href="#")
-                      div {{ task.title }}
-                      small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                      span.status.status-urgent(v-if="task.priority == 'URGENT'") URGENT
-                      span.status.status-normal(v-if="task.priority == 'NORMAL'") NORMAL
-                      span.text-danger(v-if="task.is_due == true") Overdue!
-                      span.text-success(v-if="isToday(task.due_date)") Today
-                  td
-                    span.label.label-pestcontrol(v-if="task.category == 'PESTCONTROL'") PEST CONTROL
-                    span.label.label-sanitation(v-if="task.category == 'SANITATION'") SANITATION
-                    span.label.label-area(v-if="task.category == 'AREA'") AREA
-                    span.label.label-safety(v-if="task.category == 'SAFETY'") SAFETY
+        TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
         .col-sm-6.col-xs-12
           .panel
             .panel-heading
@@ -123,7 +94,6 @@
                 .col-sm-3
                   button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(areaNote.uid)")
                     i.fa.fa-trash
-      //- Ending row
 </template>
 
 <script>
@@ -134,19 +104,9 @@ import Modal from '@/components/modal'
 import moment from 'moment-timezone'
 export default {
   name: 'Area',
-  data () {
-    return {
-      area: Object.assign({}, StubArea),
-      areaNotes: [],
-      areaTasks: [],
-      asset: "Area",
-      loading: true,
-      note: Object.assign({}, StubNote),
-      showModal: false,
-    }
-  },
   components: {
     FarmAreaTaskCreate: () => import('./tasks/task-create.vue'),
+    TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },
   computed: {
@@ -158,23 +118,31 @@ export default {
     this.getAreaByUid(this.$route.params.id)
       .then(({ data }) =>  {
         this.area = data
-        this.getTasksByDomainAndAssetId({ domain: "AREA", assetId: data.uid })
-          .then(({ data }) =>  {
-            this.loading = false
-            this.areaTasks = data
-          })
-          .catch(error => console.log(error))
+        this.loading = false
       })
       .catch(error => console.log(error))
+  },
+  data () {
+    return {
+      area: Object.assign({}, StubArea),
+      areaNotes: [],
+      areaTasks: [],
+      loading: true,
+      note: Object.assign({}, StubNote),
+      reload: false,
+      showModal: false,
+    }
   },
   methods: {
     ...mapActions([
       'createAreaNotes',
       'deleteAreaNote',
       'getAreaByUid',
-      'getTasksByDomainAndAssetId',
-      'isToday'
     ]),
+    closeModal () {
+      this.showModal = false
+      this.reload = !this.reload
+    },
     create () {
       this.note.obj_uid = this.$route.params.id
       this.createAreaNotes(this.note)
@@ -200,9 +168,6 @@ export default {
     getType (key) {
       return FindAreaType(key)
     },
-    isToday (date) {
-      return moment(date).tz('Asia/Jakarta').isSame(moment(), 'day')
-    },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -214,4 +179,3 @@ export default {
   }
 }
 </script>
-
