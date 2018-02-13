@@ -22,6 +22,7 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 		farmRead.CountryCode = e.CountryCode
 		farmRead.CityCode = e.CityCode
 		farmRead.IsActive = e.IsActive
+		farmRead.CreatedDate = e.CreatedDate
 	}
 
 	err := <-s.FarmReadRepo.Save(farmRead)

@@ -3,6 +3,8 @@
 package domain
 
 import (
+	"time"
+
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -15,6 +17,7 @@ type Farm struct {
 	CountryCode string    `json:"country_code"`
 	CityCode    string    `json:"city_code"`
 	IsActive    bool      `json:"is_active"`
+	CreatedDate time.Time `json:"created_date"`
 
 	Reservoirs []Reservoir `json:"-"`
 	Areas      []Area      `json:"-"`
@@ -40,6 +43,7 @@ func (state *Farm) Transition(event interface{}) {
 		state.CountryCode = e.CountryCode
 		state.CityCode = e.CityCode
 		state.IsActive = e.IsActive
+		state.CreatedDate = e.CreatedDate
 
 	case FarmGeolocationChanged:
 		state.Latitude = e.Latitude
@@ -95,6 +99,7 @@ func CreateFarm(name, farmType, latitude, longitude, countryCode, cityCode strin
 		CountryCode: countryCode,
 		CityCode:    cityCode,
 		IsActive:    true,
+		CreatedDate: time.Now(),
 	})
 
 	return initial, nil

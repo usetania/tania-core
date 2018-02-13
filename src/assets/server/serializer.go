@@ -145,6 +145,7 @@ func MapToFarmRead(farm *domain.Farm) *storage.FarmRead {
 	farmRead.Longitude = farm.Longitude
 	farmRead.CountryCode = farm.CountryCode
 	farmRead.CityCode = farm.CityCode
+	farmRead.CreatedDate = farm.CreatedDate
 
 	return farmRead
 }

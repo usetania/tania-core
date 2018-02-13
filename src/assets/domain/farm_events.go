@@ -1,6 +1,10 @@
 package domain
 
-import uuid "github.com/satori/go.uuid"
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
 
 type FarmCreated struct {
 	UID         uuid.UUID
@@ -11,6 +15,7 @@ type FarmCreated struct {
 	CountryCode string
 	CityCode    string
 	IsActive    bool
+	CreatedDate time.Time
 }
 
 type FarmGeolocationChanged struct {
