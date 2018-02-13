@@ -146,12 +146,13 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 		return result.Error
 	}
 
-	farms, ok := result.Result.([]storage.FarmRead)
+	farms, ok := result.Result.([]query.FarmReadQueryResult)
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data := make(map[string][]storage.FarmRead)
+	data := make(map[string][]query.FarmReadQueryResult)
+	data["data"] = farms
 	for _, v := range farms {
 		data["data"] = append(data["data"], v)
 	}
