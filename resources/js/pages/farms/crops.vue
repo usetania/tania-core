@@ -1,20 +1,20 @@
 <template lang="pug">
-  .crops.col
+  .crops.col(v-if="loading === false")
     modal(v-if="showModal" @close="showModal = false")
       farmCropCreate
     .wrapper-md
       h1.m-t.font-thin.h3.text-black Crops
       .row
         .col-sm-3.m-t
-          .hbox.bg-white-only.wrapper(style="min-height: 100px;")
+          .hbox.bg-white-only.wrapper
             small.text-muted Harvested Produce This Month 
             a.pull-right(href=""): i.fa.fa-question-circle
-            .h3.m-b.m-t 12.25 kilograms
+            .h3.m-b.m-t {{ cropInformation.total_harvest_produced/1000 }} kilograms
         .col-sm-3.m-t
-          .hbox.bg-white-only.wrapper(style="min-height: 100px;")
+          .hbox.bg-white-only.wrapper
             small.text-muted Planted Varieties
             a.pull-right(href=""): i.fa.fa-question-circle
-            .h3.m-b.m-t {{ crops.length }}
+            .h3.m-b.m-t {{ cropInformation.total_plant_variety }}
     .wrapper
       .m-b
         ul.nav.nav-tabs.h4
@@ -58,18 +58,29 @@ export default {
       crops: 'getAllCrops'
     })
   },
-  mounted () {
-    this.fetchCrops()
+  created () {
+    this.getInformation()
+      .then(({ data }) =>  {
+        this.loading = false
+        this.cropInformation = data
+      })
+      .catch(error => console.log(error))
   },
   data () {
     return {
-      showModal: false
+      cropInformation: {},
+      loading: true,
+      showModal: false,
     }
   },
   methods: {
     ...mapActions([
-      'fetchCrops'
+      'fetchCrops',
+      'getInformation',
     ]),
-  }
+  },
+  mounted () {
+    this.fetchCrops()
+  },
 }
 </script>

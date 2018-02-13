@@ -129,6 +129,15 @@ const actions = {
       }, error => reject(error.response))
     })
   },
+  getInformation ({ commit, state }) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiFetchCropInformation(({ data }) => {
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
