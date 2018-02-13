@@ -7,6 +7,11 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+type FarmReadQuery interface {
+	FindByID(farmUID uuid.UUID) <-chan QueryResult
+	FindAll() <-chan QueryResult
+}
+
 type AreaQuery interface {
 	FindAreasByReservoirID(reservoirID string) <-chan QueryResult
 }

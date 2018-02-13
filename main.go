@@ -33,9 +33,13 @@ func main() {
 
 	// Initialize all In-memory storage, so it can be used in all server
 	farmStorage := assetsstorage.CreateFarmStorage()
+	farmEventStorage := assetsstorage.CreateFarmEventStorage()
+	farmReadStorage := assetsstorage.CreateFarmReadStorage()
+
 	areaStorage := assetsstorage.CreateAreaStorage()
 	reservoirStorage := assetsstorage.CreateReservoirStorage()
 	materialStorage := assetsstorage.CreateMaterialStorage()
+
 	cropStorage := growthstorage.CreateCropStorage()
 	cropEventStorage := growthstorage.CreateCropEventStorage()
 	cropReadStorage := growthstorage.CreateCropReadStorage()
@@ -46,10 +50,13 @@ func main() {
 
 	farmServer, err := server.NewFarmServer(
 		farmStorage,
+		farmEventStorage,
+		farmReadStorage,
 		areaStorage,
 		reservoirStorage,
 		materialStorage,
 		cropStorage,
+		bus,
 	)
 	if err != nil {
 		e.Logger.Fatal(err)

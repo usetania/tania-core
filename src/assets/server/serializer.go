@@ -8,6 +8,7 @@ import (
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
+	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -118,6 +119,19 @@ func (sn SortedReservoirNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
 
 // Less is part of sort.Interface.
 func (sn SortedReservoirNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
+
+func MapToFarmRead(farm *domain.Farm) *storage.FarmRead {
+	farmRead := &storage.FarmRead{}
+	farmRead.UID = farm.UID
+	farmRead.Name = farm.Name
+	farmRead.Type = farm.Type
+	farmRead.Latitude = farm.Latitude
+	farmRead.Longitude = farm.Longitude
+	farmRead.CountryCode = farm.CountryCode
+	farmRead.CityCode = farm.CityCode
+
+	return farmRead
+}
 
 func MapToSimpleFarm(farms []domain.Farm) []SimpleFarm {
 	farmList := make([]SimpleFarm, len(farms))

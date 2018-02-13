@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -15,12 +16,17 @@ import (
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
+	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 )
 
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
 	FarmRepo      repository.FarmRepository
+	FarmEventRepo repository.FarmEventRepository
+	FarmReadRepo  repository.FarmReadRepository
+	FarmReadQuery query.FarmReadQuery
 	ReservoirRepo repository.ReservoirRepository
 	AreaRepo      repository.AreaRepository
 	AreaQuery     query.AreaQuery
@@ -28,17 +34,24 @@ type FarmServer struct {
 	MaterialQuery query.MaterialQuery
 	CropQuery     query.CropQuery
 	File          File
+	EventBus      EventBus.Bus
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer(
 	farmStorage *storage.FarmStorage,
+	farmEventStorage *storage.FarmEventStorage,
+	farmReadStorage *storage.FarmReadStorage,
 	areaStorage *storage.AreaStorage,
 	reservoirStorage *storage.ReservoirStorage,
 	materialStorage *storage.MaterialStorage,
 	cropStorage *growthstorage.CropStorage,
+	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
 	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
+	farmEventRepo := repository.NewFarmEventRepositoryInMemory(farmEventStorage)
+	farmReadRepo := repository.NewFarmReadRepositoryInMemory(farmReadStorage)
+	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
 
 	areaRepo := repository.NewAreaRepositoryInMemory(areaStorage)
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
@@ -52,6 +65,9 @@ func NewFarmServer(
 
 	farmServer := FarmServer{
 		FarmRepo:      farmRepo,
+		FarmEventRepo: farmEventRepo,
+		FarmReadRepo:  farmReadRepo,
+		FarmReadQuery: farmReadQuery,
 		ReservoirRepo: reservoirRepo,
 		AreaRepo:      areaRepo,
 		AreaQuery:     areaQuery,
@@ -59,9 +75,17 @@ func NewFarmServer(
 		MaterialQuery: materialQuery,
 		CropQuery:     cropQuery,
 		File:          LocalFile{},
+		EventBus:      eventBus,
 	}
 
+	farmServer.InitSubscriber()
+
 	return &farmServer, nil
+}
+
+// InitSubscriber defines the mapping of which event this domain listen with their handler
+func (s *FarmServer) InitSubscriber() {
+	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -96,26 +120,27 @@ func (s *FarmServer) GetTypes(c echo.Context) error {
 }
 
 func (s FarmServer) FindAllFarm(c echo.Context) error {
-	data := make(map[string][]SimpleFarm)
-
-	result := <-s.FarmRepo.FindAll()
+	result := <-s.FarmReadQuery.FindAll()
 	if result.Error != nil {
 		return result.Error
 	}
 
-	farms, ok := result.Result.([]domain.Farm)
+	farms, ok := result.Result.([]storage.FarmRead)
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = MapToSimpleFarm(farms)
+	data := make(map[string][]storage.FarmRead)
+	for _, v := range farms {
+		data["data"] = append(data["data"], v)
+	}
 
 	return c.JSON(http.StatusOK, data)
 }
 
 // SaveFarm is a FarmServer's handler to save new Farm
 func (s *FarmServer) SaveFarm(c echo.Context) error {
-	data := make(map[string]domain.Farm)
+	data := make(map[string]*storage.FarmRead)
 
 	farm, err := domain.CreateFarm(c.FormValue("name"), c.FormValue("farm_type"))
 	if err != nil {
@@ -132,12 +157,14 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	err = <-s.FarmRepo.Save(&farm)
+	err = <-s.FarmEventRepo.Save(farm.UID, farm.Version, farm.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	data["data"] = farm
+	s.publishUncommittedEvents(farm)
+
+	data["data"] = MapToFarmRead(farm)
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -885,4 +912,17 @@ func (s *FarmServer) GetAvailableMaterialPlantType(c echo.Context) error {
 	data["data"] = MapToAvailableMaterialPlantType(materials)
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
+	switch e := entity.(type) {
+	case *domain.Farm:
+		for _, v := range e.UncommittedChanges {
+			fmt.Println("MASUK UNCOMMITTEDD")
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
+		}
+	}
+
+	return nil
 }

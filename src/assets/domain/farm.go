@@ -18,26 +18,60 @@ type Farm struct {
 
 	Reservoirs []Reservoir `json:"-"`
 	Areas      []Area      `json:"-"`
+
+	// Events
+	Version            int
+	UncommittedChanges []interface{}
+}
+
+func (state *Farm) TrackChange(event interface{}) {
+	state.UncommittedChanges = append(state.UncommittedChanges, event)
+	state.Transition(event)
+}
+
+func (state *Farm) Transition(event interface{}) {
+	switch e := event.(type) {
+	case FarmCreated:
+		state.UID = e.UID
+		state.Name = e.Name
+		state.Type = e.Type
+		state.Latitude = e.Latitude
+		state.Longitude = e.Longitude
+		state.CountryCode = e.CountryCode
+		state.CityCode = e.CityCode
+		state.IsActive = e.IsActive
+
+	case FarmGeolocationChanged:
+		state.Latitude = e.Latitude
+		state.Longitude = e.Longitude
+
+	case FarmRegionChanged:
+		state.CountryCode = e.CountryCode
+		state.CityCode = e.CityCode
+
+	}
 }
 
 // CreateFarm registers a new farm to Tania
-func CreateFarm(name string, farmType string) (Farm, error) {
+func CreateFarm(name string, farmType string) (*Farm, error) {
 	err := validateFarmName(name)
 	if err != nil {
-		return Farm{}, err
+		return &Farm{}, err
 	}
 
 	err = validateFarmType(farmType)
 	if err != nil {
-		return Farm{}, err
+		return &Farm{}, err
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return Farm{}, err
+		return &Farm{}, err
 	}
 
-	return Farm{
+	initial := &Farm{}
+
+	initial.TrackChange(FarmCreated{
 		UID:         uid,
 		Name:        name,
 		Type:        farmType,
@@ -46,7 +80,9 @@ func CreateFarm(name string, farmType string) (Farm, error) {
 		CountryCode: "",
 		CityCode:    "",
 		IsActive:    true,
-	}, nil
+	})
+
+	return initial, nil
 }
 
 // ChangeGeoLocation changes the geolocation of a farm
@@ -56,8 +92,10 @@ func (f *Farm) ChangeGeoLocation(latitude, longitude string) error {
 		return err
 	}
 
-	f.Latitude = latitude
-	f.Longitude = longitude
+	f.TrackChange(FarmGeolocationChanged{
+		Latitude:  latitude,
+		Longitude: longitude,
+	})
 
 	return nil
 }
@@ -74,8 +112,10 @@ func (f *Farm) ChangeRegion(countryCode, cityCode string) error {
 		return err
 	}
 
-	f.CountryCode = countryCode
-	f.CityCode = cityCode
+	f.TrackChange(FarmRegionChanged{
+		CountryCode: countryCode,
+		CityCode:    cityCode,
+	})
 
 	return nil
 }
