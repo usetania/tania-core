@@ -23,3 +23,7 @@ type ReservoirNoteAdded struct {
 	Content     string
 	CreatedDate time.Time
 }
+
+type ReservoirNoteRemoved struct {
+	UID uuid.UUID
+}

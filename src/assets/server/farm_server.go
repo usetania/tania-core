@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -294,9 +293,7 @@ func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
 	}
 
 	events := eventQueryResult.Result.([]storage.ReservoirEvent)
-	fmt.Println(events)
 	reservoir := repository.NewReservoirFromHistory(events)
-	fmt.Println(reservoir)
 
 	err = reservoir.AddNewNote(content)
 	if err != nil {
@@ -324,59 +321,46 @@ func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
 }
 
 func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
-	data := make(map[string]DetailReservoir)
-
-	reservoirID := c.Param("reservoir_id")
+	reservoirUID, err := uuid.FromString(c.Param("reservoir_id"))
 	noteID := c.Param("note_id")
 
 	// Validate //
-	result := <-s.ReservoirRepo.FindByID(reservoirID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	reservoir, ok := result.Result.(domain.Reservoir)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	queryResult := <-s.FarmReadQuery.FindByID(reservoir.FarmUID)
+	queryResult := <-s.ReservoirReadQuery.FindByID(reservoirUID)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}
 
-	farm, ok := queryResult.Result.(domain.Farm)
+	reservoirRead, ok := queryResult.Result.(query.ReservoirReadQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
 	// Process //
-	err := reservoir.RemoveNote(noteID)
-	if err != nil {
-		return Error(c, err)
+	eventQueryResult := <-s.ReservoirEventQuery.FindAllByID(reservoirRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
 	}
 
-	err = farm.ChangeReservoirInformation(reservoir)
+	events := eventQueryResult.Result.([]storage.ReservoirEvent)
+	reservoir := repository.NewReservoirFromHistory(events)
+
+	err = reservoir.RemoveNote(noteID)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// Persists //
-	resultSave := <-s.ReservoirRepo.Save(&reservoir)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	err = <-s.ReservoirEventRepo.Save(reservoir.UID, reservoir.Version, reservoir.UncommittedChanges)
+	if err != nil {
+		return Error(c, err)
 	}
 
-	resultSave = <-s.FarmRepo.Save(&farm)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
-
-	detailReservoir, err := MapToDetailReservoir(s, reservoir)
+	detailReservoir, err := MapToDetailReservoir(s, *reservoir)
 	if err != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	data := make(map[string]DetailReservoir)
 	data["data"] = detailReservoir
 
 	return c.JSON(http.StatusOK, data)

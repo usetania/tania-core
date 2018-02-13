@@ -106,6 +106,9 @@ func (state *Reservoir) Transition(event interface{}) {
 			CreatedDate: e.CreatedDate,
 		}
 
+	case ReservoirNoteRemoved:
+		delete(state.Notes, e.UID)
+
 	}
 }
 
@@ -233,7 +236,6 @@ func (r *Reservoir) RemoveNote(uid string) error {
 	found := false
 	for _, v := range r.Notes {
 		if v.UID == uuid {
-			delete(r.Notes, uuid)
 			found = true
 		}
 	}
@@ -241,6 +243,10 @@ func (r *Reservoir) RemoveNote(uid string) error {
 	if !found {
 		return ReservoirError{Code: ReservoirNoteErrorNotFound}
 	}
+
+	r.TrackChange(ReservoirNoteRemoved{
+		UID: uuid,
+	})
 
 	return nil
 }
