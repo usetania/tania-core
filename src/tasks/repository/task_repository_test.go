@@ -53,7 +53,7 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 	inventoryID, _ := uuid.NewV4()
 
 	taskServiceMock.On("FindMaterialByID", inventoryID).Return(domain.ServiceResult{Result: query.TaskMaterialQueryResult{UID: inventoryID}})
-	taskdomain_crop, _ := domain.CreateTaskDomainCrop(taskServiceMock, inventoryID)
+	taskdomain_crop, _ := domain.CreateTaskDomainCrop(taskServiceMock, &inventoryID)
 
 	taskdomain_area, _ := domain.CreateTaskDomainArea()
 

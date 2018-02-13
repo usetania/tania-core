@@ -48,7 +48,7 @@ func TestCreateTask(t *testing.T) {
 	inventoryID, _ := uuid.NewV4()
 
 	taskServiceMock.On("FindMaterialByID", inventoryID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: inventoryID}})
-	taskdomain, _ := CreateTaskDomainCrop(taskServiceMock, inventoryID)
+	taskdomain, _ := CreateTaskDomainCrop(taskServiceMock, &inventoryID)
 
 	var tests = []struct {
 		title              string
