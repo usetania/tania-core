@@ -382,7 +382,7 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	reservoirs, err := MapToReservoir(s, reservoirReads)
+	reservoirs, err := MapToReservoirListFromQuery(s, reservoirReads)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -397,30 +397,24 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 }
 
 func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
-	data := make(map[string]DetailReservoir)
+	reservoirUID, err := uuid.FromString(c.Param("reservoir_id"))
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Validate //
-	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
+	result := <-s.ReservoirReadQuery.FindByID(reservoirUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
 
-	_, ok := result.Result.(domain.Farm)
+	reservoir, ok := result.Result.(query.ReservoirReadQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	result = <-s.ReservoirRepo.FindByID(c.Param("reservoir_id"))
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	reservoir, ok := result.Result.(domain.Reservoir)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
-	}
-
-	detailReservoir, err := MapToDetailReservoir(s, reservoir)
+	data := make(map[string]DetailReservoir)
+	detailReservoir, err := MapToReservoirFromQuery(s, reservoir)
 	if err != nil {
 		return Error(c, err)
 	}
