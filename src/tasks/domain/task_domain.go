@@ -77,7 +77,7 @@ func CreateTaskDomainCrop(taskservice TaskService, inventoryuid *uuid.UUID) (Tas
 	if inventoryuid != nil {
 		err := validateDomainAssetID(taskservice, inventoryuid, TaskDomainInventoryCode)
 		if err != nil {
-			return TaskDomainCrop{}, err
+			return TaskDomainCrop{}, TaskError{TaskErrorInvalidInventoryIDCode}
 		}
 	}
 

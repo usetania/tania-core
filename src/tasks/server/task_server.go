@@ -56,6 +56,7 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	g.GET("/search", s.FindFilteredTasks)
 	g.GET("/:id", s.FindTaskByID)
 	//g.PUT("/:id/start", s.StartTask)
+	g.PUT("/:id", s.UpdateTask)
 	g.PUT("/:id/cancel", s.CancelTask)
 	g.PUT("/:id/complete", s.CompleteTask)
 	// As we don't have an async task right now to check for Due state,
@@ -133,7 +134,9 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		asset_id_ptr = &asset_id
 	}
 
-	domaintask, err := s.CreateTaskDomainByCode(c)
+	domaincode := c.FormValue("domain")
+
+	domaintask, err := s.CreateTaskDomainByCode(domaincode, c)
 
 	if err != nil {
 		return Error(c, err)
@@ -163,8 +166,8 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) CreateTaskDomainByCode(c echo.Context) (domain.TaskDomain, error) {
-	domainvalue := c.FormValue("domain")
+func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (domain.TaskDomain, error) {
+	domainvalue := domaincode
 	if domainvalue == "" {
 		return nil, NewRequestValidationError(REQUIRED, "domain")
 	}
@@ -222,6 +225,123 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	data["data"] = task
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) UpdateTask(c echo.Context) error {
+
+	data := make(map[string]domain.Task)
+	uid, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.TaskRepo.FindByID(c.Param("id"))
+	if result.Error != nil {
+		return result.Error
+	}
+
+	task, ok := result.Result.(domain.Task)
+
+	if task.UID != uid {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	updated_task, err := s.updateTaskAttributes(task, c)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = <-s.TaskRepo.Save(&updated_task)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = updated_task
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) updateTaskAttributes(task domain.Task, c echo.Context) (domain.Task, error) {
+
+	// Change Task Title
+	title := c.FormValue("title")
+	if len(title) != 0 {
+		err := task.ChangeTaskTitle(title)
+		if err != nil {
+			return task, Error(c, err)
+		}
+	}
+
+	// Change Task Description
+
+	description := c.FormValue("description")
+	if len(description) != 0 {
+		err := task.ChangeTaskDescription(description)
+		if err != nil {
+			return task, Error(c, err)
+		}
+	}
+
+	// Change Task Due Date
+
+	form_date := c.FormValue("due_date")
+	due_ptr := (*time.Time)(nil)
+	if len(form_date) != 0 {
+		due_date, err := time.Parse(time.RFC3339, form_date)
+
+		if err != nil {
+			return task, Error(c, err)
+		}
+		due_ptr = &due_date
+		task.ChangeTaskDueDate(due_ptr)
+	}
+
+	// Change Task Priority
+
+	priority := c.FormValue("priority")
+	if len(priority) != 0 {
+		err := task.ChangeTaskPriority(priority)
+		if err != nil {
+			return task, Error(c, err)
+		}
+	}
+
+	// Change Task Asset
+
+	asset_id := c.FormValue("asset_id")
+	asset_id_ptr := (*uuid.UUID)(nil)
+	if len(asset_id) != 0 {
+		asset_id, err := uuid.FromString(asset_id)
+		if err != nil {
+			return task, Error(c, err)
+		}
+		asset_id_ptr = &asset_id
+		task.ChangeTaskAssetID(s.TaskService, asset_id_ptr)
+	}
+
+	// Change Task Category & Domain Details
+
+	category := c.FormValue("category")
+	if len(category) != 0 {
+		err := task.ChangeTaskCategory(category)
+		if err != nil {
+			return task, Error(c, err)
+		}
+		// Change Domain Details
+
+		inventory_id := c.FormValue("inventory_id")
+		if len(inventory_id) != 0 {
+			details, err := s.CreateTaskDomainByCode(task.Domain, c)
+			if err != nil {
+				return task, Error(c, err)
+			}
+			task.ChangeTaskDomainDetails(details)
+		}
+	}
+	return task, nil
 }
 
 func (s *TaskServer) CancelTask(c echo.Context) error {

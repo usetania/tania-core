@@ -31,6 +31,10 @@ const (
 	TaskErrorAssetIDEmptyCode
 	TaskErrorInvalidAssetIDCode
 
+	// Parent UID Errors
+	TaskErrorInventoryIDEmptyCode
+	TaskErrorInvalidInventoryIDCode
+
 	// Task General Errors
 	TaskErrorTaskNotFoundCode
 )
@@ -70,6 +74,10 @@ func (e TaskError) Error() string {
 		return "Task must have a referenced asset."
 	case TaskErrorInvalidAssetIDCode:
 		return "Task asset reference is invalid."
+	case TaskErrorInventoryIDEmptyCode:
+		return "This Task category requires an inventory reference."
+	case TaskErrorInvalidInventoryIDCode:
+		return "Task inventory reference is invalid."
 	case TaskErrorTaskNotFoundCode:
 		return "Task not found"
 	default:

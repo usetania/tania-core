@@ -84,8 +84,26 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 	}, nil
 }
 
+// ChangeTitle
+func (t *Task) ChangeTaskTitle(newtitle string) error {
+
+	err := validateTaskTitle(newtitle)
+	if err != nil {
+		return err
+	}
+
+	t.Title = newtitle
+
+	return nil
+}
+
 // ChangeDescription
 func (t *Task) ChangeTaskDescription(newdescription string) error {
+
+	err := validateTaskDescription(newdescription)
+	if err != nil {
+		return err
+	}
 
 	t.Description = newdescription
 
@@ -129,6 +147,17 @@ func (t *Task) ChangeTaskStatus(newstatus string) error {
 
 }
 
+// ChangeTaskAssetID
+func (t *Task) ChangeTaskAssetID(taskService TaskService, newasset *uuid.UUID) error {
+
+	err := validateAssetID(taskService, newasset, t.Domain)
+	if err != nil {
+		return err
+	}
+	t.AssetID = newasset
+	return nil
+}
+
 // ChangeCategory
 func (t *Task) ChangeTaskCategory(newtaskcategory string) error {
 
@@ -139,6 +168,11 @@ func (t *Task) ChangeTaskCategory(newtaskcategory string) error {
 	t.Category = newtaskcategory
 
 	return nil
+}
+
+// Chnage TaskDomainDetails
+func (t *Task) ChangeTaskDomainDetails(newdetails TaskDomain) {
+	t.DomainDetails = newdetails
 }
 
 // SetTaskAsDue
@@ -158,6 +192,14 @@ func (t *Task) SetTaskCompletedDate() {
 func validateTaskTitle(title string) error {
 	if title == "" {
 		return TaskError{TaskErrorTitleEmptyCode}
+	}
+	return nil
+}
+
+// validateTaskDescription
+func validateTaskDescription(description string) error {
+	if description == "" {
+		return TaskError{TaskErrorDescriptionEmptyCode}
 	}
 	return nil
 }
