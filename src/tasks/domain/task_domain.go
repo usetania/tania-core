@@ -27,7 +27,7 @@ func (d TaskDomainArea) Code() string {
 
 // CROP
 type TaskDomainCrop struct {
-	InventoryUID uuid.UUID
+	InventoryUID *uuid.UUID
 }
 
 func (d TaskDomainCrop) Code() string {
@@ -72,11 +72,13 @@ func CreateTaskDomainArea() (TaskDomainArea, error) {
 }
 
 // CreateTaskDomainCrop
-func CreateTaskDomainCrop(taskservice TaskService, inventoryuid uuid.UUID) (TaskDomainCrop, error) {
+func CreateTaskDomainCrop(taskservice TaskService, inventoryuid *uuid.UUID) (TaskDomainCrop, error) {
 
-	err := validateDomainAssetID(taskservice, inventoryuid, TaskDomainInventoryCode)
-	if err != nil {
-		return TaskDomainCrop{}, err
+	if inventoryuid != nil {
+		err := validateDomainAssetID(taskservice, inventoryuid, TaskDomainInventoryCode)
+		if err != nil {
+			return TaskDomainCrop{}, err
+		}
 	}
 
 	return TaskDomainCrop{InventoryUID: inventoryuid}, nil
@@ -103,7 +105,7 @@ func CreateTaskDomainReservoir() (TaskDomainReservoir, error) {
 }
 
 // validateAssetID
-func validateDomainAssetID(taskService TaskService, assetid uuid.UUID, taskdomain string) error {
+func validateDomainAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain string) error {
 	if taskdomain == "" {
 		return TaskError{TaskErrorDomainEmptyCode}
 	}
@@ -112,28 +114,28 @@ func validateDomainAssetID(taskService TaskService, assetid uuid.UUID, taskdomai
 
 	switch taskdomain {
 	case TaskDomainAreaCode:
-		serviceResult := taskService.FindAreaByID(assetid)
+		serviceResult := taskService.FindAreaByID(*assetid)
 
 		if serviceResult.Error != nil {
 			return serviceResult.Error
 		}
 	case TaskDomainCropCode:
 
-		serviceResult := taskService.FindCropByID(assetid)
+		serviceResult := taskService.FindCropByID(*assetid)
 
 		if serviceResult.Error != nil {
 			return serviceResult.Error
 		}
 	case TaskDomainInventoryCode:
 
-		serviceResult := taskService.FindMaterialByID(assetid)
+		serviceResult := taskService.FindMaterialByID(*assetid)
 
 		if serviceResult.Error != nil {
 			return serviceResult.Error
 		}
 	case TaskDomainReservoirCode:
 
-		serviceResult := taskService.FindReservoirByID(assetid)
+		serviceResult := taskService.FindReservoirByID(*assetid)
 
 		if serviceResult.Error != nil {
 			return serviceResult.Error

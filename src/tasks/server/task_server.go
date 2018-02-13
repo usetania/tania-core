@@ -173,11 +173,17 @@ func (s *TaskServer) CreateTaskDomainByCode(c echo.Context) (domain.TaskDomain, 
 		return domain.CreateTaskDomainArea()
 	case domain.TaskDomainCropCode:
 
-		uid, err := uuid.FromString(c.FormValue("inventory_id"))
-		if err != nil {
-			return nil, Error(c, err)
+		inv_id := c.FormValue("inventory_id")
+
+		inventory_id_ptr := (*uuid.UUID)(nil)
+		if len(inv_id) != 0 {
+			inv_id, err := uuid.FromString(inv_id)
+			if err != nil {
+				return nil, Error(c, err)
+			}
+			inventory_id_ptr = &inv_id
 		}
-		return domain.CreateTaskDomainCrop(s.TaskService, uid)
+		return domain.CreateTaskDomainCrop(s.TaskService, inventory_id_ptr)
 	case domain.TaskDomainFinanceCode:
 		return domain.CreateTaskDomainFinance()
 	case domain.TaskDomainGeneralCode:
