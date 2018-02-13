@@ -10,6 +10,8 @@
             th Items
             th Category
         tbody
+          tr(v-if="tasks.length == 0")
+            td(colspan="3") No Task Created
           tr(v-for="task in tasks")
             td
               .checkbox

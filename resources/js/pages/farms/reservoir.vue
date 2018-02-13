@@ -40,30 +40,7 @@
             .panel-body
               span.h4.text-lt Graph here
       .row
-        .col-sm-6
-          .panel
-            .panel-heading
-              span.h4.text-lt Tasks
-            table.table.m-b-none
-              thead
-                tr
-                  th(style="width: 20%") Status
-                  th Description
-              tbody
-                tr
-                  td
-                    span.label.label-danger URGENT
-                  td
-                    a(href="task-detail.html")
-                      div Drain all the water and cleanse it with cleaning solutions
-                      small.text-muted 29/12/2017
-                tr
-                  td
-                    span.label.label-info NORMAL
-                  td
-                    a(href="task-detail.html")
-                      div Check the solenoid valve
-                      small.text-muted 27/12/2017
+        TasksList(:domain="'RESERVOIR'" :asset_id="reservoir.uid" :reload="reload")
         .col-sm-6.col-xs-12
           .panel
             .panel-heading
@@ -105,6 +82,7 @@ export default {
   },
   components: {
     FarmReservoirTaskCreate: () => import('./tasks/task-create.vue'),
+    TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },
   created () {
