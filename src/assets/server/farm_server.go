@@ -413,6 +413,10 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
+	if reservoir.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(REQUIRED, "reservoir_id"))
+	}
+
 	data := make(map[string]DetailReservoir)
 	detailReservoir, err := MapToReservoirFromQuery(s, reservoir)
 	if err != nil {

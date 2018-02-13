@@ -202,10 +202,11 @@ func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
 }
 
 func MapToReservoirListFromQuery(s *FarmServer, reservoirs []query.ReservoirReadQueryResult) ([]DetailReservoir, error) {
-	reservoirList := make([]DetailReservoir, len(reservoirs))
+	reservoirList := []DetailReservoir{}
 
 	for _, reservoir := range reservoirs {
 		detailReservoir, err := MapToReservoirFromQuery(s, reservoir)
+
 		if err != nil {
 			return nil, err
 		}
@@ -218,6 +219,7 @@ func MapToReservoirListFromQuery(s *FarmServer, reservoirs []query.ReservoirRead
 
 func MapToReservoirFromQuery(s *FarmServer, reservoir query.ReservoirReadQueryResult) (DetailReservoir, error) {
 	detailReservoir := DetailReservoir{}
+
 	detailReservoir.UID = reservoir.UID
 	detailReservoir.Name = reservoir.Name
 	detailReservoir.WaterSource = WaterSource{
