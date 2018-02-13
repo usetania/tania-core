@@ -26,22 +26,7 @@
           a.btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
             i.fa.fa-plus
             | Add a New Batch
-        table.table.m-b
-          thead
-            tr
-              th Crop Variety
-              th Batch ID
-              th Days Since Seeding
-              th Initial Quantity
-              th Status
-          tbody
-            tr(v-for="crop in crops")
-              td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
-              td: span.identifier {{ crop.batch_id }}
-              td {{ crop.initial_area.created_date | moment("from", new Date()) }}
-              td {{ crop.initial_area.initial_quantity }}
-              td {{ crop.area_status.seeding }} Seeding, {{ crop.area_status.growing }} Growing, {{ crop.area_status.dumped }} Dumped
-
+        FarmCropsListing(:crops="crops" :domain="'CROPS'")
 </template>
 
 <script>
@@ -51,6 +36,7 @@ export default {
   name: "FarmCrops",
   components: {
     FarmCropCreate: () => import('./crops-create.vue'),
+    FarmCropsListing: () => import('./crops-listing.vue'),
     Modal
   },
   computed: {

@@ -53,22 +53,7 @@
       .panel
         .panel-heading
           span.h4.text-lt Current status
-        table.table.m-b-none
-          thead
-            tr
-              th Crop Variety
-              th Batch ID
-              th Seeding Date
-              th Days Since Seeding
-              th Quantity
-          tbody
-            tr
-              td.text-lt Rosemary Primed
-              td
-                span.identified ros-pri-1nov
-              td 01/11/2017
-              td 32
-              td 42 Pots
+        FarmCropsListing(:crops="areaCrops" :domain="'AREA'")
       //- Ending row
 
       //- Starting row
@@ -106,6 +91,7 @@ export default {
   name: 'Area',
   components: {
     FarmAreaTaskCreate: () => import('./tasks/task-create.vue'),
+    FarmCropsListing: () => import('./crops-listing.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },
@@ -119,6 +105,11 @@ export default {
       .then(({ data }) =>  {
         this.area = data
         this.loading = false
+        this.fetchAreaCrops(this.area.uid)
+          .then(({ data }) =>  {
+            this.areaCrops = data
+          })
+          .catch(error => console.log(error))
       })
       .catch(error => console.log(error))
   },
@@ -126,7 +117,7 @@ export default {
     return {
       area: Object.assign({}, StubArea),
       areaNotes: [],
-      areaTasks: [],
+      areaCrops: [],
       loading: true,
       note: Object.assign({}, StubNote),
       reload: false,
@@ -137,6 +128,7 @@ export default {
     ...mapActions([
       'createAreaNotes',
       'deleteAreaNote',
+      'fetchAreaCrops',
       'getAreaByUid',
     ]),
     closeModal () {

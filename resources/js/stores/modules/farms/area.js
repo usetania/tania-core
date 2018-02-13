@@ -52,6 +52,14 @@ const actions = {
       }, error => reject(error.response))
     })
   },
+  fetchAreaCrops ({ commit, state, getters }, areaId) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi.ApiFetchAreaCrop(areaId, ({ data }) => {
+        resolve(data)
+      }, error => reject(error.response))
+    })
+  },
   getAreaByUid ({ commit, state, getters }, areaId) {
     const farm = getters.getCurrentFarm
 
