@@ -1,0 +1,57 @@
+package repository
+
+import (
+	"testing"
+
+	"github.com/Tanibox/tania-server/src/assets/query"
+	"github.com/Tanibox/tania-server/src/assets/storage"
+	uuid "github.com/satori/go.uuid"
+
+	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
+
+type ReservoirServiceMock struct {
+	mock.Mock
+}
+
+func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) domain.ServiceResult {
+	args := m.Called(uid)
+	return args.Get(0).(domain.ServiceResult)
+}
+
+func TestReservoirEventInMemorySave(t *testing.T) {
+	// Given
+	done := make(chan bool)
+
+	reservoirEventStorage := storage.CreateReservoirEventStorage()
+	repo := NewReservoirEventRepositoryInMemory(reservoirEventStorage)
+
+	reservoirServiceMock := new(ReservoirServiceMock)
+
+	farmUID, _ := uuid.NewV4()
+	farmServiceResult := domain.ServiceResult{
+		Result: query.FarmReadQueryResult{UID: farmUID},
+	}
+	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
+
+	reservoir1, resErr1 := domain.CreateReservoir(reservoirServiceMock, farmUID, "MyReservoir1", "BUCKET", float32(10))
+	reservoir2, resErr2 := domain.CreateReservoir(reservoirServiceMock, farmUID, "MyReservoir2", "TAP", float32(0))
+
+	// When
+	var err1, err2 error
+	go func() {
+		err1 = <-repo.Save(reservoir1.UID, reservoir1.Version, reservoir1.UncommittedChanges)
+		err2 = <-repo.Save(reservoir2.UID, reservoir2.Version, reservoir2.UncommittedChanges)
+
+		done <- true
+	}()
+
+	// Then
+	<-done
+	assert.Nil(t, resErr1)
+	assert.Nil(t, resErr2)
+	assert.Nil(t, err1)
+	assert.Nil(t, err2)
+}
