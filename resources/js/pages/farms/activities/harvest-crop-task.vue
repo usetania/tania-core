@@ -41,7 +41,7 @@
           span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
         .form-group
           button.btn.btn-primary.btn-addon.pull-right(type="submit")
-            i.fas.fa-check
+            i.fa.fa-check
             |  OK
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fa.fa-close

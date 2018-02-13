@@ -149,7 +149,8 @@
                         .col-xs-11
                           div
                             | Harvested 
-                            u Partial
+                            u(v-if="activity.activity_type.type == 'PARTIAL'") Partial
+                            u(v-if="activity.activity_type.type == 'ALL'") All
                             |  of 
                             b {{ activity.activity_type.produced_gram_quantity }} Grams
                             |  on 
