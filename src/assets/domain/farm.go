@@ -53,20 +53,35 @@ func (state *Farm) Transition(event interface{}) {
 }
 
 // CreateFarm registers a new farm to Tania
-func CreateFarm(name string, farmType string) (*Farm, error) {
+func CreateFarm(name, farmType, latitude, longitude, countryCode, cityCode string) (*Farm, error) {
 	err := validateFarmName(name)
 	if err != nil {
-		return &Farm{}, err
+		return nil, err
 	}
 
 	err = validateFarmType(farmType)
 	if err != nil {
-		return &Farm{}, err
+		return nil, err
+	}
+
+	err = validateGeoLocation(latitude, longitude)
+	if err != nil {
+		return nil, err
+	}
+
+	err = validateCountryCode(countryCode)
+	if err != nil {
+		return nil, err
+	}
+
+	err = validateCityCode(countryCode, cityCode)
+	if err != nil {
+		return nil, err
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return &Farm{}, err
+		return nil, err
 	}
 
 	initial := &Farm{}
@@ -75,10 +90,10 @@ func CreateFarm(name string, farmType string) (*Farm, error) {
 		UID:         uid,
 		Name:        name,
 		Type:        farmType,
-		Latitude:    "",
-		Longitude:   "",
-		CountryCode: "",
-		CityCode:    "",
+		Latitude:    latitude,
+		Longitude:   longitude,
+		CountryCode: countryCode,
+		CityCode:    cityCode,
 		IsActive:    true,
 	})
 

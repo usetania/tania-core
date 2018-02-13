@@ -100,11 +100,13 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
 	g.GET("/:id", s.FindFarmByID)
+
 	g.POST("/:id/reservoirs", s.SaveReservoir)
 	g.POST("/reservoirs/:id/notes", s.SaveReservoirNotes)
 	g.DELETE("/reservoirs/:reservoir_id/notes/:note_id", s.RemoveReservoirNotes)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
+
 	g.POST("/:id/areas", s.SaveArea)
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
 	g.DELETE("/areas/:area_id/notes/:note_id", s.RemoveAreaNotes)
@@ -141,19 +143,14 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 
 // SaveFarm is a FarmServer's handler to save new Farm
 func (s *FarmServer) SaveFarm(c echo.Context) error {
-	data := make(map[string]*storage.FarmRead)
-
-	farm, err := domain.CreateFarm(c.FormValue("name"), c.FormValue("farm_type"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = farm.ChangeGeoLocation(c.FormValue("latitude"), c.FormValue("longitude"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = farm.ChangeRegion(c.FormValue("country_code"), c.FormValue("city_code"))
+	farm, err := domain.CreateFarm(
+		c.FormValue("name"),
+		c.FormValue("farm_type"),
+		c.FormValue("latitude"),
+		c.FormValue("longitude"),
+		c.FormValue("country_code"),
+		c.FormValue("city_code"),
+	)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -165,6 +162,7 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 
 	s.publishUncommittedEvents(farm)
 
+	data := make(map[string]*storage.FarmRead)
 	data["data"] = MapToFarmRead(farm)
 
 	return c.JSON(http.StatusOK, data)
