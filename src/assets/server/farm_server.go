@@ -367,25 +367,29 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 }
 
 func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
-	data := make(map[string][]DetailReservoir)
-
-	result := <-s.FarmRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return result.Error
-	}
-
-	farm, ok := result.Result.(domain.Farm)
-	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	reservoirs, err := MapToReservoir(s, farm.Reservoirs)
+	farmUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
 	}
 
+	result := <-s.ReservoirReadQuery.FindAllByFarm(farmUID)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	reservoirReads, ok := result.Result.([]query.ReservoirReadQueryResult)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	reservoirs, err := MapToReservoir(s, reservoirReads)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string][]DetailReservoir)
 	data["data"] = reservoirs
-	if len(farm.Reservoirs) == 0 {
+	if len(reservoirs) == 0 {
 		data["data"] = []DetailReservoir{}
 	}
 

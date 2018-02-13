@@ -17,7 +17,7 @@ type ReservoirEventQuery interface {
 
 type ReservoirReadQuery interface {
 	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
-	FindAll() <-chan QueryResult
+	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
 }
 
 type AreaQuery interface {

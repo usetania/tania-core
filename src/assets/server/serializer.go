@@ -42,9 +42,36 @@ type DetailArea struct {
 }
 
 type DetailReservoir struct {
-	domain.Reservoir
-	InstalledToAreas []SimpleArea
+	UID              uuid.UUID            `json:"uid"`
+	Name             string               `json:"name"`
+	WaterSource      WaterSource          `json:"water_source"`
+	Farm             SimpleFarm           `json:"farm"`
+	CreatedDate      time.Time            `json:"created_date"`
+	Notes            SortedReservoirNotes `json:"notes"`
+	InstalledToAreas []SimpleArea         `json:"installed_to_areas"`
 }
+
+type WaterSource struct {
+	Type     string
+	Capacity float32
+}
+
+type ReservoirNote struct {
+	UID         uuid.UUID
+	Content     string
+	CreatedDate time.Time
+}
+
+type SortedReservoirNotes []ReservoirNote
+
+// Len is part of sort.Interface.
+func (sn SortedReservoirNotes) Len() int { return len(sn) }
+
+// Swap is part of sort.Interface.
+func (sn SortedReservoirNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
+
+// Less is part of sort.Interface.
+func (sn SortedReservoirNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
 
 type ReservoirBucket struct{ domain.Bucket }
 type ReservoirTap struct{ domain.Tap }
@@ -108,17 +135,6 @@ func (sn SortedAreaNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
 
 // Less is part of sort.Interface.
 func (sn SortedAreaNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
-
-type SortedReservoirNotes []domain.ReservoirNote
-
-// Len is part of sort.Interface.
-func (sn SortedReservoirNotes) Len() int { return len(sn) }
-
-// Swap is part of sort.Interface.
-func (sn SortedReservoirNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
-
-// Less is part of sort.Interface.
-func (sn SortedReservoirNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
 
 func MapToFarmRead(farm *domain.Farm) *storage.FarmRead {
 	farmRead := &storage.FarmRead{}
@@ -184,20 +200,44 @@ func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
 	return areaList, nil
 }
 
-func MapToReservoir(s *FarmServer, reservoirs []domain.Reservoir) ([]DetailReservoir, error) {
+func MapToReservoir(s *FarmServer, reservoirs []query.ReservoirReadQueryResult) ([]DetailReservoir, error) {
 	reservoirList := make([]DetailReservoir, len(reservoirs))
 
 	for i, reservoir := range reservoirs {
-		reservoirList[i] = DetailReservoir{Reservoir: reservoir}
+		reservoirList[i].UID = reservoir.UID
+		reservoirList[i].Name = reservoir.Name
+		reservoirList[i].WaterSource = WaterSource{
+			Type:     reservoir.WaterSource.Type,
+			Capacity: reservoir.WaterSource.Capacity,
+		}
+		reservoirList[i].CreatedDate = reservoir.CreatedDate
 
-		switch v := reservoir.WaterSource.(type) {
-		case domain.Bucket:
-			reservoirList[i].WaterSource = ReservoirBucket{Bucket: v}
-		case domain.Tap:
-			reservoirList[i].WaterSource = ReservoirTap{Tap: v}
+		for _, v := range reservoir.Notes {
+			reservoirList[i].Notes = append(reservoirList[i].Notes, ReservoirNote{
+				UID:         v.UID,
+				Content:     v.Content,
+				CreatedDate: v.CreatedDate,
+			})
+		}
+		sort.Sort(reservoirList[i].Notes)
+
+		queryResult := <-s.FarmReadQuery.FindByID(reservoir.FarmUID)
+		if queryResult.Error != nil {
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 		}
 
-		queryResult := <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
+		farm, ok := queryResult.Result.(query.FarmReadQueryResult)
+		if !ok {
+			return nil, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		}
+
+		reservoirList[i].Farm = SimpleFarm{
+			UID:  farm.UID,
+			Name: farm.Name,
+			Type: farm.Type,
+		}
+
+		queryResult = <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
 		if queryResult.Error != nil {
 			return nil, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 		}
@@ -214,16 +254,50 @@ func MapToReservoir(s *FarmServer, reservoirs []domain.Reservoir) ([]DetailReser
 }
 
 func MapToDetailReservoir(s *FarmServer, reservoir domain.Reservoir) (DetailReservoir, error) {
-	detailReservoir := DetailReservoir{Reservoir: reservoir}
+	detailReservoir := DetailReservoir{}
 
-	switch v := detailReservoir.WaterSource.(type) {
+	detailReservoir.UID = reservoir.UID
+	detailReservoir.Name = reservoir.Name
+	detailReservoir.CreatedDate = reservoir.CreatedDate
+
+	switch v := reservoir.WaterSource.(type) {
 	case domain.Bucket:
-		detailReservoir.WaterSource = ReservoirBucket{Bucket: v}
+		detailReservoir.WaterSource = WaterSource{
+			Type:     v.Type(),
+			Capacity: v.Capacity,
+		}
 	case domain.Tap:
-		detailReservoir.WaterSource = ReservoirTap{Tap: v}
+		detailReservoir.WaterSource = WaterSource{
+			Type: v.Type(),
+		}
 	}
 
-	queryResult := <-s.AreaQuery.FindAreasByReservoirID(detailReservoir.UID.String())
+	for _, v := range reservoir.Notes {
+		detailReservoir.Notes = append(detailReservoir.Notes, ReservoirNote{
+			UID:         v.UID,
+			Content:     v.Content,
+			CreatedDate: v.CreatedDate,
+		})
+	}
+	sort.Sort(detailReservoir.Notes)
+
+	queryResult := <-s.FarmReadQuery.FindByID(reservoir.FarmUID)
+	if queryResult.Error != nil {
+		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	farm, ok := queryResult.Result.(query.FarmReadQueryResult)
+	if !ok {
+		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	detailReservoir.Farm = SimpleFarm{
+		UID:  farm.UID,
+		Name: farm.Name,
+		Type: farm.Type,
+	}
+
+	queryResult = <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
 	if queryResult.Error != nil {
 		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
@@ -475,31 +549,6 @@ func (sa SimpleArea) MarshalJSON() ([]byte, error) {
 		UID:  sa.UID.String(),
 		Name: sa.Name,
 		Type: sa.Type,
-	})
-}
-
-func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
-	notes := make(SortedReservoirNotes, 0, len(dr.Notes))
-	for _, v := range dr.Notes {
-		notes = append(notes, v)
-	}
-
-	sort.Sort(notes)
-
-	return json.Marshal(struct {
-		UID              string               `json:"uid"`
-		Name             string               `json:"name"`
-		WaterSource      domain.WaterSource   `json:"water_source"`
-		Notes            SortedReservoirNotes `json:"notes"`
-		CreatedDate      time.Time            `json:"created_date"`
-		InstalledToAreas []SimpleArea         `json:"installed_to_areas"`
-	}{
-		UID:              dr.UID.String(),
-		Name:             dr.Name,
-		WaterSource:      dr.WaterSource,
-		Notes:            notes,
-		CreatedDate:      dr.CreatedDate,
-		InstalledToAreas: dr.InstalledToAreas,
 	})
 }
 
