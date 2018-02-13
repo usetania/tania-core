@@ -37,7 +37,11 @@ func main() {
 	farmReadStorage := assetsstorage.CreateFarmReadStorage()
 
 	areaStorage := assetsstorage.CreateAreaStorage()
+
 	reservoirStorage := assetsstorage.CreateReservoirStorage()
+	reservoirEventStorage := assetsstorage.CreateReservoirEventStorage()
+	reservoirReadStorage := assetsstorage.CreateReservoirReadStorage()
+
 	materialStorage := assetsstorage.CreateMaterialStorage()
 
 	cropStorage := growthstorage.CreateCropStorage()
@@ -54,6 +58,8 @@ func main() {
 		farmReadStorage,
 		areaStorage,
 		reservoirStorage,
+		reservoirEventStorage,
+		reservoirReadStorage,
 		materialStorage,
 		cropStorage,
 		bus,
@@ -242,11 +248,8 @@ func initDataDemo(
 	reservoir1 := assetsdomain.Reservoir{
 		UID:         uid,
 		Name:        "MyBucketReservoir",
-		PH:          8,
-		EC:          12.5,
-		Temperature: 29,
-		WaterSource: assetsdomain.Bucket{Capacity: 100, Volume: 10},
-		Farm:        farm1,
+		WaterSource: assetsdomain.Bucket{Capacity: 100},
+		FarmUID:     farm1.UID,
 		Notes:       reservoirNotes,
 		CreatedDate: time.Now(),
 	}
@@ -259,11 +262,8 @@ func initDataDemo(
 	reservoir2 := assetsdomain.Reservoir{
 		UID:         uid,
 		Name:        "MyTapReservoir",
-		PH:          8,
-		EC:          12.5,
-		Temperature: 29,
 		WaterSource: assetsdomain.Tap{},
-		Farm:        farm1,
+		FarmUID:     farm1.UID,
 		Notes:       make(map[uuid.UUID]assetsdomain.ReservoirNote),
 		CreatedDate: time.Now(),
 	}

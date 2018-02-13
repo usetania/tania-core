@@ -489,9 +489,6 @@ func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		UID              string               `json:"uid"`
 		Name             string               `json:"name"`
-		PH               float32              `json:"ph"`
-		EC               float32              `json:"ec"`
-		Temperature      float32              `json:"temperature"`
 		WaterSource      domain.WaterSource   `json:"water_source"`
 		Notes            SortedReservoirNotes `json:"notes"`
 		CreatedDate      time.Time            `json:"created_date"`
@@ -499,9 +496,6 @@ func (dr DetailReservoir) MarshalJSON() ([]byte, error) {
 	}{
 		UID:              dr.UID.String(),
 		Name:             dr.Name,
-		PH:               dr.PH,
-		EC:               dr.EC,
-		Temperature:      dr.Temperature,
 		WaterSource:      dr.WaterSource,
 		Notes:            notes,
 		CreatedDate:      dr.CreatedDate,
@@ -513,11 +507,9 @@ func (rb ReservoirBucket) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Type     string  `json:"type"`
 		Capacity float32 `json:"capacity"`
-		Volume   float32 `json:"volume"`
 	}{
 		Type:     rb.Type(),
 		Capacity: rb.Capacity,
-		Volume:   rb.Volume,
 	})
 }
 

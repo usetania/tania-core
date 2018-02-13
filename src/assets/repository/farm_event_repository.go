@@ -18,7 +18,7 @@ func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) FarmEventReposi
 	return &FarmEventRepositoryInMemory{Storage: s}
 }
 
-func NewFarmBatchFromHistory(events []storage.FarmEvent) *domain.Farm {
+func NewFarmFromHistory(events []storage.FarmEvent) *domain.Farm {
 	state := &domain.Farm{}
 	for _, v := range events {
 		state.Transition(v.Event)

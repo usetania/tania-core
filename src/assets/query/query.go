@@ -3,12 +3,20 @@ package query
 import (
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
 )
 
 type FarmReadQuery interface {
 	FindByID(farmUID uuid.UUID) <-chan QueryResult
+	FindAll() <-chan QueryResult
+}
+
+type ReservoirEventQuery interface {
+	FindAllByID(reservoirUID uuid.UUID) <-chan QueryResult
+}
+
+type ReservoirReadQuery interface {
+	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
 	FindAll() <-chan QueryResult
 }
 
@@ -23,13 +31,44 @@ type CropQuery interface {
 
 type MaterialQuery interface {
 	FindAll() <-chan QueryResult
-	FindAllMaterialByPlantType(plantType domain.PlantType) <-chan QueryResult
-	FindMaterialByPlantTypeAndName(plantType domain.PlantType, name string) <-chan QueryResult
+	FindAllMaterialByPlantType(plantTypeCode string) <-chan QueryResult
+	FindMaterialByPlantTypeAndName(plantTypeCode string, name string) <-chan QueryResult
 }
 
 type QueryResult struct {
 	Result interface{}
 	Error  error
+}
+
+type FarmReadQueryResult struct {
+	UID         uuid.UUID
+	Name        string
+	Type        string
+	Latitude    string
+	Longitude   string
+	CountryCode string
+	CityCode    string
+	CreatedDate time.Time
+}
+
+type ReservoirReadQueryResult struct {
+	UID         uuid.UUID
+	Name        string
+	WaterSource WaterSource
+	FarmUID     uuid.UUID
+	Notes       []ReservoirNote
+	CreatedDate time.Time
+}
+
+type WaterSource struct {
+	Type     string
+	Capacity float32
+}
+
+type ReservoirNote struct {
+	UID         uuid.UUID
+	Content     string
+	CreatedDate time.Time
 }
 
 type CountAreaCropQueryResult struct {

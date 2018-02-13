@@ -5,6 +5,7 @@ const (
 	ReservoirErrorNameNotEnoughCharacterCode
 	ReservoirErrorNameExceedMaximunCharacterCode
 	ReservoirErrorNameAlphanumericOnlyCode
+	ReservoirErrorFarmNotFound
 
 	ReservoirErrorPHInvalidCode
 

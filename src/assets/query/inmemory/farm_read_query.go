@@ -21,10 +21,17 @@ func (s FarmReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		farm := storage.FarmRead{}
+		farm := query.FarmReadQueryResult{}
 		for _, val := range s.Storage.FarmReadMap {
 			if val.UID == uid {
-				farm = val
+				farm.UID = val.UID
+				farm.Name = val.Name
+				farm.Type = val.Type
+				farm.Latitude = val.Latitude
+				farm.Longitude = val.Longitude
+				farm.CountryCode = val.CountryCode
+				farm.CityCode = val.CityCode
+				farm.CreatedDate = val.CreatedDate
 			}
 		}
 
@@ -43,9 +50,18 @@ func (s FarmReadQueryInMemory) FindAll() <-chan query.QueryResult {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		farms := []storage.FarmRead{}
+		farms := []query.FarmReadQueryResult{}
 		for _, val := range s.Storage.FarmReadMap {
-			farms = append(farms, val)
+			farms = append(farms, query.FarmReadQueryResult{
+				UID:         val.UID,
+				Name:        val.Name,
+				Type:        val.Type,
+				Latitude:    val.Latitude,
+				Longitude:   val.Longitude,
+				CountryCode: val.CountryCode,
+				CityCode:    val.CityCode,
+				CreatedDate: val.CreatedDate,
+			})
 		}
 
 		result <- query.QueryResult{Result: farms}

@@ -9,6 +9,7 @@ import (
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/domain/service"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/query/inmemory"
 	"github.com/Tanibox/tania-server/src/assets/repository"
@@ -24,18 +25,23 @@ import (
 
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
-	FarmRepo      repository.FarmRepository
-	FarmEventRepo repository.FarmEventRepository
-	FarmReadRepo  repository.FarmReadRepository
-	FarmReadQuery query.FarmReadQuery
-	ReservoirRepo repository.ReservoirRepository
-	AreaRepo      repository.AreaRepository
-	AreaQuery     query.AreaQuery
-	MaterialRepo  repository.MaterialRepository
-	MaterialQuery query.MaterialQuery
-	CropQuery     query.CropQuery
-	File          File
-	EventBus      EventBus.Bus
+	FarmRepo            repository.FarmRepository
+	FarmEventRepo       repository.FarmEventRepository
+	FarmReadRepo        repository.FarmReadRepository
+	FarmReadQuery       query.FarmReadQuery
+	ReservoirRepo       repository.ReservoirRepository
+	ReservoirEventRepo  repository.ReservoirEventRepository
+	ReservoirEventQuery query.ReservoirEventQuery
+	ReservoirReadRepo   repository.ReservoirReadRepository
+	ReservoirReadQuery  query.ReservoirReadQuery
+	ReservoirService    domain.ReservoirService
+	AreaRepo            repository.AreaRepository
+	AreaQuery           query.AreaQuery
+	MaterialRepo        repository.MaterialRepository
+	MaterialQuery       query.MaterialQuery
+	CropQuery           query.CropQuery
+	File                File
+	EventBus            EventBus.Bus
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -45,6 +51,8 @@ func NewFarmServer(
 	farmReadStorage *storage.FarmReadStorage,
 	areaStorage *storage.AreaStorage,
 	reservoirStorage *storage.ReservoirStorage,
+	reservoirEventStorage *storage.ReservoirEventStorage,
+	reservoirReadStorage *storage.ReservoirReadStorage,
 	materialStorage *storage.MaterialStorage,
 	cropStorage *growthstorage.CropStorage,
 	eventBus EventBus.Bus,
@@ -58,6 +66,11 @@ func NewFarmServer(
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(reservoirStorage)
+	reservoirEventRepo := repository.NewReservoirEventRepositoryInMemory(reservoirEventStorage)
+	reservoirEventQuery := inmemory.NewReservoirEventQueryInMemory(reservoirEventStorage)
+	reservoirReadRepo := repository.NewReservoirReadRepositoryInMemory(reservoirReadStorage)
+	reservoirReadQuery := inmemory.NewReservoirReadQueryInMemory(reservoirReadStorage)
+	reservoirService := service.ReservoirServiceInMemory{FarmReadQuery: farmReadQuery}
 
 	materialRepo := repository.NewMaterialRepositoryInMemory(materialStorage)
 	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
@@ -65,18 +78,23 @@ func NewFarmServer(
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 
 	farmServer := FarmServer{
-		FarmRepo:      farmRepo,
-		FarmEventRepo: farmEventRepo,
-		FarmReadRepo:  farmReadRepo,
-		FarmReadQuery: farmReadQuery,
-		ReservoirRepo: reservoirRepo,
-		AreaRepo:      areaRepo,
-		AreaQuery:     areaQuery,
-		MaterialRepo:  materialRepo,
-		MaterialQuery: materialQuery,
-		CropQuery:     cropQuery,
-		File:          LocalFile{},
-		EventBus:      eventBus,
+		FarmRepo:            farmRepo,
+		FarmEventRepo:       farmEventRepo,
+		FarmReadRepo:        farmReadRepo,
+		FarmReadQuery:       farmReadQuery,
+		ReservoirRepo:       reservoirRepo,
+		ReservoirEventRepo:  reservoirEventRepo,
+		ReservoirEventQuery: reservoirEventQuery,
+		ReservoirReadRepo:   reservoirReadRepo,
+		ReservoirReadQuery:  reservoirReadQuery,
+		ReservoirService:    reservoirService,
+		AreaRepo:            areaRepo,
+		AreaQuery:           areaQuery,
+		MaterialRepo:        materialRepo,
+		MaterialQuery:       materialQuery,
+		CropQuery:           cropQuery,
+		File:                LocalFile{},
+		EventBus:            eventBus,
 	}
 
 	farmServer.InitSubscriber()
@@ -87,6 +105,7 @@ func NewFarmServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
+	s.EventBus.Subscribe("ReservoirCreated", s.SaveToReservoirReadModel)
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -192,7 +211,6 @@ func (s *FarmServer) FindFarmByID(c echo.Context) error {
 
 // SaveReservoir is a FarmServer's handler to save new Reservoir and place it to a Farm
 func (s *FarmServer) SaveReservoir(c echo.Context) error {
-	data := make(map[string]DetailReservoir)
 	validation := RequestValidation{}
 
 	// Validate requests //
@@ -211,84 +229,58 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	farm, err := validation.ValidateFarm(*s, c.Param("id"))
+	farmUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
-		return Error(c, err)
+		return err
 	}
 
 	// Process //
-	r, err := domain.CreateReservoir(farm, name)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	if waterSourceType == domain.BucketType {
-		b, err := domain.CreateBucket(capacity, 0)
-		if err != nil {
-			return Error(c, err)
-		}
-
-		r.AttachBucket(b)
-	} else if waterSourceType == domain.TapType {
-		t, err := domain.CreateTap()
-		if err != nil {
-			return Error(c, err)
-		}
-
-		r.AttachTap(t)
-	}
-
-	err = farm.AddReservoir(&r)
+	r, err := domain.CreateReservoir(s.ReservoirService, farmUID, name, waterSourceType, capacity)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// Persists //
-	err = <-s.ReservoirRepo.Save(&r)
+	err = <-s.ReservoirEventRepo.Save(r.UID, r.Version, r.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	err = <-s.FarmRepo.Save(&farm)
-	if err != nil {
-		return Error(c, err)
-	}
+	// Publish //
+	s.publishUncommittedEvents(r)
 
-	detailReservoir, err := MapToDetailReservoir(s, r)
+	detailReservoir, err := MapToDetailReservoir(s, *r)
 	if err != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	data := make(map[string]DetailReservoir)
 	data["data"] = detailReservoir
 
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
-	data := make(map[string]DetailReservoir)
+	reservoirUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
 
-	reservoirID := c.Param("id")
 	content := c.FormValue("content")
 
 	// Validate //
-	result := <-s.ReservoirRepo.FindByID(reservoirID)
-	if result.Error != nil {
-		return Error(c, result.Error)
+	queryResult := <-s.ReservoirReadQuery.FindByID(reservoirUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
 	}
 
-	reservoir, ok := result.Result.(domain.Reservoir)
+	reservoirRead, ok := queryResult.Result.(query.ReservoirReadQueryResult)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	result = <-s.FarmRepo.FindByID(reservoir.Farm.UID.String())
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	farm, ok := result.Result.(domain.Farm)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	if reservoirRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(REQUIRED, "id"))
 	}
 
 	if content == "" {
@@ -296,25 +288,36 @@ func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
 	}
 
 	// Process //
-	reservoir.AddNewNote(content)
-	farm.ChangeReservoirInformation(reservoir)
+	eventQueryResult := <-s.ReservoirEventQuery.FindAllByID(reservoirRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.ReservoirEvent)
+	fmt.Println(events)
+	reservoir := repository.NewReservoirFromHistory(events)
+	fmt.Println(reservoir)
+
+	err = reservoir.AddNewNote(content)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Persists //
-	resultSave := <-s.ReservoirRepo.Save(&reservoir)
+	resultSave := <-s.ReservoirEventRepo.Save(reservoir.UID, reservoir.Version, reservoir.UncommittedChanges)
 	if resultSave != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	resultSave = <-s.FarmRepo.Save(&farm)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	// Publish //
+	s.publishUncommittedEvents(reservoir)
 
-	detailReservoir, err := MapToDetailReservoir(s, reservoir)
+	detailReservoir, err := MapToDetailReservoir(s, *reservoir)
 	if err != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	data := make(map[string]DetailReservoir)
 	data["data"] = detailReservoir
 
 	return c.JSON(http.StatusOK, data)
@@ -337,12 +340,12 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	result = <-s.FarmRepo.FindByID(reservoir.Farm.UID.String())
-	if result.Error != nil {
-		return Error(c, result.Error)
+	queryResult := <-s.FarmReadQuery.FindByID(reservoir.FarmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
 	}
 
-	farm, ok := result.Result.(domain.Farm)
+	farm, ok := queryResult.Result.(domain.Farm)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
@@ -444,10 +447,13 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	validation := RequestValidation{}
 
 	// Validation //
-	farm, err := validation.ValidateFarm(*s, c.Param("id"))
+	farmUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
 	}
+
+	// TODO: NEED TO BE FIXED
+	farm := domain.Farm{UID: farmUID}
 
 	reservoir, err := validation.ValidateReservoir(*s, c.FormValue("reservoir_id"))
 	if err != nil {
@@ -921,7 +927,11 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Farm:
 		for _, v := range e.UncommittedChanges {
-			fmt.Println("MASUK UNCOMMITTEDD")
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
+		}
+	case *domain.Reservoir:
+		for _, v := range e.UncommittedChanges {
 			name := structhelper.GetName(v)
 			s.EventBus.Publish(name, v)
 		}

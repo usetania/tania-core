@@ -54,6 +54,7 @@ type FarmRead struct {
 	CountryCode string    `json:"country_code"`
 	CityCode    string    `json:"city_code"`
 	IsActive    bool      `json:"is_active"`
+	CreatedDate time.Time `json:"created_date"`
 }
 
 type FarmReadStorage struct {
@@ -99,6 +100,57 @@ func CreateReservoirStorage() *ReservoirStorage {
 	}
 
 	return &ReservoirStorage{ReservoirMap: make(map[uuid.UUID]domain.Reservoir), Lock: &rwMutex}
+}
+
+type ReservoirEventStorage struct {
+	Lock            *deadlock.RWMutex
+	ReservoirEvents []ReservoirEvent
+}
+
+type ReservoirEvent struct {
+	ReservoirUID uuid.UUID
+	Version      int
+	Event        interface{}
+}
+
+func CreateReservoirEventStorage() *ReservoirEventStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("RESERVOIR EVENT STORAGE DEADLOCK!")
+	}
+
+	return &ReservoirEventStorage{Lock: &rwMutex}
+}
+
+type ReservoirRead struct {
+	UID             uuid.UUID              `json:"uid"`
+	Name            string                 `json:"name"`
+	WaterSource     WaterSource            `json:"water_source"`
+	FarmUID         uuid.UUID              `json:"farm"`
+	Notes           []domain.ReservoirNote `json:"notes"`
+	CreatedDate     time.Time              `json:"created_date"`
+	InstalledToArea []domain.Area          `json:"installed_to_area"`
+}
+
+type WaterSource struct {
+	Type     string
+	Capacity float32
+}
+
+type ReservoirReadStorage struct {
+	Lock             *deadlock.RWMutex
+	ReservoirReadMap map[uuid.UUID]ReservoirRead
+}
+
+func CreateReservoirReadStorage() *ReservoirReadStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("RESERVOIR READ STORAGE DEADLOCK!")
+	}
+
+	return &ReservoirReadStorage{ReservoirReadMap: make(map[uuid.UUID]ReservoirRead), Lock: &rwMutex}
 }
 
 type MaterialStorage struct {

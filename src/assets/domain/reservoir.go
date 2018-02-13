@@ -3,6 +3,7 @@ package domain
 import (
 	"time"
 
+	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/helper/validationhelper"
 	uuid "github.com/satori/go.uuid"
 )
@@ -12,16 +13,63 @@ import (
 type Reservoir struct {
 	UID         uuid.UUID                   `json:"uid"`
 	Name        string                      `json:"name"`
-	PH          float32                     `json:"ph"`
-	EC          float32                     `json:"ec"`
-	Temperature float32                     `json:"temperature"`
 	WaterSource WaterSource                 `json:"water_source"`
-	Farm        Farm                        `json:"-"`
+	FarmUID     uuid.UUID                   `json:"-"`
 	Notes       map[uuid.UUID]ReservoirNote `json:"-"`
 	CreatedDate time.Time                   `json:"created_date"`
 
-	// This is for serialization purposes
-	InstalledToArea []Area `json:"-"`
+	// Events
+	Version            int
+	UncommittedChanges []interface{}
+}
+
+type ReservoirService interface {
+	FindFarmByID(farmUID uuid.UUID) ServiceResult
+}
+
+type ServiceResult struct {
+	Result interface{}
+	Error  error
+}
+
+const (
+	BucketType = "BUCKET"
+	TapType    = "TAP"
+)
+
+type WaterSource interface {
+	Type() string
+}
+
+// Bucket is value object attached to the Reservoir.waterSource.
+type Bucket struct {
+	Capacity float32 `json:"capacity"`
+}
+
+func (b Bucket) Type() string {
+	return BucketType
+}
+
+// Tap is value object attached to the Reservoir.waterSource domain.
+type Tap struct {
+}
+
+func (t Tap) Type() string {
+	return TapType
+}
+
+// CreateBucket registers a new Bucket.
+func CreateBucket(capacity float32) (Bucket, error) {
+	if capacity <= 0 {
+		return Bucket{}, ReservoirError{ReservoirErrorBucketCapacityInvalidCode}
+	}
+
+	return Bucket{Capacity: capacity}, nil
+}
+
+// CreateTap registers a new Tab.
+func CreateTap() (Tap, error) {
+	return Tap{}, nil
 }
 
 type ReservoirNote struct {
@@ -30,46 +78,97 @@ type ReservoirNote struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
+func (state *Reservoir) TrackChange(event interface{}) {
+	state.UncommittedChanges = append(state.UncommittedChanges, event)
+	state.Transition(event)
+}
+
+func (state *Reservoir) Transition(event interface{}) {
+	switch e := event.(type) {
+	case ReservoirCreated:
+		state.UID = e.UID
+		state.Name = e.Name
+		state.WaterSource = e.WaterSource
+		state.FarmUID = e.FarmUID
+		state.CreatedDate = e.CreatedDate
+
+	case ReservoirWaterSourceChanged:
+		state.WaterSource = e.WaterSource
+
+	case ReservoirNoteAdded:
+		if len(state.Notes) == 0 {
+			state.Notes = make(map[uuid.UUID]ReservoirNote)
+		}
+
+		state.Notes[e.UID] = ReservoirNote{
+			UID:         e.UID,
+			Content:     e.Content,
+			CreatedDate: e.CreatedDate,
+		}
+
+	}
+}
+
 // CreateReservoir registers a new Reservoir.
-func CreateReservoir(farm Farm, name string) (Reservoir, error) {
+func CreateReservoir(reservoirService ReservoirService, farmUID uuid.UUID, name string, waterSourceType string, capacity float32) (*Reservoir, error) {
+	serviceResult := reservoirService.FindFarmByID(farmUID)
+	if serviceResult.Error != nil {
+		return nil, serviceResult.Error
+	}
+
+	farm, ok := serviceResult.Result.(query.FarmReadQueryResult)
+	if !ok {
+		return nil, ReservoirError{ReservoirErrorFarmNotFound}
+	}
+
+	if farm.UID == (uuid.UUID{}) {
+		return nil, ReservoirError{ReservoirErrorFarmNotFound}
+	}
+
 	err := validateReservoirName(name)
 	if err != nil {
-		return Reservoir{}, err
+		return nil, err
+	}
+
+	ws, err := validateWaterSource(waterSourceType, capacity)
+	if err != nil {
+		return nil, err
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return Reservoir{}, err
+		return nil, err
 	}
 
-	return Reservoir{
+	initial := &Reservoir{
 		UID:         uid,
 		Name:        name,
-		PH:          0,
-		EC:          0,
-		Temperature: 0,
-		Farm:        farm,
+		WaterSource: ws,
+		FarmUID:     farm.UID,
 		CreatedDate: time.Now(),
-	}, nil
-}
-
-// AttachBucket attach Bucket value object to Reservoir.waterSource.
-func (r *Reservoir) AttachBucket(bucket Bucket) error {
-	if r.IsAttachedToWaterSource() {
-		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
 	}
 
-	r.WaterSource = bucket
-	return nil
+	initial.TrackChange(ReservoirCreated{
+		UID:         initial.UID,
+		Name:        initial.Name,
+		WaterSource: initial.WaterSource,
+		FarmUID:     initial.FarmUID,
+		CreatedDate: initial.CreatedDate,
+	})
+
+	return initial, nil
 }
 
-// AttachTap attach Tap value object to Reservoir.WaterSource.
-func (r *Reservoir) AttachTap(tap Tap) error {
-	if r.IsAttachedToWaterSource() {
-		return ReservoirError{ReservoirErrorWaterSourceAlreadyAttachedCode}
+func (r *Reservoir) ChangeWaterSource(waterSourceType string, capacity float32) error {
+	ws, err := validateWaterSource(waterSourceType, capacity)
+	if err != nil {
+		return err
 	}
 
-	r.WaterSource = tap
+	r.TrackChange(ReservoirWaterSourceChanged{
+		WaterSource: ws,
+	})
+
 	return nil
 }
 
@@ -90,17 +189,6 @@ func (r Reservoir) IsAttachedToWaterSource() bool {
 	return r.WaterSource != nil
 }
 
-// MeasureCondition will measure the Reservoir condition based on its properties.
-func (r Reservoir) MeasureCondition() float32 {
-	if !r.IsAttachedToBucket() {
-		// We can't measure non bucket reservoir
-		return 0
-	}
-
-	// Do measure here
-	return 1
-}
-
 // ChangeName is used to change Reservoir Name.
 func (r *Reservoir) ChangeName(name string) error {
 	err := validateReservoirName(name)
@@ -109,28 +197,6 @@ func (r *Reservoir) ChangeName(name string) error {
 	}
 
 	r.Name = name
-
-	return nil
-}
-
-// ChangeTemperature is used to change Reservoir Temperature.
-//
-// Temperature change can affect the value of pH and EC,
-// so we will accept pH and EC value in arguments.
-func (r *Reservoir) ChangeTemperature(temperature, ph, ec float32) error {
-	err := validatePH(ph)
-	if err != nil {
-		return err
-	}
-
-	err = validateEC(ec)
-	if err != nil {
-		return err
-	}
-
-	r.Temperature = temperature
-	r.PH = ph
-	r.EC = ec
 
 	return nil
 }
@@ -145,17 +211,11 @@ func (r *Reservoir) AddNewNote(content string) error {
 		return err
 	}
 
-	reservoirNote := ReservoirNote{
+	r.TrackChange(ReservoirNoteAdded{
 		UID:         uid,
 		Content:     content,
 		CreatedDate: time.Now(),
-	}
-
-	if len(r.Notes) == 0 {
-		r.Notes = make(map[uuid.UUID]ReservoirNote)
-	}
-
-	r.Notes[uid] = reservoirNote
+	})
 
 	return nil
 }
@@ -183,6 +243,25 @@ func (r *Reservoir) RemoveNote(uid string) error {
 	}
 
 	return nil
+}
+
+func validateWaterSource(waterSourceType string, capacity float32) (WaterSource, error) {
+	var ws WaterSource
+	if waterSourceType == BucketType {
+		b, err := CreateBucket(capacity)
+		if err != nil {
+			return nil, err
+		}
+		ws = b
+	} else if waterSourceType == TapType {
+		t, err := CreateTap()
+		if err != nil {
+			return nil, err
+		}
+		ws = t
+	}
+
+	return ws, nil
 }
 
 func validateReservoirName(name string) error {
