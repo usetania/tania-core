@@ -166,10 +166,6 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 					Name:            dstArea.Name,
 					InitialQuantity: ma.InitialQuantity,
 					CurrentQuantity: ma.CurrentQuantity,
-					LastWatered:     &ma.LastWatered,
-					LastPesticided:  &ma.LastPesticided,
-					LastFertilized:  &ma.LastFertilized,
-					LastPruned:      &ma.LastPruned,
 					CreatedDate:     ma.CreatedDate,
 					LastUpdated:     ma.LastUpdated,
 				})

@@ -234,7 +234,6 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 	}
 
 	data := make(map[string]storage.CropRead)
-
 	data["data"] = crop
 
 	return c.JSON(http.StatusOK, data)
@@ -500,7 +499,7 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	wDate, err := time.Parse("2006-01-02", wateringDate)
+	wDate, err := time.Parse("2006-01-02 15:04", wateringDate)
 	if err != nil {
 		return Error(c, NewRequestValidationError(PARSE_FAILED, "watering_date"))
 	}
