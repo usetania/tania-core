@@ -33,9 +33,9 @@ type GrowthServer struct {
 	CropActivityRepo  repository.CropActivityRepository
 	CropActivityQuery query.CropActivityQuery
 	CropService       domain.CropService
-	AreaQuery         query.AreaQuery
+	AreaReadQuery     query.AreaReadQuery
 	MaterialQuery     query.MaterialQuery
-	FarmQuery         query.FarmQuery
+	FarmReadQuery     query.FarmReadQuery
 	EventBus          EventBus.Bus
 	File              File
 }
@@ -47,42 +47,38 @@ func NewGrowthServer(
 	cropEventStorage *storage.CropEventStorage,
 	cropReadStorage *storage.CropReadStorage,
 	cropActivityStorage *storage.CropActivityStorage,
-	areaStorage *assetsstorage.AreaStorage,
+	areaReadStorage *assetsstorage.AreaReadStorage,
 	materialStorage *assetsstorage.MaterialStorage,
-	farmStorage *assetsstorage.FarmStorage,
+	farmReadStorage *assetsstorage.FarmReadStorage,
 ) (*GrowthServer, error) {
 	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
 	cropEventQuery := inmemory.NewCropEventQueryInMemory(cropEventStorage)
-	cropRepo := repository.NewCropRepositoryInMemory(cropStorage)
-	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	cropReadRepo := repository.NewCropReadRepositoryInMemory(cropReadStorage)
 	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
 	cropActivityRepo := repository.NewCropActivityRepositoryInMemory(cropActivityStorage)
 	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
 
-	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
+	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
 	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
-	farmQuery := inmemory.NewFarmQueryInMemory(farmStorage)
+	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
 
 	cropService := service.CropServiceInMemory{
 		MaterialQuery: materialQuery,
-		CropQuery:     cropQuery,
-		AreaQuery:     areaQuery,
+		CropReadQuery: cropReadQuery,
+		AreaReadQuery: areaReadQuery,
 	}
 
 	growthServer := &GrowthServer{
 		CropEventRepo:     cropEventRepo,
 		CropEventQuery:    cropEventQuery,
-		CropRepo:          cropRepo,
-		CropQuery:         cropQuery,
 		CropReadRepo:      cropReadRepo,
 		CropReadQuery:     cropReadQuery,
 		CropActivityRepo:  cropActivityRepo,
 		CropActivityQuery: cropActivityQuery,
 		CropService:       cropService,
-		AreaQuery:         areaQuery,
+		AreaReadQuery:     areaReadQuery,
 		MaterialQuery:     materialQuery,
-		FarmQuery:         farmQuery,
+		FarmReadQuery:     farmReadQuery,
 		File:              LocalFile{},
 		EventBus:          bus,
 	}
@@ -153,7 +149,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 
-	areaResult := <-s.AreaQuery.FindByID(areaUID)
+	areaResult := <-s.AreaReadQuery.FindByID(areaUID)
 	if areaResult.Error != nil {
 		return Error(c, areaResult.Error)
 	}
@@ -679,7 +675,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	result := <-s.FarmQuery.FindByID(farmUID)
+	result := <-s.FarmReadQuery.FindByID(farmUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
@@ -720,7 +716,7 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	result := <-s.AreaQuery.FindByID(areaUID)
+	result := <-s.AreaReadQuery.FindByID(areaUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}

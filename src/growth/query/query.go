@@ -6,7 +6,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type AreaQuery interface {
+type AreaReadQuery interface {
 	FindByID(areaUID uuid.UUID) <-chan QueryResult
 }
 
@@ -37,7 +37,7 @@ type MaterialQuery interface {
 	FindMaterialByPlantTypeCodeAndName(plantType string, name string) <-chan QueryResult
 }
 
-type FarmQuery interface {
+type FarmReadQuery interface {
 	FindByID(farmUID uuid.UUID) <-chan QueryResult
 }
 

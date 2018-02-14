@@ -6,15 +6,15 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type AreaQueryInMemory struct {
-	Storage *storage.AreaStorage
+type AreaReadQueryInMemory struct {
+	Storage *storage.AreaReadStorage
 }
 
-func NewAreaQueryInMemory(s *storage.AreaStorage) query.AreaQuery {
-	return AreaQueryInMemory{Storage: s}
+func NewAreaReadQueryInMemory(s *storage.AreaReadStorage) query.AreaReadQuery {
+	return AreaReadQueryInMemory{Storage: s}
 }
 
-func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
+func (s AreaReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -22,7 +22,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		defer s.Storage.Lock.RUnlock()
 
 		area := query.CropAreaQueryResult{}
-		for _, val := range s.Storage.AreaMap {
+		for _, val := range s.Storage.AreaReadMap {
 			if val.UID == uid {
 				area.UID = uid
 				area.Name = val.Name
@@ -30,7 +30,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 				area.Size.Symbol = val.Size.Unit.Symbol
 				area.Type = val.Type.Code
 				area.Location = val.Location.Code
-				area.FarmUID = val.FarmUID
+				area.FarmUID = val.Farm.UID
 			}
 		}
 

@@ -87,9 +87,9 @@ func main() {
 		cropEventStorage,
 		cropReadStorage,
 		cropActivityStorage,
-		areaStorage,
+		areaReadStorage,
 		materialStorage,
-		farmStorage,
+		farmReadStorage,
 	)
 	if err != nil {
 		e.Logger.Fatal(err)

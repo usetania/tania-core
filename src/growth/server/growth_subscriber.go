@@ -16,7 +16,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 	switch e := event.(type) {
 	case domain.CropBatchCreated:
-		queryResult := <-s.AreaQuery.FindByID(e.InitialAreaUID)
+		queryResult := <-s.AreaReadQuery.FindByID(e.InitialAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -98,7 +98,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead = &cr
 
-		queryResult = <-s.AreaQuery.FindByID(e.SrcAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.SrcAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -108,7 +108,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		queryResult = <-s.AreaQuery.FindByID(e.DstAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.DstAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -202,7 +202,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead = &cr
 
-		queryResult = <-s.AreaQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -264,7 +264,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		cropRead = &cl
 
-		queryResult = <-s.AreaQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -428,7 +428,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 
 	switch e := event.(type) {
 	case domain.CropBatchCreated:
-		queryResult := <-s.AreaQuery.FindByID(e.InitialAreaUID)
+		queryResult := <-s.AreaReadQuery.FindByID(e.InitialAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -460,7 +460,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		queryResult = <-s.AreaQuery.FindByID(e.SrcAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.SrcAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -470,7 +470,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		queryResult = <-s.AreaQuery.FindByID(e.DstAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.DstAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -504,7 +504,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		queryResult = <-s.AreaQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -539,7 +539,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		queryResult = <-s.AreaQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}

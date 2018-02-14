@@ -84,7 +84,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 		return storage.CropRead{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
 
-	queryResult = <-s.AreaQuery.FindByID(crop.InitialArea.AreaUID)
+	queryResult = <-s.AreaReadQuery.FindByID(crop.InitialArea.AreaUID)
 	if queryResult.Error != nil {
 		return storage.CropRead{}, queryResult.Error
 	}
@@ -106,7 +106,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 
 	movedAreas := []storage.MovedArea{}
 	for _, v := range crop.MovedArea {
-		queryResult = <-s.AreaQuery.FindByID(v.AreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(v.AreaUID)
 		if queryResult.Error != nil {
 			return storage.CropRead{}, queryResult.Error
 		}
@@ -158,7 +158,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 
 	harvestedStorage := []storage.HarvestedStorage{}
 	for _, v := range crop.HarvestedStorage {
-		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(v.SourceAreaUID)
 		if queryResult.Error != nil {
 			return storage.CropRead{}, queryResult.Error
 		}
@@ -180,7 +180,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 
 	trash := []storage.Trash{}
 	for _, v := range crop.Trash {
-		queryResult = <-s.AreaQuery.FindByID(v.SourceAreaUID)
+		queryResult = <-s.AreaReadQuery.FindByID(v.SourceAreaUID)
 		if queryResult.Error != nil {
 			return storage.CropRead{}, queryResult.Error
 		}

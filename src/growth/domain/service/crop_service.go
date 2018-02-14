@@ -3,13 +3,14 @@ package service
 import (
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/query"
+	"github.com/Tanibox/tania-server/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
 
 type CropServiceInMemory struct {
 	MaterialQuery query.MaterialQuery
-	CropQuery     query.CropQuery
-	AreaQuery     query.AreaQuery
+	CropReadQuery query.CropReadQuery
+	AreaReadQuery query.AreaReadQuery
 }
 
 func (s CropServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
@@ -41,7 +42,7 @@ func (s CropServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResul
 }
 
 func (s CropServiceInMemory) FindByBatchID(batchID string) domain.ServiceResult {
-	resultQuery := <-s.CropQuery.FindByBatchID(batchID)
+	resultQuery := <-s.CropReadQuery.FindByBatchID(batchID)
 
 	if resultQuery.Error != nil {
 		return domain.ServiceResult{
@@ -49,7 +50,7 @@ func (s CropServiceInMemory) FindByBatchID(batchID string) domain.ServiceResult 
 		}
 	}
 
-	cropFound, ok := resultQuery.Result.(domain.Crop)
+	cropFound, ok := resultQuery.Result.(storage.CropRead)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.CropError{Code: domain.CropErrorInvalidBatchID},
@@ -67,7 +68,7 @@ func (s CropServiceInMemory) FindByBatchID(batchID string) domain.ServiceResult 
 }
 
 func (s CropServiceInMemory) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
-	result := <-s.AreaQuery.FindByID(uid)
+	result := <-s.AreaReadQuery.FindByID(uid)
 
 	if result.Error != nil {
 		return domain.ServiceResult{
