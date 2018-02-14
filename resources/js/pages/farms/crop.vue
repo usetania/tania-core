@@ -56,8 +56,11 @@
                       .h4.m-b {{ crop.initial_area.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                       small.text-muted Last Watering
                       .h4.m-b
-                        | 05/12/2017 at 16:42 on 
-                        span.areatag Frontyard Garden
+                        | {{ crop.initial_area.last_watered | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ crop.initial_area.last_watered | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                        span.areatag {{ crop.initial_area.name }}
+                      .h4.m-b(v-for="area in crop.moved_area")
+                        | {{ area.last_watered | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ area.last_watered | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                        span.areatag {{ area.name }}
                     .col-sm-6
                       small.text-muted Initial Planting
                       .h4.m-b
@@ -155,6 +158,16 @@
                             b {{ activity.activity_type.produced_gram_quantity }} Grams
                             |  on 
                             span.areatag-sm {{ activity.activity_type.source_area_name }}
+                          small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+                      // WATER
+                      .row(v-if="activity.activity_type.code == 'WATER'")
+                        .col-xs-1.text-center
+                          i.fa.fa-tint.block.m-b.m-t
+                        .col-xs-11
+                          div
+                            | Area 
+                            u: router-link(:to="{ name: 'FarmArea', params: { id: activity.activity_type.area_id } }") {{ activity.activity_type.area_name }} 
+                            | Watered 
                           small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
 </template>
 <script>
