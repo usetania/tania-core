@@ -1,6 +1,6 @@
 <template lang="pug">
   .crop-detail.col(v-if="loading === false")
-    modal(v-if="showTaskModal" @close="showTaskModal = false")
+    modal(v-if="showTaskModal" @close="closeModal")
       cropTask(:crop="crop")
     .row.wrapper-md
       .col-xs-8.col-xs-offset-2
@@ -24,43 +24,7 @@
                   | Add Task
           .panel-body.bg-white-only
             .row
-              .col-sm-12
-                // TASKS
-                ul.list-group.no-bg.no-borders.pull-in
-                  li.list-group-item
-                    .row
-                      .col-xs-9
-                        .pull-left.m-r
-                          .checkbox
-                            label.i-checks
-                              input(type="checkbox" name="")
-                              i
-                        .clear
-                          div
-                            | Apply 
-                            u Trifecta Plus
-                            |  to 
-                            span.identifier-sm tom-ail-cra-3nov
-                            |  on 
-                            span.areatag-sm Frontyard Garden
-                          p.small
-                            span#moreless1.hide
-                              | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                          p
-                            a(href="" ui-toggle-class="show" target="#moreless1")
-                              small.text
-                                | Read Details
-                                i.fa.fa-angle-down.m-l
-                              small.text-active
-                                | Close Details
-                                i.fa.fa-angle-up.m-l
-                          small.text-muted Due Date: 20/12/2017
-                          span.status.status-normal NORMAL
-                      .col-xs-2
-                        span.label.label-nutrient NUTRIENT
-                      .col-xs-1.text-right
-                        a.h3(href="#")
-                          i.fa.fa-edit
+              TasksList(:domain="'CROP'" :asset_id="crop.uid" :reload="reload")
               .col-sm-12
                 .h4.font-bold.m-b Notes
                 .row
@@ -90,14 +54,16 @@ export default {
   name: 'FarmCropNotes',
   components: {
     cropTask: () => import('./tasks/crop-task.vue'),
+    TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },
   data () {
     return {
-      loading: true,
       crop: Object.assign({}, StubCrop),
-      note: Object.assign({}, StubNote),
       cropNotes: [],
+      loading: true,
+      note: Object.assign({}, StubNote),
+      reload: false,
       showTaskModal: false,
     }
   },
@@ -111,12 +77,19 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getCropByUid',
       'createCropNotes',
       'deleteCropNote'
+      'getCropByUid',
     ]),
-    getCropContainer(key, count) {
-      return FindContainer(key).label + ((count != 1)? 's':'')
+    closeModal () {
+      this.showTaskModal = false
+      this.reload = !this.reload
+    },
+    create () {
+      this.note.obj_uid = this.$route.params.id
+      this.createCropNotes(this.note)
+        .then(data => this.crop = data)
+        .catch(({ data }) => this.message = data)
     },
     deleteNote(note_uid) {
       this.note.obj_uid = this.$route.params.id
@@ -125,18 +98,15 @@ export default {
         .then(data => this.crop = data)
         .catch(({ data }) => this.message = data)
     },
+    getCropContainer(key, count) {
+      return FindContainer(key).label + ((count != 1)? 's':'')
+    },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
           this.create()
         }
       })
-    },
-    create () {
-      this.note.obj_uid = this.$route.params.id
-      this.createCropNotes(this.note)
-        .then(data => this.crop = data)
-        .catch(({ data }) => this.message = data)
     },
   }
 }

@@ -58,7 +58,11 @@
 
       //- Starting row
       .row
-        TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
+        .task-list.col-sm-6.col-xs-12
+          .panel
+            .panel-heading
+              span.h4.text-lt Tasks
+            TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
         .col-sm-6.col-xs-12
           .panel
             .panel-heading
