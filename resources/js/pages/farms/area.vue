@@ -13,7 +13,7 @@
           i.fa.fa-tint
           | Watering
       h1.m-n.font-thin.h3.text-primary {{ area.name }}
-      small.text-muted {{ getType(area.type).label }}
+      small.text-muted {{ getType(area.type.code).label }}
     .wrapper-md
       .row
         .col-md-4.col-xs-12
@@ -29,7 +29,7 @@
                 span {{ area.size.value }}
               .list-group-item
                 span.col-sm-7.text-muted.point Location
-                span {{ getLocation(area.location).label }}
+                span {{ getLocation(area.location.code).label }}
               .list-group-item
                 span.col-sm-7.text-muted.point Batches
                 span {{ area.total_crop_batch }}
