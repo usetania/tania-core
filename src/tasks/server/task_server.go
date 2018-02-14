@@ -445,14 +445,19 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	task.SetTaskAsDue()
-
-	err = <-s.TaskRepo.Save(&task)
+	updated_task, err := s.updateTaskAttributes(task, c)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	data["data"] = task
+	updated_task.SetTaskAsDue()
+
+	err = <-s.TaskRepo.Save(&updated_task)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = updated_task
 
 	return c.JSON(http.StatusOK, data)
 }
