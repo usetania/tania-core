@@ -87,6 +87,71 @@ func CreateAreaStorage() *AreaStorage {
 	return &AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
 }
 
+type AreaEventStorage struct {
+	Lock       *deadlock.RWMutex
+	AreaEvents []AreaEvent
+}
+
+type AreaEvent struct {
+	AreaUID uuid.UUID
+	Version int
+	Event   interface{}
+}
+
+func CreateAreaEventStorage() *AreaEventStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("AREA EVENT STORAGE DEADLOCK!")
+	}
+
+	return &AreaEventStorage{Lock: &rwMutex}
+}
+
+type AreaRead struct {
+	UID         uuid.UUID     `json:"uid"`
+	Name        string        `json:"name"`
+	Size        AreaSize      `json:"size"`
+	Location    AreaLocation  `json:"location"`
+	Type        AreaType      `json:"type"`
+	Photo       AreaPhoto     `json:"photo"`
+	CreatedDate time.Time     `json:"created_date"`
+	Notes       []AreaNote    `json:"notes"`
+	Farm        AreaFarm      `json:"farm"`
+	Reservoir   AreaReservoir `json:"reservoir"`
+}
+
+type AreaFarm struct {
+	UID  uuid.UUID `json:"uid"`
+	Name string    `json:"name"`
+}
+
+type AreaReservoir struct {
+	UID  uuid.UUID `json:"uid"`
+	Name string    `json:"name"`
+}
+
+type AreaSize domain.AreaSize
+type AreaLocation domain.AreaLocation
+type AreaType domain.AreaType
+type AreaPhoto domain.AreaPhoto
+type AreaNote domain.AreaNote
+
+type AreaReadStorage struct {
+	Lock        *deadlock.RWMutex
+	AreaReadMap map[uuid.UUID]AreaRead
+}
+
+func CreateAreaReadStorage() *AreaReadStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("Area READ STORAGE DEADLOCK!")
+	}
+
+	return &AreaReadStorage{AreaReadMap: make(map[uuid.UUID]AreaRead), Lock: &rwMutex}
+}
+
 type ReservoirStorage struct {
 	Lock         *deadlock.RWMutex
 	ReservoirMap map[uuid.UUID]domain.Reservoir

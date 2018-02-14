@@ -4,18 +4,30 @@ import (
 	"strconv"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
 )
 
-func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirId string) (domain.Reservoir, error) {
-	result := <-s.ReservoirRepo.FindByID(reservoirId)
-	reservoir, _ := result.Result.(domain.Reservoir)
+func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirUID uuid.UUID) (storage.ReservoirRead, error) {
+	result := <-s.ReservoirReadQuery.FindByID(reservoirUID)
+	reservoir, _ := result.Result.(storage.ReservoirRead)
 
 	if reservoir.UID == (uuid.UUID{}) {
 		return reservoir, NewRequestValidationError(NOT_FOUND, "reservoir_id")
 	}
 
 	return reservoir, nil
+}
+
+func (rv *RequestValidation) ValidateFarm(s FarmServer, farmUID uuid.UUID) (storage.FarmRead, error) {
+	result := <-s.FarmReadQuery.FindByID(farmUID)
+	farm, _ := result.Result.(storage.FarmRead)
+
+	if farm.UID == (uuid.UUID{}) {
+		return farm, NewRequestValidationError(NOT_FOUND, "farm_id")
+	}
+
+	return farm, nil
 }
 
 func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (domain.AreaSize, error) {

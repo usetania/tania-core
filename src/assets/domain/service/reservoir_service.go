@@ -11,24 +11,24 @@ type ReservoirServiceInMemory struct {
 	FarmReadQuery query.FarmReadQuery
 }
 
-func (s ReservoirServiceInMemory) FindFarmByID(uid uuid.UUID) (domain.FarmServiceResult, error) {
+func (s ReservoirServiceInMemory) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarmServiceResult, error) {
 	result := <-s.FarmReadQuery.FindByID(uid)
 
 	if result.Error != nil {
-		return domain.FarmServiceResult{}, result.Error
+		return domain.ReservoirFarmServiceResult{}, result.Error
 	}
 
 	farm, ok := result.Result.(storage.FarmRead)
 
 	if !ok {
-		return domain.FarmServiceResult{}, domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound}
+		return domain.ReservoirFarmServiceResult{}, domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound}
 	}
 
 	if farm == (storage.FarmRead{}) {
-		return domain.FarmServiceResult{}, domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound}
+		return domain.ReservoirFarmServiceResult{}, domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound}
 	}
 
-	return domain.FarmServiceResult{
+	return domain.ReservoirFarmServiceResult{
 		UID:  farm.UID,
 		Name: farm.Name,
 	}, nil

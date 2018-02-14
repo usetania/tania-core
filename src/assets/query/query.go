@@ -24,7 +24,16 @@ type AreaQuery interface {
 	FindAreasByReservoirID(reservoirID string) <-chan QueryResult
 }
 
-type CropQuery interface {
+type AreaEventQuery interface {
+	FindAllByID(areaUID uuid.UUID) <-chan QueryResult
+}
+
+type AreaReadQuery interface {
+	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
+	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
+}
+
+type CropReadQuery interface {
 	FindAllCropByArea(areaUID uuid.UUID) <-chan QueryResult
 	CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }

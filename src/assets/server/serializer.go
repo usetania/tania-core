@@ -2,6 +2,7 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -28,17 +29,9 @@ type AreaList struct {
 	PlantQuantity  int             `json:"plant_quantity"`
 }
 type DetailArea struct {
-	UID            uuid.UUID                   `json:"uid"`
-	Name           string                      `json:"name"`
-	Size           domain.AreaSize             `json:"size"`
-	Type           string                      `json:"type"`
-	Location       string                      `json:"location"`
-	Photo          domain.AreaPhoto            `json:"photo"`
-	Reservoir      domain.Reservoir            `json:"reservoir"`
-	TotalCropBatch int                         `json:"total_crop_batch"`
-	TotalVariety   int                         `json:"total_variety"`
-	Crops          []query.AreaCropQueryResult `json:"crops"`
-	Notes          SortedAreaNotes             `json:"notes"`
+	storage.AreaRead
+	TotalCropBatch int `json:"total_crop_batch"`
+	TotalVariety   int `json:"total_variety"`
 }
 
 type DetailReservoir struct {
@@ -178,7 +171,7 @@ func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
 	areaList := make([]AreaList, len(areas))
 
 	for i, area := range areas {
-		queryResult := <-s.CropQuery.CountCropsByArea(area.UID)
+		queryResult := <-s.CropReadQuery.CountCropsByArea(area.UID)
 		if queryResult.Error != nil {
 			return []AreaList{}, queryResult.Error
 		}
@@ -268,24 +261,47 @@ func MapToReservoirRead(s *FarmServer, reservoir domain.Reservoir) (storage.Rese
 }
 
 func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
-	detailArea := DetailArea{}
+	areaRead := DetailArea{}
 
-	detailArea.UID = area.UID
-	detailArea.Name = area.Name
-	detailArea.Type = area.Type.Code
-	detailArea.Location = area.Location.Code
-	detailArea.Photo = area.Photo
-	detailArea.Size = area.Size
+	areaRead.UID = area.UID
+	areaRead.Name = area.Name
+	areaRead.Type = storage.AreaType(area.Type)
+	areaRead.Location = storage.AreaLocation(area.Location)
+	areaRead.Photo = storage.AreaPhoto(area.Photo)
+	areaRead.Size = storage.AreaSize(area.Size)
+	areaRead.CreatedDate = area.CreatedDate
 
-	detailArea.Reservoir = area.Reservoir
-	switch v := area.Reservoir.WaterSource.(type) {
-	case domain.Bucket:
-		detailArea.Reservoir.WaterSource = ReservoirBucket{Bucket: v}
-	case domain.Tap:
-		detailArea.Reservoir.WaterSource = ReservoirTap{Tap: v}
+	queryResult := <-s.ReservoirReadQuery.FindByID(area.ReservoirUID)
+	if queryResult.Error != nil {
+		return DetailArea{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	queryResult := <-s.CropQuery.CountCropsByArea(area.UID)
+	reservoir, ok := queryResult.Result.(storage.ReservoirRead)
+	if !ok {
+		return DetailArea{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	areaRead.Reservoir = storage.AreaReservoir{
+		UID:  reservoir.UID,
+		Name: reservoir.Name,
+	}
+
+	queryResult = <-s.FarmReadQuery.FindByID(area.FarmUID)
+	if queryResult.Error != nil {
+		return DetailArea{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	farm, ok := queryResult.Result.(storage.FarmRead)
+	if !ok {
+		return DetailArea{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	areaRead.Farm = storage.AreaFarm{
+		UID:  farm.UID,
+		Name: farm.Name,
+	}
+
+	queryResult = <-s.CropReadQuery.CountCropsByArea(area.UID)
 	if queryResult.Error != nil {
 		return DetailArea{}, queryResult.Error
 	}
@@ -295,9 +311,9 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
 
-	detailArea.TotalCropBatch = cropCount.TotalCropBatch
+	areaRead.TotalCropBatch = cropCount.TotalCropBatch
 
-	queryResult = <-s.CropQuery.FindAllCropByArea(area.UID)
+	queryResult = <-s.CropReadQuery.FindAllCropByArea(area.UID)
 	if queryResult.Error != nil {
 		return DetailArea{}, queryResult.Error
 	}
@@ -307,40 +323,6 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
 
-	for i, v := range crops {
-		repoResult := <-s.AreaRepo.FindByID(v.InitialArea.AreaUID.String())
-
-		if repoResult.Error != nil {
-			return DetailArea{}, queryResult.Error
-		}
-
-		a, ok := repoResult.Result.(domain.Area)
-		if !ok {
-			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
-
-		repoResult = <-s.MaterialRepo.FindByID(v.Inventory.UID.String())
-		if repoResult.Error != nil {
-			return DetailArea{}, repoResult.Error
-		}
-
-		mat, ok := repoResult.Result.(domain.Material)
-		if !ok {
-			return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
-		}
-
-		now := time.Now()
-		diff := now.Sub(v.CreatedDate)
-		days := int(diff.Hours()) / 24
-
-		crops[i].DaysSinceSeeding = days
-		crops[i].InitialArea.Name = a.Name
-		crops[i].Inventory.UID = mat.UID
-		crops[i].Inventory.Name = mat.Name
-	}
-
-	detailArea.Crops = crops
-
 	uniqueInventories := make(map[uuid.UUID]bool)
 	for _, v := range crops {
 		if _, ok := uniqueInventories[v.Inventory.UID]; !ok {
@@ -348,18 +330,19 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		}
 	}
 
-	detailArea.TotalVariety = len(uniqueInventories)
+	areaRead.TotalVariety = len(uniqueInventories)
 
-	notes := make(SortedAreaNotes, 0, len(area.Notes))
+	fmt.Println(len(area.Notes))
 	for _, v := range area.Notes {
-		notes = append(notes, v)
+		areaRead.Notes = append(areaRead.Notes, storage.AreaNote(v))
 	}
+	fmt.Println(len(areaRead.Notes))
 
-	sort.Sort(notes)
+	sort.Slice(areaRead.Notes, func(i, j int) bool {
+		return areaRead.Notes[i].CreatedDate.After(areaRead.Notes[j].CreatedDate)
+	})
 
-	detailArea.Notes = notes
-
-	return detailArea, nil
+	return areaRead, nil
 }
 
 func MapToPlantType(plantTypes []domain.PlantType) []string {

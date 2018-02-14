@@ -8,15 +8,35 @@ import (
 )
 
 type Area struct {
-	UID       uuid.UUID              `json:"uid"`
-	Name      string                 `json:"name"`
-	Size      AreaSize               `json:"size"`
-	Type      AreaType               `json:"type"`
-	Location  AreaLocation           `json:"location"`
-	Photo     AreaPhoto              `json:"photo"`
-	Notes     map[uuid.UUID]AreaNote `json:"-"`
-	Reservoir Reservoir              `json:"-"`
-	Farm      Farm                   `json:"-"`
+	UID          uuid.UUID              `json:"uid"`
+	Name         string                 `json:"name"`
+	Size         AreaSize               `json:"size"`
+	Type         AreaType               `json:"type"`
+	Location     AreaLocation           `json:"location"`
+	Photo        AreaPhoto              `json:"photo"`
+	CreatedDate  time.Time              `json:"created_date"`
+	Notes        map[uuid.UUID]AreaNote `json:"-"`
+	ReservoirUID uuid.UUID              `json:"-"`
+	FarmUID      uuid.UUID              `json:"-"`
+
+	// Events
+	Version            int
+	UncommittedChanges []interface{}
+}
+
+type AreaService interface {
+	FindFarmByID(farmUID uuid.UUID) (AreaFarmServiceResult, error)
+	FindReservoirByID(reservoirUID uuid.UUID) (AreaReservoirServiceResult, error)
+}
+
+type AreaFarmServiceResult struct {
+	UID  uuid.UUID
+	Name string
+}
+
+type AreaReservoirServiceResult struct {
+	UID  uuid.UUID
+	Name string
 }
 
 const (
@@ -52,8 +72,8 @@ const (
 )
 
 type AreaLocation struct {
-	Code string
-	Name string
+	Code string `json:"code"`
+	Name string `json:"name"`
 }
 
 func AreaLocations() []AreaLocation {
@@ -119,29 +139,107 @@ type AreaNote struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
+func (state *Area) TrackChange(event interface{}) {
+	state.UncommittedChanges = append(state.UncommittedChanges, event)
+	state.Transition(event)
+}
+
+func (state *Area) Transition(event interface{}) {
+	switch e := event.(type) {
+	case AreaCreated:
+		state.UID = e.UID
+		state.Name = e.Name
+		state.Type = e.Type
+		state.Location = e.Location
+		state.Size = e.Size
+		state.CreatedDate = e.CreatedDate
+		state.FarmUID = e.FarmUID
+		state.ReservoirUID = e.ReservoirUID
+
+	case AreaPhotoAdded:
+		state.Photo = AreaPhoto{
+			Filename: e.Filename,
+			MimeType: e.MimeType,
+			Size:     e.Size,
+			Width:    e.Width,
+			Height:   e.Height,
+		}
+	}
+}
+
 // CreateArea registers a new area to a farm
-func CreateArea(farm Farm, name string, areaType string) (Area, error) {
+func CreateArea(
+	areaService AreaService,
+	farmUID uuid.UUID,
+	reservoirUID uuid.UUID,
+	name string,
+	areaType string,
+	size AreaSize,
+	locationCode string) (*Area, error) {
+
 	err := validateAreaName(name)
 	if err != nil {
-		return Area{}, err
+		return nil, err
 	}
 
 	err = validateAreaType(areaType)
 	if err != nil {
-		return Area{}, err
+		return nil, err
+	}
+
+	err = validateSize(size)
+	if err != nil {
+		return nil, err
+	}
+
+	al := GetAreaLocation(locationCode)
+	if al == (AreaLocation{}) {
+		return nil, AreaError{Code: AreaErrorInvalidAreaLocationCode}
+	}
+
+	at := GetAreaType(areaType)
+	if at == (AreaType{}) {
+		return nil, AreaError{Code: AreaErrorInvalidAreaTypeCode}
+	}
+
+	farm, err := areaService.FindFarmByID(farmUID)
+	if err != nil {
+		return nil, err
+	}
+
+	reservoir, err := areaService.FindReservoirByID(reservoirUID)
+	if err != nil {
+		return nil, err
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return Area{}, err
+		return nil, err
 	}
 
-	return Area{
-		UID:  uid,
-		Farm: farm,
-		Name: name,
-		Type: GetAreaType(areaType),
-	}, nil
+	initial := &Area{
+		UID:          uid,
+		Name:         name,
+		Type:         at,
+		Location:     al,
+		Size:         size,
+		FarmUID:      farm.UID,
+		ReservoirUID: reservoir.UID,
+		CreatedDate:  time.Now(),
+	}
+
+	initial.TrackChange(AreaCreated{
+		UID:          initial.UID,
+		Name:         initial.Name,
+		Type:         initial.Type,
+		Location:     initial.Location,
+		Size:         initial.Size,
+		FarmUID:      initial.FarmUID,
+		ReservoirUID: initial.ReservoirUID,
+		CreatedDate:  initial.CreatedDate,
+	})
+
+	return initial, nil
 }
 
 // ChangeSize changes an area size
@@ -164,6 +262,21 @@ func (a *Area) ChangeLocation(locationCode string) error {
 	}
 
 	a.Location = v
+
+	return nil
+}
+
+func (a *Area) ChangePhoto(photo AreaPhoto) error {
+	// TODO: Do file type validation here
+
+	a.TrackChange(AreaPhotoAdded{
+		AreaUID:  a.UID,
+		Filename: photo.Filename,
+		MimeType: photo.MimeType,
+		Size:     photo.Size,
+		Width:    photo.Width,
+		Height:   photo.Height,
+	})
 
 	return nil
 }

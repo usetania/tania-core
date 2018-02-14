@@ -23,10 +23,10 @@ type Reservoir struct {
 }
 
 type ReservoirService interface {
-	FindFarmByID(farmUID uuid.UUID) (FarmServiceResult, error)
+	FindFarmByID(farmUID uuid.UUID) (ReservoirFarmServiceResult, error)
 }
 
-type FarmServiceResult struct {
+type ReservoirFarmServiceResult struct {
 	UID  uuid.UUID
 	Name string
 }

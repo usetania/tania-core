@@ -37,6 +37,8 @@ func main() {
 	farmReadStorage := assetsstorage.CreateFarmReadStorage()
 
 	areaStorage := assetsstorage.CreateAreaStorage()
+	areaEventStorage := assetsstorage.CreateAreaEventStorage()
+	areaReadStorage := assetsstorage.CreateAreaReadStorage()
 
 	reservoirStorage := assetsstorage.CreateReservoirStorage()
 	reservoirEventStorage := assetsstorage.CreateReservoirEventStorage()
@@ -57,11 +59,13 @@ func main() {
 		farmEventStorage,
 		farmReadStorage,
 		areaStorage,
+		areaEventStorage,
+		areaReadStorage,
 		reservoirStorage,
 		reservoirEventStorage,
 		reservoirReadStorage,
 		materialStorage,
-		cropStorage,
+		cropReadStorage,
 		bus,
 	)
 	if err != nil {
@@ -283,15 +287,15 @@ func initDataDemo(
 	}
 
 	areaSeeding := assetsdomain.Area{
-		UID:       uid,
-		Name:      "MySeedingArea",
-		Size:      assetsdomain.AreaSize{Value: 10, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.SquareMeter}},
-		Type:      assetsdomain.GetAreaType(assetsdomain.AreaTypeSeeding),
-		Location:  assetsdomain.GetAreaLocation(assetsdomain.AreaLocationIndoor),
-		Photo:     assetsdomain.AreaPhoto{},
-		Notes:     areaNotes,
-		Reservoir: reservoir2,
-		Farm:      farm1,
+		UID:          uid,
+		Name:         "MySeedingArea",
+		Size:         assetsdomain.AreaSize{Value: 10, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.SquareMeter}},
+		Type:         assetsdomain.GetAreaType(assetsdomain.AreaTypeSeeding),
+		Location:     assetsdomain.GetAreaLocation(assetsdomain.AreaLocationIndoor),
+		Photo:        assetsdomain.AreaPhoto{},
+		Notes:        areaNotes,
+		ReservoirUID: reservoir2.UID,
+		FarmUID:      farm1.UID,
 	}
 
 	farm1.AddArea(&areaSeeding)
@@ -300,15 +304,15 @@ func initDataDemo(
 
 	uid, _ = uuid.NewV4()
 	areaGrowing := assetsdomain.Area{
-		UID:       uid,
-		Name:      "MyGrowingArea",
-		Size:      assetsdomain.AreaSize{Value: 50, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.Hectare}},
-		Type:      assetsdomain.GetAreaType(assetsdomain.AreaTypeGrowing),
-		Location:  assetsdomain.GetAreaLocation(assetsdomain.AreaLocationOutdoor),
-		Photo:     assetsdomain.AreaPhoto{},
-		Notes:     make(map[uuid.UUID]assetsdomain.AreaNote),
-		Reservoir: reservoir1,
-		Farm:      farm1,
+		UID:          uid,
+		Name:         "MyGrowingArea",
+		Size:         assetsdomain.AreaSize{Value: 50, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.Hectare}},
+		Type:         assetsdomain.GetAreaType(assetsdomain.AreaTypeGrowing),
+		Location:     assetsdomain.GetAreaLocation(assetsdomain.AreaLocationOutdoor),
+		Photo:        assetsdomain.AreaPhoto{},
+		Notes:        make(map[uuid.UUID]assetsdomain.AreaNote),
+		ReservoirUID: reservoir1.UID,
+		FarmUID:      farm1.UID,
 	}
 
 	farm1.AddArea(&areaGrowing)

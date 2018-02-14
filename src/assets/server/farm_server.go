@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -35,10 +36,15 @@ type FarmServer struct {
 	ReservoirReadQuery  query.ReservoirReadQuery
 	ReservoirService    domain.ReservoirService
 	AreaRepo            repository.AreaRepository
+	AreaEventRepo       repository.AreaEventRepository
+	AreaReadRepo        repository.AreaReadRepository
 	AreaQuery           query.AreaQuery
+	AreaEventQuery      query.AreaEventQuery
+	AreaReadQuery       query.AreaReadQuery
+	AreaService         domain.AreaService
 	MaterialRepo        repository.MaterialRepository
 	MaterialQuery       query.MaterialQuery
-	CropQuery           query.CropQuery
+	CropReadQuery       query.CropReadQuery
 	File                File
 	EventBus            EventBus.Bus
 }
@@ -49,11 +55,13 @@ func NewFarmServer(
 	farmEventStorage *storage.FarmEventStorage,
 	farmReadStorage *storage.FarmReadStorage,
 	areaStorage *storage.AreaStorage,
+	areaEventStorage *storage.AreaEventStorage,
+	areaReadStorage *storage.AreaReadStorage,
 	reservoirStorage *storage.ReservoirStorage,
 	reservoirEventStorage *storage.ReservoirEventStorage,
 	reservoirReadStorage *storage.ReservoirReadStorage,
 	materialStorage *storage.MaterialStorage,
-	cropStorage *growthstorage.CropStorage,
+	cropReadStorage *growthstorage.CropReadStorage,
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
 	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
@@ -62,19 +70,28 @@ func NewFarmServer(
 	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
 
 	areaRepo := repository.NewAreaRepositoryInMemory(areaStorage)
+	areaEventRepo := repository.NewAreaEventRepositoryInMemory(areaEventStorage)
+	areaReadRepo := repository.NewAreaReadRepositoryInMemory(areaReadStorage)
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
+	areaEventQuery := inmemory.NewAreaEventQueryInMemory(areaEventStorage)
+	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
 
 	reservoirRepo := repository.NewReservoirRepositoryInMemory(reservoirStorage)
 	reservoirEventRepo := repository.NewReservoirEventRepositoryInMemory(reservoirEventStorage)
 	reservoirEventQuery := inmemory.NewReservoirEventQueryInMemory(reservoirEventStorage)
 	reservoirReadRepo := repository.NewReservoirReadRepositoryInMemory(reservoirReadStorage)
 	reservoirReadQuery := inmemory.NewReservoirReadQueryInMemory(reservoirReadStorage)
-	reservoirService := service.ReservoirServiceInMemory{FarmReadQuery: farmReadQuery}
 
 	materialRepo := repository.NewMaterialRepositoryInMemory(materialStorage)
 	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
 
-	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
+	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
+
+	areaService := service.AreaServiceInMemory{
+		FarmReadQuery:      farmReadQuery,
+		ReservoirReadQuery: reservoirReadQuery,
+	}
+	reservoirService := service.ReservoirServiceInMemory{FarmReadQuery: farmReadQuery}
 
 	farmServer := FarmServer{
 		FarmRepo:            farmRepo,
@@ -88,10 +105,15 @@ func NewFarmServer(
 		ReservoirReadQuery:  reservoirReadQuery,
 		ReservoirService:    reservoirService,
 		AreaRepo:            areaRepo,
+		AreaEventRepo:       areaEventRepo,
+		AreaReadRepo:        areaReadRepo,
 		AreaQuery:           areaQuery,
+		AreaEventQuery:      areaEventQuery,
+		AreaReadQuery:       areaReadQuery,
+		AreaService:         areaService,
 		MaterialRepo:        materialRepo,
 		MaterialQuery:       materialQuery,
-		CropQuery:           cropQuery,
+		CropReadQuery:       cropReadQuery,
 		File:                LocalFile{},
 		EventBus:            eventBus,
 	}
@@ -105,6 +127,8 @@ func NewFarmServer(
 func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
 	s.EventBus.Subscribe("ReservoirCreated", s.SaveToReservoirReadModel)
+	s.EventBus.Subscribe("AreaCreated", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaPhotoAdded", s.SaveToAreaReadModel)
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -420,19 +444,25 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 }
 
 func (s *FarmServer) SaveArea(c echo.Context) error {
-	data := make(map[string]DetailArea)
 	validation := RequestValidation{}
 
-	// Validation //
 	farmUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
 	}
 
-	// TODO: NEED TO BE FIXED
-	farm := domain.Farm{UID: farmUID}
+	reservoirUID, err := uuid.FromString(c.FormValue("reservoir_id"))
+	if err != nil {
+		return Error(c, err)
+	}
 
-	reservoir, err := validation.ValidateReservoir(*s, c.FormValue("reservoir_id"))
+	// Validation //
+	reservoir, err := validation.ValidateReservoir(*s, reservoirUID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	farm, err := validation.ValidateFarm(*s, farmUID)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -448,17 +478,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	// Process //
-	area, err := domain.CreateArea(farm, c.FormValue("name"), c.FormValue("type"))
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = area.ChangeSize(size)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = area.ChangeLocation(location)
+	area, err := domain.CreateArea(s.AreaService, farm.UID, reservoir.UID, c.FormValue("name"), c.FormValue("type"), size, location)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -485,34 +505,20 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 			Height:   height,
 		}
 
-		area.Photo = areaPhoto
-	}
-
-	area.Farm = farm
-	area.Reservoir = reservoir
-
-	err = farm.AddArea(&area)
-	if err != nil {
-		return Error(c, err)
+		area.ChangePhoto(areaPhoto)
 	}
 
 	// Persists //
-	err = <-s.ReservoirRepo.Save(&reservoir)
+	err = <-s.AreaEventRepo.Save(area.UID, area.Version, area.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	err = <-s.AreaRepo.Save(&area)
-	if err != nil {
-		return Error(c, err)
-	}
+	// Publish //
+	s.publishUncommittedEvents(area)
 
-	err = <-s.FarmRepo.Save(&farm)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	detailArea, err := MapToDetailArea(s, area)
+	data := make(map[string]DetailArea)
+	detailArea, err := MapToDetailArea(s, *area)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -523,56 +529,59 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 }
 
 func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
-	data := make(map[string]DetailArea)
-
-	areaID := c.Param("id")
+	areaUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
 	content := c.FormValue("content")
 
 	// Validate //
-	result := <-s.AreaRepo.FindByID(areaID)
-	if result.Error != nil {
-		return Error(c, result.Error)
+	queryResult := <-s.AreaReadQuery.FindByID(areaUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
 	}
 
-	area, ok := result.Result.(domain.Area)
+	areaRead, ok := queryResult.Result.(storage.AreaRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	result = <-s.FarmRepo.FindByID(area.Farm.UID.String())
-	if result.Error != nil {
-		return Error(c, result.Error)
+	if areaRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
-
-	farm, ok := result.Result.(domain.Farm)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	fmt.Println(areaRead.Farm.UID)
+	fmt.Println(areaRead.Reservoir.UID)
 
 	if content == "" {
 		return Error(c, NewRequestValidationError(REQUIRED, "content"))
 	}
 
 	// Process //
-	area.AddNewNote(content)
-	farm.ChangeAreaInformation(area)
-
-	// Persists //
-	resultSave := <-s.AreaRepo.Save(&area)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	eventQueryResult := <-s.AreaEventQuery.FindAllByID(areaRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
 	}
 
-	resultSave = <-s.FarmRepo.Save(&farm)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	events := eventQueryResult.Result.([]storage.AreaEvent)
+	area := repository.NewAreaFromHistory(events)
 
-	detailArea, err := MapToDetailArea(s, area)
+	err = area.AddNewNote(content)
 	if err != nil {
 		return Error(c, err)
 	}
 
+	// // Persists //
+	err = <-s.AreaEventRepo.Save(area.UID, area.Version, area.UncommittedChanges)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	detailArea, err := MapToDetailArea(s, *area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string]DetailArea)
 	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
@@ -581,58 +590,58 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	data := make(map[string]DetailArea)
 
-	areaID := c.Param("area_id")
-	noteID := c.Param("note_id")
+	// areaID := c.Param("area_id")
+	// noteID := c.Param("note_id")
 
 	// Validate //
-	result := <-s.AreaRepo.FindByID(areaID)
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
+	// result := <-s.AreaRepo.FindByID(areaID)
+	// if result.Error != nil {
+	// 	return Error(c, result.Error)
+	// }
 
-	area, ok := result.Result.(domain.Area)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	// area, ok := result.Result.(domain.Area)
+	// if !ok {
+	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	// }
 
-	result = <-s.FarmRepo.FindByID(area.Farm.UID.String())
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
+	// result = <-s.FarmRepo.FindByID(area.Farm.UID.String())
+	// if result.Error != nil {
+	// 	return Error(c, result.Error)
+	// }
 
-	farm, ok := result.Result.(domain.Farm)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	// farm, ok := result.Result.(domain.Farm)
+	// if !ok {
+	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	// }
 
-	// Process //
-	err := area.RemoveNote(noteID)
-	if err != nil {
-		return Error(c, err)
-	}
+	// // Process //
+	// err := area.RemoveNote(noteID)
+	// if err != nil {
+	// 	return Error(c, err)
+	// }
 
-	err = farm.ChangeAreaInformation(area)
-	if err != nil {
-		return Error(c, err)
-	}
+	// err = farm.ChangeAreaInformation(area)
+	// if err != nil {
+	// 	return Error(c, err)
+	// }
 
-	// Persists //
-	resultSave := <-s.AreaRepo.Save(&area)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	// // Persists //
+	// resultSave := <-s.AreaRepo.Save(&area)
+	// if resultSave != nil {
+	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	// }
 
-	resultSave = <-s.FarmRepo.Save(&farm)
-	if resultSave != nil {
-		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	}
+	// resultSave = <-s.FarmRepo.Save(&farm)
+	// if resultSave != nil {
+	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	// }
 
-	detailArea, err := MapToDetailArea(s, area)
-	if err != nil {
-		return Error(c, err)
-	}
+	// detailArea, err := MapToDetailArea(s, area)
+	// if err != nil {
+	// 	return Error(c, err)
+	// }
 
-	data["data"] = detailArea
+	// data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -661,8 +670,6 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 }
 
 func (s *FarmServer) GetAreasByID(c echo.Context) error {
-	data := make(map[string]DetailArea)
-
 	// Validate //
 	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
 	if result.Error != nil {
@@ -689,6 +696,7 @@ func (s *FarmServer) GetAreasByID(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	data := make(map[string]DetailArea)
 	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
@@ -908,6 +916,11 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	case *domain.Reservoir:
+		for _, v := range e.UncommittedChanges {
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
+		}
+	case *domain.Area:
 		for _, v := range e.UncommittedChanges {
 			name := structhelper.GetName(v)
 			s.EventBus.Publish(name, v)

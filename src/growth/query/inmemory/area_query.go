@@ -30,7 +30,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 				area.Size.Symbol = val.Size.Unit.Symbol
 				area.Type = val.Type.Code
 				area.Location = val.Location.Code
-				area.FarmUID = val.Farm.UID
+				area.FarmUID = val.FarmUID
 			}
 		}
 

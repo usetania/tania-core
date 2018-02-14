@@ -5,6 +5,8 @@ const (
 	AreaErrorNameNotEnoughCharacterCode
 	AreaErrorNameExceedMaximunCharacterCode
 	AreaErrorNameAlphanumericOnlyCode
+	AreaErrorFarmNotFound
+	AreaErrorReservoirNotFound
 
 	AreaErrorSizeEmptyCode
 	AreaErrorInvalidSizeUnitCode
@@ -34,6 +36,10 @@ func (e AreaError) Error() string {
 		return "Area name cannot more than 100 characters"
 	case AreaErrorNameAlphanumericOnlyCode:
 		return "Area name should be alphanumeric, space, hypen, or underscore"
+	case AreaErrorFarmNotFound:
+		return "Farm not found"
+	case AreaErrorReservoirNotFound:
+		return "Reservoir not found"
 	case AreaErrorSizeEmptyCode:
 		return "Area size cannot be empty"
 	case AreaErrorInvalidSizeUnitCode:

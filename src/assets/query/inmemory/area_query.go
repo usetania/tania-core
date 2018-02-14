@@ -23,7 +23,7 @@ func (s AreaQueryInMemory) FindAreasByReservoirID(reservoirID string) <-chan que
 
 		areas := []domain.Area{}
 		for _, val := range s.Storage.AreaMap {
-			if val.Reservoir.UID.String() == reservoirID {
+			if val.ReservoirUID.String() == reservoirID {
 				areas = append(areas, val)
 			}
 		}
