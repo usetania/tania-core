@@ -2,7 +2,6 @@ package server
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"sort"
 	"time"
@@ -332,11 +331,9 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 
 	areaRead.TotalVariety = len(uniqueInventories)
 
-	fmt.Println(len(area.Notes))
 	for _, v := range area.Notes {
 		areaRead.Notes = append(areaRead.Notes, storage.AreaNote(v))
 	}
-	fmt.Println(len(areaRead.Notes))
 
 	sort.Slice(areaRead.Notes, func(i, j int) bool {
 		return areaRead.Notes[i].CreatedDate.After(areaRead.Notes[j].CreatedDate)

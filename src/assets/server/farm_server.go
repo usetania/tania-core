@@ -127,8 +127,12 @@ func NewFarmServer(
 func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
 	s.EventBus.Subscribe("ReservoirCreated", s.SaveToReservoirReadModel)
+	s.EventBus.Subscribe("ReservoirNoteAdded", s.SaveToReservoirReadModel)
+	s.EventBus.Subscribe("ReservoirNoteRemoved", s.SaveToReservoirReadModel)
 	s.EventBus.Subscribe("AreaCreated", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaPhotoAdded", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaNoteAdded", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaNoteRemoved", s.SaveToAreaReadModel)
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -549,8 +553,6 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 	if areaRead.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
-	fmt.Println(areaRead.Farm.UID)
-	fmt.Println(areaRead.Reservoir.UID)
 
 	if content == "" {
 		return Error(c, NewRequestValidationError(REQUIRED, "content"))
@@ -570,11 +572,14 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	// // Persists //
+	// Persists //
 	err = <-s.AreaEventRepo.Save(area.UID, area.Version, area.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
+
+	// Publish //
+	s.publishUncommittedEvents(area)
 
 	detailArea, err := MapToDetailArea(s, *area)
 	if err != nil {
@@ -590,58 +595,72 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	data := make(map[string]DetailArea)
 
-	// areaID := c.Param("area_id")
-	// noteID := c.Param("note_id")
+	areaUID, err := uuid.FromString(c.Param("area_id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	noteUID, err := uuid.FromString(c.Param("note_id"))
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Validate //
-	// result := <-s.AreaRepo.FindByID(areaID)
-	// if result.Error != nil {
-	// 	return Error(c, result.Error)
-	// }
+	queryResult := <-s.AreaReadQuery.FindByID(areaUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
 
-	// area, ok := result.Result.(domain.Area)
-	// if !ok {
-	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	// }
+	areaRead, ok := queryResult.Result.(storage.AreaRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
 
-	// result = <-s.FarmRepo.FindByID(area.Farm.UID.String())
-	// if result.Error != nil {
-	// 	return Error(c, result.Error)
-	// }
+	if areaRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "area_id"))
+	}
 
-	// farm, ok := result.Result.(domain.Farm)
-	// if !ok {
-	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	// }
+	found := false
+	fmt.Println(areaRead.Notes)
+	for _, v := range areaRead.Notes {
+		if v.UID == noteUID {
+			found = true
+		}
+	}
+
+	if !found {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "note_id"))
+	}
 
 	// // Process //
-	// err := area.RemoveNote(noteID)
-	// if err != nil {
-	// 	return Error(c, err)
-	// }
+	eventQueryResult := <-s.AreaEventQuery.FindAllByID(areaRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
 
-	// err = farm.ChangeAreaInformation(area)
-	// if err != nil {
-	// 	return Error(c, err)
-	// }
+	events := eventQueryResult.Result.([]storage.AreaEvent)
+	area := repository.NewAreaFromHistory(events)
 
-	// // Persists //
-	// resultSave := <-s.AreaRepo.Save(&area)
-	// if resultSave != nil {
-	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	// }
+	err = area.RemoveNote(noteUID)
+	if err != nil {
+		return Error(c, err)
+	}
 
-	// resultSave = <-s.FarmRepo.Save(&farm)
-	// if resultSave != nil {
-	// 	return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
-	// }
+	// Persists //
+	resultSave := <-s.AreaEventRepo.Save(area.UID, area.Version, area.UncommittedChanges)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
 
-	// detailArea, err := MapToDetailArea(s, area)
-	// if err != nil {
-	// 	return Error(c, err)
-	// }
+	// Publish //
+	s.publishUncommittedEvents(area)
 
-	// data["data"] = detailArea
+	detailArea, err := MapToDetailArea(s, *area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
 }

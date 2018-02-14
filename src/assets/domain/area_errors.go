@@ -18,6 +18,7 @@ const (
 	AreaErrorInvalidAreaLocationCode
 
 	AreaNoteErrorInvalidContent
+	AreaNoteErrorInvalidID
 	AreaNoteErrorNotFound
 )
 
@@ -52,6 +53,8 @@ func (e AreaError) Error() string {
 		return "Area location cannot be empty"
 	case AreaErrorInvalidAreaLocationCode:
 		return "Area location is invalid"
+	case AreaNoteErrorInvalidID:
+		return "Invalid note id"
 	case AreaNoteErrorInvalidContent:
 		return "Invalid crop note content"
 	case AreaNoteErrorNotFound:

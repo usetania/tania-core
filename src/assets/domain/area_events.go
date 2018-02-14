@@ -25,3 +25,15 @@ type AreaPhotoAdded struct {
 	Width    int
 	Height   int
 }
+
+type AreaNoteAdded struct {
+	AreaUID      uuid.UUID
+	UID          uuid.UUID
+	Content      string
+	CreatedDated time.Time
+}
+
+type AreaNoteRemoved struct {
+	AreaUID uuid.UUID
+	UID     uuid.UUID
+}

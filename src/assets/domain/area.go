@@ -164,6 +164,20 @@ func (state *Area) Transition(event interface{}) {
 			Width:    e.Width,
 			Height:   e.Height,
 		}
+
+	case AreaNoteAdded:
+		if len(state.Notes) == 0 {
+			state.Notes = make(map[uuid.UUID]AreaNote)
+		}
+
+		state.Notes[e.UID] = AreaNote{
+			UID:         e.UID,
+			Content:     e.Content,
+			CreatedDate: e.CreatedDated,
+		}
+
+	case AreaNoteRemoved:
+		delete(state.Notes, e.UID)
 	}
 }
 
@@ -291,35 +305,24 @@ func (a *Area) AddNewNote(content string) error {
 		return err
 	}
 
-	areaNote := AreaNote{
-		UID:         uid,
-		Content:     content,
-		CreatedDate: time.Now(),
-	}
-
-	if len(a.Notes) == 0 {
-		a.Notes = make(map[uuid.UUID]AreaNote)
-	}
-
-	a.Notes[uid] = areaNote
+	a.TrackChange(AreaNoteAdded{
+		AreaUID:      a.UID,
+		UID:          uid,
+		Content:      content,
+		CreatedDated: time.Now(),
+	})
 
 	return nil
 }
 
-func (a *Area) RemoveNote(uid string) error {
-	if uid == "" {
-		return AreaError{Code: AreaNoteErrorNotFound}
-	}
-
-	uuid, err := uuid.FromString(uid)
-	if err != nil {
-		return AreaError{Code: AreaNoteErrorNotFound}
+func (a *Area) RemoveNote(uid uuid.UUID) error {
+	if uid == (uuid.UUID{}) {
+		return AreaError{Code: AreaNoteErrorInvalidID}
 	}
 
 	found := false
 	for _, v := range a.Notes {
-		if v.UID == uuid {
-			delete(a.Notes, uuid)
+		if v.UID == uid {
 			found = true
 		}
 	}
@@ -327,6 +330,11 @@ func (a *Area) RemoveNote(uid string) error {
 	if !found {
 		return AreaError{Code: AreaNoteErrorNotFound}
 	}
+
+	a.TrackChange(AreaNoteRemoved{
+		AreaUID: a.UID,
+		UID:     uid,
+	})
 
 	return nil
 }
