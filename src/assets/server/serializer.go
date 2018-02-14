@@ -62,7 +62,7 @@ type ReservoirNote struct {
 	CreatedDate time.Time
 }
 
-type SortedReservoirNotes []ReservoirNote
+type SortedReservoirNotes []domain.ReservoirNote
 
 // Len is part of sort.Interface.
 func (sn SortedReservoirNotes) Len() int { return len(sn) }
@@ -201,130 +201,70 @@ func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
 	return areaList, nil
 }
 
-func MapToReservoirListFromQuery(s *FarmServer, reservoirs []query.ReservoirReadQueryResult) ([]DetailReservoir, error) {
-	reservoirList := []DetailReservoir{}
+func MapToReservoirRead(s *FarmServer, reservoir domain.Reservoir) (storage.ReservoirRead, error) {
+	resRead := storage.ReservoirRead{}
 
-	for _, reservoir := range reservoirs {
-		detailReservoir, err := MapToReservoirFromQuery(s, reservoir)
-
-		if err != nil {
-			return nil, err
-		}
-
-		reservoirList = append(reservoirList, detailReservoir)
-	}
-
-	return reservoirList, nil
-}
-
-func MapToReservoirFromQuery(s *FarmServer, reservoir query.ReservoirReadQueryResult) (DetailReservoir, error) {
-	detailReservoir := DetailReservoir{}
-
-	detailReservoir.UID = reservoir.UID
-	detailReservoir.Name = reservoir.Name
-	detailReservoir.WaterSource = WaterSource{
-		Type:     reservoir.WaterSource.Type,
-		Capacity: reservoir.WaterSource.Capacity,
-	}
-	detailReservoir.CreatedDate = reservoir.CreatedDate
-
-	for _, v := range reservoir.Notes {
-		detailReservoir.Notes = append(detailReservoir.Notes, ReservoirNote{
-			UID:         v.UID,
-			Content:     v.Content,
-			CreatedDate: v.CreatedDate,
-		})
-	}
-	sort.Sort(detailReservoir.Notes)
-
-	queryResult := <-s.FarmReadQuery.FindByID(reservoir.FarmUID)
-	if queryResult.Error != nil {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	farm, ok := queryResult.Result.(query.FarmReadQueryResult)
-	if !ok {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	detailReservoir.Farm = SimpleFarm{
-		UID:  farm.UID,
-		Name: farm.Name,
-		Type: farm.Type,
-	}
-
-	queryResult = <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
-	if queryResult.Error != nil {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	areas, ok := queryResult.Result.([]domain.Area)
-	if !ok {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	}
-
-	detailReservoir.InstalledToAreas = MapToSimpleArea(areas)
-
-	return detailReservoir, nil
-}
-
-func MapToDetailReservoir(s *FarmServer, reservoir domain.Reservoir) (DetailReservoir, error) {
-	detailReservoir := DetailReservoir{}
-
-	detailReservoir.UID = reservoir.UID
-	detailReservoir.Name = reservoir.Name
-	detailReservoir.CreatedDate = reservoir.CreatedDate
+	resRead.UID = reservoir.UID
+	resRead.Name = reservoir.Name
+	resRead.CreatedDate = reservoir.CreatedDate
 
 	switch v := reservoir.WaterSource.(type) {
 	case domain.Bucket:
-		detailReservoir.WaterSource = WaterSource{
+		resRead.WaterSource = storage.WaterSource{
 			Type:     v.Type(),
 			Capacity: v.Capacity,
 		}
 	case domain.Tap:
-		detailReservoir.WaterSource = WaterSource{
+		resRead.WaterSource = storage.WaterSource{
 			Type: v.Type(),
 		}
 	}
 
 	for _, v := range reservoir.Notes {
-		detailReservoir.Notes = append(detailReservoir.Notes, ReservoirNote{
+		resRead.Notes = append(resRead.Notes, storage.ReservoirNote{
 			UID:         v.UID,
 			Content:     v.Content,
 			CreatedDate: v.CreatedDate,
 		})
 	}
-	sort.Sort(detailReservoir.Notes)
+
+	sort.Slice(resRead.Notes, func(i, j int) bool {
+		return resRead.Notes[i].CreatedDate.After(resRead.Notes[j].CreatedDate)
+	})
 
 	queryResult := <-s.FarmReadQuery.FindByID(reservoir.FarmUID)
 	if queryResult.Error != nil {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	farm, ok := queryResult.Result.(query.FarmReadQueryResult)
+	farm, ok := queryResult.Result.(storage.FarmRead)
 	if !ok {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	detailReservoir.Farm = SimpleFarm{
+	resRead.Farm = storage.ReservoirFarm{
 		UID:  farm.UID,
 		Name: farm.Name,
-		Type: farm.Type,
 	}
 
 	queryResult = <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
 	if queryResult.Error != nil {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
 	areas, ok := queryResult.Result.([]domain.Area)
 	if !ok {
-		return DetailReservoir{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	detailReservoir.InstalledToAreas = MapToSimpleArea(areas)
+	for _, v := range areas {
+		resRead.InstalledToArea = append(resRead.InstalledToArea, storage.AreaInstalled{
+			UID:  v.UID,
+			Name: v.Name,
+		})
+	}
 
-	return detailReservoir, nil
+	return resRead, nil
 }
 
 func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {

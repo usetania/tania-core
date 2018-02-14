@@ -38,6 +38,16 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 	switch e := event.(type) {
 	case domain.ReservoirCreated:
+		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		farm, ok := queryResult.Result.(storage.FarmRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
 		reservoirRead.UID = e.UID
 		reservoirRead.Name = e.Name
 
@@ -53,7 +63,10 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 			}
 		}
 
-		reservoirRead.FarmUID = e.FarmUID
+		reservoirRead.Farm = storage.ReservoirFarm{
+			UID:  farm.UID,
+			Name: farm.Name,
+		}
 		reservoirRead.CreatedDate = e.CreatedDate
 
 	case domain.ReservoirNoteAdded:
@@ -62,14 +75,14 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 			return queryResult.Error
 		}
 
-		r, ok := queryResult.Result.(query.ReservoirReadQueryResult)
+		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		mapReservoirReadToReservoirStorage(&r, reservoirRead)
+		reservoirRead = &r
 
-		reservoirRead.Notes = append(reservoirRead.Notes, domain.ReservoirNote{
+		reservoirRead.Notes = append(reservoirRead.Notes, storage.ReservoirNote{
 			UID:         e.UID,
 			Content:     e.Content,
 			CreatedDate: e.CreatedDate,
@@ -86,11 +99,9 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		mapReservoirReadToReservoirStorage(&r, reservoirRead)
-
 		for _, v := range r.Notes {
 			if v.UID != e.UID {
-				reservoirRead.Notes = append(reservoirRead.Notes, domain.ReservoirNote{
+				reservoirRead.Notes = append(reservoirRead.Notes, storage.ReservoirNote{
 					UID:         v.UID,
 					Content:     v.Content,
 					CreatedDate: v.CreatedDate,
@@ -106,20 +117,4 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 	}
 
 	return nil
-}
-
-func mapReservoirReadToReservoirStorage(
-	rr *query.ReservoirReadQueryResult,
-	rs *storage.ReservoirRead) *storage.ReservoirRead {
-
-	rs.UID = rr.UID
-	rs.Name = rr.Name
-	rs.WaterSource = storage.WaterSource{
-		Type:     rr.WaterSource.Type,
-		Capacity: rr.WaterSource.Capacity,
-	}
-	rs.FarmUID = rr.FarmUID
-	rs.CreatedDate = rr.CreatedDate
-
-	return rs
 }

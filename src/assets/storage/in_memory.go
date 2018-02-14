@@ -124,18 +124,30 @@ func CreateReservoirEventStorage() *ReservoirEventStorage {
 }
 
 type ReservoirRead struct {
-	UID             uuid.UUID              `json:"uid"`
-	Name            string                 `json:"name"`
-	WaterSource     WaterSource            `json:"water_source"`
-	FarmUID         uuid.UUID              `json:"farm"`
-	Notes           []domain.ReservoirNote `json:"notes"`
-	CreatedDate     time.Time              `json:"created_date"`
-	InstalledToArea []domain.Area          `json:"installed_to_area"`
+	UID             uuid.UUID       `json:"uid"`
+	Name            string          `json:"name"`
+	WaterSource     WaterSource     `json:"water_source"`
+	Farm            ReservoirFarm   `json:"farm"`
+	Notes           []ReservoirNote `json:"notes"`
+	CreatedDate     time.Time       `json:"created_date"`
+	InstalledToArea []AreaInstalled `json:"installed_to_area"`
 }
 
 type WaterSource struct {
 	Type     string
 	Capacity float32
+}
+
+type ReservoirFarm struct {
+	UID  uuid.UUID
+	Name string
+}
+
+type ReservoirNote domain.ReservoirNote
+
+type AreaInstalled struct {
+	UID  uuid.UUID
+	Name string
 }
 
 type ReservoirReadStorage struct {

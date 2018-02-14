@@ -3,39 +3,33 @@ package service
 import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
+	"github.com/Tanibox/tania-server/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
 )
-
-type Farm struct {
-	UID uuid.UUID
-}
 
 type ReservoirServiceInMemory struct {
 	FarmReadQuery query.FarmReadQuery
 }
 
-func (s ReservoirServiceInMemory) FindFarmByID(uid uuid.UUID) domain.ServiceResult {
+func (s ReservoirServiceInMemory) FindFarmByID(uid uuid.UUID) (domain.FarmServiceResult, error) {
 	result := <-s.FarmReadQuery.FindByID(uid)
 
 	if result.Error != nil {
-		return domain.ServiceResult{Error: result.Error}
+		return domain.FarmServiceResult{}, result.Error
 	}
 
-	farm, ok := result.Result.(query.FarmReadQueryResult)
+	farm, ok := result.Result.(storage.FarmRead)
 
 	if !ok {
-		return domain.ServiceResult{
-			Error: domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound},
-		}
+		return domain.FarmServiceResult{}, domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound}
 	}
 
-	if farm == (query.FarmReadQueryResult{}) {
-		return domain.ServiceResult{
-			Error: domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound},
-		}
+	if farm == (storage.FarmRead{}) {
+		return domain.FarmServiceResult{}, domain.ReservoirError{Code: domain.ReservoirErrorFarmNotFound}
 	}
 
-	return domain.ServiceResult{
-		Result: farm,
-	}
+	return domain.FarmServiceResult{
+		UID:  farm.UID,
+		Name: farm.Name,
+	}, nil
 }

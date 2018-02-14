@@ -21,17 +21,10 @@ func (s ReservoirReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryRe
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		reservoir := query.ReservoirReadQueryResult{}
+		reservoir := storage.ReservoirRead{}
 		for _, val := range s.Storage.ReservoirReadMap {
 			if val.UID == uid {
-				reservoir.UID = val.UID
-				reservoir.Name = val.Name
-				reservoir.WaterSource = query.WaterSource{
-					Type:     val.WaterSource.Type,
-					Capacity: val.WaterSource.Capacity,
-				}
-				reservoir.FarmUID = val.FarmUID
-				reservoir.CreatedDate = val.CreatedDate
+				reservoir = val
 			}
 		}
 
@@ -50,19 +43,10 @@ func (s ReservoirReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan quer
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		reservoirs := []query.ReservoirReadQueryResult{}
+		reservoirs := []storage.ReservoirRead{}
 		for _, val := range s.Storage.ReservoirReadMap {
-			if val.FarmUID == farmUID {
-				reservoirs = append(reservoirs, query.ReservoirReadQueryResult{
-					UID:  val.UID,
-					Name: val.Name,
-					WaterSource: query.WaterSource{
-						Type:     val.WaterSource.Type,
-						Capacity: val.WaterSource.Capacity,
-					},
-					FarmUID:     val.FarmUID,
-					CreatedDate: val.CreatedDate,
-				})
+			if val.Farm.UID == farmUID {
+				reservoirs = append(reservoirs, val)
 			}
 		}
 

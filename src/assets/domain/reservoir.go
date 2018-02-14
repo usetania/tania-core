@@ -3,7 +3,6 @@ package domain
 import (
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/helper/validationhelper"
 	uuid "github.com/satori/go.uuid"
 )
@@ -11,12 +10,12 @@ import (
 // Reservoir is entity that provides the operation that farm owner or his/her staff
 // can do with the reservoir in a farm.
 type Reservoir struct {
-	UID         uuid.UUID                   `json:"uid"`
-	Name        string                      `json:"name"`
-	WaterSource WaterSource                 `json:"water_source"`
-	FarmUID     uuid.UUID                   `json:"-"`
-	Notes       map[uuid.UUID]ReservoirNote `json:"-"`
-	CreatedDate time.Time                   `json:"created_date"`
+	UID         uuid.UUID
+	Name        string
+	WaterSource WaterSource
+	FarmUID     uuid.UUID
+	Notes       map[uuid.UUID]ReservoirNote
+	CreatedDate time.Time
 
 	// Events
 	Version            int
@@ -24,12 +23,12 @@ type Reservoir struct {
 }
 
 type ReservoirService interface {
-	FindFarmByID(farmUID uuid.UUID) ServiceResult
+	FindFarmByID(farmUID uuid.UUID) (FarmServiceResult, error)
 }
 
-type ServiceResult struct {
-	Result interface{}
-	Error  error
+type FarmServiceResult struct {
+	UID  uuid.UUID
+	Name string
 }
 
 const (
@@ -43,7 +42,7 @@ type WaterSource interface {
 
 // Bucket is value object attached to the Reservoir.waterSource.
 type Bucket struct {
-	Capacity float32 `json:"capacity"`
+	Capacity float32
 }
 
 func (b Bucket) Type() string {
@@ -73,9 +72,9 @@ func CreateTap() (Tap, error) {
 }
 
 type ReservoirNote struct {
-	UID         uuid.UUID `json:"uid"`
-	Content     string    `json:"content"`
-	CreatedDate time.Time `json:"created_date"`
+	UID         uuid.UUID
+	Content     string
+	CreatedDate time.Time
 }
 
 func (state *Reservoir) TrackChange(event interface{}) {
@@ -114,21 +113,16 @@ func (state *Reservoir) Transition(event interface{}) {
 
 // CreateReservoir registers a new Reservoir.
 func CreateReservoir(reservoirService ReservoirService, farmUID uuid.UUID, name string, waterSourceType string, capacity float32) (*Reservoir, error) {
-	serviceResult := reservoirService.FindFarmByID(farmUID)
-	if serviceResult.Error != nil {
-		return nil, serviceResult.Error
+	farmServiceResult, err := reservoirService.FindFarmByID(farmUID)
+	if err != nil {
+		return nil, err
 	}
 
-	farm, ok := serviceResult.Result.(query.FarmReadQueryResult)
-	if !ok {
+	if farmServiceResult.UID == (uuid.UUID{}) {
 		return nil, ReservoirError{ReservoirErrorFarmNotFound}
 	}
 
-	if farm.UID == (uuid.UUID{}) {
-		return nil, ReservoirError{ReservoirErrorFarmNotFound}
-	}
-
-	err := validateReservoirName(name)
+	err = validateReservoirName(name)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +141,7 @@ func CreateReservoir(reservoirService ReservoirService, farmUID uuid.UUID, name 
 		UID:         uid,
 		Name:        name,
 		WaterSource: ws,
-		FarmUID:     farm.UID,
+		FarmUID:     farmServiceResult.UID,
 		CreatedDate: time.Now(),
 	}
 
