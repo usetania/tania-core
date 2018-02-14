@@ -199,13 +199,13 @@ type ReservoirRead struct {
 }
 
 type WaterSource struct {
-	Type     string
-	Capacity float32
+	Type     string  `json:"type"`
+	Capacity float32 `json:"capacity"`
 }
 
 type ReservoirFarm struct {
-	UID  uuid.UUID
-	Name string
+	UID  uuid.UUID `json:"uid"`
+	Name string    `json:"name"`
 }
 
 type ReservoirNote domain.ReservoirNote

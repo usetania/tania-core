@@ -72,9 +72,9 @@ func CreateTap() (Tap, error) {
 }
 
 type ReservoirNote struct {
-	UID         uuid.UUID
-	Content     string
-	CreatedDate time.Time
+	UID         uuid.UUID `json:"uid"`
+	Content     string    `json:"content"`
+	CreatedDate time.Time `json:"created_date"`
 }
 
 func (state *Reservoir) TrackChange(event interface{}) {
