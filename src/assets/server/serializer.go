@@ -259,6 +259,58 @@ func MapToReservoirRead(s *FarmServer, reservoir domain.Reservoir) (storage.Rese
 	return resRead, nil
 }
 
+func MapToDetailAreaFromStorage(s *FarmServer, areaRead storage.AreaRead) (DetailArea, error) {
+	detailArea := DetailArea{}
+
+	detailArea.UID = areaRead.UID
+	detailArea.Name = areaRead.Name
+	detailArea.Type = areaRead.Type
+	detailArea.Location = areaRead.Location
+	detailArea.Photo = areaRead.Photo
+	detailArea.Size = areaRead.Size
+	detailArea.CreatedDate = areaRead.CreatedDate
+	detailArea.Reservoir = areaRead.Reservoir
+	detailArea.Farm = areaRead.Farm
+
+	queryResult := <-s.CropReadQuery.CountCropsByArea(areaRead.UID)
+	if queryResult.Error != nil {
+		return DetailArea{}, queryResult.Error
+	}
+
+	cropCount, ok := queryResult.Result.(query.CountAreaCropQueryResult)
+	if !ok {
+		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	detailArea.TotalCropBatch = cropCount.TotalCropBatch
+
+	queryResult = <-s.CropReadQuery.FindAllCropByArea(areaRead.UID)
+	if queryResult.Error != nil {
+		return DetailArea{}, queryResult.Error
+	}
+
+	crops, ok := queryResult.Result.([]query.AreaCropQueryResult)
+	if !ok {
+		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	uniqueInventories := make(map[uuid.UUID]bool)
+	for _, v := range crops {
+		if _, ok := uniqueInventories[v.Inventory.UID]; !ok {
+			uniqueInventories[v.Inventory.UID] = true
+		}
+	}
+
+	detailArea.TotalVariety = len(uniqueInventories)
+
+	detailArea.Notes = areaRead.Notes
+	sort.Slice(detailArea.Notes, func(i, j int) bool {
+		return detailArea.Notes[i].CreatedDate.After(detailArea.Notes[j].CreatedDate)
+	})
+
+	return detailArea, nil
+}
+
 func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 	areaRead := DetailArea{}
 

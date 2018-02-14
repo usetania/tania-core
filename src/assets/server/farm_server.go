@@ -694,27 +694,45 @@ func (s *FarmServer) GetFarmAreas(c echo.Context) error {
 
 func (s *FarmServer) GetAreasByID(c echo.Context) error {
 	// Validate //
-	result := <-s.FarmRepo.FindByID(c.Param("farm_id"))
-	if result.Error != nil {
-		return Error(c, result.Error)
+	farmUID, err := uuid.FromString(c.Param("farm_id"))
+	if err != nil {
+		return Error(c, err)
 	}
 
-	_, ok := result.Result.(domain.Farm)
+	areaUID, err := uuid.FromString(c.Param("area_id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	queryResult := <-s.FarmReadQuery.FindByID(farmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	farmRead, ok := queryResult.Result.(storage.FarmRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	result = <-s.AreaRepo.FindByID(c.Param("area_id"))
-	if result.Error != nil {
-		return Error(c, result.Error)
+	if farmRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "farm_id"))
 	}
 
-	area, ok := result.Result.(domain.Area)
+	queryResult = <-s.AreaReadQuery.FindByIDAndArea(areaUID, farmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	areaRead, ok := queryResult.Result.(storage.AreaRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	detailArea, err := MapToDetailArea(s, area)
+	if areaRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "area_id"))
+	}
+
+	detailArea, err := MapToDetailAreaFromStorage(s, areaRead)
 	if err != nil {
 		return Error(c, err)
 	}

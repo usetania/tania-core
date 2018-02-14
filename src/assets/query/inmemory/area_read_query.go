@@ -57,3 +57,25 @@ func (s AreaReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan query.Que
 
 	return result
 }
+
+func (s AreaReadQueryInMemory) FindByIDAndArea(areaUID, farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		area := storage.AreaRead{}
+		for _, val := range s.Storage.AreaReadMap {
+			if val.Farm.UID == farmUID && val.UID == areaUID {
+				area = val
+			}
+		}
+
+		result <- query.QueryResult{Result: area}
+
+		close(result)
+	}()
+
+	return result
+}
