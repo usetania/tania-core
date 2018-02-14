@@ -78,7 +78,7 @@ export default {
   methods: {
     ...mapActions([
       'createCropNotes',
-      'deleteCropNote'
+      'deleteCropNote',
       'getCropByUid',
     ]),
     closeModal () {

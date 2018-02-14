@@ -14,21 +14,21 @@
         table.table.m-b
           thead
             tr
-              th(style="witdh: 25%") Name
-              th(style="width: 15%") Date of Creation
-              th(style="width: 20%") Source Type
+              th Name
+              th Created On
+              th Source Type
               th Capacity
-              th Connected To
-              th Tasks
+              th Used In
           tbody
             tr(v-for="reservoir in reservoirs")
               td: router-link(:to="{ name: 'FarmReservoir', params: { id: reservoir.uid } }") {{ reservoir.name }}
-              td {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY HH:mm:ss') }}
+              td {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
               td {{ getType(reservoir.water_source.type).label }}
               td {{ reservoir.water_source.capacity }}
               td
-                span(v-for="area in reservoir.installed_to_areas") {{ area.name }}
-              td
+                span(v-for="(area, index) in reservoir.installed_to_areas")
+                  | {{ area.name }}
+                  span(v-if="index+1 < reservoir.installed_to_areas.length") , 
 </template>
 
 <script>
