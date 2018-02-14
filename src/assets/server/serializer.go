@@ -20,12 +20,12 @@ type SimpleArea struct {
 	Type string
 }
 type AreaList struct {
-	UID            uuid.UUID       `json:"uid"`
-	Name           string          `json:"name"`
-	Type           string          `json:"type"`
-	Size           domain.AreaSize `json:"size"`
-	TotalCropBatch int             `json:"total_crop_batch"`
-	PlantQuantity  int             `json:"plant_quantity"`
+	UID            uuid.UUID        `json:"uid"`
+	Name           string           `json:"name"`
+	Type           string           `json:"type"`
+	Size           storage.AreaSize `json:"size"`
+	TotalCropBatch int              `json:"total_crop_batch"`
+	PlantQuantity  int              `json:"plant_quantity"`
 }
 type DetailArea struct {
 	storage.AreaRead
@@ -166,7 +166,7 @@ func MapToSimpleArea(areas []domain.Area) []SimpleArea {
 	return simpleAreaList
 }
 
-func MapToAreaList(s *FarmServer, areas []domain.Area) ([]AreaList, error) {
+func MapToAreaList(s *FarmServer, areas []storage.AreaRead) ([]AreaList, error) {
 	areaList := make([]AreaList, len(areas))
 
 	for i, area := range areas {

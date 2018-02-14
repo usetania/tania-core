@@ -666,23 +666,27 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 }
 
 func (s *FarmServer) GetFarmAreas(c echo.Context) error {
-	data := make(map[string][]AreaList)
-
-	result := <-s.FarmRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return Error(c, result.Error)
-	}
-
-	farm, ok := result.Result.(domain.Farm)
-	if !ok {
-		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
-	}
-
-	areaList, err := MapToAreaList(s, farm.Areas)
+	farmUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
 	}
 
+	queryResult := <-s.AreaReadQuery.FindAllByFarm(farmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	areas, ok := queryResult.Result.([]storage.AreaRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	areaList, err := MapToAreaList(s, areas)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string][]AreaList)
 	data["data"] = areaList
 
 	return c.JSON(http.StatusOK, data)
