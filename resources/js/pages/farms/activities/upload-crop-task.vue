@@ -1,7 +1,7 @@
 <template lang="pug">
   .upload-crop-task
     .modal-header
-      span.h4.font-bold Take Pciture
+      span.h4.font-bold Take Picture
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group

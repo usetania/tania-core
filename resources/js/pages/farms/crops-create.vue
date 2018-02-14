@@ -51,7 +51,7 @@
                 option(value="") - select unit -
                 option(v-for="container in options.containers" v-bind:value="container.key") {{ container.label }}s
               span.help-block.text-danger(v-show="errors.has('container_type')") {{ errors.first('container_type') }}
-        .row(v-if="crop.container_type == 'tray'")
+        .row(v-if="crop.container_type == 'TRAY'")
           .col-xs-6.pull-right
             .form-group
               input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('container_cell') }" v-model="crop.container_cell" name="container_cell")
@@ -131,7 +131,7 @@ export default {
         .catch(({ data }) => this.message = data)
     },
     typeChanged (type) {
-      if (type === 'tray') {
+      if (type === 'TRAY') {
         this.crop.container_cell = ''
       } else {
         this.crop.container_cell = 0

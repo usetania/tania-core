@@ -23,6 +23,7 @@
         td(v-if="domain == 'CROPS'") {{ crop.initial_area.initial_quantity }}
         td(v-if="domain == 'CROPS'")  {{ crop.area_status.seeding }} Seeding, {{ crop.area_status.growing }} Growing, {{ crop.area_status.dumped }} Dumped
         td(v-if="domain == 'AREA' && crop.last_watered") {{ crop.last_watered | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+        td(v-if="domain == 'AREA' && !crop.last_watered") -
 </template>days_since_seeding
 
 <script>

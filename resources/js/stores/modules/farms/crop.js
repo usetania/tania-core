@@ -121,6 +121,17 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  waterCrop ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      let cropId = payload.obj_uid
+      FarmApi
+        .ApiWaterCrop(cropId, payload, ({ data }) => {
+          payload = data.data
+          resolve(payload)
+        }, error => reject(error.response))
+    })
+  },
   fetchActivities ({ commit, state, getters }, cropId) {
     NProgress.start()
     return new Promise((resolve, reject) => {

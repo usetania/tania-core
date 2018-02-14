@@ -2,12 +2,14 @@
   .area-detail.col(v-if="loading === false")
     modal(v-if="showModal" @close="closeModal")
       farmAreaTaskCreate(:data="area" :asset="'Area'")
+    modal(v-if="showWaterTaskModal" @close="closeModal")
+      WaterTaskModal(:crops="areaCrops" :area="area")
     .wrapper-md
       .pull-right
-        a.btn.btn-sm.m-b-xs.btn-addon.btn-primary.m-r(style="cursor: pointer;" id="show-modal" @click="showModal = true")
+        a.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="showModal = true")
           i.fa.fa-tasks
           | Add Task
-        a.btn.btn-sm.m-b-xs.btn-addon.btn-info(href="#")
+        a.btn.btn-sm.btn-addon.btn-info(style="cursor: pointer;" @click="showWaterTaskModal = true")
           i.fa.fa-tint
           | Watering
       h1.m-n.font-thin.h3.text-primary {{ area.name }}
@@ -97,6 +99,7 @@ export default {
     FarmAreaTaskCreate: () => import('./tasks/task-create.vue'),
     FarmCropsListing: () => import('./crops-listing.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
+    WaterTaskModal: () => import('./tasks/water-task.vue'),
     Modal
   },
   computed: {
@@ -126,6 +129,7 @@ export default {
       note: Object.assign({}, StubNote),
       reload: false,
       showModal: false,
+      showWaterTaskModal: false,
     }
   },
   methods: {
@@ -137,6 +141,7 @@ export default {
     ]),
     closeModal () {
       this.showModal = false
+      this.showWaterTaskModal = false
       this.reload = !this.reload
     },
     create () {

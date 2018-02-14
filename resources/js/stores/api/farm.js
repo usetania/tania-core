@@ -71,6 +71,9 @@ export default {
       'Content-Type': 'multipart/form-data'
     })
   },
+  ApiWaterCrop: (cropid, payload, cbSuccess, cbError) => {
+    http.post('farms/crops/' + cropid + '/water' , payload, cbSuccess, cbError)
+  },
   ApiCreateCropNotes: (cropid, payload, cbSuccess, cbError) => {
     http.post('farms/crops/' + cropid + '/notes' , payload, cbSuccess, cbError)
   },

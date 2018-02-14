@@ -7,11 +7,12 @@ export default {
   source_area_id: '',
   destination_area_id: '',
   quantity: '',
-  type: '',
   units: '',
   asset_id: '',
   category: '',
   title: '',
   fertilizer: '',
   pesticide: '',
+  watering_date: '',
+  crops: [],
 }
