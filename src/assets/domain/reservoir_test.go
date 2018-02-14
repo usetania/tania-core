@@ -3,7 +3,6 @@ package domain
 import (
 	"testing"
 
-	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/helper/mathhelper"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
@@ -14,9 +13,9 @@ type ReservoirServiceMock struct {
 	mock.Mock
 }
 
-func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) ServiceResult {
+func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (FarmServiceResult, error) {
 	args := m.Called(uid)
-	return args.Get(0).(ServiceResult)
+	return args.Get(0).(FarmServiceResult), nil
 }
 
 func TestCreateReservoir(t *testing.T) {
@@ -24,8 +23,9 @@ func TestCreateReservoir(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := ServiceResult{
-		Result: query.FarmReadQueryResult{UID: farmUID},
+	farmServiceResult := FarmServiceResult{
+		UID:  farmUID,
+		Name: "My Farm 1",
 	}
 	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
 
@@ -42,8 +42,9 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := ServiceResult{
-		Result: query.FarmReadQueryResult{UID: farmUID},
+	farmServiceResult := FarmServiceResult{
+		UID:  farmUID,
+		Name: "My Farm 1",
 	}
 	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
 
@@ -73,8 +74,9 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := ServiceResult{
-		Result: query.FarmReadQueryResult{UID: farmUID},
+	farmServiceResult := FarmServiceResult{
+		UID:  farmUID,
+		Name: "My Farm 1",
 	}
 	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
 

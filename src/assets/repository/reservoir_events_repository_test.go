@@ -3,7 +3,6 @@ package repository
 import (
 	"testing"
 
-	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
 
@@ -16,9 +15,9 @@ type ReservoirServiceMock struct {
 	mock.Mock
 }
 
-func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) domain.ServiceResult {
+func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.FarmServiceResult, error) {
 	args := m.Called(uid)
-	return args.Get(0).(domain.ServiceResult)
+	return args.Get(0).(domain.FarmServiceResult), nil
 }
 
 func TestReservoirEventInMemorySave(t *testing.T) {
@@ -31,8 +30,9 @@ func TestReservoirEventInMemorySave(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := domain.ServiceResult{
-		Result: query.FarmReadQueryResult{UID: farmUID},
+	farmServiceResult := domain.FarmServiceResult{
+		UID:  farmUID,
+		Name: "My Farm 1",
 	}
 	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
 
