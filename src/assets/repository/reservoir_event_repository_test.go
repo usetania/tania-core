@@ -15,9 +15,9 @@ type ReservoirServiceMock struct {
 	mock.Mock
 }
 
-func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.FarmServiceResult, error) {
+func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarmServiceResult, error) {
 	args := m.Called(uid)
-	return args.Get(0).(domain.FarmServiceResult), nil
+	return args.Get(0).(domain.ReservoirFarmServiceResult), nil
 }
 
 func TestReservoirEventInMemorySave(t *testing.T) {
@@ -30,11 +30,11 @@ func TestReservoirEventInMemorySave(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := domain.FarmServiceResult{
+	reservoirFarmServiceResult := domain.ReservoirFarmServiceResult{
 		UID:  farmUID,
 		Name: "My Farm 1",
 	}
-	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
+	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
 
 	reservoir1, resErr1 := domain.CreateReservoir(reservoirServiceMock, farmUID, "MyReservoir1", "BUCKET", float32(10))
 	reservoir2, resErr2 := domain.CreateReservoir(reservoirServiceMock, farmUID, "MyReservoir2", "TAP", float32(0))

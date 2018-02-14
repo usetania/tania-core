@@ -13,9 +13,9 @@ type ReservoirServiceMock struct {
 	mock.Mock
 }
 
-func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (FarmServiceResult, error) {
+func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (ReservoirFarmServiceResult, error) {
 	args := m.Called(uid)
-	return args.Get(0).(FarmServiceResult), nil
+	return args.Get(0).(ReservoirFarmServiceResult), nil
 }
 
 func TestCreateReservoir(t *testing.T) {
@@ -23,11 +23,11 @@ func TestCreateReservoir(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := FarmServiceResult{
+	reservoirFarmServiceResult := ReservoirFarmServiceResult{
 		UID:  farmUID,
 		Name: "My Farm 1",
 	}
-	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
+	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
 
 	// When
 	reservoir, err := CreateReservoir(reservoirServiceMock, farmUID, "My Reservoir 1", BucketType, float32(10))
@@ -42,11 +42,11 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := FarmServiceResult{
+	reservoirFarmServiceResult := ReservoirFarmServiceResult{
 		UID:  farmUID,
 		Name: "My Farm 1",
 	}
-	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
+	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
 
 	reservoirData := []struct {
 		farmUID         uuid.UUID
@@ -74,11 +74,11 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
 	farmUID, _ := uuid.NewV4()
-	farmServiceResult := FarmServiceResult{
+	reservoirFarmServiceResult := ReservoirFarmServiceResult{
 		UID:  farmUID,
 		Name: "My Farm 1",
 	}
-	reservoirServiceMock.On("FindFarmByID", farmUID).Return(farmServiceResult)
+	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
 
 	reservoir, reservoirErr := CreateReservoir(reservoirServiceMock, farmUID, "MyReservoir", "BUCKET", float32(10))
 
