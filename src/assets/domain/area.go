@@ -110,11 +110,6 @@ func AreaUnits() []AreaUnit {
 	}
 }
 
-type AreaSize struct {
-	Unit  AreaUnit `json:"unit"`
-	Value float32  `json:"value"`
-}
-
 func GetAreaUnit(symbol string) AreaUnit {
 	for _, v := range AreaUnits() {
 		if v.Symbol == symbol {
@@ -123,6 +118,11 @@ func GetAreaUnit(symbol string) AreaUnit {
 	}
 
 	return AreaUnit{}
+}
+
+type AreaSize struct {
+	Unit  AreaUnit `json:"unit"`
+	Value float32  `json:"value"`
 }
 
 type AreaPhoto struct {

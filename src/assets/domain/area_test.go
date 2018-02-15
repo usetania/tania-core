@@ -2,77 +2,218 @@ package domain
 
 import (
 	"testing"
+
+	uuid "github.com/satori/go.uuid"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
+type AreaServiceMock struct {
+	mock.Mock
+}
+
+func (m AreaServiceMock) FindFarmByID(uid uuid.UUID) (AreaFarmServiceResult, error) {
+	args := m.Called(uid)
+	return args.Get(0).(AreaFarmServiceResult), nil
+}
+
+func (m AreaServiceMock) FindReservoirByID(uid uuid.UUID) (AreaReservoirServiceResult, error) {
+	args := m.Called(uid)
+	return args.Get(0).(AreaReservoirServiceResult), nil
+}
+
 func TestCreateArea(t *testing.T) {
-	// farm, err := CreateFarm("MyFarm1", "organic", "10.000", "11.000", "ID", "JK")
-	// if err != nil {
-	// 	assert.Nil(t, err)
-	// }
+	// Given
+	farmUID, _ := uuid.NewV4()
+	farmResult := AreaFarmServiceResult{UID: farmUID}
 
-	// reservoir, err := CreateReservoir(farm, "MyRes1", )
-	// if err != nil {
-	// 	assert.Nil(t, err)
-	// }
+	reservoirUID, _ := uuid.NewV4()
+	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	// var tests = []struct {
-	// 	Name                  string
-	// 	Size                  AreaSize
-	// 	Type                  string
-	// 	Location              string
-	// 	Photo                 AreaPhoto
-	// 	Reservoir             Reservoir
-	// 	Farm                  Farm
-	// 	expectedAreaError     error
-	// 	exptectedSizeError    error
-	// 	expectedLocationError error
-	// }{
-	// 	{"MyArea1", AreaSize{Value: 100, Unit: AreaUnit{Symbol: SquareMeter}}, AreaTypeSeeding, AreaLocationIndoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
-	// 	{"MyArea2", AreaSize{Value: 5, Unit: AreaUnit{Symbol: Hectare}}, AreaTypeGrowing, AreaLocationOutdoor, AreaPhoto{}, reservoir, farm, nil, nil, nil},
-	// }
+	areaService := mockAreaService(farmResult, reservoirResult)
 
-	// for _, test := range tests {
-	// 	area, err := CreateArea(test.Farm, test.Name, test.Type)
+	// When
+	area, err := CreateArea(
+		areaService,
+		farmUID,
+		reservoirUID,
+		"My Area 1",
+		AreaTypeSeeding,
+		AreaSize{Unit: GetAreaUnit(SquareMeter), Value: float32(10)},
+		AreaLocationIndoor,
+	)
 
-	// 	assert.Equal(t, test.expectedAreaError, err)
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, "My Area 1", area.Name)
 
-	// 	if err == nil {
-	// 		err = area.ChangeSize(test.Size)
+	event, ok := area.UncommittedChanges[0].(AreaCreated)
+	assert.True(t, ok)
+	assert.Equal(t, area.UID, event.UID)
+}
 
-	// 		assert.Equal(t, test.exptectedSizeError, err)
+func TestInvalidCreateArea(t *testing.T) {
+	// Given
+	farmUID, _ := uuid.NewV4()
+	farmResult := AreaFarmServiceResult{UID: farmUID}
 
-	// 		err = area.ChangeLocation(test.Location)
+	reservoirUID, _ := uuid.NewV4()
+	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	// 		assert.Equal(t, test.expectedLocationError, err)
+	areaService := mockAreaService(farmResult, reservoirResult)
 
-	// 		assert.NotNil(t, area.UID)
-	// 	}
-	// }
+	var tests = []struct {
+		Name          string
+		Size          AreaSize
+		Type          string
+		Location      string
+		ReservoirUID  uuid.UUID
+		FarmUID       uuid.UUID
+		ExpectedError error
+	}{
+		{
+			Name:          "",
+			Size:          AreaSize{Value: 100, Unit: GetAreaUnit(SquareMeter)},
+			Type:          AreaTypeSeeding,
+			Location:      AreaLocationIndoor,
+			ReservoirUID:  reservoirUID,
+			FarmUID:       farmUID,
+			ExpectedError: AreaError{AreaErrorNameEmptyCode},
+		},
+		{
+			Name:          "MyArea1",
+			Size:          AreaSize{Value: 5, Unit: AreaUnit{Symbol: Hectare}},
+			Type:          "WrongAreaType",
+			Location:      AreaLocationOutdoor,
+			ReservoirUID:  reservoirUID,
+			FarmUID:       farmUID,
+			ExpectedError: AreaError{AreaErrorInvalidAreaTypeCode},
+		},
+		{
+			Name:          "MyArea1",
+			Size:          AreaSize{Value: 5, Unit: AreaUnit{Symbol: Hectare}},
+			Type:          AreaTypeSeeding,
+			Location:      "WrongAreaLocation",
+			ReservoirUID:  reservoirUID,
+			FarmUID:       farmUID,
+			ExpectedError: AreaError{Code: AreaErrorInvalidAreaLocationCode},
+		},
+	}
+
+	for _, test := range tests {
+		_, err := CreateArea(areaService, test.FarmUID, test.ReservoirUID, test.Name, test.Type, test.Size, test.Location)
+
+		assert.Equal(t, test.ExpectedError, err)
+	}
 }
 
 func TestAreaCreateRemoveNote(t *testing.T) {
-	// // Given
-	// farm, farmErr := CreateFarm("MyFarm1", "organic")
-	// area, areaErr := CreateArea(farm, "Area1", AreaTypeSeeding)
+	// Given
+	farmUID, _ := uuid.NewV4()
+	farmResult := AreaFarmServiceResult{UID: farmUID}
 
-	// // When
-	// area.AddNewNote("This is my new note")
+	reservoirUID, _ := uuid.NewV4()
+	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	// // Then
-	// assert.Nil(t, farmErr)
-	// assert.Nil(t, areaErr)
+	areaService := mockAreaService(farmResult, reservoirResult)
 
-	// assert.Equal(t, 1, len(area.Notes))
+	area, areaErr := CreateArea(
+		areaService,
+		farmUID,
+		reservoirUID,
+		"My Area 1",
+		AreaTypeSeeding,
+		AreaSize{Unit: GetAreaUnit(SquareMeter), Value: float32(10)},
+		AreaLocationIndoor,
+	)
 
-	// uid := uuid.UUID{}
-	// for k, v := range area.Notes {
-	// 	assert.Equal(t, "This is my new note", v.Content)
-	// 	assert.NotNil(t, v.CreatedDate)
-	// 	uid = k
-	// }
+	noteContent := "This is my new note"
 
-	// // When
-	// area.RemoveNote(uid.String())
+	// When
+	noteErr := area.AddNewNote(noteContent)
 
-	// assert.Equal(t, 0, len(area.Notes))
+	// Then
+	assert.Nil(t, areaErr)
+	assert.Nil(t, noteErr)
+
+	assert.Equal(t, 1, len(area.Notes))
+
+	uid := uuid.UUID{}
+	for k, v := range area.Notes {
+		assert.Equal(t, noteContent, v.Content)
+		assert.NotNil(t, v.CreatedDate)
+		uid = k
+	}
+
+	event1, ok := area.UncommittedChanges[1].(AreaNoteAdded)
+	assert.True(t, ok)
+	assert.Equal(t, area.UID, event1.AreaUID)
+
+	// When
+	noteErr = area.RemoveNote(uid)
+
+	// Then
+	assert.Nil(t, noteErr)
+	assert.Equal(t, 0, len(area.Notes))
+
+	event2, ok := area.UncommittedChanges[2].(AreaNoteRemoved)
+	assert.True(t, ok)
+	assert.Equal(t, area.UID, event2.AreaUID)
+}
+
+func TestAreaChangePhoto(t *testing.T) {
+	// Given
+	farmUID, _ := uuid.NewV4()
+	farmResult := AreaFarmServiceResult{UID: farmUID}
+
+	reservoirUID, _ := uuid.NewV4()
+	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
+
+	areaService := mockAreaService(farmResult, reservoirResult)
+
+	area, areaErr := CreateArea(
+		areaService,
+		farmUID,
+		reservoirUID,
+		"My Area 1",
+		AreaTypeSeeding,
+		AreaSize{Unit: GetAreaUnit(SquareMeter), Value: float32(10)},
+		AreaLocationIndoor,
+	)
+
+	photo := AreaPhoto{
+		Filename: "myphoto.jpg",
+		MimeType: "image/jpeg",
+		Size:     1000,
+		Width:    800,
+		Height:   600,
+	}
+
+	// When
+	photoErr := area.ChangePhoto(photo)
+
+	// Then
+	assert.Nil(t, areaErr)
+	assert.Nil(t, photoErr)
+	assert.Equal(t, area.Photo.Filename, photo.Filename)
+
+	event, ok := area.UncommittedChanges[1].(AreaPhotoAdded)
+	assert.True(t, ok)
+	assert.Equal(t, area.UID, event.AreaUID)
+	assert.Equal(t, photo.Filename, event.Filename)
+}
+
+func mockAreaService(results ...interface{}) *AreaServiceMock {
+	areaServiceMock := new(AreaServiceMock)
+
+	for _, v := range results {
+		switch res := v.(type) {
+		case AreaFarmServiceResult:
+			areaServiceMock.On("FindFarmByID", res.UID).Return(res)
+		case AreaReservoirServiceResult:
+			areaServiceMock.On("FindReservoirByID", res.UID).Return(res)
+		}
+	}
+
+	return areaServiceMock
 }
