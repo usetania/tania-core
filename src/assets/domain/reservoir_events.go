@@ -19,11 +19,13 @@ type ReservoirWaterSourceChanged struct {
 }
 
 type ReservoirNoteAdded struct {
-	UID         uuid.UUID
-	Content     string
-	CreatedDate time.Time
+	ReservoirUID uuid.UUID
+	UID          uuid.UUID
+	Content      string
+	CreatedDate  time.Time
 }
 
 type ReservoirNoteRemoved struct {
-	UID uuid.UUID
+	ReservoirUID uuid.UUID
+	UID          uuid.UUID
 }

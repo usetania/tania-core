@@ -20,10 +20,6 @@ type ReservoirReadQuery interface {
 	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
 }
 
-type AreaQuery interface {
-	FindAreasByReservoirID(reservoirID string) <-chan QueryResult
-}
-
 type AreaEventQuery interface {
 	FindAllByID(areaUID uuid.UUID) <-chan QueryResult
 }
@@ -32,6 +28,7 @@ type AreaReadQuery interface {
 	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
 	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
 	FindByIDAndArea(areaUID, farmUID uuid.UUID) <-chan QueryResult
+	FindAreasByReservoirID(reservoirUID uuid.UUID) <-chan QueryResult
 }
 
 type CropReadQuery interface {

@@ -69,7 +69,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 		reservoirRead.CreatedDate = e.CreatedDate
 
 	case domain.ReservoirNoteAdded:
-		queryResult := <-s.ReservoirReadQuery.FindByID(e.UID)
+		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}
@@ -88,7 +88,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 		})
 
 	case domain.ReservoirNoteRemoved:
-		queryResult := <-s.ReservoirReadQuery.FindByID(e.UID)
+		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}

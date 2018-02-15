@@ -239,12 +239,12 @@ func MapToReservoirRead(s *FarmServer, reservoir domain.Reservoir) (storage.Rese
 		Name: farm.Name,
 	}
 
-	queryResult = <-s.AreaQuery.FindAreasByReservoirID(reservoir.UID.String())
+	queryResult = <-s.AreaReadQuery.FindAreasByReservoirID(reservoir.UID)
 	if queryResult.Error != nil {
 		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	areas, ok := queryResult.Result.([]domain.Area)
+	areas, ok := queryResult.Result.([]storage.AreaRead)
 	if !ok {
 		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}

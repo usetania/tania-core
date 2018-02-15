@@ -25,20 +25,16 @@ import (
 
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
-	FarmRepo            repository.FarmRepository
 	FarmEventRepo       repository.FarmEventRepository
 	FarmReadRepo        repository.FarmReadRepository
 	FarmReadQuery       query.FarmReadQuery
-	ReservoirRepo       repository.ReservoirRepository
 	ReservoirEventRepo  repository.ReservoirEventRepository
 	ReservoirEventQuery query.ReservoirEventQuery
 	ReservoirReadRepo   repository.ReservoirReadRepository
 	ReservoirReadQuery  query.ReservoirReadQuery
 	ReservoirService    domain.ReservoirService
-	AreaRepo            repository.AreaRepository
 	AreaEventRepo       repository.AreaEventRepository
 	AreaReadRepo        repository.AreaReadRepository
-	AreaQuery           query.AreaQuery
 	AreaEventQuery      query.AreaEventQuery
 	AreaReadQuery       query.AreaReadQuery
 	AreaService         domain.AreaService

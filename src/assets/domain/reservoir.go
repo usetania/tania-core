@@ -209,9 +209,10 @@ func (r *Reservoir) AddNewNote(content string) error {
 	}
 
 	r.TrackChange(ReservoirNoteAdded{
-		UID:         uid,
-		Content:     content,
-		CreatedDate: time.Now(),
+		ReservoirUID: r.UID,
+		UID:          uid,
+		Content:      content,
+		CreatedDate:  time.Now(),
 	})
 
 	return nil
@@ -239,7 +240,8 @@ func (r *Reservoir) RemoveNote(uid string) error {
 	}
 
 	r.TrackChange(ReservoirNoteRemoved{
-		UID: uuid,
+		ReservoirUID: r.UID,
+		UID:          uuid,
 	})
 
 	return nil
