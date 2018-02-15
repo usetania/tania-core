@@ -55,9 +55,11 @@
                       small.text-muted Seeding Date
                       .h4.m-b {{ crop.initial_area.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                       small.text-muted Last Watering
-                      .h4.m-b
+                      .h4.m-b(v-if="crop.initial_area.last_watered")
                         | {{ crop.initial_area.last_watered | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ crop.initial_area.last_watered | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
                         span.areatag {{ crop.initial_area.name }}
+                      .h4.m-b(v-else)
+                        | -
                       .h4.m-b(v-for="area in crop.moved_area" v-if="area.last_watered")
                         | {{ area.last_watered | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ area.last_watered | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
                         span.areatag {{ area.name }}
