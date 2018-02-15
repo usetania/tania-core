@@ -341,7 +341,14 @@ func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
 
 func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 	reservoirUID, err := uuid.FromString(c.Param("reservoir_id"))
-	noteID := c.Param("note_id")
+	if err != nil {
+		return Error(c, err)
+	}
+
+	noteUID, err := uuid.FromString(c.Param("note_id"))
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Validate //
 	queryResult := <-s.ReservoirReadQuery.FindByID(reservoirUID)
@@ -363,7 +370,7 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.ReservoirEvent)
 	reservoir := repository.NewReservoirFromHistory(events)
 
-	err = reservoir.RemoveNote(noteID)
+	err = reservoir.RemoveNote(noteUID)
 	if err != nil {
 		return Error(c, err)
 	}

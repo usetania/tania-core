@@ -3,7 +3,6 @@ package domain
 import (
 	"testing"
 
-	"github.com/Tanibox/tania-server/src/helper/mathhelper"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -18,19 +17,25 @@ func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (ReservoirFarmServiceR
 	return args.Get(0).(ReservoirFarmServiceResult), nil
 }
 
-func TestCreateReservoir(t *testing.T) {
-	// Given
+func mockReservoirService(farmUID uuid.UUID, farmName string) *ReservoirServiceMock {
 	reservoirServiceMock := new(ReservoirServiceMock)
 
-	farmUID, _ := uuid.NewV4()
 	reservoirFarmServiceResult := ReservoirFarmServiceResult{
 		UID:  farmUID,
-		Name: "My Farm 1",
+		Name: farmName,
 	}
 	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
 
+	return reservoirServiceMock
+}
+
+func TestCreateReservoir(t *testing.T) {
+	// Given
+	farmUID, _ := uuid.NewV4()
+	serviceMock := mockReservoirService(farmUID, "My Farm")
+
 	// When
-	reservoir, err := CreateReservoir(reservoirServiceMock, farmUID, "My Reservoir 1", BucketType, float32(10))
+	reservoir, err := CreateReservoir(serviceMock, farmUID, "My Reservoir 1", BucketType, float32(10))
 
 	// Then
 	assert.Nil(t, err)
@@ -39,66 +44,57 @@ func TestCreateReservoir(t *testing.T) {
 
 func TestInvalidCreateReservoir(t *testing.T) {
 	// Given
-	reservoirServiceMock := new(ReservoirServiceMock)
-
 	farmUID, _ := uuid.NewV4()
-	reservoirFarmServiceResult := ReservoirFarmServiceResult{
-		UID:  farmUID,
-		Name: "My Farm 1",
-	}
-	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
+	serviceMock := mockReservoirService(farmUID, "My Farm")
 
 	reservoirData := []struct {
 		farmUID         uuid.UUID
 		name            string
 		waterSourceType string
 		capacity        float32
-		expected        ReservoirError
+		expectedError   ReservoirError
 	}{
-		{farmUID, "My<>Reserv", "BUCKET", float32(10), ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}},
-		{farmUID, "MyR", "TAP", float32(0), ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}},
-		{farmUID, "MyReservoirNameShouldNotBeMoreThanAHundredLongCharactersMyReservoirNameShouldNotBeMoreThanAHundredLongCharacters", "TAP", 0, ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}},
+		{farmUID, "My<>Reserv", BucketType, float32(10), ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}},
+		{farmUID, "MyR", TapType, float32(0), ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}},
+		{farmUID, "MyReservoirNameShouldNotBeMoreThanAHundredLongCharactersMyReservoirNameShouldNotBeMoreThanAHundredLongCharacters", TapType, 0, ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}},
 	}
 
 	for _, data := range reservoirData {
 		// When
-		_, err := CreateReservoir(reservoirServiceMock, data.farmUID, data.name, data.waterSourceType, data.capacity)
+		_, err := CreateReservoir(serviceMock, farmUID, data.name, data.waterSourceType, data.capacity)
 
 		// Then
-		assert.Equal(t, data.expected, err)
+		assert.Equal(t, data.expectedError, err)
 	}
 }
 
 func TestReservoirCreateRemoveNote(t *testing.T) {
 	// Given
-	reservoirServiceMock := new(ReservoirServiceMock)
-
 	farmUID, _ := uuid.NewV4()
-	reservoirFarmServiceResult := ReservoirFarmServiceResult{
-		UID:  farmUID,
-		Name: "My Farm 1",
-	}
-	reservoirServiceMock.On("FindFarmByID", farmUID).Return(reservoirFarmServiceResult)
+	serviceMock := mockReservoirService(farmUID, "My Farm")
 
-	reservoir, reservoirErr := CreateReservoir(reservoirServiceMock, farmUID, "MyReservoir", "BUCKET", float32(10))
+	noteContent := "This is my new note"
+
+	reservoir, reservoirErr := CreateReservoir(serviceMock, farmUID, "MyReservoir", BucketType, float32(10))
 
 	// When
-	reservoir.AddNewNote("This is my new note")
+	noteErr := reservoir.AddNewNote(noteContent)
 
 	// Then
 	assert.Nil(t, reservoirErr)
+	assert.Nil(t, noteErr)
 
 	assert.Equal(t, 1, len(reservoir.Notes))
 
 	uid := uuid.UUID{}
 	for k, v := range reservoir.Notes {
-		assert.Equal(t, "This is my new note", v.Content)
-		assert.NotNil(t, v.CreatedDate)
+		assert.Equal(t, noteContent, v.Content)
+		assert.NotEqual(t, uuid.UUID{}, v.UID)
 		uid = k
 	}
 
 	// When
-	reservoir.RemoveNote(uid.String())
+	reservoir.RemoveNote(uid)
 
 	// Then
 	assert.Equal(t, 0, len(reservoir.Notes))
@@ -106,18 +102,21 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 
 func TestCreateWaterSource(t *testing.T) {
 	// Given
+	capacity := float32(100)
 
 	// When
-	bucket, err1 := CreateBucket(float32(100))
+	bucket, err1 := CreateBucket(capacity)
 	tap, err2 := CreateTap()
 
 	// Then
 	assert.Nil(t, err1)
 	assert.NotEqual(t, bucket, Bucket{})
-	assert.InDelta(t, bucket.Capacity, float32(100), mathhelper.EPSILON)
+	assert.Equal(t, capacity, bucket.Capacity)
+	assert.Equal(t, BucketType, bucket.Type())
 
 	assert.Nil(t, err2)
 	assert.Equal(t, tap, Tap{})
+	assert.Equal(t, TapType, tap.Type())
 }
 
 func TestInvalidCreateWaterSource(t *testing.T) {
@@ -131,4 +130,47 @@ func TestInvalidCreateWaterSource(t *testing.T) {
 
 	assert.Equal(t, ReservoirError{ReservoirErrorBucketCapacityInvalidCode}, err2)
 	assert.Equal(t, Bucket{}, bucket2)
+}
+
+func TestReservoirChangeWaterSource(t *testing.T) {
+	// Given
+	farmUID, _ := uuid.NewV4()
+	serviceMock := mockReservoirService(farmUID, "My Farm")
+
+	reservoirBucket, resBucketErr := CreateReservoir(serviceMock, farmUID, "MyReservoir Bucket", BucketType, float32(10))
+	reservoirTap, resTapErr := CreateReservoir(serviceMock, farmUID, "MyReservoir Tap", TapType, 0)
+
+	// When
+	reservoirBucket.ChangeWaterSource(TapType, 0)
+	reservoirTap.ChangeWaterSource(BucketType, float32(100))
+
+	// Then
+	assert.Nil(t, resBucketErr)
+	assert.Nil(t, resTapErr)
+
+	assert.Equal(t, TapType, reservoirBucket.WaterSource.Type())
+
+	_, ok := reservoirBucket.WaterSource.(Tap)
+	assert.True(t, ok)
+
+	assert.Equal(t, BucketType, reservoirTap.WaterSource.Type())
+
+	bucket, ok := reservoirTap.WaterSource.(Bucket)
+	assert.True(t, ok)
+	assert.Equal(t, float32(100), bucket.Capacity)
+}
+
+func TestReservoirChangeName(t *testing.T) {
+	// Given
+	farmUID, _ := uuid.NewV4()
+	serviceMock := mockReservoirService(farmUID, "My Farm")
+
+	res, resErr := CreateReservoir(serviceMock, farmUID, "My Reservoir", BucketType, float32(10))
+
+	// When
+	res.ChangeName("My Reservoir Changed")
+
+	// Then
+	assert.Nil(t, resErr)
+	assert.Equal(t, "My Reservoir Changed", res.Name)
 }

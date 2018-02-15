@@ -169,23 +169,6 @@ func (r *Reservoir) ChangeWaterSource(waterSourceType string, capacity float32) 
 	return nil
 }
 
-// IsAttachedToTap is used to check if Reservoir is attached to Tap WaterSource.
-func (r Reservoir) IsAttachedToTap() bool {
-	_, ok := r.WaterSource.(Tap)
-	return ok
-}
-
-// IsAttachedToBucket is used to check if Reservoir is attached to Bucket WaterSource.
-func (r Reservoir) IsAttachedToBucket() bool {
-	_, ok := r.WaterSource.(Bucket)
-	return ok
-}
-
-// IsAttachedToWaterSource is used to check if Reservoir is attached to WaterSource.
-func (r Reservoir) IsAttachedToWaterSource() bool {
-	return r.WaterSource != nil
-}
-
 // ChangeName is used to change Reservoir Name.
 func (r *Reservoir) ChangeName(name string) error {
 	err := validateReservoirName(name)
@@ -218,19 +201,14 @@ func (r *Reservoir) AddNewNote(content string) error {
 	return nil
 }
 
-func (r *Reservoir) RemoveNote(uid string) error {
-	if uid == "" {
+func (r *Reservoir) RemoveNote(uid uuid.UUID) error {
+	if uid == (uuid.UUID{}) {
 		return ReservoirError{Code: ReservoirNoteErrorInvalidContent}
-	}
-
-	uuid, err := uuid.FromString(uid)
-	if err != nil {
-		return ReservoirError{Code: ReservoirNoteErrorNotFound}
 	}
 
 	found := false
 	for _, v := range r.Notes {
-		if v.UID == uuid {
+		if v.UID == uid {
 			found = true
 		}
 	}
@@ -241,7 +219,7 @@ func (r *Reservoir) RemoveNote(uid string) error {
 
 	r.TrackChange(ReservoirNoteRemoved{
 		ReservoirUID: r.UID,
-		UID:          uuid,
+		UID:          uid,
 	})
 
 	return nil
