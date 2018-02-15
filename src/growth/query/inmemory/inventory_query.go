@@ -7,15 +7,15 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type MaterialQueryInMemory struct {
-	Storage *storage.MaterialStorage
+type MaterialReadQueryInMemory struct {
+	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialQueryInMemory(s *storage.MaterialStorage) query.MaterialQuery {
-	return MaterialQueryInMemory{Storage: s}
+func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.MaterialReadQuery {
+	return MaterialReadQueryInMemory{Storage: s}
 }
 
-func (s MaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
+func (s MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -23,7 +23,7 @@ func (s MaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.Que
 		defer s.Storage.Lock.RUnlock()
 
 		ci := query.CropMaterialQueryResult{}
-		for _, val := range s.Storage.MaterialMap {
+		for _, val := range s.Storage.MaterialReadMap {
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
 				ci.Name = val.Name
@@ -46,7 +46,7 @@ func (s MaterialQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.Que
 	return result
 }
 
-func (q MaterialQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
+func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -54,7 +54,7 @@ func (q MaterialQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode 
 		defer q.Storage.Lock.RUnlock()
 
 		ci := query.CropMaterialQueryResult{}
-		for _, val := range q.Storage.MaterialMap {
+		for _, val := range q.Storage.MaterialReadMap {
 			// WARNING, domain leakage
 			switch v := val.Type.(type) {
 			case assetsdomain.MaterialTypeSeed:

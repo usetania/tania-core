@@ -237,3 +237,27 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 	return nil
 }
+
+func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
+	materialRead := storage.MaterialRead{}
+
+	switch e := event.(type) {
+	case domain.MaterialCreated:
+		materialRead.UID = e.UID
+		materialRead.Name = e.Name
+		materialRead.PricePerUnit = e.PricePerUnit
+		materialRead.Type = e.Type
+		materialRead.Quantity = storage.MaterialQuantity(e.Quantity)
+		materialRead.ExpirationDate = e.ExpirationDate
+		materialRead.Notes = e.Notes
+		materialRead.IsExpense = e.IsExpense
+		materialRead.ProducedBy = e.ProducedBy
+	}
+
+	err := <-s.MaterialReadRepo.Save(&materialRead)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

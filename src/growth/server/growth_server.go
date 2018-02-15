@@ -34,7 +34,7 @@ type GrowthServer struct {
 	CropActivityQuery query.CropActivityQuery
 	CropService       domain.CropService
 	AreaReadQuery     query.AreaReadQuery
-	MaterialQuery     query.MaterialQuery
+	MaterialReadQuery query.MaterialReadQuery
 	FarmReadQuery     query.FarmReadQuery
 	EventBus          EventBus.Bus
 	File              File
@@ -48,7 +48,7 @@ func NewGrowthServer(
 	cropReadStorage *storage.CropReadStorage,
 	cropActivityStorage *storage.CropActivityStorage,
 	areaReadStorage *assetsstorage.AreaReadStorage,
-	materialStorage *assetsstorage.MaterialStorage,
+	materialReadStorage *assetsstorage.MaterialReadStorage,
 	farmReadStorage *assetsstorage.FarmReadStorage,
 ) (*GrowthServer, error) {
 	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
@@ -59,13 +59,13 @@ func NewGrowthServer(
 	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
 
 	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
-	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
+	materialReadQuery := inmemory.NewMaterialReadQueryInMemory(materialReadStorage)
 	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
 
 	cropService := service.CropServiceInMemory{
-		MaterialQuery: materialQuery,
-		CropReadQuery: cropReadQuery,
-		AreaReadQuery: areaReadQuery,
+		MaterialReadQuery: materialReadQuery,
+		CropReadQuery:     cropReadQuery,
+		AreaReadQuery:     areaReadQuery,
 	}
 
 	growthServer := &GrowthServer{
@@ -77,7 +77,7 @@ func NewGrowthServer(
 		CropActivityQuery: cropActivityQuery,
 		CropService:       cropService,
 		AreaReadQuery:     areaReadQuery,
-		MaterialQuery:     materialQuery,
+		MaterialReadQuery: materialReadQuery,
 		FarmReadQuery:     farmReadQuery,
 		File:              LocalFile{},
 		EventBus:          bus,
@@ -159,7 +159,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
 
-	queryResult := <-s.MaterialQuery.FindMaterialByPlantTypeCodeAndName(plantType, name)
+	queryResult := <-s.MaterialReadQuery.FindMaterialByPlantTypeCodeAndName(plantType, name)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}

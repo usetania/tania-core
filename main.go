@@ -44,7 +44,8 @@ func main() {
 	reservoirEventStorage := assetsstorage.CreateReservoirEventStorage()
 	reservoirReadStorage := assetsstorage.CreateReservoirReadStorage()
 
-	materialStorage := assetsstorage.CreateMaterialStorage()
+	materialEventStorage := assetsstorage.CreateMaterialEventStorage()
+	materialReadStorage := assetsstorage.CreateMaterialReadStorage()
 
 	cropStorage := growthstorage.CreateCropStorage()
 	cropEventStorage := growthstorage.CreateCropEventStorage()
@@ -64,7 +65,8 @@ func main() {
 		reservoirStorage,
 		reservoirEventStorage,
 		reservoirReadStorage,
-		materialStorage,
+		materialEventStorage,
+		materialReadStorage,
 		cropReadStorage,
 		bus,
 	)
@@ -75,7 +77,7 @@ func main() {
 	taskServer, err := taskserver.NewTaskServer(
 		cropReadStorage,
 		areaStorage,
-		materialStorage,
+		materialReadStorage,
 		reservoirStorage)
 	if err != nil {
 		e.Logger.Fatal(err)
@@ -88,7 +90,7 @@ func main() {
 		cropReadStorage,
 		cropActivityStorage,
 		areaReadStorage,
-		materialStorage,
+		materialReadStorage,
 		farmReadStorage,
 	)
 	if err != nil {
@@ -98,7 +100,7 @@ func main() {
 	if *config.Config.DemoMode {
 		initDataDemo(
 			farmServer, growthServer,
-			farmStorage, areaStorage, reservoirStorage, materialStorage, cropStorage,
+			farmStorage, areaStorage, reservoirStorage, materialReadStorage, cropStorage,
 		)
 	}
 
@@ -220,7 +222,7 @@ func initDataDemo(
 	farmStorage *assetsstorage.FarmStorage,
 	areaStorage *assetsstorage.AreaStorage,
 	reservoirStorage *assetsstorage.ReservoirStorage,
-	materialStorage *assetsstorage.MaterialStorage,
+	materialReadStorage *assetsstorage.MaterialReadStorage,
 	cropStorage *growthstorage.CropStorage,
 ) {
 	log.Info("==== DEMO DATA SEEDED ====")

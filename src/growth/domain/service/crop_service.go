@@ -8,13 +8,13 @@ import (
 )
 
 type CropServiceInMemory struct {
-	MaterialQuery query.MaterialQuery
-	CropReadQuery query.CropReadQuery
-	AreaReadQuery query.AreaReadQuery
+	MaterialReadQuery query.MaterialReadQuery
+	CropReadQuery     query.CropReadQuery
+	AreaReadQuery     query.AreaReadQuery
 }
 
 func (s CropServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
-	result := <-s.MaterialQuery.FindByID(uid)
+	result := <-s.MaterialReadQuery.FindByID(uid)
 
 	if result.Error != nil {
 		return domain.ServiceResult{

@@ -26,7 +26,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
 
-		queryResult = <-s.MaterialQuery.FindByID(e.InventoryUID)
+		queryResult = <-s.MaterialReadQuery.FindByID(e.InventoryUID)
 		if queryResult.Error != nil {
 			return queryResult.Error
 		}

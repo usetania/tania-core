@@ -483,7 +483,86 @@ func MapToMaterial(material domain.Material) Material {
 	return m
 }
 
-func MapToAvailableMaterialPlantType(materials []domain.Material) []AvailableMaterialPlantType {
+func MapToMaterialFromRead(material storage.MaterialRead) Material {
+	m := Material{}
+
+	m.UID = material.UID
+	m.Name = material.Name
+	m.PricePerUnit = Money{
+		Code:   material.PricePerUnit.Code(),
+		Symbol: material.PricePerUnit.Symbol(),
+		Amount: material.PricePerUnit.Amount(),
+	}
+
+	m.ExpirationDate = nil
+	if material.ExpirationDate != nil {
+		m.ExpirationDate = material.ExpirationDate
+	}
+
+	switch v := material.Type.(type) {
+	case domain.MaterialTypeSeed:
+		m.Type = MaterialType{
+			Code: v.Code(),
+			MaterialTypeDetail: MaterialTypeSeed{
+				PlantType: v.PlantType,
+			},
+		}
+	case domain.MaterialTypePlant:
+		m.Type = MaterialType{
+			Code: v.Code(),
+			MaterialTypeDetail: MaterialTypePlant{
+				PlantType: v.PlantType,
+			},
+		}
+	case domain.MaterialTypeAgrochemical:
+		m.Type = MaterialType{
+			Code: v.Code(),
+			MaterialTypeDetail: MaterialTypeAgrochemical{
+				ChemicalType: v.ChemicalType,
+			},
+		}
+	case domain.MaterialTypeGrowingMedium:
+		m.Type = MaterialType{Code: v.Code()}
+		m.ExpirationDate = nil
+	case domain.MaterialTypeLabelAndCropSupport:
+		m.Type = MaterialType{Code: v.Code()}
+	case domain.MaterialTypeSeedingContainer:
+		m.Type = MaterialType{
+			Code: v.Code(),
+			MaterialTypeDetail: MaterialTypeSeedingContainer{
+				ContainerType: v.ContainerType,
+			},
+		}
+	case domain.MaterialTypePostHarvestSupply:
+		m.Type = MaterialType{Code: v.Code()}
+	case domain.MaterialTypeOther:
+		m.Type = MaterialType{Code: v.Code()}
+	}
+
+	m.Quantity = MaterialQuantity{
+		Value: material.Quantity.Value,
+		Unit:  material.Quantity.Unit.Code,
+	}
+
+	m.Notes = nil
+	if material.Notes != nil {
+		m.Notes = material.Notes
+	}
+
+	m.IsExpense = nil
+	if material.IsExpense != nil {
+		m.IsExpense = material.IsExpense
+	}
+
+	m.ProducedBy = nil
+	if material.ProducedBy != nil {
+		m.ProducedBy = material.ProducedBy
+	}
+
+	return m
+}
+
+func MapToAvailableMaterialPlantType(materials []storage.MaterialRead) []AvailableMaterialPlantType {
 	ai := make(map[string]AvailableMaterialPlantType, 0)
 
 	// Convert domain.Material to AvailableMaterialPlantType first with Map

@@ -1,6 +1,9 @@
 package server
 
 import (
+	"net/http"
+	"time"
+
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	cropstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
@@ -10,8 +13,6 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
-	"net/http"
-	"time"
 )
 
 // TaskServer ties the routes and handlers with injected dependencies
@@ -24,7 +25,7 @@ type TaskServer struct {
 func NewTaskServer(
 	cropStorage *cropstorage.CropReadStorage,
 	areaStorage *assetsstorage.AreaStorage,
-	materialStorage *assetsstorage.MaterialStorage,
+	materialReadStorage *assetsstorage.MaterialReadStorage,
 	reservoirStorage *assetsstorage.ReservoirStorage) (*TaskServer, error) {
 
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
@@ -32,13 +33,13 @@ func NewTaskServer(
 
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
-	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
+	materialReadQuery := inmemory.NewMaterialReadQueryInMemory(materialReadStorage)
 	reservoirQuery := inmemory.NewReservoirQueryInMemory(reservoirStorage)
 
 	taskService := service.TaskServiceInMemory{
 		CropQuery:      cropQuery,
 		AreaQuery:      areaQuery,
-		MaterialQuery:  materialQuery,
+		MaterialQuery:  materialReadQuery,
 		ReservoirQuery: reservoirQuery,
 	}
 	return &TaskServer{

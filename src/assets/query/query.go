@@ -39,7 +39,7 @@ type CropReadQuery interface {
 	CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 }
 
-type MaterialQuery interface {
+type MaterialReadQuery interface {
 	FindAll() <-chan QueryResult
 	FindAllMaterialByPlantType(plantTypeCode string) <-chan QueryResult
 	FindMaterialByPlantTypeAndName(plantTypeCode string, name string) <-chan QueryResult

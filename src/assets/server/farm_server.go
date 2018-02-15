@@ -42,8 +42,9 @@ type FarmServer struct {
 	AreaEventQuery      query.AreaEventQuery
 	AreaReadQuery       query.AreaReadQuery
 	AreaService         domain.AreaService
-	MaterialRepo        repository.MaterialRepository
-	MaterialQuery       query.MaterialQuery
+	MaterialEventRepo   repository.MaterialEventRepository
+	MaterialReadRepo    repository.MaterialReadRepository
+	MaterialReadQuery   query.MaterialReadQuery
 	CropReadQuery       query.CropReadQuery
 	File                File
 	EventBus            EventBus.Bus
@@ -60,7 +61,8 @@ func NewFarmServer(
 	reservoirStorage *storage.ReservoirStorage,
 	reservoirEventStorage *storage.ReservoirEventStorage,
 	reservoirReadStorage *storage.ReservoirReadStorage,
-	materialStorage *storage.MaterialStorage,
+	materialEventStorage *storage.MaterialEventStorage,
+	materialReadStorage *storage.MaterialReadStorage,
 	cropReadStorage *growthstorage.CropReadStorage,
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
@@ -82,8 +84,9 @@ func NewFarmServer(
 	reservoirReadRepo := repository.NewReservoirReadRepositoryInMemory(reservoirReadStorage)
 	reservoirReadQuery := inmemory.NewReservoirReadQueryInMemory(reservoirReadStorage)
 
-	materialRepo := repository.NewMaterialRepositoryInMemory(materialStorage)
-	materialQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
+	materialEventRepo := repository.NewMaterialEventRepositoryInMemory(materialEventStorage)
+	materialReadRepo := repository.NewMaterialReadRepositoryInMemory(materialReadStorage)
+	materialReadQuery := inmemory.NewMaterialReadQueryInMemory(materialReadStorage)
 
 	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
 
@@ -111,8 +114,9 @@ func NewFarmServer(
 		AreaEventQuery:      areaEventQuery,
 		AreaReadQuery:       areaReadQuery,
 		AreaService:         areaService,
-		MaterialRepo:        materialRepo,
-		MaterialQuery:       materialQuery,
+		MaterialEventRepo:   materialEventRepo,
+		MaterialReadRepo:    materialReadRepo,
+		MaterialReadQuery:   materialReadQuery,
 		CropReadQuery:       cropReadQuery,
 		File:                LocalFile{},
 		EventBus:            eventBus,
@@ -133,6 +137,7 @@ func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("AreaPhotoAdded", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaNoteAdded", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaNoteRemoved", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("MaterialCreated", s.SaveToMaterialReadModel)
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -804,23 +809,22 @@ func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 }
 
 func (s *FarmServer) GetMaterials(c echo.Context) error {
-	data := make(map[string][]Material)
-
-	queryResult := <-s.MaterialQuery.FindAll()
+	queryResult := <-s.MaterialReadQuery.FindAll()
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}
 
-	results, ok := queryResult.Result.([]domain.Material)
+	results, ok := queryResult.Result.([]storage.MaterialRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
 	materials := []Material{}
 	for _, v := range results {
-		materials = append(materials, MapToMaterial(v))
+		materials = append(materials, MapToMaterialFromRead(v))
 	}
 
+	data := make(map[string][]Material)
 	data["data"] = materials
 
 	return c.JSON(http.StatusOK, data)
@@ -930,23 +934,23 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 		}
 	}
 
-	material, err := domain.CreateMaterial(name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit)
+	material, err := domain.CreateMaterial(
+		name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit,
+		expDate, n, pb, isExpenseBool)
 	if err != nil {
 		return Error(c, err)
 	}
-
-	material.ExpirationDate = expDate
-	material.Notes = n
-	material.ProducedBy = pb
-	material.IsExpense = isExpenseBool
 
 	// Persist //
-	err = <-s.MaterialRepo.Save(&material)
+	err = <-s.MaterialEventRepo.Save(material.UID, material.Version, material.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	data["data"] = MapToMaterial(material)
+	// Publish //
+	s.publishUncommittedEvents(material)
+
+	data["data"] = MapToMaterial(*material)
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -955,9 +959,9 @@ func (s *FarmServer) GetAvailableMaterialPlantType(c echo.Context) error {
 	data := make(map[string][]AvailableMaterialPlantType)
 
 	// Process //
-	result := <-s.MaterialRepo.FindAll()
+	result := <-s.MaterialReadQuery.FindAll()
 
-	materials, ok := result.Result.([]domain.Material)
+	materials, ok := result.Result.([]storage.MaterialRead)
 	if !ok {
 		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 	}
@@ -980,6 +984,11 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	case *domain.Area:
+		for _, v := range e.UncommittedChanges {
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
+		}
+	case *domain.Material:
 		for _, v := range e.UncommittedChanges {
 			name := structhelper.GetName(v)
 			s.EventBus.Publish(name, v)

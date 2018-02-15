@@ -6,23 +6,23 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/storage"
 )
 
-type MaterialQueryInMemory struct {
-	Storage *storage.MaterialStorage
+type MaterialReadQueryInMemory struct {
+	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialQueryInMemory(s *storage.MaterialStorage) query.MaterialQuery {
-	return &MaterialQueryInMemory{Storage: s}
+func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.MaterialReadQuery {
+	return &MaterialReadQueryInMemory{Storage: s}
 }
 
-func (q *MaterialQueryInMemory) FindAll() <-chan query.QueryResult {
+func (q *MaterialReadQueryInMemory) FindAll() <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		materials := []domain.Material{}
-		for _, val := range q.Storage.MaterialMap {
+		materials := []storage.MaterialRead{}
+		for _, val := range q.Storage.MaterialReadMap {
 			materials = append(materials, val)
 		}
 
@@ -34,15 +34,15 @@ func (q *MaterialQueryInMemory) FindAll() <-chan query.QueryResult {
 	return result
 }
 
-func (q *MaterialQueryInMemory) FindAllMaterialByPlantType(plantTypeCode string) <-chan query.QueryResult {
+func (q *MaterialReadQueryInMemory) FindAllMaterialByPlantType(plantTypeCode string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		materials := []domain.Material{}
-		for _, val := range q.Storage.MaterialMap {
+		materials := []storage.MaterialRead{}
+		for _, val := range q.Storage.MaterialReadMap {
 			switch v := val.Type.(type) {
 			case domain.MaterialTypeSeed:
 				if v.PlantType.Code == plantTypeCode {
@@ -63,15 +63,15 @@ func (q *MaterialQueryInMemory) FindAllMaterialByPlantType(plantTypeCode string)
 	return result
 }
 
-func (q *MaterialQueryInMemory) FindMaterialByPlantTypeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
+func (q *MaterialReadQueryInMemory) FindMaterialByPlantTypeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		material := domain.Material{}
-		for _, val := range q.Storage.MaterialMap {
+		material := storage.MaterialRead{}
+		for _, val := range q.Storage.MaterialReadMap {
 			switch v := val.Type.(type) {
 			case domain.MaterialTypeSeed:
 				if v.PlantType.Code == plantTypeCode && val.Name == name {

@@ -230,17 +230,54 @@ func CreateReservoirReadStorage() *ReservoirReadStorage {
 	return &ReservoirReadStorage{ReservoirReadMap: make(map[uuid.UUID]ReservoirRead), Lock: &rwMutex}
 }
 
-type MaterialStorage struct {
-	Lock        *deadlock.RWMutex
-	MaterialMap map[uuid.UUID]domain.Material
+type MaterialEventStorage struct {
+	Lock           *deadlock.RWMutex
+	MaterialEvents []MaterialEvent
 }
 
-func CreateMaterialStorage() *MaterialStorage {
+type MaterialEvent struct {
+	MaterialUID uuid.UUID
+	Version     int
+	Event       interface{}
+}
+
+func CreateMaterialEventStorage() *MaterialEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("MATERIAL STORAGE DEADLOCK!")
+		fmt.Println("MATERIAL EVENT STORAGE DEADLOCK!")
 	}
 
-	return &MaterialStorage{MaterialMap: make(map[uuid.UUID]domain.Material), Lock: &rwMutex}
+	return &MaterialEventStorage{Lock: &rwMutex}
+}
+
+type MaterialRead struct {
+	UID            uuid.UUID        `json:"uid"`
+	Name           string           `json:"name"`
+	PricePerUnit   Money            `json:"price_per_unit"`
+	Type           MaterialType     `json:"type"`
+	Quantity       MaterialQuantity `json:"quantity"`
+	ExpirationDate *time.Time       `json:"expiration_date"`
+	Notes          *string          `json:"notes"`
+	IsExpense      *bool            `json:"is_expense"`
+	ProducedBy     *string          `json:"produced_by"`
+}
+
+type Money domain.Money
+type MaterialType domain.MaterialType
+type MaterialQuantity domain.MaterialQuantity
+
+type MaterialReadStorage struct {
+	Lock            *deadlock.RWMutex
+	MaterialReadMap map[uuid.UUID]MaterialRead
+}
+
+func CreateMaterialReadStorage() *MaterialReadStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("MATERIAL READ STORAGE DEADLOCK!")
+	}
+
+	return &MaterialReadStorage{MaterialReadMap: make(map[uuid.UUID]MaterialRead), Lock: &rwMutex}
 }

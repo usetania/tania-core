@@ -74,7 +74,7 @@ func MapToCropActivity(activity storage.CropActivity) CropActivity {
 }
 
 func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) {
-	queryResult := <-s.MaterialQuery.FindByID(crop.InventoryUID)
+	queryResult := <-s.MaterialReadQuery.FindByID(crop.InventoryUID)
 	if queryResult.Error != nil {
 		return storage.CropRead{}, queryResult.Error
 	}

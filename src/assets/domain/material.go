@@ -17,6 +17,10 @@ type Material struct {
 	Notes          *string          `json:"notes"`
 	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
+
+	// Events
+	Version            int
+	UncommittedChanges []interface{}
 }
 
 const (
@@ -146,39 +150,63 @@ func GetMaterialQuantityUnit(materialTypeCode string, code string) MaterialQuant
 	return MaterialQuantityUnit{}
 }
 
+func (state *Material) TrackChange(event interface{}) {
+	state.UncommittedChanges = append(state.UncommittedChanges, event)
+	state.Transition(event)
+}
+
+func (state *Material) Transition(event interface{}) {
+	switch e := event.(type) {
+	case MaterialCreated:
+		state.UID = e.UID
+		state.Name = e.Name
+		state.PricePerUnit = e.PricePerUnit
+		state.Type = e.Type
+		state.Quantity = e.Quantity
+		state.ExpirationDate = e.ExpirationDate
+		state.Notes = e.Notes
+		state.ProducedBy = e.ProducedBy
+		state.IsExpense = e.IsExpense
+	}
+}
+
 func CreateMaterial(
 	name string,
 	price string,
 	priceUnit string,
 	materialType MaterialType,
 	quantity float32,
-	quantityUnit string) (Material, error) {
+	quantityUnit string,
+	expirationDate *time.Time,
+	notes *string,
+	producedBy *string,
+	isExpense *bool) (*Material, error) {
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return Material{}, err
+		return nil, err
 	}
 
 	money, err := CreateMoney(price, priceUnit)
 	if err != nil {
-		return Material{}, err
+		return nil, err
 	}
 
 	if materialType == nil {
-		return Material{}, errors.New("cannot be empty")
+		return nil, errors.New("cannot be empty")
 	}
 
 	err = validateQuantity(quantity)
 	if err != nil {
-		return Material{}, err
+		return nil, err
 	}
 
 	qu, err := validateQuantityUnit(quantityUnit, materialType)
 	if err != nil {
-		return Material{}, err
+		return nil, err
 	}
 
-	return Material{
+	initial := &Material{
 		UID:          uid,
 		Name:         name,
 		PricePerUnit: money,
@@ -187,7 +215,25 @@ func CreateMaterial(
 			Value: quantity,
 			Unit:  qu,
 		},
-	}, nil
+		ExpirationDate: expirationDate,
+		Notes:          notes,
+		ProducedBy:     producedBy,
+		IsExpense:      isExpense,
+	}
+
+	initial.TrackChange(MaterialCreated{
+		UID:            initial.UID,
+		Name:           initial.Name,
+		PricePerUnit:   initial.PricePerUnit,
+		Type:           initial.Type,
+		Quantity:       initial.Quantity,
+		ExpirationDate: initial.ExpirationDate,
+		Notes:          initial.Notes,
+		ProducedBy:     initial.ProducedBy,
+		IsExpense:      initial.IsExpense,
+	})
+
+	return initial, nil
 }
 
 func (m *Material) ChangeName(name string) error {
@@ -199,7 +245,7 @@ func (m *Material) ChangeName(name string) error {
 		return errors.New("too few characters")
 	}
 
-	m.Name = name
+	m.TrackChange(MaterialNameChanged{UID: m.UID, Name: name})
 
 	return nil
 }
@@ -210,7 +256,7 @@ func (m *Material) ChangePricePerUnit(price, priceUnit string) error {
 		return err
 	}
 
-	m.PricePerUnit = money
+	m.TrackChange(MaterialPriceChanged{UID: m.UID, Price: money})
 
 	return nil
 }
@@ -226,10 +272,13 @@ func (m *Material) ChangeQuantityUnit(quantity float32, quantityUnit string, mat
 		return err
 	}
 
-	m.Quantity = MaterialQuantity{
-		Value: quantity,
-		Unit:  qu,
-	}
+	m.TrackChange(MaterialQuantityChanged{
+		UID: m.UID,
+		Quantity: MaterialQuantity{
+			Value: quantity,
+			Unit:  qu,
+		},
+	})
 
 	return nil
 }
