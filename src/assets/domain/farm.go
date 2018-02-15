@@ -110,6 +110,7 @@ func (f *Farm) ChangeGeoLocation(latitude, longitude string) error {
 	}
 
 	f.TrackChange(FarmGeolocationChanged{
+		FarmUID:   f.UID,
 		Latitude:  latitude,
 		Longitude: longitude,
 	})
@@ -130,6 +131,7 @@ func (f *Farm) ChangeRegion(countryCode, cityCode string) error {
 	}
 
 	f.TrackChange(FarmRegionChanged{
+		FarmUID:     f.UID,
 		CountryCode: countryCode,
 		CityCode:    cityCode,
 	})

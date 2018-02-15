@@ -7,6 +7,21 @@ import (
 )
 
 func TestCreateFarm(t *testing.T) {
+	// Given
+
+	// When
+	farm, err := CreateFarm("My Farm 1", FarmTypeOrganic, "10.00", "11.00", "ID", "JK")
+
+	// Then
+	assert.Nil(t, err)
+	assert.Equal(t, "My Farm 1", farm.Name)
+
+	event, ok := farm.UncommittedChanges[0].(FarmCreated)
+	assert.True(t, ok)
+	assert.Equal(t, farm.UID, event.UID)
+}
+
+func TestInvalidCreateFarm(t *testing.T) {
 	var tests = []struct {
 		name               string
 		latitude           string
@@ -24,7 +39,7 @@ func TestCreateFarm(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		farm, err := CreateFarm(
+		_, err := CreateFarm(
 			test.name,
 			test.farmType,
 			test.latitude,
@@ -34,7 +49,6 @@ func TestCreateFarm(t *testing.T) {
 		)
 
 		assert.Equal(t, test.expectedCreateFarm, err)
-		assert.NotEqual(t, Farm{}, farm)
 	}
 }
 
@@ -53,6 +67,11 @@ func TestChangeGeolocation(t *testing.T) {
 
 	assert.Equal(t, latitude, farm.Latitude)
 	assert.Equal(t, longitude, farm.Longitude)
+
+	event, ok := farm.UncommittedChanges[1].(FarmGeolocationChanged)
+	assert.True(t, ok)
+	assert.Equal(t, farm.UID, event.FarmUID)
+	assert.Equal(t, farm.Latitude, event.Latitude)
 }
 
 func TestChangeRegion(t *testing.T) {
@@ -70,4 +89,9 @@ func TestChangeRegion(t *testing.T) {
 
 	assert.Equal(t, countryCode, farm.CountryCode)
 	assert.Equal(t, cityCode, farm.CityCode)
+
+	event, ok := farm.UncommittedChanges[1].(FarmRegionChanged)
+	assert.True(t, ok)
+	assert.Equal(t, farm.UID, event.FarmUID)
+	assert.Equal(t, farm.CountryCode, event.CountryCode)
 }

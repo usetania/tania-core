@@ -19,11 +19,13 @@ type FarmCreated struct {
 }
 
 type FarmGeolocationChanged struct {
+	FarmUID   uuid.UUID
 	Latitude  string
 	Longitude string
 }
 
 type FarmRegionChanged struct {
+	FarmUID     uuid.UUID
 	CountryCode string
 	CityCode    string
 }
