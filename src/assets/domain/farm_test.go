@@ -16,16 +16,58 @@ func TestCreateFarm(t *testing.T) {
 		cityCode           string
 		expectedCreateFarm error
 	}{
-		{"MyFarmFamily", "-90.000", "-180.000", "organic", "ID", "JK", nil},
+		{"My Farm Family", "-90.000", "-180.000", "organic", "ID", "JK", nil},
 		{"", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}},
-		{"MyFarmFamily", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountryCode}},
-		{"MyFarmFamily", "-90.000", "-180.000", "organic", "ID", "Jakarta", FarmError{FarmErrorInvalidCityCode}},
+		{"My Farm Family", "-90.000", "-180.000", "wrongtype", "ID", "JK", FarmError{FarmErrorInvalidFarmTypeCode}},
+		{"My Farm Family", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountryCode}},
+		{"My Farm Family", "-90.000", "-180.000", "organic", "ID", "Jakarta", FarmError{FarmErrorInvalidCityCode}},
 	}
 
 	for _, test := range tests {
-		farm, err := CreateFarm(test.name, test.farmType, test.latitude, test.longitude, test.countryCode, test.cityCode)
+		farm, err := CreateFarm(
+			test.name,
+			test.farmType,
+			test.latitude,
+			test.longitude,
+			test.countryCode,
+			test.cityCode,
+		)
 
 		assert.Equal(t, test.expectedCreateFarm, err)
 		assert.NotEqual(t, Farm{}, farm)
 	}
+}
+
+func TestChangeGeolocation(t *testing.T) {
+	// Given
+	farm, farmErr := CreateFarm("my farm", "organic", "90.000", "100.000", "ID", "JK")
+	latitude := "10.00"
+	longitude := "11.00"
+
+	// When
+	geoErr := farm.ChangeGeoLocation(latitude, longitude)
+
+	// Then
+	assert.Nil(t, farmErr)
+	assert.Nil(t, geoErr)
+
+	assert.Equal(t, latitude, farm.Latitude)
+	assert.Equal(t, longitude, farm.Longitude)
+}
+
+func TestChangeRegion(t *testing.T) {
+	// Given
+	farm, farmErr := CreateFarm("my farm", "organic", "90.000", "100.000", "ID", "JK")
+	countryCode := "AU"
+	cityCode := "QLD"
+
+	// When
+	regErr := farm.ChangeRegion(countryCode, cityCode)
+
+	// Then
+	assert.Nil(t, farmErr)
+	assert.Nil(t, regErr)
+
+	assert.Equal(t, countryCode, farm.CountryCode)
+	assert.Equal(t, cityCode, farm.CityCode)
 }
