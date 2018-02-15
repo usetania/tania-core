@@ -94,6 +94,9 @@ func (state *Reservoir) Transition(event interface{}) {
 	case ReservoirWaterSourceChanged:
 		state.WaterSource = e.WaterSource
 
+	case ReservoirNameChanged:
+		state.Name = e.Name
+
 	case ReservoirNoteAdded:
 		if len(state.Notes) == 0 {
 			state.Notes = make(map[uuid.UUID]ReservoirNote)
@@ -163,7 +166,8 @@ func (r *Reservoir) ChangeWaterSource(waterSourceType string, capacity float32) 
 	}
 
 	r.TrackChange(ReservoirWaterSourceChanged{
-		WaterSource: ws,
+		ReservoirUID: r.UID,
+		WaterSource:  ws,
 	})
 
 	return nil
@@ -176,7 +180,10 @@ func (r *Reservoir) ChangeName(name string) error {
 		return err
 	}
 
-	r.Name = name
+	r.TrackChange(ReservoirNameChanged{
+		ReservoirUID: r.UID,
+		Name:         name,
+	})
 
 	return nil
 }

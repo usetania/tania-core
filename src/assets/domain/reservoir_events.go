@@ -15,7 +15,13 @@ type ReservoirCreated struct {
 }
 
 type ReservoirWaterSourceChanged struct {
-	WaterSource WaterSource
+	ReservoirUID uuid.UUID
+	WaterSource  WaterSource
+}
+
+type ReservoirNameChanged struct {
+	ReservoirUID uuid.UUID
+	Name         string
 }
 
 type ReservoirNoteAdded struct {

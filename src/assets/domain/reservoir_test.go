@@ -40,6 +40,10 @@ func TestCreateReservoir(t *testing.T) {
 	// Then
 	assert.Nil(t, err)
 	assert.NotEqual(t, Reservoir{}, reservoir)
+
+	event, ok := reservoir.UncommittedChanges[0].(ReservoirCreated)
+	assert.True(t, ok)
+	assert.Equal(t, reservoir.UID, event.UID)
 }
 
 func TestInvalidCreateReservoir(t *testing.T) {
@@ -93,11 +97,19 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 		uid = k
 	}
 
+	event1, ok := reservoir.UncommittedChanges[1].(ReservoirNoteAdded)
+	assert.True(t, ok)
+	assert.Equal(t, reservoir.UID, event1.ReservoirUID)
+
 	// When
 	reservoir.RemoveNote(uid)
 
 	// Then
 	assert.Equal(t, 0, len(reservoir.Notes))
+
+	event2, ok := reservoir.UncommittedChanges[2].(ReservoirNoteRemoved)
+	assert.True(t, ok)
+	assert.Equal(t, reservoir.UID, event2.ReservoirUID)
 }
 
 func TestCreateWaterSource(t *testing.T) {
@@ -155,9 +167,18 @@ func TestReservoirChangeWaterSource(t *testing.T) {
 
 	assert.Equal(t, BucketType, reservoirTap.WaterSource.Type())
 
+	event1, ok := reservoirBucket.UncommittedChanges[1].(ReservoirWaterSourceChanged)
+	assert.True(t, ok)
+	assert.Equal(t, reservoirBucket.UID, event1.ReservoirUID)
+
+	// Then
 	bucket, ok := reservoirTap.WaterSource.(Bucket)
 	assert.True(t, ok)
 	assert.Equal(t, float32(100), bucket.Capacity)
+
+	event2, ok := reservoirTap.UncommittedChanges[1].(ReservoirWaterSourceChanged)
+	assert.True(t, ok)
+	assert.Equal(t, reservoirTap.UID, event2.ReservoirUID)
 }
 
 func TestReservoirChangeName(t *testing.T) {
@@ -173,4 +194,9 @@ func TestReservoirChangeName(t *testing.T) {
 	// Then
 	assert.Nil(t, resErr)
 	assert.Equal(t, "My Reservoir Changed", res.Name)
+
+	event, ok := res.UncommittedChanges[1].(ReservoirNameChanged)
+	assert.True(t, ok)
+	assert.Equal(t, res.UID, event.ReservoirUID)
+	assert.Equal(t, res.Name, event.Name)
 }
