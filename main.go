@@ -4,11 +4,9 @@ import (
 	"database/sql"
 	"io/ioutil"
 	"os"
-	"time"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
-	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/server"
 	assetsserver "github.com/Tanibox/tania-server/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
@@ -21,7 +19,6 @@ import (
 	"github.com/labstack/gommon/log"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
-	uuid "github.com/satori/go.uuid"
 )
 
 func init() {
@@ -219,97 +216,97 @@ func initDataDemo(
 ) {
 	log.Info("==== DEMO DATA SEEDED ====")
 
-	farmUID, _ := uuid.NewV4()
-	farm1 := assetsdomain.Farm{
-		UID:         farmUID,
-		Name:        "MyFarm",
-		Type:        "organic",
-		Latitude:    "10.00",
-		Longitude:   "11.00",
-		CountryCode: "ID",
-		CityCode:    "JK",
-		IsActive:    true,
-	}
+	// farmUID, _ := uuid.NewV4()
+	// farm1 := assetsdomain.Farm{
+	// 	UID:         farmUID,
+	// 	Name:        "MyFarm",
+	// 	Type:        "organic",
+	// 	Latitude:    "10.00",
+	// 	Longitude:   "11.00",
+	// 	CountryCode: "ID",
+	// 	CityCode:    "JK",
+	// 	IsActive:    true,
+	// }
 
 	// farmStorage.FarmReadMap[farmUID] = farm1
 
-	uid, _ := uuid.NewV4()
+	// uid, _ := uuid.NewV4()
 
-	noteUID, _ := uuid.NewV4()
-	reservoirNotes := make(map[uuid.UUID]assetsdomain.ReservoirNote, 0)
-	reservoirNotes[noteUID] = assetsdomain.ReservoirNote{
-		UID:         noteUID,
-		Content:     "Don't forget to close the bucket after using",
-		CreatedDate: time.Now(),
-	}
+	// noteUID, _ := uuid.NewV4()
+	// reservoirNotes := make(map[uuid.UUID]assetsdomain.ReservoirNote, 0)
+	// reservoirNotes[noteUID] = assetsdomain.ReservoirNote{
+	// 	UID:         noteUID,
+	// 	Content:     "Don't forget to close the bucket after using",
+	// 	CreatedDate: time.Now(),
+	// }
 
-	reservoir1 := assetsdomain.Reservoir{
-		UID:         uid,
-		Name:        "MyBucketReservoir",
-		WaterSource: assetsdomain.Bucket{Capacity: 100},
-		FarmUID:     farm1.UID,
-		Notes:       reservoirNotes,
-		CreatedDate: time.Now(),
-	}
+	// reservoir1 := assetsdomain.Reservoir{
+	// 	UID:         uid,
+	// 	Name:        "MyBucketReservoir",
+	// 	WaterSource: assetsdomain.Bucket{Capacity: 100},
+	// 	FarmUID:     farm1.UID,
+	// 	Notes:       reservoirNotes,
+	// 	CreatedDate: time.Now(),
+	// }
 
-	farm1.AddReservoir(&reservoir1)
+	// farm1.AddReservoir(&reservoir1)
 	// farmStorage.FarmReadMap[farmUID] = farm1
 	// reservoirStorage.ReservoirReadMap[uid] = reservoir1
 
-	uid, _ = uuid.NewV4()
-	reservoir2 := assetsdomain.Reservoir{
-		UID:         uid,
-		Name:        "MyTapReservoir",
-		WaterSource: assetsdomain.Tap{},
-		FarmUID:     farm1.UID,
-		Notes:       make(map[uuid.UUID]assetsdomain.ReservoirNote),
-		CreatedDate: time.Now(),
-	}
+	// uid, _ = uuid.NewV4()
+	// reservoir2 := assetsdomain.Reservoir{
+	// 	UID:         uid,
+	// 	Name:        "MyTapReservoir",
+	// 	WaterSource: assetsdomain.Tap{},
+	// 	FarmUID:     farm1.UID,
+	// 	Notes:       make(map[uuid.UUID]assetsdomain.ReservoirNote),
+	// 	CreatedDate: time.Now(),
+	// }
 
-	farm1.AddReservoir(&reservoir2)
+	// farm1.AddReservoir(&reservoir2)
 	// farmStorage.FarmReadMap[farmUID] = farm1
 	// reservoirStorage.ReservoirReadMap[uid] = reservoir2
 
-	uid, _ = uuid.NewV4()
+	// uid, _ = uuid.NewV4()
 
-	noteUID, _ = uuid.NewV4()
-	areaNotes := make(map[uuid.UUID]assetsdomain.AreaNote, 0)
-	areaNotes[noteUID] = assetsdomain.AreaNote{
-		UID:         noteUID,
-		Content:     "This area should only be used for seeding.",
-		CreatedDate: time.Now(),
-	}
+	// noteUID, _ = uuid.NewV4()
+	// areaNotes := make(map[uuid.UUID]assetsdomain.AreaNote, 0)
+	// areaNotes[noteUID] = assetsdomain.AreaNote{
+	// 	UID:         noteUID,
+	// 	Content:     "This area should only be used for seeding.",
+	// 	CreatedDate: time.Now(),
+	// }
 
-	areaSeeding := assetsdomain.Area{
-		UID:          uid,
-		Name:         "MySeedingArea",
-		Size:         assetsdomain.AreaSize{Value: 10, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.SquareMeter}},
-		Type:         assetsdomain.GetAreaType(assetsdomain.AreaTypeSeeding),
-		Location:     assetsdomain.GetAreaLocation(assetsdomain.AreaLocationIndoor),
-		Photo:        assetsdomain.AreaPhoto{},
-		Notes:        areaNotes,
-		ReservoirUID: reservoir2.UID,
-		FarmUID:      farm1.UID,
-	}
+	// areaSeeding := assetsdomain.Area{
+	// 	UID:          uid,
+	// 	Name:         "MySeedingArea",
+	// 	Size:         assetsdomain.AreaSize{Value: 10, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.SquareMeter}},
+	// 	Type:         assetsdomain.GetAreaType(assetsdomain.AreaTypeSeeding),
+	// 	Location:     assetsdomain.GetAreaLocation(assetsdomain.AreaLocationIndoor),
+	// 	Photo:        assetsdomain.AreaPhoto{},
+	// 	Notes:        areaNotes,
+	// 	ReservoirUID: reservoir2.UID,
+	// 	FarmUID:      farm1.UID,
+	// }
 
-	farm1.AddArea(&areaSeeding)
+	// farm1.AddArea(&areaSeeding)
 	// farmStorage.FarmReadMap[farmUID] = farm1
 	// areaStorage.AreaReadMap[uid] = areaSeeding
 
-	uid, _ = uuid.NewV4()
-	areaGrowing := assetsdomain.Area{
-		UID:          uid,
-		Name:         "MyGrowingArea",
-		Size:         assetsdomain.AreaSize{Value: 50, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.Hectare}},
-		Type:         assetsdomain.GetAreaType(assetsdomain.AreaTypeGrowing),
-		Location:     assetsdomain.GetAreaLocation(assetsdomain.AreaLocationOutdoor),
-		Photo:        assetsdomain.AreaPhoto{},
-		Notes:        make(map[uuid.UUID]assetsdomain.AreaNote),
-		ReservoirUID: reservoir1.UID,
-		FarmUID:      farm1.UID,
-	}
+	// uid, _ = uuid.NewV4()
+	// areaGrowing := assetsdomain.Area{
+	// 	UID:          uid,
+	// 	Name:         "MyGrowingArea",
+	// 	Size:         assetsdomain.AreaSize{Value: 50, Unit: assetsdomain.AreaUnit{Symbol: assetsdomain.Hectare}},
+	// 	Type:         assetsdomain.GetAreaType(assetsdomain.AreaTypeGrowing),
+	// 	Location:     assetsdomain.GetAreaLocation(assetsdomain.AreaLocationOutdoor),
+	// 	Photo:        assetsdomain.AreaPhoto{},
+	// 	Notes:        make(map[uuid.UUID]assetsdomain.AreaNote),
+	// 	ReservoirUID: reservoir1.UID,
+	// 	FarmUID:      farm1.UID,
+	// }
 
-	farm1.AddArea(&areaGrowing)
+	// farm1.AddArea(&areaGrowing)
 	// farmStorage.FarmReadMap[farmUID] = farm1
 	// areaStorage.AreaReadMap[uid] = areaGrowing
 
