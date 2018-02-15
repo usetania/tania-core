@@ -6,15 +6,15 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type MaterialReadQueryInMemory struct {
+type MaterialQueryInMemory struct {
 	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.MaterialQuery {
-	return MaterialReadQueryInMemory{Storage: s}
+func NewMaterialQueryInMemory(s *storage.MaterialReadStorage) query.MaterialQuery {
+	return MaterialQueryInMemory{Storage: s}
 }
 
-func (s MaterialReadQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
+func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 	go func() {
 		s.Storage.Lock.RLock()

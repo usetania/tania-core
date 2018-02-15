@@ -26,8 +26,6 @@ import (
 type GrowthServer struct {
 	CropEventRepo     repository.CropEventRepository
 	CropEventQuery    query.CropEventQuery
-	CropRepo          repository.CropRepository
-	CropQuery         query.CropQuery
 	CropReadRepo      repository.CropReadRepository
 	CropReadQuery     query.CropReadQuery
 	CropActivityRepo  repository.CropActivityRepository
@@ -43,7 +41,6 @@ type GrowthServer struct {
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
 func NewGrowthServer(
 	bus EventBus.Bus,
-	cropStorage *storage.CropStorage,
 	cropEventStorage *storage.CropEventStorage,
 	cropReadStorage *storage.CropReadStorage,
 	cropActivityStorage *storage.CropActivityStorage,

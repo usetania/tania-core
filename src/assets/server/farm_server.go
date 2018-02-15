@@ -52,13 +52,10 @@ type FarmServer struct {
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer(
-	farmStorage *storage.FarmStorage,
 	farmEventStorage *storage.FarmEventStorage,
 	farmReadStorage *storage.FarmReadStorage,
-	areaStorage *storage.AreaStorage,
 	areaEventStorage *storage.AreaEventStorage,
 	areaReadStorage *storage.AreaReadStorage,
-	reservoirStorage *storage.ReservoirStorage,
 	reservoirEventStorage *storage.ReservoirEventStorage,
 	reservoirReadStorage *storage.ReservoirReadStorage,
 	materialEventStorage *storage.MaterialEventStorage,
@@ -66,19 +63,15 @@ func NewFarmServer(
 	cropReadStorage *growthstorage.CropReadStorage,
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
-	farmRepo := repository.NewFarmRepositoryInMemory(farmStorage)
 	farmEventRepo := repository.NewFarmEventRepositoryInMemory(farmEventStorage)
 	farmReadRepo := repository.NewFarmReadRepositoryInMemory(farmReadStorage)
 	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
 
-	areaRepo := repository.NewAreaRepositoryInMemory(areaStorage)
 	areaEventRepo := repository.NewAreaEventRepositoryInMemory(areaEventStorage)
 	areaReadRepo := repository.NewAreaReadRepositoryInMemory(areaReadStorage)
-	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 	areaEventQuery := inmemory.NewAreaEventQueryInMemory(areaEventStorage)
 	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
 
-	reservoirRepo := repository.NewReservoirRepositoryInMemory(reservoirStorage)
 	reservoirEventRepo := repository.NewReservoirEventRepositoryInMemory(reservoirEventStorage)
 	reservoirEventQuery := inmemory.NewReservoirEventQueryInMemory(reservoirEventStorage)
 	reservoirReadRepo := repository.NewReservoirReadRepositoryInMemory(reservoirReadStorage)
@@ -97,20 +90,16 @@ func NewFarmServer(
 	reservoirService := service.ReservoirServiceInMemory{FarmReadQuery: farmReadQuery}
 
 	farmServer := FarmServer{
-		FarmRepo:            farmRepo,
 		FarmEventRepo:       farmEventRepo,
 		FarmReadRepo:        farmReadRepo,
 		FarmReadQuery:       farmReadQuery,
-		ReservoirRepo:       reservoirRepo,
 		ReservoirEventRepo:  reservoirEventRepo,
 		ReservoirEventQuery: reservoirEventQuery,
 		ReservoirReadRepo:   reservoirReadRepo,
 		ReservoirReadQuery:  reservoirReadQuery,
 		ReservoirService:    reservoirService,
-		AreaRepo:            areaRepo,
 		AreaEventRepo:       areaEventRepo,
 		AreaReadRepo:        areaReadRepo,
-		AreaQuery:           areaQuery,
 		AreaEventQuery:      areaEventQuery,
 		AreaReadQuery:       areaReadQuery,
 		AreaService:         areaService,

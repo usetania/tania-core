@@ -32,22 +32,18 @@ func main() {
 	e := echo.New()
 
 	// Initialize all In-memory storage, so it can be used in all server
-	farmStorage := assetsstorage.CreateFarmStorage()
 	farmEventStorage := assetsstorage.CreateFarmEventStorage()
 	farmReadStorage := assetsstorage.CreateFarmReadStorage()
 
-	areaStorage := assetsstorage.CreateAreaStorage()
 	areaEventStorage := assetsstorage.CreateAreaEventStorage()
 	areaReadStorage := assetsstorage.CreateAreaReadStorage()
 
-	reservoirStorage := assetsstorage.CreateReservoirStorage()
 	reservoirEventStorage := assetsstorage.CreateReservoirEventStorage()
 	reservoirReadStorage := assetsstorage.CreateReservoirReadStorage()
 
 	materialEventStorage := assetsstorage.CreateMaterialEventStorage()
 	materialReadStorage := assetsstorage.CreateMaterialReadStorage()
 
-	cropStorage := growthstorage.CreateCropStorage()
 	cropEventStorage := growthstorage.CreateCropEventStorage()
 	cropReadStorage := growthstorage.CreateCropReadStorage()
 	cropActivityStorage := growthstorage.CreateCropActivityStorage()
@@ -56,13 +52,10 @@ func main() {
 	bus := EventBus.New()
 
 	farmServer, err := server.NewFarmServer(
-		farmStorage,
 		farmEventStorage,
 		farmReadStorage,
-		areaStorage,
 		areaEventStorage,
 		areaReadStorage,
-		reservoirStorage,
 		reservoirEventStorage,
 		reservoirReadStorage,
 		materialEventStorage,
@@ -76,16 +69,15 @@ func main() {
 
 	taskServer, err := taskserver.NewTaskServer(
 		cropReadStorage,
-		areaStorage,
+		areaReadStorage,
 		materialReadStorage,
-		reservoirStorage)
+		reservoirReadStorage)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
 
 	growthServer, err := growthserver.NewGrowthServer(
 		bus,
-		cropStorage,
 		cropEventStorage,
 		cropReadStorage,
 		cropActivityStorage,
@@ -100,7 +92,7 @@ func main() {
 	if *config.Config.DemoMode {
 		initDataDemo(
 			farmServer, growthServer,
-			farmStorage, areaStorage, reservoirStorage, materialReadStorage, cropStorage,
+			farmReadStorage, areaReadStorage, reservoirReadStorage, materialReadStorage, cropReadStorage,
 		)
 	}
 
@@ -219,11 +211,11 @@ func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
 func initDataDemo(
 	farmServer *assetsserver.FarmServer,
 	growthServer *growthserver.GrowthServer,
-	farmStorage *assetsstorage.FarmStorage,
-	areaStorage *assetsstorage.AreaStorage,
-	reservoirStorage *assetsstorage.ReservoirStorage,
+	farmStorage *assetsstorage.FarmReadStorage,
+	areaStorage *assetsstorage.AreaReadStorage,
+	reservoirStorage *assetsstorage.ReservoirReadStorage,
 	materialReadStorage *assetsstorage.MaterialReadStorage,
-	cropStorage *growthstorage.CropStorage,
+	cropStorage *growthstorage.CropReadStorage,
 ) {
 	log.Info("==== DEMO DATA SEEDED ====")
 
@@ -239,7 +231,7 @@ func initDataDemo(
 		IsActive:    true,
 	}
 
-	farmStorage.FarmMap[farmUID] = farm1
+	// farmStorage.FarmReadMap[farmUID] = farm1
 
 	uid, _ := uuid.NewV4()
 
@@ -261,8 +253,8 @@ func initDataDemo(
 	}
 
 	farm1.AddReservoir(&reservoir1)
-	farmStorage.FarmMap[farmUID] = farm1
-	reservoirStorage.ReservoirMap[uid] = reservoir1
+	// farmStorage.FarmReadMap[farmUID] = farm1
+	// reservoirStorage.ReservoirReadMap[uid] = reservoir1
 
 	uid, _ = uuid.NewV4()
 	reservoir2 := assetsdomain.Reservoir{
@@ -275,8 +267,8 @@ func initDataDemo(
 	}
 
 	farm1.AddReservoir(&reservoir2)
-	farmStorage.FarmMap[farmUID] = farm1
-	reservoirStorage.ReservoirMap[uid] = reservoir2
+	// farmStorage.FarmReadMap[farmUID] = farm1
+	// reservoirStorage.ReservoirReadMap[uid] = reservoir2
 
 	uid, _ = uuid.NewV4()
 
@@ -301,8 +293,8 @@ func initDataDemo(
 	}
 
 	farm1.AddArea(&areaSeeding)
-	farmStorage.FarmMap[farmUID] = farm1
-	areaStorage.AreaMap[uid] = areaSeeding
+	// farmStorage.FarmReadMap[farmUID] = farm1
+	// areaStorage.AreaReadMap[uid] = areaSeeding
 
 	uid, _ = uuid.NewV4()
 	areaGrowing := assetsdomain.Area{
@@ -318,8 +310,8 @@ func initDataDemo(
 	}
 
 	farm1.AddArea(&areaGrowing)
-	farmStorage.FarmMap[farmUID] = farm1
-	areaStorage.AreaMap[uid] = areaGrowing
+	// farmStorage.FarmReadMap[farmUID] = farm1
+	// areaStorage.AreaReadMap[uid] = areaGrowing
 
 	// uid, _ = uuid.NewV4()
 	// inventory1 := assetsdomain.Material{

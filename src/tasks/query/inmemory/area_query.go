@@ -7,10 +7,10 @@ import (
 )
 
 type AreaQueryInMemory struct {
-	Storage *storage.AreaStorage
+	Storage *storage.AreaReadStorage
 }
 
-func NewAreaQueryInMemory(s *storage.AreaStorage) query.AreaQuery {
+func NewAreaQueryInMemory(s *storage.AreaReadStorage) query.AreaQuery {
 	return AreaQueryInMemory{Storage: s}
 }
 
@@ -22,7 +22,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		defer s.Storage.Lock.RUnlock()
 
 		area := query.TaskAreaQueryResult{}
-		for _, val := range s.Storage.AreaMap {
+		for _, val := range s.Storage.AreaReadMap {
 			if val.UID == uid {
 				area.UID = uid
 				area.Name = val.Name
