@@ -163,7 +163,7 @@ func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan quer
 	return result
 }
 
-func (s CropReadQueryInMemory) FindCropsInformation() <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -175,13 +175,15 @@ func (s CropReadQueryInMemory) FindCropsInformation() <-chan query.QueryResult {
 		plantType := make(map[string]bool)
 		totalPlantVariety := 0
 		for _, val := range s.Storage.CropReadMap {
-			for _, val2 := range val.HarvestedStorage {
-				harvestProduced += val2.ProducedGramQuantity
-			}
+			if val.FarmUID == farmUID {
+				for _, val2 := range val.HarvestedStorage {
+					harvestProduced += val2.ProducedGramQuantity
+				}
 
-			if _, ok := plantType[val.Inventory.Name]; !ok {
-				totalPlantVariety++
-				plantType[val.Inventory.Name] = true
+				if _, ok := plantType[val.Inventory.Name]; !ok {
+					totalPlantVariety++
+					plantType[val.Inventory.Name] = true
+				}
 			}
 		}
 

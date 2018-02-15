@@ -118,7 +118,7 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.POST("/crops/:id/photos", s.UploadCropPhotos)
 	g.GET("/crops/:crop_id/photos/:photo_id", s.GetCropPhotos)
 	g.GET("/crops/:id/activities", s.GetCropActivities)
-	g.GET("/crops/information", s.GetCropsInformation)
+	g.GET("/:id/crops/information", s.GetCropsInformation)
 
 }
 
@@ -905,7 +905,12 @@ func (s *GrowthServer) GetCropActivities(c echo.Context) error {
 }
 
 func (s *GrowthServer) GetCropsInformation(c echo.Context) error {
-	result := <-s.CropReadQuery.FindCropsInformation()
+	farmUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.CropReadQuery.FindCropsInformation(farmUID)
 	if result.Error != nil {
 		return Error(c, result.Error)
 	}
