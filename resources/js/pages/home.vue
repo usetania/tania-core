@@ -142,7 +142,7 @@
                   th Batches Qty
               tbody
                 tr(v-for="crop in crops")
-                  td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.variety }}
+                  td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
                   td {{ crop.container.quantity }}
             .panel-footer
               .text-center
