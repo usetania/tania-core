@@ -6,7 +6,7 @@
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label(for="type") Choose type of watering
-          select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.type" name="type")
+          select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.type" name="type" @change="typeChanged($event.target.value)")
             option(value="ALL") All
             option(value="PARTIAL") Partial
           span.help-block.text-danger(v-show="errors.has('type')") {{ errors.first('type') }}
@@ -34,6 +34,10 @@ import { StubTask } from '@/stores/stubs'
 import moment from 'moment-timezone'
 export default {
   name: "WaterTaskModal",
+  created () {
+    this.task.type = "PARTIAL"
+    this.task.crops = []
+  },
   data () {
     return {
       task: Object.assign({}, StubTask),
@@ -43,13 +47,6 @@ export default {
     ...mapActions([
       'waterCrop',
     ]),
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
-        if (result) {
-          this.create()
-        }
-      })
-    },
     create () {
       this.task.source_area_id = this.area.uid
       this.task.watering_date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD')
@@ -59,6 +56,22 @@ export default {
           .then(this.$parent.$emit('close'))
           .catch(({ data }) => this.message = data)
       }
+    },
+    typeChanged (type) {
+      if (type === 'ALL') {
+        for (var i = 0; i < this.crops.length; i++) {
+          this.task.crops.push(this.crops[i].uid)
+        }
+      } else {
+        this.task.crops = []
+      }
+    },
+    validateBeforeSubmit () {
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.create()
+        }
+      })
     },
   },
   props: ['crops', 'area'],
