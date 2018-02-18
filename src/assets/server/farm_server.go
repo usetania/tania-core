@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -632,7 +631,6 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	}
 
 	found := false
-	fmt.Println(areaRead.Notes)
 	for _, v := range areaRead.Notes {
 		if v.UID == noteUID {
 			found = true
