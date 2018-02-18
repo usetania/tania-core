@@ -361,6 +361,21 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	if reservoirRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "reservoir_id"))
+	}
+
+	noteFound := false
+	for _, v := range reservoirRead.Notes {
+		if v.UID == noteUID {
+			noteFound = true
+		}
+	}
+
+	if !noteFound {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "note_id"))
+	}
+
 	// Process //
 	eventQueryResult := <-s.ReservoirEventQuery.FindAllByID(reservoirRead.UID)
 	if eventQueryResult.Error != nil {
