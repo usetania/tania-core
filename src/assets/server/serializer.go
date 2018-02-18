@@ -78,6 +78,7 @@ type Material struct {
 	Notes          *string          `json:"notes"`
 	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
+	CreatedDate    time.Time        `json:"created_date"`
 }
 
 type Money struct {
@@ -488,6 +489,8 @@ func MapToMaterial(material domain.Material) Material {
 		m.ProducedBy = material.ProducedBy
 	}
 
+	m.CreatedDate = material.CreatedDate
+
 	return m
 }
 
@@ -566,6 +569,8 @@ func MapToMaterialFromRead(material storage.MaterialRead) Material {
 	if material.ProducedBy != nil {
 		m.ProducedBy = material.ProducedBy
 	}
+
+	m.CreatedDate = material.CreatedDate
 
 	return m
 }

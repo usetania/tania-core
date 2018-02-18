@@ -252,6 +252,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 		materialRead.Notes = e.Notes
 		materialRead.IsExpense = e.IsExpense
 		materialRead.ProducedBy = e.ProducedBy
+		materialRead.CreatedDate = e.CreatedDate
 	}
 
 	err := <-s.MaterialReadRepo.Save(&materialRead)

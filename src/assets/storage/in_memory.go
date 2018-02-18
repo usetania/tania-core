@@ -261,6 +261,7 @@ type MaterialRead struct {
 	Notes          *string          `json:"notes"`
 	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
+	CreatedDate    time.Time        `json:"created_date"`
 }
 
 type Money domain.Money

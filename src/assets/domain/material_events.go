@@ -16,6 +16,7 @@ type MaterialCreated struct {
 	Notes          *string
 	IsExpense      *bool
 	ProducedBy     *string
+	CreatedDate    time.Time
 }
 
 type MaterialNameChanged struct {

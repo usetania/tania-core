@@ -17,6 +17,7 @@ type Material struct {
 	Notes          *string          `json:"notes"`
 	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
+	CreatedDate    time.Time        `json:"created_date"`
 
 	// Events
 	Version            int
@@ -167,6 +168,7 @@ func (state *Material) Transition(event interface{}) {
 		state.Notes = e.Notes
 		state.ProducedBy = e.ProducedBy
 		state.IsExpense = e.IsExpense
+		state.CreatedDate = e.CreatedDate
 	}
 }
 
@@ -219,6 +221,7 @@ func CreateMaterial(
 		Notes:          notes,
 		ProducedBy:     producedBy,
 		IsExpense:      isExpense,
+		CreatedDate:    time.Now(),
 	}
 
 	initial.TrackChange(MaterialCreated{
@@ -231,6 +234,7 @@ func CreateMaterial(
 		Notes:          initial.Notes,
 		ProducedBy:     initial.ProducedBy,
 		IsExpense:      initial.IsExpense,
+		CreatedDate:    initial.CreatedDate,
 	})
 
 	return initial, nil
