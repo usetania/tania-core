@@ -766,17 +766,30 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 
 	// Check if area is already set in the crop
 	isAreaValid := false
+	isQuantityValid := true
 	if c.InitialArea.AreaUID == sourceAreaUID {
 		isAreaValid = true
+
+		if (c.InitialArea.CurrentQuantity - quantity) < 0 {
+			isQuantityValid = false
+		}
 	}
 	for _, v := range c.MovedArea {
 		if v.AreaUID == sourceAreaUID {
 			isAreaValid = true
+
+			if (v.CurrentQuantity - quantity) < 0 {
+				isQuantityValid = false
+			}
 		}
 	}
 
 	if !isAreaValid {
-		return CropError{Code: CropHarvestErrorSourceAreaNotFound}
+		return CropError{Code: CropDumpErrorSourceAreaNotFound}
+	}
+
+	if !isQuantityValid {
+		return CropError{Code: CropDumpErrorNotEnoughQuantity}
 	}
 
 	if quantity <= 0 {

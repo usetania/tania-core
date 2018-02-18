@@ -27,6 +27,7 @@ const (
 	CropDumpErrorInvalidSourceArea
 	CropDumpErrorSourceAreaNotFound
 	CropDumpErrorInvalidQuantity
+	CropDumpErrorNotEnoughQuantity
 
 	// Crop water errors
 	CropWaterErrorInvalidWateringDate
@@ -108,6 +109,8 @@ func (e CropError) Error() string {
 		return "Source area not found"
 	case CropDumpErrorInvalidQuantity:
 		return "Invalid quantity"
+	case CropDumpErrorNotEnoughQuantity:
+		return "Not enough current quantity to dump"
 
 	case CropWaterErrorInvalidWateringDate:
 		return "Invalid watering date"
