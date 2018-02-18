@@ -259,6 +259,14 @@ func MapToReservoirRead(s *FarmServer, reservoir domain.Reservoir) (storage.Rese
 	return resRead, nil
 }
 
+func MapToReservoirReadFromRead(reservoir storage.ReservoirRead) storage.ReservoirRead {
+	sort.Slice(reservoir.Notes, func(i, j int) bool {
+		return reservoir.Notes[i].CreatedDate.After(reservoir.Notes[j].CreatedDate)
+	})
+
+	return reservoir
+}
+
 func MapToDetailAreaFromStorage(s *FarmServer, areaRead storage.AreaRead) (DetailArea, error) {
 	detailArea := DetailArea{}
 

@@ -409,9 +409,8 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 	}
 
 	data := make(map[string][]storage.ReservoirRead)
-	data["data"] = reservoirs
-	if len(reservoirs) == 0 {
-		data["data"] = []storage.ReservoirRead{}
+	for _, v := range reservoirs {
+		data["data"] = append(data["data"], MapToReservoirReadFromRead(v))
 	}
 
 	return c.JSON(http.StatusOK, data)
@@ -439,7 +438,7 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 	}
 
 	data := make(map[string]storage.ReservoirRead)
-	data["data"] = reservoir
+	data["data"] = MapToReservoirReadFromRead(reservoir)
 
 	return c.JSON(http.StatusOK, data)
 }
