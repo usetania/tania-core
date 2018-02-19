@@ -145,7 +145,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.POST("/:id/areas", s.SaveArea)
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
 	g.DELETE("/areas/:area_id/notes/:note_id", s.RemoveAreaNotes)
-	g.GET("/:id/areas/count", s.GetAreasCount)
+	g.GET("/:id/areas/total", s.GetTotalAreas)
 	g.GET("/:id/areas", s.GetFarmAreas)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
@@ -803,7 +803,7 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	return c.File(srcPath)
 }
 
-func (s *FarmServer) GetAreasCount(c echo.Context) error {
+func (s *FarmServer) GetTotalAreas(c echo.Context) error {
 	farmUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
