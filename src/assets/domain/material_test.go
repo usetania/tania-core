@@ -11,7 +11,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mts, err1 := CreateMaterialTypeSeed(PlantTypeVegetable)
-	material1, err2 := CreateMaterial("Bayam Lu Hsieh", "12", MoneyEUR, mts, 20, MaterialUnitPackets, nil, nil, nil, nil)
+	material1, err2 := CreateMaterial("Bayam Lu Hsieh", "12", MoneyEUR, mts, 20, MaterialUnitPackets, nil, nil, nil)
 	tp, ok := material1.Type.(MaterialTypeSeed)
 
 	// Then
@@ -24,7 +24,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mta, err1 := CreateMaterialTypeAgrochemical(ChemicalTypeDisinfectant)
-	material2, err2 := CreateMaterial("Green Disinfectant", "5", MoneyEUR, mta, 5, MaterialUnitPackets, nil, nil, nil, nil)
+	material2, err2 := CreateMaterial("Green Disinfectant", "5", MoneyEUR, mta, 5, MaterialUnitPackets, nil, nil, nil)
 	ta, ok := material2.Type.(MaterialTypeAgrochemical)
 
 	// Then
@@ -37,7 +37,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mtsc, err1 := CreateMaterialTypeSeedingContainer(ContainerTypeTray)
-	material3, err2 := CreateMaterial("Soft Indoor Tray Pack", "10", MoneyEUR, mtsc, 10, MaterialUnitPieces, nil, nil, nil, nil)
+	material3, err2 := CreateMaterial("Soft Indoor Tray Pack", "10", MoneyEUR, mtsc, 10, MaterialUnitPieces, nil, nil, nil)
 	tsc, ok := material3.Type.(MaterialTypeSeedingContainer)
 
 	// Then
@@ -50,7 +50,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mtgm := MaterialTypeGrowingMedium{}
-	material4, err1 := CreateMaterial("Organic Super Soil", "2", MoneyEUR, mtgm, 5, MaterialUnitBags, nil, nil, nil, nil)
+	material4, err1 := CreateMaterial("Organic Super Soil", "2", MoneyEUR, mtgm, 5, MaterialUnitBags, nil, nil, nil)
 	tgm, ok := material4.Type.(MaterialTypeGrowingMedium)
 
 	// Then
@@ -62,7 +62,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mtl := MaterialTypeLabelAndCropSupport{}
-	material5, err1 := CreateMaterial("Clean Label", "5", MoneyEUR, mtl, 5, MaterialUnitPieces, nil, nil, nil, nil)
+	material5, err1 := CreateMaterial("Clean Label", "5", MoneyEUR, mtl, 5, MaterialUnitPieces, nil, nil, nil)
 	tl, ok := material5.Type.(MaterialTypeLabelAndCropSupport)
 
 	// Then
@@ -74,7 +74,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mtph := MaterialTypePostHarvestSupply{}
-	material6, err1 := CreateMaterial("Warm Solid Plastic", "5", MoneyEUR, mtph, 5, MaterialUnitPieces, nil, nil, nil, nil)
+	material6, err1 := CreateMaterial("Warm Solid Plastic", "5", MoneyEUR, mtph, 5, MaterialUnitPieces, nil, nil, nil)
 	tph, ok := material6.Type.(MaterialTypePostHarvestSupply)
 
 	// Then
@@ -86,7 +86,7 @@ func TestCreateInventorySeed(t *testing.T) {
 
 	// When
 	mto := MaterialTypeOther{}
-	material7, err1 := CreateMaterial("Night Lamp Bright", "3", MoneyEUR, mto, 3, MaterialUnitPieces, nil, nil, nil, nil)
+	material7, err1 := CreateMaterial("Night Lamp Bright", "3", MoneyEUR, mto, 3, MaterialUnitPieces, nil, nil, nil)
 	mo, ok := material7.Type.(MaterialTypeOther)
 
 	// Then
