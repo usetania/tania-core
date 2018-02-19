@@ -1060,6 +1060,10 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	if materialRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
 	// Process //
 	var mt domain.MaterialType
 	switch materialTypeParam {
