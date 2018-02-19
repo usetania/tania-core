@@ -68,11 +68,85 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID) <-chan quer
 		cropRead := []storage.CropRead{}
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-				cropRead = append(cropRead, val)
+
+				// Check all the current quantity
+				// It should not be zero,
+				// because if all zero then it will show up in the Archieves instead
+				initialEmpty := false
+				allMovedEmpty := []bool{}
+
+				if val.InitialArea.CurrentQuantity <= 0 {
+					initialEmpty = true
+				}
+
+				for _, v := range val.MovedArea {
+					if v.CurrentQuantity <= 0 {
+						allMovedEmpty = append(allMovedEmpty, true)
+					}
+				}
+
+				movedEmpty := false
+				for _, v := range allMovedEmpty {
+					if v {
+						movedEmpty = true
+					}
+				}
+
+				if !initialEmpty || !movedEmpty {
+					cropRead = append(cropRead, val)
+				}
 			}
 		}
 
 		result <- query.QueryResult{Result: cropRead}
+
+		close(result)
+	}()
+
+	return result
+}
+
+func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		archives := []storage.CropRead{}
+		for _, val := range s.Storage.CropReadMap {
+			if val.FarmUID == farmUID {
+
+				// A crop's current quantity which have zero value should go to archives
+				initialEmpty := true
+				allMovedEmpty := []bool{}
+
+				if val.InitialArea.CurrentQuantity > 0 {
+					initialEmpty = false
+				}
+
+				for _, v := range val.MovedArea {
+					if v.CurrentQuantity > 0 {
+						allMovedEmpty = append(allMovedEmpty, false)
+					}
+				}
+
+				if initialEmpty {
+					movedEmpty := true
+					for _, v := range allMovedEmpty {
+						if !v {
+							movedEmpty = false
+						}
+					}
+
+					if movedEmpty {
+						archives = append(archives, val)
+					}
+				}
+			}
+		}
+
+		result <- query.QueryResult{Result: archives}
 
 		close(result)
 	}()

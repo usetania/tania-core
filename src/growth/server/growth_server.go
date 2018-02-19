@@ -106,6 +106,7 @@ func (s *GrowthServer) InitSubscriber() {
 // Mount defines the GrowthServer's endpoints with its handlers
 func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/:id/crops", s.FindAllCrops)
+	g.GET("/:id/crops/archives", s.FindAllCropArchives)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
 	g.GET("/crops/:id", s.FindCropByID)
@@ -683,6 +684,47 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 
 	// Process //
 	resultQuery := <-s.CropReadQuery.FindAllCropsByFarm(farm.UID)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
+	}
+
+	crops, ok := resultQuery.Result.([]storage.CropRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data["data"] = []storage.CropRead{}
+	for _, v := range crops {
+		data["data"] = append(data["data"], v)
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) FindAllCropArchives(c echo.Context) error {
+	data := make(map[string][]storage.CropRead)
+
+	// Params //
+	farmID := c.Param("id")
+
+	// Validate //
+	farmUID, err := uuid.FromString(farmID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.FarmReadQuery.FindByID(farmUID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(query.CropFarmQueryResult)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	resultQuery := <-s.CropReadQuery.FindAllCropsArchives(farm.UID)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
