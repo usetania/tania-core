@@ -239,7 +239,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 }
 
 func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
-	materialRead := storage.MaterialRead{}
+	materialRead := &storage.MaterialRead{}
 
 	switch e := event.(type) {
 	case domain.MaterialCreated:
@@ -250,12 +250,119 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 		materialRead.Quantity = storage.MaterialQuantity(e.Quantity)
 		materialRead.ExpirationDate = e.ExpirationDate
 		materialRead.Notes = e.Notes
-		materialRead.IsExpense = e.IsExpense
 		materialRead.ProducedBy = e.ProducedBy
 		materialRead.CreatedDate = e.CreatedDate
+
+	case domain.MaterialNameChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.Name = e.Name
+
+	case domain.MaterialPriceChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.PricePerUnit = e.Price
+
+	case domain.MaterialQuantityChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.Quantity = storage.MaterialQuantity{
+			Unit:  e.Quantity.Unit,
+			Value: e.Quantity.Value,
+		}
+
+	case domain.MaterialTypeChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.Type = e.MaterialType
+
+	case domain.MaterialExpirationDateChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.ExpirationDate = &e.ExpirationDate
+
+	case domain.MaterialNotesChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.Notes = &e.Notes
+
+	case domain.MaterialProducedByChanged:
+		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		material, ok := queryResult.Result.(storage.MaterialRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		materialRead = &material
+
+		materialRead.ProducedBy = &e.ProducedBy
 	}
 
-	err := <-s.MaterialReadRepo.Save(&materialRead)
+	err := <-s.MaterialReadRepo.Save(materialRead)
 	if err != nil {
 		return err
 	}

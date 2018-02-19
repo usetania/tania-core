@@ -15,7 +15,6 @@ type Material struct {
 	Quantity       MaterialQuantity `json:"quantity"`
 	ExpirationDate *time.Time       `json:"expiration_date"`
 	Notes          *string          `json:"notes"`
-	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
 	CreatedDate    time.Time        `json:"created_date"`
 
@@ -167,8 +166,29 @@ func (state *Material) Transition(event interface{}) {
 		state.ExpirationDate = e.ExpirationDate
 		state.Notes = e.Notes
 		state.ProducedBy = e.ProducedBy
-		state.IsExpense = e.IsExpense
 		state.CreatedDate = e.CreatedDate
+
+	case MaterialNameChanged:
+		state.Name = e.Name
+
+	case MaterialTypeChanged:
+		state.Type = e.MaterialType
+
+	case MaterialPriceChanged:
+		state.PricePerUnit = e.Price
+
+	case MaterialQuantityChanged:
+		state.Quantity = e.Quantity
+
+	case MaterialExpirationDateChanged:
+		state.ExpirationDate = &e.ExpirationDate
+
+	case MaterialNotesChanged:
+		state.Notes = &e.Notes
+
+	case MaterialProducedByChanged:
+		state.ProducedBy = &e.ProducedBy
+
 	}
 }
 
@@ -181,8 +201,7 @@ func CreateMaterial(
 	quantityUnit string,
 	expirationDate *time.Time,
 	notes *string,
-	producedBy *string,
-	isExpense *bool) (*Material, error) {
+	producedBy *string) (*Material, error) {
 
 	uid, err := uuid.NewV4()
 	if err != nil {
@@ -220,7 +239,6 @@ func CreateMaterial(
 		ExpirationDate: expirationDate,
 		Notes:          notes,
 		ProducedBy:     producedBy,
-		IsExpense:      isExpense,
 		CreatedDate:    time.Now(),
 	}
 
@@ -233,7 +251,6 @@ func CreateMaterial(
 		ExpirationDate: initial.ExpirationDate,
 		Notes:          initial.Notes,
 		ProducedBy:     initial.ProducedBy,
-		IsExpense:      initial.IsExpense,
 		CreatedDate:    initial.CreatedDate,
 	})
 
@@ -249,7 +266,7 @@ func (m *Material) ChangeName(name string) error {
 		return errors.New("too few characters")
 	}
 
-	m.TrackChange(MaterialNameChanged{UID: m.UID, Name: name})
+	m.TrackChange(MaterialNameChanged{MaterialUID: m.UID, Name: name})
 
 	return nil
 }
@@ -260,7 +277,7 @@ func (m *Material) ChangePricePerUnit(price, priceUnit string) error {
 		return err
 	}
 
-	m.TrackChange(MaterialPriceChanged{UID: m.UID, Price: money})
+	m.TrackChange(MaterialPriceChanged{MaterialUID: m.UID, Price: money})
 
 	return nil
 }
@@ -277,11 +294,51 @@ func (m *Material) ChangeQuantityUnit(quantity float32, quantityUnit string, mat
 	}
 
 	m.TrackChange(MaterialQuantityChanged{
-		UID: m.UID,
+		MaterialUID: m.UID,
 		Quantity: MaterialQuantity{
 			Value: quantity,
 			Unit:  qu,
 		},
+	})
+
+	return nil
+}
+
+func (m *Material) ChangeType(materialType MaterialType) error {
+	if materialType == nil {
+		return MaterialError{MaterialErrorInvalidMaterialType}
+	}
+
+	m.TrackChange(MaterialTypeChanged{
+		MaterialUID:  m.UID,
+		MaterialType: materialType,
+	})
+
+	return nil
+}
+
+func (m *Material) ChangeExpirationDate(expDate time.Time) error {
+	m.TrackChange(MaterialExpirationDateChanged{
+		MaterialUID:    m.UID,
+		ExpirationDate: expDate,
+	})
+
+	return nil
+}
+
+func (m *Material) ChangeNotes(notes string) error {
+	m.TrackChange(MaterialNotesChanged{
+		MaterialUID: m.UID,
+		Notes:       notes,
+	})
+
+	return nil
+}
+
+func (m *Material) ChangeProducedBy(producedBy string) error {
+	m.TrackChange(MaterialProducedByChanged{
+		MaterialUID: m.UID,
+		ProducedBy:  producedBy,
 	})
 
 	return nil

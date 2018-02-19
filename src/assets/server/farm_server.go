@@ -38,6 +38,7 @@ type FarmServer struct {
 	AreaReadQuery       query.AreaReadQuery
 	AreaService         domain.AreaService
 	MaterialEventRepo   repository.MaterialEventRepository
+	MaterialEventQuery  query.MaterialEventQuery
 	MaterialReadRepo    repository.MaterialReadRepository
 	MaterialReadQuery   query.MaterialReadQuery
 	CropReadQuery       query.CropReadQuery
@@ -73,6 +74,7 @@ func NewFarmServer(
 	reservoirReadQuery := inmemory.NewReservoirReadQueryInMemory(reservoirReadStorage)
 
 	materialEventRepo := repository.NewMaterialEventRepositoryInMemory(materialEventStorage)
+	materialEventQuery := inmemory.NewMaterialEventQueryInMemory(materialEventStorage)
 	materialReadRepo := repository.NewMaterialReadRepositoryInMemory(materialReadStorage)
 	materialReadQuery := inmemory.NewMaterialReadQueryInMemory(materialReadStorage)
 
@@ -99,6 +101,7 @@ func NewFarmServer(
 		AreaReadQuery:       areaReadQuery,
 		AreaService:         areaService,
 		MaterialEventRepo:   materialEventRepo,
+		MaterialEventQuery:  materialEventQuery,
 		MaterialReadRepo:    materialReadRepo,
 		MaterialReadQuery:   materialReadQuery,
 		CropReadQuery:       cropReadQuery,
@@ -114,14 +117,25 @@ func NewFarmServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
+
 	s.EventBus.Subscribe("ReservoirCreated", s.SaveToReservoirReadModel)
 	s.EventBus.Subscribe("ReservoirNoteAdded", s.SaveToReservoirReadModel)
 	s.EventBus.Subscribe("ReservoirNoteRemoved", s.SaveToReservoirReadModel)
+
 	s.EventBus.Subscribe("AreaCreated", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaPhotoAdded", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaNoteAdded", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaNoteRemoved", s.SaveToAreaReadModel)
+
 	s.EventBus.Subscribe("MaterialCreated", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialNameChanged", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialPriceChanged", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialQuantityChanged", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialTypeChanged", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialExpirationDateChanged", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialNotesChanged", s.SaveToMaterialReadModel)
+	s.EventBus.Subscribe("MaterialProducedByChanged", s.SaveToMaterialReadModel)
+
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -131,6 +145,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/inventories/plant_types", s.GetInventoryPlantTypes)
 	g.GET("/inventories/materials/available_plant_type", s.GetAvailableMaterialPlantType)
 	g.POST("/inventories/materials/:type", s.SaveMaterial)
+	g.PUT("/inventories/materials/:type/:id", s.UpdateMaterial)
 
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
@@ -873,7 +888,6 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	quantityUnit := c.FormValue("quantity_unit")
 	expirationDate := c.FormValue("expiration_date")
 	notes := c.FormValue("notes")
-	isExpense := c.FormValue("is_expense")
 	producedBy := c.FormValue("produced_by")
 
 	// Validate //
@@ -900,12 +914,6 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	var pb *string
 	if producedBy != "" {
 		pb = &producedBy
-	}
-
-	var isExpenseBool *bool
-	if isExpense != "" && isExpense == "true" {
-		b := true
-		isExpenseBool = &b
 	}
 
 	// Process //
@@ -963,9 +971,184 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 
 	material, err := domain.CreateMaterial(
 		name, pricePerUnit, currencyCode, mt, float32(q), quantityUnit,
-		expDate, n, pb, isExpenseBool)
+		expDate, n, pb)
 	if err != nil {
 		return Error(c, err)
+	}
+
+	// Persist //
+	err = <-s.MaterialEventRepo.Save(material.UID, material.Version, material.UncommittedChanges)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Publish //
+	s.publishUncommittedEvents(material)
+
+	data["data"] = MapToMaterial(*material)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) UpdateMaterial(c echo.Context) error {
+	data := make(map[string]Material)
+
+	materialUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	materialTypeParam := c.Param("type")
+
+	plantType := c.FormValue("plant_type")
+	chemicalType := c.FormValue("chemical_type")
+	containerType := c.FormValue("container_type")
+
+	name := c.FormValue("name")
+	pricePerUnit := c.FormValue("price_per_unit")
+	currencyCode := c.FormValue("currency_code")
+	quantity := c.FormValue("quantity")
+	quantityUnit := c.FormValue("quantity_unit")
+	expirationDate := c.FormValue("expiration_date")
+	notes := c.FormValue("notes")
+	producedBy := c.FormValue("produced_by")
+
+	// Validate //
+	q := float32(0)
+	if quantity != "" {
+		q64, err := strconv.ParseFloat(quantity, 32)
+		if err != nil {
+			return Error(c, NewRequestValidationError(INVALID_OPTION, "quantity"))
+		}
+
+		q = float32(q64)
+	}
+
+	var expDate *time.Time
+	if expirationDate != "" {
+		tp, err := time.Parse("2006-01-02", expirationDate)
+		if err != nil {
+			return Error(c, NewRequestValidationError(PARSE_FAILED, "expiration_date"))
+		}
+
+		expDate = &tp
+	}
+
+	var n *string
+	if notes != "" {
+		n = &notes
+	}
+
+	var pb *string
+	if producedBy != "" {
+		pb = &producedBy
+	}
+
+	queryResult := <-s.MaterialReadQuery.FindByID(materialUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	materialRead, ok := queryResult.Result.(storage.MaterialRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Process //
+	var mt domain.MaterialType
+	switch materialTypeParam {
+	case strings.ToLower(domain.MaterialTypeSeedCode):
+		if plantType != "" {
+			pt := domain.GetPlantType(plantType)
+			if pt == (domain.PlantType{}) {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+			}
+
+			mt, err = domain.CreateMaterialTypeSeed(pt.Code)
+			if err != nil {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			}
+
+			materialRead.Type = mt
+		}
+	case strings.ToLower(domain.MaterialTypeAgrochemicalCode):
+		if chemicalType != "" {
+			ct := domain.GetChemicalType(chemicalType)
+			if ct == (domain.ChemicalType{}) {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "chemical_type"))
+			}
+
+			mt, err = domain.CreateMaterialTypeAgrochemical(ct.Code)
+			if err != nil {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			}
+
+			materialRead.Type = mt
+		}
+	case strings.ToLower(domain.MaterialTypeSeedingContainerCode):
+		if containerType != "" {
+			ct := domain.GetContainerType(containerType)
+			if ct == (domain.ContainerType{}) {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "container_type"))
+			}
+
+			mt, err = domain.CreateMaterialTypeSeedingContainer(ct.Code)
+			if err != nil {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			}
+
+			materialRead.Type = mt
+		}
+	case strings.ToLower(domain.MaterialTypePlantCode):
+		if plantType != "" {
+			pt := domain.GetPlantType(plantType)
+			if pt == (domain.PlantType{}) {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+			}
+
+			mt, err = domain.CreateMaterialTypePlant(pt.Code)
+			if err != nil {
+				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			}
+
+			materialRead.Type = mt
+		}
+	}
+
+	eventQueryResult := <-s.MaterialEventQuery.FindAllByID(materialRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.MaterialEvent)
+	material := repository.NewMaterialFromHistory(events)
+
+	if name != "" {
+		material.ChangeName(name)
+	}
+
+	if mt != nil {
+		material.ChangeType(mt)
+	}
+
+	if pricePerUnit != "" && currencyCode != "" {
+		material.ChangePricePerUnit(pricePerUnit, currencyCode)
+	}
+
+	if quantity != "" && quantityUnit != "" {
+		material.ChangeQuantityUnit(q, quantityUnit, materialRead.Type)
+	}
+
+	if expDate != nil {
+		material.ChangeExpirationDate(*expDate)
+	}
+
+	if n != nil {
+		material.ChangeNotes(*n)
+	}
+
+	if pb != nil {
+		material.ChangeProducedBy(*pb)
 	}
 
 	// Persist //

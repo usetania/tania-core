@@ -14,42 +14,41 @@ type MaterialCreated struct {
 	Quantity       MaterialQuantity
 	ExpirationDate *time.Time
 	Notes          *string
-	IsExpense      *bool
 	ProducedBy     *string
 	CreatedDate    time.Time
 }
 
 type MaterialNameChanged struct {
-	UID  uuid.UUID
-	Name string
+	MaterialUID uuid.UUID
+	Name        string
 }
 
 type MaterialPriceChanged struct {
-	UID   uuid.UUID
-	Price Money
+	MaterialUID uuid.UUID
+	Price       Money
 }
 
 type MaterialQuantityChanged struct {
-	UID      uuid.UUID
-	Quantity MaterialQuantity
+	MaterialUID uuid.UUID
+	Quantity    MaterialQuantity
+}
+
+type MaterialTypeChanged struct {
+	MaterialUID  uuid.UUID
+	MaterialType MaterialType
 }
 
 type MaterialExpirationDateChanged struct {
-	UID            uuid.UUID
+	MaterialUID    uuid.UUID
 	ExpirationDate time.Time
 }
 
 type MaterialNotesChanged struct {
-	UID   uuid.UUID
-	Notes string
+	MaterialUID uuid.UUID
+	Notes       string
 }
 
 type MaterialProducedByChanged struct {
-	UID        uuid.UUID
-	ProducedBy string
-}
-
-type MaterialIsExpenseChanged struct {
-	UID       uuid.UUID
-	IsExpense bool
+	MaterialUID uuid.UUID
+	ProducedBy  string
 }
