@@ -11,6 +11,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/query/inmemory"
 	"github.com/Tanibox/tania-server/src/tasks/repository"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -19,10 +20,12 @@ import (
 type TaskServer struct {
 	TaskRepo    repository.TaskRepository
 	TaskService domain.TaskService
+	EventBus    EventBus.Bus
 }
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
 func NewTaskServer(
+	bus EventBus.Bus,
 	cropStorage *cropstorage.CropReadStorage,
 	areaStorage *assetsstorage.AreaReadStorage,
 	materialStorage *assetsstorage.MaterialReadStorage,
@@ -45,6 +48,7 @@ func NewTaskServer(
 	return &TaskServer{
 		TaskRepo:    taskRepo,
 		TaskService: taskService,
+		EventBus:    bus,
 	}, nil
 }
 
