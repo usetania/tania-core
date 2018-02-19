@@ -19,9 +19,11 @@ import (
 
 // TaskServer ties the routes and handlers with injected dependencies
 type TaskServer struct {
-	TaskRepo    repository.TaskRepository
-	TaskService domain.TaskService
-	EventBus    EventBus.Bus
+	TaskRepo      repository.TaskRepository
+	TaskEventRepo repository.TaskEventRepository
+	TaskReadRepo  repository.TaskReadRepository
+	TaskService   domain.TaskService
+	EventBus      EventBus.Bus
 }
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
@@ -30,7 +32,12 @@ func NewTaskServer(
 	cropStorage *cropstorage.CropReadStorage,
 	areaStorage *assetsstorage.AreaReadStorage,
 	materialStorage *assetsstorage.MaterialReadStorage,
-	reservoirStorage *assetsstorage.ReservoirReadStorage) (*TaskServer, error) {
+	reservoirStorage *assetsstorage.ReservoirReadStorage,
+	taskEventStorage *storage.TaskEventStorage,
+	taskReadStorage *storage.TaskReadStorage) (*TaskServer, error) {
+
+	taskEventRepo := repository.NewTaskEventRepositoryInMemory(taskEventStorage)
+	taskReadRepo := repository.NewTaskReadRepositoryInMemory(taskReadStorage)
 
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
 	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
@@ -47,10 +54,17 @@ func NewTaskServer(
 		ReservoirQuery: reservoirQuery,
 	}
 	return &TaskServer{
-		TaskRepo:    taskRepo,
-		TaskService: taskService,
-		EventBus:    bus,
+		TaskRepo:      taskRepo,
+		TaskEventRepo: taskEventRepo,
+		TaskReadRepo:  taskReadRepo,
+		TaskService:   taskService,
+		EventBus:      bus,
 	}, nil
+}
+
+// InitSubscriber defines the mapping of which event this domain listen with their handler
+func (s *TaskServer) InitSubscriber() {
+	//s.EventBus.Subscribe("TaskCreated", s.SaveToTaskReadModel)
 }
 
 // Mount defines the TaskServer's endpoints with its handlers
@@ -160,7 +174,12 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	err = <-s.TaskRepo.Save(task)
+	/*err = <-s.TaskRepo.Save(task)
+	if err != nil {
+		return Error(c, err)
+	}
+	*/
+	err = <-s.TaskEventRepo.Save(task.UID, 0, task.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}

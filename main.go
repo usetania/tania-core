@@ -13,6 +13,7 @@ import (
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
+	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -45,6 +46,9 @@ func main() {
 	cropReadStorage := growthstorage.CreateCropReadStorage()
 	cropActivityStorage := growthstorage.CreateCropActivityStorage()
 
+	taskEventStorage := taskstorage.CreateTaskEventStorage()
+	taskReadStorage := taskstorage.CreateTaskReadStorage()
+
 	// Initialize Event Bus
 	bus := EventBus.New()
 
@@ -69,7 +73,9 @@ func main() {
 		cropReadStorage,
 		areaReadStorage,
 		materialReadStorage,
-		reservoirReadStorage)
+		reservoirReadStorage,
+		taskEventStorage,
+		taskReadStorage)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
