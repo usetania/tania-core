@@ -10,7 +10,7 @@ const state = {
 }
 
 const getters = {
-  getAllCrops: state => state.crops
+  getAllCrops: state => state.crops,
 }
 
 const actions = {
@@ -138,15 +138,6 @@ const actions = {
       FarmApi.ApiFetchActivity(cropId, ({ data }) => {
         resolve(data)
       }, error => reject(error.response))
-    })
-  },
-  getInformation ({ commit, state }) {
-    NProgress.start()
-    return new Promise((resolve, reject) => {
-      FarmApi
-        .ApiFetchCropInformation(({ data }) => {
-          resolve(data)
-        }, error => reject(error.response))
     })
   },
 }

@@ -8,13 +8,15 @@ const state = {
   farm: Object.assign({}, StubFarm),
   farms: [],
   types: [],
+  information: {},
 }
 
 const getters = {
   getCurrentFarm: state => state.farm,
   getAllFarms: state => state.farms,
   getAllFarmTypes: state => state.types,
-  haveFarms: state => state.farms.length > 0 ? true : false
+  haveFarms: state => state.farms.length > 0 ? true : false,
+  getInformation: state => state.information,
 }
 
 const actions = {
@@ -66,6 +68,16 @@ const actions = {
       }
     }, error => reject(error))
   },
+  getInformation ({ commit, state }) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiFetchCropInformation(state.farm.uid, ({ data }) => {
+          commit(types.FETCH_INFORMATION, data.data)
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
 }
 
 const mutations = {
@@ -80,7 +92,10 @@ const mutations = {
   },
   [types.SET_FARM] (state, payload) {
     state.farm = payload
-  }
+  },
+  [types.FETCH_INFORMATION] (state, payload) {
+    state.information = payload
+  },
 }
 
 export default {

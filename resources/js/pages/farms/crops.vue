@@ -1,5 +1,5 @@
 <template lang="pug">
-  .crops.col(v-if="loading === false")
+  .crops.col
     modal(v-if="showModal" @close="showModal = false")
       farmCropCreate
     .wrapper-md
@@ -41,21 +41,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      crops: 'getAllCrops'
+      crops: 'getAllCrops',
+      cropInformation: 'getInformation'
     })
-  },
-  created () {
-    this.getInformation()
-      .then(({ data }) =>  {
-        this.loading = false
-        this.cropInformation = data
-      })
-      .catch(error => console.log(error))
   },
   data () {
     return {
-      cropInformation: {},
-      loading: true,
       showModal: false,
     }
   },
@@ -67,6 +58,7 @@ export default {
   },
   mounted () {
     this.fetchCrops()
+    this.getInformation()
   },
 }
 </script>

@@ -95,8 +95,8 @@ export default {
   ApiFetchActivity: (cropid, cbSuccess, cbError) => {
     http.get('farms/crops/'+ cropid +'/activities', cbSuccess, cbError)
   },
-  ApiFetchCropInformation: (cbSuccess, cbError) => {
-    http.get('farms/crops/information', cbSuccess, cbError)
+  ApiFetchCropInformation: (farmid, cbSuccess, cbError) => {
+    http.get('farms/'+ farmid +'/crops/information', cbSuccess, cbError)
   },
   ApiFindTasksByDomainAndAssetId: (domain, assetid, cbSuccess, cbError) => {
     http.get('tasks/search?domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
