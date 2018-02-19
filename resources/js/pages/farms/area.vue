@@ -7,10 +7,10 @@
     .wrapper-md
       .pull-right
         a.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="showModal = true")
-          i.fa.fa-tasks
+          i.fas.fa-plus
           | Add Task
         a.btn.btn-sm.btn-addon.btn-info(style="cursor: pointer;" @click="showWaterTaskModal = true")
-          i.fa.fa-tint
+          i.fas.fa-tint
           | Watering
       h1.m-n.font-thin.h3.text-primary {{ area.name }}
       small.text-muted {{ getType(area.type.code).label }}
@@ -75,7 +75,7 @@
                   input.form-control.input-sm#content(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
                   span.input-group-btn
                     button.btn.btn-sm.btn-success(type="submit")
-                      i.fa.fa-send
+                      i.fas.fa-paper-plane
                   span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
             ul.list-group.list-group-lg.no-bg.auto
               li.list-group-item.row(v-for="areaNote in area.notes")
@@ -84,7 +84,7 @@
                   small.text-muted.clear.text-ellipsis {{ areaNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                 .col-sm-3
                   button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(areaNote.uid)")
-                    i.fa.fa-trash
+                    i.fas.fa-trash
 </template>
 
 <script>

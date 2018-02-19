@@ -25,11 +25,11 @@
           vue-slider(v-model="task.quantity" v-bind:min="1" v-bind:max="max_value")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
-          button.btn.btn-primary.btn-addon.pull-right(type="submit")
-            i.fa.fa-check
+          button.btn.btn-addon.btn-primary.pull-right(type="submit")
+            i.fas.fa-check
             |  OK
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
-            i.fa.fa-close
+          button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fas.fa-times
             |  Cancel
 </template>
 

@@ -4,7 +4,7 @@
       farmReservoirTaskCreate(:data="reservoir" :asset="asset")
     .wrapper-md
       a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
-        i.fa.fa-plus
+        i.fas.fa-plus
         | Add Task
       h1.m-n.font-thin.h3.text-black {{ reservoir.name }}
     .wrapper
@@ -55,7 +55,7 @@
                   input.form-control.input-sm#content(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
                   span.input-group-btn
                     button.btn.btn-sm.btn-success(type="submit")
-                      i.fa.fa-send
+                      i.fa.fa-paper-plane
                   span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
             ul.list-group.list-group-lg.no-bg.auto
               li.list-group-item.row(v-for="reservoirNote in reservoir.notes")

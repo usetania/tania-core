@@ -13,11 +13,11 @@
           textarea.form-control#description(type="text" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
-          button.btn.btn-primary.btn-addon.pull-right(type="submit")
-            i.fa.fa-check
+          button.btn.btn-addon.btn-primary.pull-right(type="submit")
+            i.fas.fa-check
             |  OK
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
-            i.fa.fa-close
+          button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
+            i.fas.fa-times
             |  Cancel
 </template>
 

@@ -1,7 +1,7 @@
 <template lang="pug">
   .areas-create
     .modal-header
-      h4.text-lt Add New Area
+      span.h4.font-bold Add New Area
     .modal-body
       p.text-muted
         | Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a
@@ -52,10 +52,8 @@
                 small.text-muted (if any)
               UploadComponent(@fileSelelected="fileSelelected")
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit")
-            i.fa.fa-long-arrow-right
-            | Save
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
 </template>
 
 <script>

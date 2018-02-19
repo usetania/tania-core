@@ -20,8 +20,8 @@
           input.form-control(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('capacity') }" v-model="reservoir.capacity" placeholder="Capacity (litre)" name="capacity")
           span.help-block.text-danger(v-show="errors.has('capacity')") {{ errors.first('capacity') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit") Save
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
 </template>
 
 

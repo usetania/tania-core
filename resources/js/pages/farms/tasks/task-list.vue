@@ -36,7 +36,7 @@
           span.label.label-nutrient(v-if="task.category == 'NUTRIENT'") NUTRIENT
         td(v-if="domain == 'CROP'")
           a.h3(href="#")
-            i.fa.fa-edit
+            i.fas.fa-edit
 </template>
 
 <script>

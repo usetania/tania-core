@@ -57,10 +57,8 @@
               input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('container_cell') }" v-model="crop.container_cell" name="container_cell")
               span.help-block.text-danger(v-show="errors.has('container_cell')") {{ errors.first('container_cell') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit")
-            i.fa.fa-long-arrow-right
-            | Save
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") Cancel
+          button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
+          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
 </template>
 
 <script>

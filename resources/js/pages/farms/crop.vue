@@ -39,7 +39,7 @@
                 .row
                   .col-sm-6
                     button.btn.btn-primary.btn-block(style="cursor: pointer;" @click="showMoveCropModal = true")
-                      i.fa.fa-exchange.m-r
+                      i.fa.fa-exchange-alt.m-r
                       | Move
                   .col-sm-6
                     button.btn.btn-default.btn-block(style="cursor: pointer;" @click="showUploadCropModal = true")
@@ -150,7 +150,7 @@
                       // HARVEST
                       .row(v-if="activity.activity_type.code == 'HARVEST'")
                         .col-xs-1.text-center
-                          i.fa.fa-cut.block.m-b.m-t
+                          i.fas.fa-cut.block.m-b.m-t
                         .col-xs-11
                           div
                             | Harvested 
