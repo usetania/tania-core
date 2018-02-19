@@ -1,6 +1,6 @@
 <template lang="pug">
   .reservoir-detail.col(v-if="loading === false")
-    modal(v-if="showModal" @close="showModal = false")
+    modal(v-if="showModal" @close="closeModal")
       farmReservoirTaskCreate(:data="reservoir" :asset="asset")
     .wrapper-md
       a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
@@ -78,8 +78,9 @@ export default {
     return {
       asset: 'Reservoir',
       loading: true,
-      reservoir: Object.assign({}, StubReservoir),
       note: Object.assign({}, StubNote),
+      reload: false,
+      reservoir: Object.assign({}, StubReservoir),
       reservoirNotes: [],
       showModal: false,
     }
@@ -103,6 +104,19 @@ export default {
       'createReservoirNotes',
       'deleteReservoirNote',
     ]),
+    closeModal () {
+      this.showModal = false
+      this.reload = !this.reload
+    },
+    create () {
+      this.note.obj_uid = this.$route.params.id
+      this.createReservoirNotes(this.note)
+        .then(data => {
+          this.reservoir = data
+          this.note.content = ''
+        })
+        .catch(({ data }) => this.message = data)
+    },
     deleteNote(note_uid) {
       this.note.obj_uid = this.$route.params.id
       this.note.uid = note_uid
@@ -119,15 +133,6 @@ export default {
           this.create()
         }
       })
-    },
-    create () {
-      this.note.obj_uid = this.$route.params.id
-      this.createReservoirNotes(this.note)
-        .then(data => {
-          this.reservoir = data
-          this.note.content = ''
-        })
-        .catch(({ data }) => this.message = data)
     },
   }
 }
