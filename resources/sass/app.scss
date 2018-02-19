@@ -4,7 +4,10 @@
 @import "vendors/angulr";
 @import "vendors/nprogress";
 
-@import "~font-awesome/scss/font-awesome";
+@import "~@fortawesome/fontawesome-free-webfonts/scss/fa-brands";
+@import "~@fortawesome/fontawesome-free-webfonts/scss/fa-regular";
+@import "~@fortawesome/fontawesome-free-webfonts/scss/fa-solid";
+@import "~@fortawesome/fontawesome-free-webfonts/scss/fontawesome";
 @import "~leaflet/dist/leaflet.css";
 @import "fonts/material-icons";
 @import "fonts/source-sans";
