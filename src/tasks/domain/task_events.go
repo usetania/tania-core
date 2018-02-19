@@ -6,6 +6,14 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+const (
+	TaskCreatedCode   = "TaskCreated"
+	TaskCompletedCode = "TaskCompleted"
+	TaskCancelledCode = "TaskCancelled"
+	TaskDueCode       = "TaskDue"
+	TaskModifiedCode  = "TaskModified"
+)
+
 type TaskCreated struct {
 	Title         string
 	UID           uuid.UUID

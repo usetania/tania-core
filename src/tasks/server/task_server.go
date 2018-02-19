@@ -64,7 +64,7 @@ func NewTaskServer(
 
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *TaskServer) InitSubscriber() {
-	//s.EventBus.Subscribe("TaskCreated", s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskCreatedCode, s.SaveToTaskReadModel)
 }
 
 // Mount defines the TaskServer's endpoints with its handlers
