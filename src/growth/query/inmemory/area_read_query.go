@@ -28,7 +28,7 @@ func (s AreaReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 				area.Name = val.Name
 				area.Size.Value = val.Size.Value
 				area.Size.Symbol = val.Size.Unit.Symbol
-				area.Type = val.Type.Code
+				area.Type = val.Type
 				area.Location = val.Location.Code
 				area.FarmUID = val.Farm.UID
 			}

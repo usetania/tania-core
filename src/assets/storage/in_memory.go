@@ -113,7 +113,7 @@ type AreaRead struct {
 	Name        string        `json:"name"`
 	Size        AreaSize      `json:"size"`
 	Location    AreaLocation  `json:"location"`
-	Type        AreaType      `json:"type"`
+	Type        string        `json:"type"`
 	Photo       AreaPhoto     `json:"photo"`
 	CreatedDate time.Time     `json:"created_date"`
 	Notes       []AreaNote    `json:"notes"`

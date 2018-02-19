@@ -183,7 +183,7 @@ func MapToAreaList(s *FarmServer, areas []storage.AreaRead) ([]AreaList, error) 
 		areaList[i] = AreaList{
 			UID:            area.UID,
 			Name:           area.Name,
-			Type:           area.Type.Code,
+			Type:           area.Type,
 			Size:           area.Size,
 			TotalCropBatch: cropCount.TotalCropBatch,
 			PlantQuantity:  cropCount.PlantQuantity,
@@ -324,7 +324,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 
 	areaRead.UID = area.UID
 	areaRead.Name = area.Name
-	areaRead.Type = storage.AreaType(area.Type)
+	areaRead.Type = area.Type.Code
 	areaRead.Location = storage.AreaLocation(area.Location)
 	areaRead.Photo = storage.AreaPhoto(area.Photo)
 	areaRead.Size = storage.AreaSize(area.Size)

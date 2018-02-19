@@ -150,7 +150,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		areaRead.UID = e.UID
 		areaRead.Name = e.Name
-		areaRead.Type = storage.AreaType(e.Type)
+		areaRead.Type = e.Type.Code
 		areaRead.Location = storage.AreaLocation(e.Location)
 		areaRead.Size = storage.AreaSize(e.Size)
 		areaRead.CreatedDate = e.CreatedDate
