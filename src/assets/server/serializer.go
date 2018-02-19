@@ -554,11 +554,6 @@ func MapToMaterialFromRead(material storage.MaterialRead) Material {
 		m.Notes = material.Notes
 	}
 
-	m.IsExpense = nil
-	if material.IsExpense != nil {
-		m.IsExpense = material.IsExpense
-	}
-
 	m.ProducedBy = nil
 	if material.ProducedBy != nil {
 		m.ProducedBy = material.ProducedBy
