@@ -27,6 +27,7 @@ type CropReadQuery interface {
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 	FindAllCropsArchives(farmUID uuid.UUID) <-chan QueryResult
 	FindCropsInformation(farmUID uuid.UUID) <-chan QueryResult
+	CountTotalBatch(farmUID uuid.UUID) <-chan QueryResult
 }
 
 type CropActivityQuery interface {
@@ -110,4 +111,9 @@ type CropInformationQueryResult struct {
 type CropFarmQueryResult struct {
 	UID  uuid.UUID
 	Name string
+}
+
+type CountTotalBatchQueryResult struct {
+	VarietyName string `json:"variety_name"`
+	TotalBatch  int    `json:"total_batch"`
 }

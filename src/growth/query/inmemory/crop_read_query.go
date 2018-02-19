@@ -271,3 +271,35 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 
 	return result
 }
+
+func (s CropReadQueryInMemory) CountTotalBatch(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		varQty := []query.CountTotalBatchQueryResult{}
+		varietyName := make(map[string]int)
+		for _, val := range s.Storage.CropReadMap {
+			if val.FarmUID == farmUID {
+				if _, ok := varietyName[val.Inventory.Name]; !ok {
+					varietyName[val.Inventory.Name]++
+				}
+			}
+		}
+
+		for i, v := range varietyName {
+			varQty = append(varQty, query.CountTotalBatchQueryResult{
+				VarietyName: i,
+				TotalBatch:  v,
+			})
+		}
+
+		result <- query.QueryResult{Result: varQty}
+
+		close(result)
+	}()
+
+	return result
+}

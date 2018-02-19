@@ -107,6 +107,7 @@ func (s *GrowthServer) InitSubscriber() {
 func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/:id/crops", s.FindAllCrops)
 	g.GET("/:id/crops/archives", s.FindAllCropArchives)
+	g.GET("/:id/crops/total_batch", s.GetBatchQuantity)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
 	g.GET("/crops/:id", s.FindCropByID)
@@ -782,6 +783,50 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 			return Error(c, err)
 		}
 		data["data"] = append(data["data"], cl)
+	}
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) GetBatchQuantity(c echo.Context) error {
+	// Params //
+	farmID := c.Param("id")
+
+	// Validate //
+	farmUID, err := uuid.FromString(farmID)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	result := <-s.FarmReadQuery.FindByID(farmUID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	farm, ok := result.Result.(query.CropFarmQueryResult)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if farm.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	// Process //
+	resultQuery := <-s.CropReadQuery.CountTotalBatch(farm.UID)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
+	}
+
+	varQty, ok := resultQuery.Result.([]query.CountTotalBatchQueryResult)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string][]query.CountTotalBatchQueryResult)
+	data["data"] = []query.CountTotalBatchQueryResult{}
+	for _, v := range varQty {
+		data["data"] = append(data["data"], v)
 	}
 
 	return c.JSON(http.StatusOK, data)
