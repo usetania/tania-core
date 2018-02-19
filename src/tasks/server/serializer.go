@@ -35,19 +35,25 @@ func (st SimpleTask) MarshalJSON() ([]byte, error) {
 		Category      string            `json:"category"`
 		IsDue         bool              `json:"is_due"`
 		AssetID       *uuid.UUID        `json:"asset_id"`
+
+		// Events
+		Version            int           `json:"int"`
+		UncommittedChanges []interface{} `json:"events"`
 	}{
-		Title:         st.Title,
-		UID:           st.UID,
-		Description:   st.Description,
-		CreatedDate:   st.CreatedDate,
-		DueDate:       st.DueDate,
-		CompletedDate: st.CompletedDate,
-		Priority:      st.Priority,
-		Status:        st.Status,
-		Domain:        st.DomainDetails.Code(),
-		DomainDetails: st.DomainDetails,
-		Category:      st.Category,
-		IsDue:         st.IsDue,
-		AssetID:       st.AssetID,
+		Title:              st.Title,
+		UID:                st.UID,
+		Description:        st.Description,
+		CreatedDate:        st.CreatedDate,
+		DueDate:            st.DueDate,
+		CompletedDate:      st.CompletedDate,
+		Priority:           st.Priority,
+		Status:             st.Status,
+		Domain:             st.DomainDetails.Code(),
+		DomainDetails:      st.DomainDetails,
+		Category:           st.Category,
+		IsDue:              st.IsDue,
+		AssetID:            st.AssetID,
+		Version:            st.Version,
+		UncommittedChanges: st.UncommittedChanges,
 	})
 }

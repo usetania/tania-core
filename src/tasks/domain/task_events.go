@@ -1,0 +1,41 @@
+package domain
+
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
+
+type TaskCreated struct {
+	Title         string
+	UID           uuid.UUID
+	Description   string
+	CreatedDate   time.Time
+	DueDate       *time.Time
+	Priority      string
+	Status        string
+	Domain        string
+	DomainDetails TaskDomain
+	Category      string
+	IsDue         bool
+	AssetID       *uuid.UUID
+}
+
+type TaskCompleted struct {
+	UID           uuid.UUID
+	AssetID       *uuid.UUID
+	Domain        string
+	Category      string
+	DomainDetails TaskDomain
+	CompletedDate time.Time
+}
+
+type TaskCancelled struct {
+	UID           uuid.UUID
+	AssetID       *uuid.UUID
+	Domain        string
+	Category      string
+	DomainDetails TaskDomain
+	CreatedDate   time.Time
+	CancelledDate time.Time
+}

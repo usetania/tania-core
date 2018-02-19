@@ -6,6 +6,7 @@ import (
 
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	cropstorage "github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
 	"github.com/Tanibox/tania-server/src/tasks/query/inmemory"
@@ -59,7 +60,6 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	g.GET("", s.FindAllTask)
 	g.GET("/search", s.FindFilteredTasks)
 	g.GET("/:id", s.FindTaskByID)
-	//g.PUT("/:id/start", s.StartTask)
 	g.PUT("/:id", s.UpdateTask)
 	g.PUT("/:id/cancel", s.CancelTask)
 	g.PUT("/:id/complete", s.CompleteTask)
@@ -160,12 +160,12 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	err = <-s.TaskRepo.Save(&task)
+	err = <-s.TaskRepo.Save(task)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	data["data"] = task
+	data["data"] = *task
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -464,4 +464,16 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	data["data"] = updated_task
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
+	switch e := entity.(type) {
+	case *domain.Task:
+		for _, v := range e.UncommittedChanges {
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
+		}
+	}
+
+	return nil
 }

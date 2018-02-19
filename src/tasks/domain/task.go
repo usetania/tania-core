@@ -19,56 +19,62 @@ type ServiceResult struct {
 }
 
 type Task struct {
-	UID           uuid.UUID  `json:"uid"`
-	Title         string     `json:"title"`
-	Description   string     `json:"description"`
-	CreatedDate   time.Time  `json:"created_date"`
-	DueDate       *time.Time `json:"due_date,omitempty"`
-	CompletedDate *time.Time `json:"completed_date"`
-	Priority      string     `json:"priority"`
-	Status        string     `json:"status"`
-	Domain        string     `json:"domain"`
-	DomainDetails TaskDomain `json:"domain_details"`
-	Category      string     `json:"category"`
-	IsDue         bool       `json:"is_due"`
-	AssetID       *uuid.UUID `json:"asset_id"`
+	UID           uuid.UUID
+	Title         string
+	Description   string
+	CreatedDate   time.Time
+	DueDate       *time.Time
+	CompletedDate *time.Time
+	Priority      string
+	Status        string
+	Domain        string
+	DomainDetails TaskDomain
+	Category      string
+	IsDue         bool
+	AssetID       *uuid.UUID
+
+	// Events
+	Version            int
+	UncommittedChanges []interface{}
 }
 
 // CreateTask
-func CreateTask(taskservice TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (Task, error) {
+func CreateTask(taskservice TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (*Task, error) {
 	// add validation
 
 	err := validateTaskTitle(title)
 	if err != nil {
-		return Task{}, err
+		return &Task{}, err
 	}
 
 	err = validateTaskDueDate(duedate)
 	if err != nil {
-		return Task{}, err
+		return &Task{}, err
 	}
 
 	err = validateTaskPriority(priority)
 	if err != nil {
-		return Task{}, err
+		return &Task{}, err
 	}
 
 	err = validateTaskCategory(taskcategory)
 	if err != nil {
-		return Task{}, err
+		return &Task{}, err
 	}
 
 	err = validateAssetID(taskservice, assetid, taskdomain.Code())
 	if err != nil {
-		return Task{}, err
+		return &Task{}, err
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return Task{}, err
+		return &Task{}, err
 	}
 
-	return Task{
+	initial := &Task{}
+
+	initial.TrackChange(TaskCreated{
 		Title:         title,
 		UID:           uid,
 		Description:   description,
@@ -81,7 +87,9 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 		Category:      taskcategory,
 		IsDue:         false,
 		AssetID:       assetid,
-	}, nil
+	})
+
+	return initial, nil
 }
 
 // ChangeTitle
@@ -184,6 +192,31 @@ func (t *Task) SetTaskAsDue() {
 func (t *Task) SetTaskCompletedDate() {
 	currenttime := time.Now()
 	t.CompletedDate = &currenttime
+}
+
+// Event Tracking
+
+func (state *Task) TrackChange(event interface{}) {
+	state.UncommittedChanges = append(state.UncommittedChanges, event)
+	state.Transition(event)
+}
+
+func (state *Task) Transition(event interface{}) {
+	switch e := event.(type) {
+	case TaskCreated:
+		state.Title = e.Title
+		state.UID = e.UID
+		state.Description = e.Description
+		state.CreatedDate = e.CreatedDate
+		state.DueDate = e.DueDate
+		state.Priority = e.Priority
+		state.Status = e.Status
+		state.Domain = e.Domain
+		state.DomainDetails = e.DomainDetails
+		state.Category = e.Category
+		state.IsDue = e.IsDue
+		state.AssetID = e.AssetID
+	}
 }
 
 // Validation
