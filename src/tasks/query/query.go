@@ -25,6 +25,16 @@ type TaskQuery interface {
 	QueryTasksWithFilter(params map[string]string) <-chan QueryResult
 }
 
+type TaskEventQuery interface {
+	FindAllByTaskID(uid uuid.UUID) <-chan QueryResult
+}
+
+type TaskReadQuery interface {
+	FindAll() <-chan QueryResult
+	FindByID(string) <-chan QueryResult
+	QueryTasksWithFilter(params map[string]string) <-chan QueryResult
+}
+
 type ReservoirQuery interface {
 	FindReservoirByID(reservoirUID uuid.UUID) <-chan QueryResult
 }
