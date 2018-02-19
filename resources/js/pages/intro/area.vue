@@ -25,7 +25,7 @@
                     label#label-size Size
                     .row
                       .col-xs-6
-                        input#size.form-control(type="text" v-validate="'required|numeric'" :class="{'input': true, 'text-danger': errors.has('size') }" v-model="area.size" name="size")
+                        input#size.form-control(type="text" v-validate="'required|decimal'" :class="{'input': true, 'text-danger': errors.has('size') }" v-model="area.size" name="size")
                         span.help-block.text-danger(v-show="errors.has('size')") {{ errors.first('size') }}
                       .col-xs-6
                         select#size_unit.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('size_unit') }" v-model="area.size_unit" name="size_unit")

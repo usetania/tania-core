@@ -37,7 +37,7 @@
           .col-xs-6
             label.control-label(for="quantity") Quantity
             .input-group.m-b
-              input.form-control#quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
+              input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
               span.input-group-addon Pieces
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
           .col-xs-6

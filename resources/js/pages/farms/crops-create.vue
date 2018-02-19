@@ -42,7 +42,7 @@
           .col-xs-6
             .form-group
               label.control-label Container Quantity
-              input.form-control#container_quantity(type="text" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('container_quantity') }" v-model="crop.container_quantity" name="container_quantity")
+              input.form-control#container_quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('container_quantity') }" v-model="crop.container_quantity" name="container_quantity")
               span.help-block.text-danger(v-show="errors.has('container_quantity')") {{ errors.first('container_quantity') }}
           .col-xs-6
             .form-group
@@ -54,7 +54,7 @@
         .row(v-if="crop.container_type == 'TRAY'")
           .col-xs-6.pull-right
             .form-group
-              input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|numeric|min:0'" :class="{'input': true, 'text-danger': errors.has('container_cell') }" v-model="crop.container_cell" name="container_cell")
+              input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('container_cell') }" v-model="crop.container_cell" name="container_cell")
               span.help-block.text-danger(v-show="errors.has('container_cell')") {{ errors.first('container_cell') }}
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
