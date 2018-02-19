@@ -145,6 +145,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.POST("/:id/areas", s.SaveArea)
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
 	g.DELETE("/areas/:area_id/notes/:note_id", s.RemoveAreaNotes)
+	g.GET("/:id/areas/count", s.GetAreasCount)
 	g.GET("/:id/areas", s.GetFarmAreas)
 	g.GET("/:farm_id/areas/:area_id", s.GetAreasByID)
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
@@ -800,6 +801,28 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	srcPath := stringhelper.Join(*config.Config.UploadPathArea, "/", areaRead.Photo.Filename)
 
 	return c.File(srcPath)
+}
+
+func (s *FarmServer) GetAreasCount(c echo.Context) error {
+	farmUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	queryResult := <-s.AreaReadQuery.CountAreas(farmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	totalArea, ok := queryResult.Result.(int)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
+
+	data := make(map[string]int)
+	data["data"] = totalArea
+
+	return c.JSON(http.StatusOK, data)
 }
 
 func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {

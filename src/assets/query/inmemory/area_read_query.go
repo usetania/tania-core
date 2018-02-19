@@ -101,3 +101,25 @@ func (s AreaReadQueryInMemory) FindAreasByReservoirID(reservoirUID uuid.UUID) <-
 
 	return result
 }
+
+func (s AreaReadQueryInMemory) CountAreas(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		total := 0
+		for _, val := range s.Storage.AreaReadMap {
+			if val.Farm.UID == farmUID {
+				total++
+			}
+		}
+
+		result <- query.QueryResult{Result: total}
+
+		close(result)
+	}()
+
+	return result
+}
