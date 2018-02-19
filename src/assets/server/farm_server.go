@@ -1014,14 +1014,20 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 	producedBy := c.FormValue("produced_by")
 
 	// Validate //
-	q := float32(0)
-	if quantity != "" {
-		q64, err := strconv.ParseFloat(quantity, 32)
-		if err != nil {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "quantity"))
-		}
+	if pricePerUnit != "" && currencyCode == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "currency_code"))
+	}
 
-		q = float32(q64)
+	if currencyCode != "" && pricePerUnit == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "price_per_unit"))
+	}
+
+	if quantity != "" && quantityUnit == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "quantity_unit"))
+	}
+
+	if quantityUnit != "" && quantity == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "quantity"))
 	}
 
 	var expDate *time.Time
@@ -1136,7 +1142,12 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 	}
 
 	if quantity != "" && quantityUnit != "" {
-		material.ChangeQuantityUnit(q, quantityUnit, materialRead.Type)
+		q, err := strconv.ParseFloat(quantity, 32)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		material.ChangeQuantityUnit(float32(q), quantityUnit, materialRead.Type)
 	}
 
 	if expDate != nil {

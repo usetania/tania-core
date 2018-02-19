@@ -76,7 +76,6 @@ type Material struct {
 	Quantity       MaterialQuantity `json:"quantity"`
 	ExpirationDate *time.Time       `json:"expiration_date,omitempty"`
 	Notes          *string          `json:"notes"`
-	IsExpense      *bool            `json:"is_expense"`
 	ProducedBy     *string          `json:"produced_by"`
 	CreatedDate    time.Time        `json:"created_date"`
 }
