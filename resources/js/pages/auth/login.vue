@@ -18,7 +18,7 @@
                 span.help-block.text-danger(v-show="errors.has('password')") {{ errors.first('password') }}
               .form-group.text-center.m-t
                   button.btn.btn-addon.btn-primary(type="submit")
-                    i.fa.fa-long-arrow-right
+                    i.fas.fa-long-arrow-alt-right
                     | Login
 </template>
 
