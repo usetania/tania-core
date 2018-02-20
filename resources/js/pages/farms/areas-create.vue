@@ -43,7 +43,7 @@
             .form-group
               label Select Reservoir
               select.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('reservoir') }" v-model="area.reservoir_id" name="reservoir")
-                option Please select reservoir
+                option(value = "") Please select reservoir
                 option(v-for="reservoir in reservoirs" :value="reservoir.uid") {{ reservoir.name }}
               span.help-block.text-danger(v-show="errors.has('reservoir')") {{ errors.first('reservoir') }}
           .col-xs-6
@@ -106,7 +106,12 @@ export default {
     fileSelelected (file) {
       this.area.photo = file
     }
-  }
+  },
+  mounted () {
+    this.area.size_unit = this.options.size_units[0].key
+    this.area.location = this.options.locations[0].key
+    this.area.type = this.options.types[0].key
+  },
 }
 </script>
 
