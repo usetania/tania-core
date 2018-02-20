@@ -76,6 +76,13 @@ export default {
   components: {
     UploadComponent
   },
+  computed: {
+    ...mapGetters({
+      reservoir: 'introGetReservoir',
+      currentArea: 'introGetArea',
+      currentFarm: 'introGetFarm',
+    })
+  },
   data () {
     return {
       message: Object.assign({}, StubMessage),
@@ -87,29 +94,6 @@ export default {
       }
     }
   },
-  computed: {
-    ...mapGetters({
-      reservoir: 'introGetReservoir',
-      currentArea: 'introGetArea',
-      currentFarm: 'introGetFarm',
-    })
-  },
-
-  mounted () {
-    if (this.currentArea) {
-      this.area = Object.assign({}, this.currentArea)
-    }
-
-    if (this.reservoir.name === '') {
-      this.$router.push({ name: 'IntroReservoirCreate' })
-    }
-
-    if (this.currentFarm.name === '') {
-      this.$router.push({ name: 'IntroFarmCreate' })
-    }
-
-  },
-
   methods: {
     ...mapActions([
       'introSetArea',
@@ -152,7 +136,24 @@ export default {
     fileSelelected (file) {
       this.area.photo = file
     }
-  }
+  },
+  mounted () {
+    if (this.currentArea) {
+      this.area = Object.assign({}, this.currentArea)
+      this.area.size_unit = this.options.size_units[0].key
+      this.area.location = this.options.locations[0].key
+      this.area.type = this.options.types[0].key
+      this.area.reservoir_id = this.reservoir.uid ? this.reservoir.uid : this.reservoir.name
+    }
+
+    if (this.reservoir.name === '') {
+      this.$router.push({ name: 'IntroReservoirCreate' })
+    }
+
+    if (this.currentFarm.name === '') {
+      this.$router.push({ name: 'IntroFarmCreate' })
+    }
+  },
 }
 </script>
 
