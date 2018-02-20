@@ -13,7 +13,7 @@
           i.fas.fa-tint
           | Watering
       h1.m-n.font-thin.h3.text-primary {{ area.name }}
-      small.text-muted {{ getType(area.type.code).label }}
+      small.text-muted {{ getType(area.type).label }}
     .wrapper-md
       .row
         .col-md-4.col-xs-12

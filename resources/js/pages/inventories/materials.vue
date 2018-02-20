@@ -13,14 +13,16 @@
         table.table.m-b
           thead
             tr
-              th(style="width: 15%") Category
-              th(style="width: 20%") Name
-              th(style="width: 10%") Price
-              th(style="width: 15%") Produced By
-              th(style="width: 12%") Quantity
+              th Category
+              th Name
+              th Price
+              th Produced By
+              th Quantity
               th Additional Notes
               th 
           tbody
+            tr(v-if="materials.length == 0")
+              td(colspan="7") No Materials Available
             tr(v-for="material in materials")
               td {{ getType(material.type.code) }}
               td {{ material.name }}
