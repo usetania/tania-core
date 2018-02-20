@@ -33,6 +33,7 @@
           label(for="category") 
             | Task Category
           select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
+            option(value="") Please select category
             option(v-if="asset == 'Area'" value="AREA") Area
             option(v-if="asset == 'Reservoir'" value="RESERVOIR") Reservoir
             option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}

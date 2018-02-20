@@ -26,9 +26,6 @@
                   small.text-muted Used In
                   .h4.text-lt(v-for="area in reservoir.installed_to_areas")
                     span.areatag {{ area.name }}
-                .col-md-6
-                  small.text-muted Device Connected
-                  .h4.text-lt 3
               .row.m-b
                 .col-md-6
                   small.text-muted Created On

@@ -37,9 +37,6 @@
                 span.col-sm-7.text-muted.point Crop Variety
                 span {{ area.total_variety }}
               .list-group-item
-                span.col-sm-7.text-muted.point Connected Device
-                span 5
-              .list-group-item
                 span.col-sm-7.text-muted.point Reservoir
                 span {{ area.reservoir.name }}
         .col-md-8

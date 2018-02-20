@@ -17,7 +17,7 @@
               i
         td
           a(href="#")
-            div {{ task.title }}
+            div {{ task.title }} : {{ task.description }}
             small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
             span.status.status-urgent(v-if="task.priority == 'URGENT'") URGENT
             span.status.status-normal(v-if="task.priority == 'NORMAL'") NORMAL
