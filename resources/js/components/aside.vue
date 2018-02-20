@@ -35,16 +35,6 @@
                 ul.nav.nav-sub.dk
                   li <router-link :to="{ name: 'InventoriesMaterials'}"><span>Material</span></router-link>
                   li <a><span>Tools</span></a>
-            aside-item-component
-              a
-                i.fa.fa-money
-                span Finance
-            li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
-              span Add-Ons
-            aside-item-component
-              a
-                i.fa.fa-gamepad
-                span Devices
             li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
