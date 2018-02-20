@@ -146,6 +146,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/inventories/materials/available_plant_type", s.GetAvailableMaterialPlantType)
 	g.POST("/inventories/materials/:type", s.SaveMaterial)
 	g.PUT("/inventories/materials/:type/:id", s.UpdateMaterial)
+	g.GET("/inventories/materials/:id", s.GetMaterialByID)
 
 	g.POST("", s.SaveFarm)
 	g.GET("", s.FindAllFarm)
@@ -1176,6 +1177,29 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 	s.publishUncommittedEvents(material)
 
 	data["data"] = MapToMaterial(*material)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetMaterialByID(c echo.Context) error {
+	materialUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	queryResult := <-s.MaterialReadQuery.FindByID(materialUID)
+	if queryResult.Error != nil {
+		return Error(c, err)
+	}
+
+	materialRead := queryResult.Result.(storage.MaterialRead)
+
+	if materialRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	data := make(map[string]Material)
+	data["data"] = MapToMaterialFromRead(materialRead)
 
 	return c.JSON(http.StatusOK, data)
 }
