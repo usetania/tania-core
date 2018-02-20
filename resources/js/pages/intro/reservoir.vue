@@ -26,10 +26,10 @@
                 span.help-block.text-danger(v-show="errors.has('capacity')") {{ errors.first('capacity') }}
               .form-group
                 button.btn.btn-addon.btn-primary.pull-right(type="submit")
-                  i.fa.fa-long-arrow-right
+                  i.fas.fa-long-arrow-alt-right
                   | Continue
                 router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroFarmCreate'}")
-                  i.fa.fa-long-arrow-left
+                  i.fas.fa-long-arrow-alt-left
                   | Back
 </template>
 
@@ -47,7 +47,6 @@ export default {
       options: Array.from(ReservoirTypes)
     }
   },
-
   computed: {
     ...mapGetters({
       currentReservoir: 'introGetReservoir',

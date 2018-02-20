@@ -59,10 +59,10 @@
                     UploadComponent(@fileSelelected="fileSelelected")
               .form-group
                 button.btn.btn-addon.btn-success.pull-right(type="submit")
-                  i.fa.fa-long-arrow-right
+                  i.fas.fa-long-arrow-alt-right
                   | Finish Setup
                 router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroReservoirCreate'}")
-                  i.fa.fa-long-arrow-left
+                  i.fas.fa-long-arrow-alt-left
                   | Back
 </template>
 
