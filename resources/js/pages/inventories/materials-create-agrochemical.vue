@@ -13,35 +13,22 @@
                 option(v-for="chemical in options.chemicalTypes" v-bind:value="chemical.key") {{ chemical.label }}
               span.help-block.text-danger(v-show="errors.has('chemical_type')") {{ errors.first('chemical_type') }}
           .col-xs-6
-            label(for="quantity") Quantity
-              .row
-                .col-xs-6
-                  select.form-control#quantity_unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity_unit') }" v-model="inventory.quantity_unit" name="quantity_unit")
-                    option(v-for="unit in options.quantityUnits" v-bind:value="unit.key") {{ unit.label }}
-                  span.help-block.text-danger(v-show="errors.has('quantity_unit')") {{ errors.first('quantity_unit') }}
-                .col-xs-6
-                  input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
-                  span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
-      .form-group
-        .row
-          .col-xs-6
             label(for="price_per_unit") Price per Unit
             .input-group.m-b
               span.input-group-addon &euro;
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
-            span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
+              span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
+      .form-group
+        .row
           .col-xs-6
-            label(for="is_expense") Add this Expense?
-            .radio
-              label.i-checks.i-checks-sm
-                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="true")
-                i
-                | Yes
-              label.i-checks.i-checks-sm
-                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="false")
-                i
-                | No
-            span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
+            label(for="quantity") Quantity
+            input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
+            span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
+          .col-xs-6
+            label(for="quantity_unit") Unit
+            select.form-control#quantity_unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity_unit') }" v-model="inventory.quantity_unit" name="quantity_unit")
+              option(v-for="unit in options.quantityUnits" v-bind:value="unit.key") {{ unit.label }}
+            span.help-block.text-danger(v-show="errors.has('quantity_unit')") {{ errors.first('quantity_unit') }}
       .form-group
         .row
           .col-xs-6
@@ -58,7 +45,7 @@
             span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
       .form-group
         label.control-label(for="notes") Additional Notes
-        textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
+        textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
         span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")

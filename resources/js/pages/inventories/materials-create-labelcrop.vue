@@ -14,29 +14,15 @@
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
             span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
           .col-xs-6
-            label(for="is_expense") Add this Expense?
-            .radio
-              label.i-checks.i-checks-sm
-                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="true")
-                i
-                | Yes
-              label.i-checks.i-checks-sm
-                input#is_expense(type="radio" name="is_expense" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('is_expense') }" v-model="inventory.is_expense" value="false")
-                i
-                | No
-            span.help-block.text-danger(v-show="errors.has('is_expense')") {{ errors.first('is_expense') }}
-      .form-group
-        .row
-          .col-xs-6
             label.control-label(for="quantity") Quantity
             .input-group.m-b
               input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
               span.input-group-addon Pieces
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
-          .col-xs-6
-            label.control-label(for="notes") Additional Notes
-            textarea.form-control#notes(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
-            span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
+      .form-group
+          label.control-label(for="notes") Additional Notes
+          textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
+          span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")
           i.fa.fa-plus
