@@ -14,10 +14,7 @@
 .glide/
 
 package-lock.json
-public/index.html
-public/report.html
-public/mix-manifest.json
-public/service-worker.js
+public/
 node_modules/
 cypress/
 vendor/
