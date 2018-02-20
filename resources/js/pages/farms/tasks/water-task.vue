@@ -49,7 +49,7 @@ export default {
     ]),
     create () {
       this.task.source_area_id = this.area.uid
-      this.task.watering_date = moment().tz('Asia/Jakarta').format('DD-MM-YYYY HH:ss')
+      this.task.watering_date = moment().tz('Asia/Jakarta').format('YYYY-MM-DD HH:ss')
       for (var i = 0; i < this.task.crops.length; i++) {
         this.task.obj_uid = this.task.crops[i]
         this.waterCrop(this.task)
