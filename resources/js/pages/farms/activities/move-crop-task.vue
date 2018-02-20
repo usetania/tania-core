@@ -66,7 +66,6 @@ export default {
       task: Object.assign({}, StubTask),
     }
   },
-  props: ['crop'],
   mounted () {
     this.fetchAreas()
   },
@@ -98,6 +97,7 @@ export default {
         }
       }
     },
-  }
+  },
+  props: ['crop'],
 }
 </script>

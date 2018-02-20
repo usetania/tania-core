@@ -19,8 +19,8 @@
               label(for="harvest_type")
                 | Choose type of harvesting
               select.form-control#harvest_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('harvest_type') }" v-model="task.harvest_type" name="harvest_type")
-                option(value="ALL") All
                 option(value="PARTIAL") Partial
+                option(value="ALL") All
               span.help-block.text-danger(v-show="errors.has('harvest_type')") {{ errors.first('harvest_type') }}
         .row
           .col-xs-6
@@ -63,11 +63,10 @@ export default {
       task: Object.assign({}, StubTask),
     }
   },
-  props: ['crop'],
   mounted () {
     this.fetchAreas()
-  },
-  created () {
+    this.task.harvest_type = "PARTIAL"
+    this.task.produced_unit = "Gr"
   },
   methods: {
     ...mapActions([
@@ -87,6 +86,7 @@ export default {
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
-  }
+  },
+  props: ['crop'],
 }
 </script>

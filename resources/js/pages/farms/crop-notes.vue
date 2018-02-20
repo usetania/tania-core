@@ -53,7 +53,7 @@ import Modal from '@/components/modal'
 export default {
   name: 'FarmCropNotes',
   components: {
-    cropTask: () => import('./tasks/crop-task.vue'),
+    cropTask: () => import('./tasks/crop-task-create.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },

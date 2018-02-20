@@ -184,7 +184,6 @@ export default {
     dumpCropTask: () => import('./activities/dump-crop-task.vue'),
     harvestCropTask: () => import('./activities/harvest-crop-task.vue'),
     uploadCropTask: () => import('./activities/upload-crop-task.vue'),
-    cropTask: () => import('./tasks/crop-task.vue'),
     Modal
   },
   data () {
