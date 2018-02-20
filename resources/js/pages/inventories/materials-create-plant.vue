@@ -100,6 +100,10 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.inventory.plant_type = this.options.plantTypes[0].key
+    this.inventory.quantity_unit = this.options.quantityUnits[0].key
   }
 }
 </script>

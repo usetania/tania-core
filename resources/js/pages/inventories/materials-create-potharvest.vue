@@ -26,9 +26,9 @@
               span.input-group-addon Pieces
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
       .form-group
-          label.control-label(for="notes") Additional Notes
-          textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
-          span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
+        label.control-label(for="notes") Additional Notes
+        textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
+        span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")
           i.fa.fa-plus

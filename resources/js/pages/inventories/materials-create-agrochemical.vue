@@ -99,6 +99,10 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.inventory.quantity_unit = this.options.quantityUnits[0].key
+    this.inventory.chemical_type = this.options.chemicalTypes[0].key
   }
 }
 </script>

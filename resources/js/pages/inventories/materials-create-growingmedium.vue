@@ -75,6 +75,9 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.inventory.quantity_unit = this.options.quantityUnits[0].key
   }
 }
 </script>
