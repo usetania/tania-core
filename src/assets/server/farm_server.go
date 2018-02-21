@@ -126,6 +126,8 @@ func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmRegionChanged", s.SaveToFarmReadModel)
 
 	s.EventBus.Subscribe("ReservoirCreated", s.SaveToReservoirReadModel)
+	s.EventBus.Subscribe("ReservoirNameChanged", s.SaveToReservoirReadModel)
+	s.EventBus.Subscribe("ReservoirWaterSourceChanged", s.SaveToReservoirReadModel)
 	s.EventBus.Subscribe("ReservoirNoteAdded", s.SaveToReservoirReadModel)
 	s.EventBus.Subscribe("ReservoirNoteRemoved", s.SaveToReservoirReadModel)
 
@@ -161,6 +163,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:id", s.FindFarmByID)
 
 	g.POST("/:id/reservoirs", s.SaveReservoir)
+	g.PUT("/reservoirs/:id", s.UpdateReservoir)
 	g.POST("/reservoirs/:id/notes", s.SaveReservoirNotes)
 	g.DELETE("/reservoirs/:reservoir_id/notes/:note_id", s.RemoveReservoirNotes)
 	g.GET("/:id/reservoirs", s.GetFarmReservoirs)
@@ -390,6 +393,95 @@ func (s *FarmServer) SaveReservoir(c echo.Context) error {
 	s.publishUncommittedEvents(r)
 
 	resRead, err := MapToReservoirRead(s, *r)
+	if err != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]storage.ReservoirRead)
+	data["data"] = resRead
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) UpdateReservoir(c echo.Context) error {
+	validation := RequestValidation{}
+
+	reservoirUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	name := c.FormValue("name")
+	resType := c.FormValue("type")
+	capacity := c.FormValue("capacity")
+
+	// Validate //
+	queryResult := <-s.ReservoirReadQuery.FindByID(reservoirUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	reservoirRead, ok := queryResult.Result.(storage.ReservoirRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if reservoirRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(REQUIRED, "id"))
+	}
+
+	if resType == domain.BucketType && capacity == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "capacity"))
+	}
+
+	if resType != "" {
+		_, err := validation.ValidateType(resType)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	capacityFloat := float32(0)
+	if capacity != "" {
+		capacityFloat, err = validation.ValidateCapacity(resType, capacity)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	// Process //
+	eventQueryResult := <-s.ReservoirEventQuery.FindAllByID(reservoirRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.ReservoirEvent)
+	reservoir := repository.NewReservoirFromHistory(events)
+
+	if name != "" {
+		err = reservoir.ChangeName(name)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if resType != "" && capacity != "" {
+		err = reservoir.ChangeWaterSource(resType, capacityFloat)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	// Persists //
+	resultSave := <-s.ReservoirEventRepo.Save(reservoir.UID, reservoir.Version, reservoir.UncommittedChanges)
+	if resultSave != nil {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	// Publish //
+	s.publishUncommittedEvents(reservoir)
+
+	resRead, err := MapToReservoirRead(s, *reservoir)
 	if err != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}

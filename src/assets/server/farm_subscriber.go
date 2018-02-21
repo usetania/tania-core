@@ -130,6 +130,46 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 		}
 		reservoirRead.CreatedDate = e.CreatedDate
 
+	case domain.ReservoirNameChanged:
+		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		r, ok := queryResult.Result.(storage.ReservoirRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		reservoirRead = &r
+
+		reservoirRead.Name = e.Name
+
+	case domain.ReservoirWaterSourceChanged:
+		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		r, ok := queryResult.Result.(storage.ReservoirRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		reservoirRead = &r
+
+		switch v := e.WaterSource.(type) {
+		case domain.Bucket:
+			reservoirRead.WaterSource = storage.WaterSource{
+				Type:     v.Type(),
+				Capacity: v.Capacity,
+			}
+		case domain.Tap:
+			reservoirRead.WaterSource = storage.WaterSource{
+				Type: v.Type(),
+			}
+		}
+
 	case domain.ReservoirNoteAdded:
 		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
