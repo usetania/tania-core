@@ -17,7 +17,8 @@
               i
         td
           a(href="#")
-            div {{ task.title }} : {{ task.description }}
+            div {{ task.title }}
+            MoreDetail(:data="task" :description="task.description")
             small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
             span.status.status-urgent(v-if="task.priority == 'URGENT'") URGENT
             span.status.status-normal(v-if="task.priority == 'NORMAL'") NORMAL
@@ -27,6 +28,7 @@
           span.label.label-pestcontrol(v-if="task.category == 'PESTCONTROL'") PEST CONTROL
           span.label.label-sanitation(v-if="task.category == 'SANITATION'") SANITATION
           span.label.label-area(v-if="task.category == 'AREA'") AREA
+          span.label.label-reservoir(v-if="task.category == 'RESERVOIR'") RESERVOIR
           span.label.label-safety(v-if="task.category == 'SAFETY'") SAFETY
           span.label.label-finance(v-if="task.category == 'FINANCE'") FINANCE
           span.label.label-crop(v-if="task.category == 'CROP'") CROP
@@ -40,10 +42,15 @@
 </template>
 
 <script>
+import { AddClicked } from '@/stores/helpers/farms/crop'
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
+import MoreDetail from '@/components/more-detail'
 export default {
   name: 'TasksList',
+  components: {
+    MoreDetail
+  },
   created () {
     this.fetchTasks() 
   },
@@ -67,7 +74,7 @@ export default {
       this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id })
         .then(({ data }) => {
           this.loading = false
-          this.tasks = data
+          this.tasks = AddClicked(data)
         })
         .catch(error => console.log(error))
     },

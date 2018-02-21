@@ -119,32 +119,14 @@
                             u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
                             |  on 
                             span.areatag-sm {{ activity.activity_type.source_area_name }}
-                          p.small(v-if="activity.clicked")
-                            span {{ activity.description }}
-                          p
-                            a(@click="toggle(activity)")
-                              small.text
-                                | Read details 
-                                i.fa.fa-angle-down
-                              small.text-active
-                                | Close details 
-                                i.fa.fa-angle-up
+                          MoreDetail(:data="activity" :description="activity.description")
                           small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
                       // PHOTO
                       .row(v-if="activity.activity_type.code == 'PHOTO'")
                         .col-xs-1.text-center
                           i.fa.fa-camera.block.m-b.m-t
                         .col-xs-11 
-                          p.small(v-if="activity.clicked")
-                            span {{ activity.activity_type.description }}
-                          div
-                            a(@click="toggle(activity)")
-                              small.text
-                                | Read details 
-                                i.fa.fa-angle-down
-                              small.text-active
-                                | Close details 
-                                i.fa.fa-angle-up
+                          MoreDetail(:data="activity" :description="activity.activity_type.description")
                           small.text-muted {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} at {{ activity.created_date | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
                           img.img-full.m-t.m-b(:src="'/api/farms/crops/' + crop.uid + '/photos/' + activity.activity_type.uid")
                       // HARVEST
@@ -177,6 +159,7 @@ import { FindContainer, AddClicked } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop, StubNote } from '@/stores/stubs'
 import Modal from '@/components/modal'
+import MoreDetail from '@/components/more-detail'
 export default {
   name: 'FarmCrop',
   components: {
@@ -184,6 +167,7 @@ export default {
     dumpCropTask: () => import('./activities/dump-crop-task.vue'),
     harvestCropTask: () => import('./activities/harvest-crop-task.vue'),
     uploadCropTask: () => import('./activities/upload-crop-task.vue'),
+    MoreDetail,
     Modal
   },
   data () {
@@ -204,11 +188,8 @@ export default {
   },
   methods: {
     ...mapActions([
-      'closeMoveCrop',
       'fetchActivities',
       'getCropByUid',
-      'loadActivities',
-      'toggle',
     ]),
     closeModal () {
       this.showMoveCropModal = false
@@ -232,9 +213,6 @@ export default {
             .catch(error => console.log(error))
         })
         .catch(error => console.log(error))
-    },
-    toggle (data) {
-      data.clicked = !data.clicked
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {

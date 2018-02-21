@@ -44,7 +44,7 @@
           span.help-block.text-danger(v-show="errors.has('title')") {{ errors.first('title') }}
         .form-group
           label(for="description") Description
-          textarea.form-control#description(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
+          textarea.form-control#description(type="text" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
           button.btn.btn-addon.btn-primary.pull-right(type="submit")
