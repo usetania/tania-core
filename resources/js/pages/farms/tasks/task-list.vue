@@ -20,22 +20,11 @@
             div {{ task.title }}
             MoreDetail(:data="task" :description="task.description")
             small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-            span.status.status-urgent(v-if="task.priority == 'URGENT'") URGENT
-            span.status.status-normal(v-if="task.priority == 'NORMAL'") NORMAL
-            span.text-danger(v-if="task.is_due == true") Overdue!
-            span.text-success(v-if="isToday(task.due_date)") Today
+              TaskLabel(:type="'PRIORITY'" :task="task")
+              span.text-danger(v-if="task.is_due == true") Overdue!
+              span.text-success(v-if="isToday(task.due_date)") Today
         td
-          span.label.label-pestcontrol(v-if="task.category == 'PESTCONTROL'") PEST CONTROL
-          span.label.label-sanitation(v-if="task.category == 'SANITATION'") SANITATION
-          span.label.label-area(v-if="task.category == 'AREA'") AREA
-          span.label.label-reservoir(v-if="task.category == 'RESERVOIR'") RESERVOIR
-          span.label.label-safety(v-if="task.category == 'SAFETY'") SAFETY
-          span.label.label-finance(v-if="task.category == 'FINANCE'") FINANCE
-          span.label.label-crop(v-if="task.category == 'CROP'") CROP
-          span.label.label-water(v-if="task.category == 'WATER'") WATER
-          span.label.label-inventory(v-if="task.category == 'INVENTORY'") INVENTORY
-          span.label.label-general(v-if="task.category == 'GENERAL'") GENERAL
-          span.label.label-nutrient(v-if="task.category == 'NUTRIENT'") NUTRIENT
+          TaskLabel(:type="'CATEGORY'" :task="task")
         td(v-if="domain == 'CROP'")
           a.h3(href="#")
             i.fas.fa-edit
@@ -46,10 +35,12 @@ import { AddClicked } from '@/stores/helpers/farms/crop'
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
 import MoreDetail from '@/components/more-detail'
+import TaskLabel from './task-label'
 export default {
   name: 'TasksList',
   components: {
-    MoreDetail
+    MoreDetail,
+    TaskLabel
   },
   created () {
     this.fetchTasks() 
