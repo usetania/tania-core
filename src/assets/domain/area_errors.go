@@ -13,6 +13,7 @@ const (
 
 	AreaErrorTypeEmptyCode
 	AreaErrorInvalidAreaTypeCode
+	AreaErrorCropAlreadyCreated
 
 	AreaErrorLocationEmptyCode
 	AreaErrorInvalidAreaLocationCode
@@ -49,6 +50,8 @@ func (e AreaError) Error() string {
 		return "Area type cannot be empty"
 	case AreaErrorInvalidAreaTypeCode:
 		return "Area type is invalid"
+	case AreaErrorCropAlreadyCreated:
+		return "Area type cannot be changed because there is already filled with crops"
 	case AreaErrorLocationEmptyCode:
 		return "Area location cannot be empty"
 	case AreaErrorInvalidAreaLocationCode:

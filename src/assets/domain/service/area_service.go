@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
@@ -10,6 +12,7 @@ import (
 type AreaServiceInMemory struct {
 	FarmReadQuery      query.FarmReadQuery
 	ReservoirReadQuery query.ReservoirReadQuery
+	CropReadQuery      query.CropReadQuery
 }
 
 func (s AreaServiceInMemory) FindFarmByID(uid uuid.UUID) (domain.AreaFarmServiceResult, error) {
@@ -56,4 +59,19 @@ func (s AreaServiceInMemory) FindReservoirByID(reservoirUID uuid.UUID) (domain.A
 		UID:  res.UID,
 		Name: res.Name,
 	}, nil
+}
+
+func (s AreaServiceInMemory) CountCropsByAreaID(areaUID uuid.UUID) (int, error) {
+	result := <-s.CropReadQuery.CountCropsByArea(areaUID)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	totals, ok := result.Result.(query.CountAreaCropQueryResult)
+	if !ok {
+		return 0, errors.New("Internal server error")
+	}
+
+	return totals.TotalCropBatch, nil
+
 }

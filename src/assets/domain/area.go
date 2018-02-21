@@ -27,6 +27,7 @@ type Area struct {
 type AreaService interface {
 	FindFarmByID(farmUID uuid.UUID) (AreaFarmServiceResult, error)
 	FindReservoirByID(reservoirUID uuid.UUID) (AreaReservoirServiceResult, error)
+	CountCropsByAreaID(areaUID uuid.UUID) (int, error)
 }
 
 type AreaFarmServiceResult struct {
@@ -156,6 +157,21 @@ func (state *Area) Transition(event interface{}) {
 		state.FarmUID = e.FarmUID
 		state.ReservoirUID = e.ReservoirUID
 
+	case AreaNameChanged:
+		state.Name = e.Name
+
+	case AreaSizeChanged:
+		state.Size = e.Size
+
+	case AreaTypeChanged:
+		state.Type = e.Type
+
+	case AreaLocationChanged:
+		state.Location = e.Location
+
+	case AreaReservoirChanged:
+		state.ReservoirUID = e.ReservoirUID
+
 	case AreaPhotoAdded:
 		state.Photo = AreaPhoto{
 			Filename: e.Filename,
@@ -256,6 +272,20 @@ func CreateArea(
 	return initial, nil
 }
 
+func (a *Area) ChangeName(name string) error {
+	err := validateAreaName(name)
+	if err != nil {
+		return err
+	}
+
+	a.TrackChange(AreaNameChanged{
+		AreaUID: a.UID,
+		Name:    name,
+	})
+
+	return nil
+}
+
 // ChangeSize changes an area size
 func (a *Area) ChangeSize(size AreaSize) error {
 	err := validateSize(size)
@@ -263,7 +293,33 @@ func (a *Area) ChangeSize(size AreaSize) error {
 		return err
 	}
 
-	a.Size = size
+	a.TrackChange(AreaSizeChanged{
+		AreaUID: a.UID,
+		Size:    size,
+	})
+
+	return nil
+}
+
+func (a *Area) ChangeType(areaService AreaService, areaType string) error {
+	at := GetAreaType(areaType)
+	if at == (AreaType{}) {
+		return AreaError{Code: AreaErrorInvalidAreaTypeCode}
+	}
+
+	count, err := areaService.CountCropsByAreaID(a.UID)
+	if err != nil {
+		return err
+	}
+
+	if count > 0 {
+		return AreaError{Code: AreaErrorCropAlreadyCreated}
+	}
+
+	a.TrackChange(AreaTypeChanged{
+		AreaUID: a.UID,
+		Type:    at,
+	})
 
 	return nil
 }
@@ -275,7 +331,21 @@ func (a *Area) ChangeLocation(locationCode string) error {
 		return AreaError{Code: AreaErrorInvalidAreaLocationCode}
 	}
 
-	a.Location = v
+	a.TrackChange(AreaLocationChanged{
+		AreaUID:  a.UID,
+		Location: v,
+	})
+
+	return nil
+}
+
+func (a *Area) ChangeReservoir(reservoirUID uuid.UUID) error {
+	a.ReservoirUID = reservoirUID
+
+	a.TrackChange(AreaReservoirChanged{
+		AreaUID:      a.UID,
+		ReservoirUID: reservoirUID,
+	})
 
 	return nil
 }

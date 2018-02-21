@@ -265,6 +265,94 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 			Name: reservoir.Name,
 		}
 
+	case domain.AreaNameChanged:
+		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(storage.AreaRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		areaRead = &area
+
+		areaRead.Name = e.Name
+
+	case domain.AreaSizeChanged:
+		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(storage.AreaRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		areaRead = &area
+
+		areaRead.Size = storage.AreaSize(e.Size)
+
+	case domain.AreaTypeChanged:
+		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(storage.AreaRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		areaRead = &area
+
+		areaRead.Type = e.Type.Code
+
+	case domain.AreaLocationChanged:
+		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(storage.AreaRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		areaRead = &area
+
+		areaRead.Location = storage.AreaLocation(e.Location)
+
+	case domain.AreaReservoirChanged:
+		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		area, ok := queryResult.Result.(storage.AreaRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		reservoir, ok := queryResult.Result.(storage.ReservoirRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		areaRead = &area
+
+		areaRead.Reservoir = storage.AreaReservoir{
+			UID:  reservoir.UID,
+			Name: reservoir.Name,
+		}
+
 	case domain.AreaPhotoAdded:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {

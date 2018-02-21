@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -85,6 +86,7 @@ func NewFarmServer(
 	areaService := service.AreaServiceInMemory{
 		FarmReadQuery:      farmReadQuery,
 		ReservoirReadQuery: reservoirReadQuery,
+		CropReadQuery:      cropReadQuery,
 	}
 	reservoirService := service.ReservoirServiceInMemory{FarmReadQuery: farmReadQuery}
 
@@ -132,6 +134,11 @@ func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("ReservoirNoteRemoved", s.SaveToReservoirReadModel)
 
 	s.EventBus.Subscribe("AreaCreated", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaNameChanged", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaSizeChanged", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaTypeChanged", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaLocationChanged", s.SaveToAreaReadModel)
+	s.EventBus.Subscribe("AreaReservoirChanged", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaPhotoAdded", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaNoteAdded", s.SaveToAreaReadModel)
 	s.EventBus.Subscribe("AreaNoteRemoved", s.SaveToAreaReadModel)
@@ -170,6 +177,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:farm_id/reservoirs/:reservoir_id", s.GetReservoirsByID)
 
 	g.POST("/:id/areas", s.SaveArea)
+	g.PUT("/areas/:id", s.UpdateArea)
 	g.POST("/areas/:id/notes", s.SaveAreaNotes)
 	g.DELETE("/areas/:area_id/notes/:note_id", s.RemoveAreaNotes)
 	g.GET("/:id/areas/total", s.GetTotalAreas)
@@ -752,6 +760,145 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	data["data"] = detailArea
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) UpdateArea(c echo.Context) error {
+	fmt.Println("HEHEHEHEHH")
+	validation := RequestValidation{}
+
+	areaUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	name := c.FormValue("name")
+	size := c.FormValue("size")
+	sizeUnit := c.FormValue("size_unit")
+	areaType := c.FormValue("type")
+	location := c.FormValue("location")
+	reservoirID := c.FormValue("reservoir_id")
+	photo, photoErr := c.FormFile("photo")
+
+	// Validate //
+	queryResult := <-s.AreaReadQuery.FindByID(areaUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	areaRead, ok := queryResult.Result.(storage.AreaRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if areaRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	if size != "" && sizeUnit == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "size_unit"))
+	}
+
+	if sizeUnit != "" && size == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "size"))
+	}
+
+	// Process //
+	eventQueryResult := <-s.AreaEventQuery.FindAllByID(areaRead.UID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.AreaEvent)
+
+	area := repository.NewAreaFromHistory(events)
+
+	if name != "" {
+		err := area.ChangeName(name)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if size != "" && sizeUnit != "" {
+		areaSize, err := validation.ValidateAreaSize(size, sizeUnit)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		err = area.ChangeSize(areaSize)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if areaType != "" {
+		err = area.ChangeType(s.AreaService, areaType)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if location != "" {
+		err = area.ChangeLocation(location)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if reservoirID != "" {
+		resUID, err := uuid.FromString(reservoirID)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		err = area.ChangeReservoir(resUID)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if photoErr == nil {
+		destPath := stringhelper.Join(*config.Config.UploadPathArea, "/", photo.Filename)
+		err = s.File.Upload(photo, destPath)
+
+		if err != nil {
+			return Error(c, err)
+		}
+
+		width, height, err := imagehelper.GetImageDimension(destPath)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		areaPhoto := domain.AreaPhoto{
+			Filename: photo.Filename,
+			MimeType: photo.Header["Content-Type"][0],
+			Size:     int(photo.Size),
+			Width:    width,
+			Height:   height,
+		}
+
+		area.ChangePhoto(areaPhoto)
+	}
+
+	// Persists //
+	err = <-s.AreaEventRepo.Save(area.UID, area.Version, area.UncommittedChanges)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Publish //
+	s.publishUncommittedEvents(area)
+
+	detailArea, err := MapToDetailArea(s, *area)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data := make(map[string]DetailArea)
 	data["data"] = detailArea
 
 	return c.JSON(http.StatusOK, data)
