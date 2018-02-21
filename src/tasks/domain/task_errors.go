@@ -4,6 +4,9 @@ const (
 	// Title Errors
 	TaskErrorTitleEmptyCode = iota
 
+	// Invalid Task ID Error
+	TaskErrorIDInvalidCode
+
 	// Description Errors
 	TaskErrorDescriptionEmptyCode
 
@@ -48,6 +51,8 @@ func (e TaskError) Error() string {
 	switch e.Code {
 	case TaskErrorTitleEmptyCode:
 		return "Task title is required."
+	case TaskErrorIDInvalidCode:
+		return "Task ID is invalid."
 	case TaskErrorDescriptionEmptyCode:
 		return "Task description is required."
 	case TaskErrorDueDateEmptyCode:

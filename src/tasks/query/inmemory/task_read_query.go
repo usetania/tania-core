@@ -36,17 +36,12 @@ func (r TaskReadQueryInMemory) FindAll() <-chan query.QueryResult {
 }
 
 // FindByID is to find by ID
-func (r TaskReadQueryInMemory) FindByID(uid string) <-chan query.QueryResult {
+func (r TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		r.Storage.Lock.RLock()
 		defer r.Storage.Lock.RUnlock()
-
-		uid, err := uuid.FromString(uid)
-		if err != nil {
-			result <- query.QueryResult{Error: err}
-		}
 
 		result <- query.QueryResult{Result: r.Storage.TaskReadMap[uid]}
 

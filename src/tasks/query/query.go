@@ -31,7 +31,7 @@ type TaskEventQuery interface {
 
 type TaskReadQuery interface {
 	FindAll() <-chan QueryResult
-	FindByID(string) <-chan QueryResult
+	FindByID(taskUID uuid.UUID) <-chan QueryResult
 	QueryTasksWithFilter(params map[string]string) <-chan QueryResult
 }
 
@@ -51,6 +51,9 @@ type FinanceQuery interface {
 }
 
 */
+
+// QUERY RESULTS
+
 type TaskAreaQueryResult struct {
 	UID  uuid.UUID `json:"uid"`
 	Name string    `json:"name"`

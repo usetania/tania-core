@@ -9,6 +9,7 @@ import (
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
+	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/query/inmemory"
 	"github.com/Tanibox/tania-server/src/tasks/repository"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
@@ -19,11 +20,13 @@ import (
 
 // TaskServer ties the routes and handlers with injected dependencies
 type TaskServer struct {
-	TaskRepo      repository.TaskRepository
-	TaskEventRepo repository.TaskEventRepository
-	TaskReadRepo  repository.TaskReadRepository
-	TaskService   domain.TaskService
-	EventBus      EventBus.Bus
+	TaskRepo       repository.TaskRepository
+	TaskEventRepo  repository.TaskEventRepository
+	TaskReadRepo   repository.TaskReadRepository
+	TaskEventQuery query.TaskEventQuery
+	TaskReadQuery  query.TaskReadQuery
+	TaskService    domain.TaskService
+	EventBus       EventBus.Bus
 }
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
@@ -39,6 +42,9 @@ func NewTaskServer(
 	taskEventRepo := repository.NewTaskEventRepositoryInMemory(taskEventStorage)
 	taskReadRepo := repository.NewTaskReadRepositoryInMemory(taskReadStorage)
 
+	taskEventQuery := inmemory.NewTaskEventQueryInMemory(taskEventStorage)
+	taskReadQuery := inmemory.NewTaskReadQueryInMemory(taskReadStorage)
+
 	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
 	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
 
@@ -53,13 +59,20 @@ func NewTaskServer(
 		MaterialQuery:  materialReadQuery,
 		ReservoirQuery: reservoirQuery,
 	}
-	return &TaskServer{
-		TaskRepo:      taskRepo,
-		TaskEventRepo: taskEventRepo,
-		TaskReadRepo:  taskReadRepo,
-		TaskService:   taskService,
-		EventBus:      bus,
-	}, nil
+
+	taskServer := &TaskServer{
+		TaskRepo:       taskRepo,
+		TaskEventRepo:  taskEventRepo,
+		TaskReadRepo:   taskReadRepo,
+		TaskEventQuery: taskEventQuery,
+		TaskReadQuery:  taskReadQuery,
+		TaskService:    taskService,
+		EventBus:       bus,
+	}
+
+	taskServer.InitSubscriber()
+
+	return taskServer, nil
 }
 
 // InitSubscriber defines the mapping of which event this domain listen with their handler
@@ -71,7 +84,7 @@ func (s *TaskServer) InitSubscriber() {
 func (s *TaskServer) Mount(g *echo.Group) {
 	g.POST("", s.SaveTask)
 
-	g.GET("", s.FindAllTask)
+	g.GET("", s.FindAllTasks)
 	g.GET("/search", s.FindFilteredTasks)
 	g.GET("/:id", s.FindTaskByID)
 	g.PUT("/:id", s.UpdateTask)
@@ -82,20 +95,23 @@ func (s *TaskServer) Mount(g *echo.Group) {
 	g.PUT("/:id/due", s.SetTaskAsDue)
 }
 
-func (s TaskServer) FindAllTask(c echo.Context) error {
-	data := make(map[string][]SimpleTask)
+func (s TaskServer) FindAllTasks(c echo.Context) error {
+	data := make(map[string][]storage.TaskRead)
 
-	result := <-s.TaskRepo.FindAll()
+	result := <-s.TaskReadQuery.FindAll()
 	if result.Error != nil {
 		return result.Error
 	}
 
-	Tasks, ok := result.Result.([]domain.Task)
+	tasks, ok := result.Result.([]storage.TaskRead)
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = MapToSimpleTask(Tasks)
+	data["data"] = []storage.TaskRead{}
+	for _, v := range tasks {
+		data["data"] = append(data["data"], v)
+	}
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -184,6 +200,9 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	// Trigger Events
+	s.publishUncommittedEvents(task)
+
 	data["data"] = *task
 
 	return c.JSON(http.StatusOK, data)
@@ -225,18 +244,15 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 }
 
 func (s *TaskServer) FindTaskByID(c echo.Context) error {
-	data := make(map[string]domain.Task)
+	data := make(map[string]storage.TaskRead)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
 	}
 
-	result := <-s.TaskRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return result.Error
-	}
+	result := <-s.TaskReadQuery.FindByID(uid)
 
-	task, ok := result.Result.(domain.Task)
+	task, ok := result.Result.(storage.TaskRead)
 
 	if task.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
@@ -486,6 +502,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 }
 
 func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
+
 	switch e := entity.(type) {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {
