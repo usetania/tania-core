@@ -6,6 +6,10 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+type FarmEventQuery interface {
+	FindAllByID(farmUID uuid.UUID) <-chan QueryResult
+}
+
 type FarmReadQuery interface {
 	FindByID(farmUID uuid.UUID) <-chan QueryResult
 	FindAll() <-chan QueryResult

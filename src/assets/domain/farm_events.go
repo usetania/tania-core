@@ -18,6 +18,16 @@ type FarmCreated struct {
 	CreatedDate time.Time
 }
 
+type FarmNameChanged struct {
+	FarmUID uuid.UUID
+	Name    string
+}
+
+type FarmTypeChanged struct {
+	FarmUID uuid.UUID
+	Type    string
+}
+
 type FarmGeolocationChanged struct {
 	FarmUID   uuid.UUID
 	Latitude  string

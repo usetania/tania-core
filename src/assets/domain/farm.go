@@ -42,6 +42,12 @@ func (state *Farm) Transition(event interface{}) {
 		state.IsActive = e.IsActive
 		state.CreatedDate = e.CreatedDate
 
+	case FarmNameChanged:
+		state.Name = e.Name
+
+	case FarmTypeChanged:
+		state.Type = e.Type
+
 	case FarmGeolocationChanged:
 		state.Latitude = e.Latitude
 		state.Longitude = e.Longitude
@@ -100,6 +106,34 @@ func CreateFarm(name, farmType, latitude, longitude, countryCode, cityCode strin
 	})
 
 	return initial, nil
+}
+
+func (f *Farm) ChangeName(name string) error {
+	err := validateFarmName(name)
+	if err != nil {
+		return err
+	}
+
+	f.TrackChange(FarmNameChanged{
+		FarmUID: f.UID,
+		Name:    name,
+	})
+
+	return nil
+}
+
+func (f *Farm) ChangeType(farmType string) error {
+	err := validateFarmType(farmType)
+	if err != nil {
+		return err
+	}
+
+	f.TrackChange(FarmTypeChanged{
+		FarmUID: f.UID,
+		Type:    farmType,
+	})
+
+	return nil
 }
 
 // ChangeGeoLocation changes the geolocation of a farm

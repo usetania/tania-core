@@ -25,6 +25,7 @@ import (
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
 	FarmEventRepo       repository.FarmEventRepository
+	FarmEventQuery      query.FarmEventQuery
 	FarmReadRepo        repository.FarmReadRepository
 	FarmReadQuery       query.FarmReadQuery
 	ReservoirEventRepo  repository.ReservoirEventRepository
@@ -60,6 +61,7 @@ func NewFarmServer(
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
 	farmEventRepo := repository.NewFarmEventRepositoryInMemory(farmEventStorage)
+	farmEventQuery := inmemory.NewFarmEventQueryInMemory(farmEventStorage)
 	farmReadRepo := repository.NewFarmReadRepositoryInMemory(farmReadStorage)
 	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
 
@@ -88,6 +90,7 @@ func NewFarmServer(
 
 	farmServer := FarmServer{
 		FarmEventRepo:       farmEventRepo,
+		FarmEventQuery:      farmEventQuery,
 		FarmReadRepo:        farmReadRepo,
 		FarmReadQuery:       farmReadQuery,
 		ReservoirEventRepo:  reservoirEventRepo,
@@ -117,6 +120,10 @@ func NewFarmServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
+	s.EventBus.Subscribe("FarmNameChanged", s.SaveToFarmReadModel)
+	s.EventBus.Subscribe("FarmTypeChanged", s.SaveToFarmReadModel)
+	s.EventBus.Subscribe("FarmGeolocationChanged", s.SaveToFarmReadModel)
+	s.EventBus.Subscribe("FarmRegionChanged", s.SaveToFarmReadModel)
 
 	s.EventBus.Subscribe("ReservoirCreated", s.SaveToReservoirReadModel)
 	s.EventBus.Subscribe("ReservoirNoteAdded", s.SaveToReservoirReadModel)
@@ -149,6 +156,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/inventories/materials/:id", s.GetMaterialByID)
 
 	g.POST("", s.SaveFarm)
+	g.PUT("/:id", s.UpdateFarm)
 	g.GET("", s.FindAllFarm)
 	g.GET("/:id", s.FindFarmByID)
 
@@ -182,7 +190,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 
 	farms, ok := result.Result.([]storage.FarmRead)
 	if !ok {
-		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
 
 	data := make(map[string][]storage.FarmRead)
@@ -206,6 +214,104 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 	)
 	if err != nil {
 		return Error(c, err)
+	}
+
+	err = <-s.FarmEventRepo.Save(farm.UID, farm.Version, farm.UncommittedChanges)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	s.publishUncommittedEvents(farm)
+
+	data := make(map[string]*storage.FarmRead)
+	data["data"] = MapToFarmRead(farm)
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) UpdateFarm(c echo.Context) error {
+	farmUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	name := c.FormValue("name")
+	farmType := c.FormValue("farm_type")
+	latitude := c.FormValue("latitude")
+	longitude := c.FormValue("longitude")
+	countryCode := c.FormValue("country_code")
+	cityCode := c.FormValue("city_code")
+
+	// Validate //
+	queryResult := <-s.FarmReadQuery.FindByID(farmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	farmRead, ok := queryResult.Result.(storage.FarmRead)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	if farmRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	if latitude != "" && longitude == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "longitude"))
+	}
+
+	if longitude != "" && latitude == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "latitude"))
+	}
+
+	if countryCode != "" && cityCode == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "city_code"))
+	}
+
+	if cityCode != "" && countryCode == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "country_code"))
+	}
+
+	// Process //
+	queryResult = <-s.FarmEventQuery.FindAllByID(farmUID)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	events, ok := queryResult.Result.([]storage.FarmEvent)
+	if !ok {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+	}
+
+	farm := repository.NewFarmFromHistory(events)
+
+	if name != "" {
+		err = farm.ChangeName(name)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if farmType != "" {
+		err = farm.ChangeType(farmType)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if latitude != "" && longitude != "" {
+		err = farm.ChangeGeoLocation(latitude, longitude)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if countryCode != "" && cityCode != "" {
+		err = farm.ChangeRegion(countryCode, cityCode)
+		if err != nil {
+			return Error(c, err)
+		}
 	}
 
 	err = <-s.FarmEventRepo.Save(farm.UID, farm.Version, farm.UncommittedChanges)

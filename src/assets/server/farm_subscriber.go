@@ -22,6 +22,68 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 		farmRead.CityCode = e.CityCode
 		farmRead.IsActive = e.IsActive
 		farmRead.CreatedDate = e.CreatedDate
+
+	case domain.FarmNameChanged:
+		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		farm, ok := queryResult.Result.(storage.FarmRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		farmRead = &farm
+
+		farmRead.Name = e.Name
+
+	case domain.FarmTypeChanged:
+		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		farm, ok := queryResult.Result.(storage.FarmRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		farmRead = &farm
+
+		farm.Type = e.Type
+
+	case domain.FarmGeolocationChanged:
+		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		farm, ok := queryResult.Result.(storage.FarmRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		farmRead = &farm
+
+		farm.Latitude = e.Latitude
+		farm.Longitude = e.Longitude
+
+	case domain.FarmRegionChanged:
+		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		farm, ok := queryResult.Result.(storage.FarmRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		farmRead = &farm
+
+		farm.CountryCode = e.CountryCode
+		farm.CityCode = e.CityCode
 	}
 
 	err := <-s.FarmReadRepo.Save(farmRead)
