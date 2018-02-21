@@ -124,10 +124,6 @@ describe('Intro specs', () => {
       cy.get('button.btn[type=submit]').click()
       cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
       cy.get('span.help-block.text-danger').should('contain', 'The size field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The size_unit field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The type field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The location field is required.')
-      cy.get('span.help-block.text-danger').should('contain', 'The reservoir field is required.')
     })
     it ('should go to next page when form is filled correctly', () => {
       login()
