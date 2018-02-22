@@ -193,11 +193,6 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	/*err = <-s.TaskRepo.Save(task)
-	if err != nil {
-		return Error(c, err)
-	}
-	*/
 	err = <-s.TaskEventRepo.Save(task.UID, 0, task.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
