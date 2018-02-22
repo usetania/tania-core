@@ -64,3 +64,38 @@ type TaskRead struct {
 	IsDue         bool              `json:"is_due"`
 	AssetID       *uuid.UUID        `json:"asset_id"`
 }
+
+func (taskRead *TaskRead) BuildTaskFromTaskRead(t domain.Task) (domain.Task, error) {
+
+	t.Title = taskRead.Title
+	t.UID = taskRead.UID
+	t.Description = taskRead.Description
+	t.CreatedDate = taskRead.CreatedDate
+	t.DueDate = taskRead.DueDate
+	t.CompletedDate = taskRead.CompletedDate
+	t.Priority = taskRead.Priority
+	t.Status = taskRead.Status
+	t.Domain = taskRead.Domain
+	t.DomainDetails = taskRead.DomainDetails
+	t.Category = taskRead.Category
+	t.IsDue = taskRead.IsDue
+	t.AssetID = taskRead.AssetID
+
+	return t, nil
+}
+
+// CreateTask
+func CreateTaskModifiedEvent(title string, description string, duedate *time.Time, priority string, taskdomain domain.TaskDomain, taskcategory string, assetid *uuid.UUID) (*domain.TaskModified, error) {
+
+	event := domain.TaskModified{
+		Title:         title,
+		Description:   description,
+		Priority:      priority,
+		DueDate:       duedate,
+		DomainDetails: taskdomain,
+		Category:      taskcategory,
+		AssetID:       assetid,
+	}
+
+	return &event, nil
+}

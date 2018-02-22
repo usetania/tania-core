@@ -92,6 +92,10 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 	return initial, nil
 }
 
+func (t *Task) NewTaskModifiedEvent() {
+
+}
+
 // ChangeTitle
 func (t *Task) ChangeTaskTitle(newtitle string) error {
 
@@ -215,6 +219,14 @@ func (state *Task) Transition(event interface{}) {
 		state.DomainDetails = e.DomainDetails
 		state.Category = e.Category
 		state.IsDue = e.IsDue
+		state.AssetID = e.AssetID
+	case TaskModified:
+		state.Title = e.Title
+		state.Description = e.Description
+		state.DueDate = e.DueDate
+		state.Priority = e.Priority
+		state.DomainDetails = e.DomainDetails
+		state.Category = e.Category
 		state.AssetID = e.AssetID
 	}
 }

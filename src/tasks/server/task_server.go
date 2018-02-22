@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -78,6 +79,7 @@ func NewTaskServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *TaskServer) InitSubscriber() {
 	s.EventBus.Subscribe(domain.TaskCreatedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskModifiedCode, s.SaveToTaskReadModel)
 }
 
 // Mount defines the TaskServer's endpoints with its handlers
@@ -272,33 +274,111 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	result := <-s.TaskRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return result.Error
-	}
+	// Get TaskRead By UID
+	readResult := <-s.TaskReadQuery.FindByID(uid)
 
-	task, ok := result.Result.(domain.Task)
+	taskRead, ok := readResult.Result.(storage.TaskRead)
 
-	if task.UID != uid {
+	if taskRead.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	updated_task, err := s.updateTaskAttributes(task, c)
+	// Get TaskEvent under Task UID
+	eventQueryResult := <-s.TaskEventQuery.FindAllByTaskID(uid)
+	events := eventQueryResult.Result.([]storage.TaskEvent)
+
+	// Build TaskEvents from history
+	task := repository.BuildTaskEventsFromHistory(events)
+
+	// Construct Task from TaskRead attributes
+	updated_task, err := taskRead.BuildTaskFromTaskRead(*task)
+
 	if err != nil {
 		return Error(c, err)
 	}
 
-	err = <-s.TaskRepo.Save(&updated_task)
+	taskModifiedEvent, _ := s.createTaskModifiedEvent(taskRead, c)
+	updated_task.TrackChange(*taskModifiedEvent)
+	fmt.Println(updated_task)
+
+	// Save new TaskEvent
+	err = <-s.TaskEventRepo.Save(updated_task.UID, 0, updated_task.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
+
+	// Trigger Events
+	s.publishUncommittedEvents(updated_task)
 
 	data["data"] = updated_task
 
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) createTaskModifiedEvent(taskRead storage.TaskRead, c echo.Context) (*domain.TaskModified, error) {
+
+	// Change Task Title
+	title := c.FormValue("title")
+	if len(title) == 0 {
+		title = taskRead.Title
+	}
+
+	// Change Task Description
+	description := c.FormValue("description")
+	if len(description) == 0 {
+		description = taskRead.Description
+	}
+
+	// Change Task Due Date
+	form_date := c.FormValue("due_date")
+	due_ptr := (*time.Time)(nil)
+	if len(form_date) == 0 {
+		due_ptr = taskRead.DueDate
+	}
+
+	// Change Task Priority
+	priority := c.FormValue("priority")
+	if len(priority) == 0 {
+		priority = taskRead.Priority
+	}
+
+	// Change Task Asset
+	asset_id := c.FormValue("asset_id")
+	asset_id_ptr := (*uuid.UUID)(nil)
+	if len(asset_id) == 0 {
+		asset_id_ptr = taskRead.AssetID
+	}
+
+	// Change Task Category & Domain Details
+	var category string
+	var details domain.TaskDomain
+	var err error
+	category = c.FormValue("category")
+	if len(category) != 0 {
+		inventory_id := c.FormValue("inventory_id")
+		if len(inventory_id) != 0 {
+			details, err = s.CreateTaskDomainByCode(taskRead.Domain, c)
+			if err != nil {
+				return &domain.TaskModified{}, Error(c, err)
+			}
+		} else {
+			details = taskRead.DomainDetails
+		}
+	} else {
+		category = taskRead.Category
+		details = taskRead.DomainDetails
+	}
+
+	event, err := storage.CreateTaskModifiedEvent(title, description, due_ptr, priority, details, category, asset_id_ptr)
+
+	if err != nil {
+		return &domain.TaskModified{}, Error(c, err)
+	}
+
+	return event, nil
 }
 
 func (s *TaskServer) updateTaskAttributes(task domain.Task, c echo.Context) (domain.Task, error) {
@@ -505,6 +585,8 @@ func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {
 			name := structhelper.GetName(v)
+			fmt.Println("Publishing event:")
+			fmt.Println(name)
 			s.EventBus.Publish(name, v)
 		}
 	}

@@ -29,6 +29,16 @@ type TaskCreated struct {
 	AssetID       *uuid.UUID
 }
 
+type TaskModified struct {
+	Title         string
+	Description   string
+	Priority      string
+	DueDate       *time.Time
+	DomainDetails TaskDomain
+	Category      string
+	AssetID       *uuid.UUID
+}
+
 type TaskCompleted struct {
 	UID           uuid.UUID
 	AssetID       *uuid.UUID

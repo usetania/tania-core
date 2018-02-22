@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 )
@@ -23,7 +24,10 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead.Category = e.Category
 		taskRead.IsDue = e.IsDue
 		taskRead.AssetID = e.AssetID
-
+	case domain.TaskModified:
+		fmt.Println("Task Modified")
+	default:
+		fmt.Println("Task Event not known")
 	}
 
 	err := <-s.TaskReadRepo.Save(taskRead)

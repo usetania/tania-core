@@ -18,7 +18,7 @@ func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) TaskEventReposi
 	return &TaskEventRepositoryInMemory{Storage: s}
 }
 
-func NewTaskBatchFromHistory(events []storage.TaskEvent) *domain.Task {
+func BuildTaskEventsFromHistory(events []storage.TaskEvent) *domain.Task {
 	state := &domain.Task{}
 	for _, v := range events {
 		state.Transition(v.Event)
