@@ -19,13 +19,10 @@ const router = new VueRouter({
     // Farm
     { path: '/farms/create', name: 'FarmCreate', meta: { requiresAuth: true }, component: () => import('./pages/farms/create') },
     { path: '/reservoirs', name: 'FarmReservoirs', meta: {requiresAuth: true }, component: () => import('./pages/farms/reservoirs.vue') },
-    { path: '/reservoirs/create', name: 'FarmReservoirsCreate', meta: {requiresAuth: true }, component: () => import('./pages/farms/reservoirs-create.vue') },
     { path: '/reservoirs/:id', name: 'FarmReservoir', meta: {requiresAuth: true }, component: () => import('./pages/farms/reservoir.vue') },
     { path: '/areas', name: 'FarmAreas', meta: {requiresAuth: true }, component: () => import('./pages/farms/areas.vue') },
-    { path: '/areas/create', name: 'FarmAreasCreate', meta: {requiresAuth: true }, component: () => import('./pages/farms/areas-create.vue') },
     { path: '/areas/:id', name: 'FarmArea', meta: {requiresAuth: true }, component: () => import('./pages/farms/area.vue') },
     { path: '/crops', name: 'FarmCrops', meta: {requiresAuth: true }, component: () => import('./pages/farms/crops.vue') },
-    { path: '/crops/create', name: 'FarmCropsCreate', meta: {requiresAuth: true }, component: () => import('./pages/farms/crops-create.vue') },
     { path: '/crop/:id', name: 'FarmCrop', meta: {requiresAuth: true }, component: () => import('./pages/farms/crop.vue') },
     { path: '/crop/notes/:id', name: 'FarmCropNotes', meta: {requiresAuth: true }, component: () => import('./pages/farms/crop-notes.vue') },
     { path: '/task', name: 'Task', meta: { requiresAuth: true }, component: () => import('./pages/tasks/task') },

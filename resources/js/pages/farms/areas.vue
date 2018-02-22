@@ -1,9 +1,9 @@
 <template lang="pug">
   .areas.col
     modal(v-if="showModal" @close="showModal = false")
-      farmAreaCreate
+      farmAreaCreate(:data="data")
     .wrapper-md
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
+      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
         | Add Area
       h1.m-n.font-thin.h3.text-black Areas
@@ -14,6 +14,8 @@
             .panel-heading.description
               .h3.text-lt.name
                 router-link(:to="{ name: 'FarmArea', params: { id: area.uid } }") {{ area.name }}
+                a.pull-right(style="cursor: pointer;" @click="openModal(area)")
+                  i.fa.fa-edit
               small.text-muted {{ getType(area.type).label }}
             .panel-body
               .row
@@ -41,7 +43,7 @@ export default {
     })
   },
   components: {
-    FarmAreaCreate: () => import('./areas-create.vue'),
+    FarmAreaCreate: () => import('./areas-form.vue'),
     Modal
   },
   mounted () {
@@ -49,18 +51,27 @@ export default {
   },
   data () {
     return {
-      showModal: false
+      showModal: false,
+      data: {},
     }
   },
   methods: {
     ...mapActions([
-      'fetchAreas'
+      'fetchAreas',
     ]),
     getType(key) {
       return FindAreaType(key)
     },
     getSizeUnit(key) {
       return FindAreaSizeUnit(key)
+    },
+    openModal(data) {
+      this.showModal = true
+      if (data) {
+        this.data = data
+      } else {
+        this.data = {}
+      }
     }
   }
 }

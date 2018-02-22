@@ -1,7 +1,8 @@
 <template lang="pug">
-  .areas-create
+  .areas-form
     .modal-header
-      span.h4.font-bold Add New Area
+      span.h4.font-bold(v-if="area.uid") Update Area
+      span.h4.font-bold(v-else) Add New Area
     .modal-body
       p.text-muted
         | Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a
@@ -53,7 +54,7 @@
               UploadComponent(@fileSelelected="fileSelelected")
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
+          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
 </template>
 
 <script>
@@ -83,23 +84,21 @@ export default {
       reservoirs: 'getAllReservoirs'
     })
   },
-  mounted () {
-    this.fetchReservoirs()
-  },
   methods: {
     ...mapActions([
-      'createArea',
+      'submitArea',
       'fetchReservoirs',
+      'getAreaByUid',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     },
-    create () {
-      this.createArea(this.area)
+    submit () {
+      this.submitArea(this.area)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
@@ -108,10 +107,24 @@ export default {
     }
   },
   mounted () {
-    this.area.size_unit = this.options.size_units[0].key
-    this.area.location = this.options.locations[0].key
-    this.area.type = this.options.types[0].key
+    this.fetchReservoirs()
+    if (typeof this.data.uid != "undefined") {
+      this.getAreaByUid(this.data.uid)
+        .then(({ data }) =>  {
+          this.area = data
+          this.area.size_unit = data.size.unit.symbol
+          this.area.size = data.size.value
+          this.area.location = data.location.code
+          this.area.reservoir_id = data.reservoir.uid
+        })
+        .catch(error => console.log(error))
+    } else {
+      this.area.size_unit = this.options.size_units[0].key
+      this.area.location = this.options.locations[0].key
+      this.area.type = this.options.types[0].key
+    }
   },
+  props: ['data'],
 }
 </script>
 

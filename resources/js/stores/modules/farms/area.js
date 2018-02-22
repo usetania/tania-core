@@ -17,7 +17,7 @@ const getters = {
 
 const actions = {
 
-  createArea ({ commit, state, getters }, payload) {
+  submitArea ({ commit, state, getters }, payload) {
     const farm = getters.getCurrentFarm
 
     NProgress.start()
@@ -32,13 +32,19 @@ const actions = {
       formData.set('photo', payload.photo)
       formData.set('farm_id', farm.uid)
 
-      FarmApi.ApiCreateArea(farm.uid, formData, ({ data }) => {
-        commit(types.CREATE_AREA, {
-          ...data.data,
-          photo: '/api/farms/' + farm.uid + '/areas/' + data.data.uid + '/photos'
-        })
-        resolve(payload)
-      }, error => reject(error.response))
+      if (payload.uid) {
+        FarmApi.ApiUpdateArea(payload.uid, formData, ({ data }) => {
+          resolve(payload)
+        }, error => reject(error.response))
+      } else {
+        FarmApi.ApiCreateArea(farm.uid, formData, ({ data }) => {
+          commit(types.CREATE_AREA, {
+            ...data.data,
+            photo: '/api/farms/' + farm.uid + '/areas/' + data.data.uid + '/photos'
+          })
+          resolve(payload)
+        }, error => reject(error.response))
+      }
     })
   },
   fetchAreas ({ commit, state, getters }, payload) {

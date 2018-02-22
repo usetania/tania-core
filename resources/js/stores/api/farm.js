@@ -33,6 +33,11 @@ export default {
       'Content-Type': 'multipart/form-data'
     })
   },
+  ApiUpdateArea: (areaid, payload, cbSuccess, cbError) => {
+    http.put('farms/areas/' + areaid, payload, cbSuccess, cbError, {
+      'Content-Type': 'multipart/form-data'
+    })
+  },
   ApiFetchArea: (farmid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/areas', cbSuccess, cbError)
   },
