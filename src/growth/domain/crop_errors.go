@@ -47,6 +47,7 @@ const (
 	CropContainerErrorInvalidType
 	CropContainerErrorInvalidQuantity
 	CropContainerErrorInvalidTrayCell
+	CropContainerErrorCropHasBeenMoved
 
 	CropMaterialErrorInvalidMaterial
 	CropMaterialErrorNotFound
@@ -134,6 +135,8 @@ func (e CropError) Error() string {
 		return "Invalid crop container quantity"
 	case CropContainerErrorInvalidTrayCell:
 		return "Invalid crop container tray cell"
+	case CropContainerErrorCropHasBeenMoved:
+		return "Cannot change quantity and container because the crop batch has doing activity"
 
 	case CropMaterialErrorInvalidMaterial:
 		return "Invalid crop material"

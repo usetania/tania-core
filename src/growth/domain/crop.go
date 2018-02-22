@@ -265,6 +265,19 @@ func (state *Crop) Transition(event interface{}) {
 			LastUpdated:     e.CreatedDate,
 		}
 		state.FarmUID = e.FarmUID
+
+	case CropBatchInventoryChanged:
+		state.InventoryUID = e.InventoryUID
+		state.BatchID = e.BatchID
+
+	case CropBatchTypeChanged:
+		state.Type = e.Type
+
+	case CropBatchContainerChanged:
+		state.Container = e.Container
+		state.InitialArea.CurrentQuantity = e.Container.Quantity
+		state.InitialArea.InitialQuantity = e.Container.Quantity
+
 	case CropBatchMoved:
 		if state.InitialArea.AreaUID == e.SrcAreaUID {
 			ia, ok := e.UpdatedSrcArea.(InitialArea)
@@ -907,7 +920,10 @@ func (c *Crop) ChangeCropType(cropType string) error {
 		return CropError{Code: CropErrorInvalidCropType}
 	}
 
-	c.Type = ct
+	c.TrackChange(CropBatchTypeChanged{
+		UID:  c.UID,
+		Type: ct,
+	})
 
 	return nil
 }
@@ -929,10 +945,17 @@ func (c *Crop) ChangeContainer(quantity int, containerType CropContainerType) er
 		return err
 	}
 
-	c.Container = CropContainer{
-		Quantity: quantity,
-		Type:     containerType,
+	if c.InitialArea.CurrentQuantity != c.InitialArea.InitialQuantity {
+		return CropError{Code: CropContainerErrorInvalidType}
 	}
+
+	c.TrackChange(CropBatchContainerChanged{
+		UID: c.UID,
+		Container: CropContainer{
+			Quantity: quantity,
+			Type:     containerType,
+		},
+	})
 
 	return nil
 }
@@ -951,8 +974,11 @@ func (c *Crop) ChangeInventory(cropService CropService, inventoryUID uuid.UUID) 
 		return err
 	}
 
-	c.InventoryUID = inventory.UID
-	c.BatchID = batchID
+	c.TrackChange(CropBatchInventoryChanged{
+		UID:          c.UID,
+		InventoryUID: inventory.UID,
+		BatchID:      batchID,
+	})
 
 	return nil
 }

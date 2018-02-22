@@ -35,3 +35,31 @@ func (s CropActivityQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Q
 
 	return result
 }
+
+func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		activity := storage.CropActivity{}
+		for _, val := range s.Storage.CropActivityMap {
+			var at storage.ActivityType
+			switch v := activityType.(type) {
+			case storage.SeedActivity:
+				at = v
+			}
+
+			if at != nil && val.UID == uid {
+				activity = val
+			}
+		}
+
+		result <- query.QueryResult{Result: activity}
+
+		close(result)
+	}()
+
+	return result
+}

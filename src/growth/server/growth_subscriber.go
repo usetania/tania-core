@@ -72,9 +72,9 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 		seeding := 0
 		growing := 0
-		if e.Type == domain.GetCropType(domain.CropTypeSeeding) {
+		if srcArea.Type == "SEEDING" {
 			seeding += e.Quantity
-		} else if e.Type == domain.GetCropType(domain.CropTypeGrowing) {
+		} else if srcArea.Type == "GROWING" {
 			growing += e.Quantity
 		}
 
@@ -84,6 +84,87 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		cropRead.FarmUID = e.FarmUID
+
+	case domain.CropBatchTypeChanged:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		cropRead.Type = e.Type.Code
+
+	case domain.CropBatchInventoryChanged:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		queryResult = <-s.MaterialReadQuery.FindByID(e.InventoryUID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		inv, ok := queryResult.Result.(query.CropMaterialQueryResult)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		cropRead.BatchID = e.BatchID
+		cropRead.Inventory = storage.Inventory{
+			UID:       inv.UID,
+			Name:      inv.Name,
+			PlantType: inv.MaterialSeedPlantTypeCode,
+		}
+
+	case domain.CropBatchContainerChanged:
+		queryResult := <-s.CropReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		cr, ok := queryResult.Result.(storage.CropRead)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropRead = &cr
+
+		switch v := e.Container.Type.(type) {
+		case domain.Tray:
+			cropRead.Container = storage.Container{
+				Type:     v.Code(),
+				Cell:     v.Cell,
+				Quantity: e.Container.Quantity,
+			}
+		case domain.Pot:
+			cropRead.Container = storage.Container{
+				Type:     v.Code(),
+				Quantity: e.Container.Quantity,
+			}
+		}
+
+		cropRead.InitialArea.InitialQuantity = e.Container.Quantity
+		cropRead.InitialArea.CurrentQuantity = e.Container.Quantity
+
+		if cropRead.Type == domain.CropTypeSeeding {
+			cropRead.AreaStatus.Seeding = e.Container.Quantity
+		} else if cropRead.Type == domain.CropTypeGrowing {
+			cropRead.AreaStatus.Growing = e.Container.Quantity
+		}
 
 	case domain.CropBatchMoved:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
@@ -444,6 +525,33 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			Quantity:    e.Quantity,
 			SeedingDate: e.CreatedDate,
 		}
+
+	case domain.CropBatchContainerChanged:
+		queryResult := <-s.CropActivityQuery.FindByCropIDAndActivityType(e.UID, storage.SeedActivity{})
+		if queryResult.Error != nil {
+			return queryResult.Error
+		}
+
+		ca, ok := queryResult.Result.(storage.CropActivity)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropActivity = &ca
+
+		seedActivity, ok := ca.ActivityType.(storage.SeedActivity)
+		if !ok {
+			return echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
+		}
+
+		cropActivity.ContainerType = e.Container.Type.Code()
+		cropActivity.ActivityType = storage.SeedActivity{
+			AreaUID:     seedActivity.AreaUID,
+			AreaName:    seedActivity.AreaName,
+			Quantity:    e.Container.Quantity,
+			SeedingDate: time.Now(),
+		}
+		cropActivity.Description = "UPDATED"
 
 	case domain.CropBatchMoved:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)

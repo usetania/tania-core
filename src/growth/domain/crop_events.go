@@ -19,6 +19,22 @@ type CropBatchCreated struct {
 	Quantity       int
 }
 
+type CropBatchTypeChanged struct {
+	UID  uuid.UUID
+	Type CropType
+}
+
+type CropBatchInventoryChanged struct {
+	UID          uuid.UUID
+	InventoryUID uuid.UUID
+	BatchID      string
+}
+
+type CropBatchContainerChanged struct {
+	UID       uuid.UUID
+	Container CropContainer
+}
+
 type CropBatchMoved struct {
 	UID            uuid.UUID
 	Quantity       int

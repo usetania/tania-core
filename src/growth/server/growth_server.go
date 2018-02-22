@@ -89,6 +89,10 @@ func NewGrowthServer(
 func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
+	s.EventBus.Subscribe("CropBatchTypeChanged", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchInventoryChanged", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchContainerChanged", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchContainerChanged", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchHarvested", s.SaveToCropReadModel)
@@ -110,6 +114,7 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/:id/crops/total_batch", s.GetBatchQuantity)
 	g.GET("/areas/:id/crops", s.FindAllCropsByArea)
 	g.POST("/areas/:id/crops", s.SaveAreaCropBatch)
+	g.PUT("/crops/:id", s.UpdateCropBatch)
 	g.GET("/crops/:id", s.FindCropByID)
 	g.POST("/crops/:id/move", s.MoveCrop)
 	g.POST("/crops/:id/harvest", s.HarvestCrop)
@@ -202,6 +207,133 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 
 	data := make(map[string]storage.CropRead)
 	cr, err := MapToCropRead(s, *cropBatch)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	data["data"] = cr
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
+	cropUID, err := uuid.FromString(c.Param("id"))
+	if err != nil {
+		return Error(c, err)
+	}
+
+	cropType := c.FormValue("crop_type")
+	plantType := c.FormValue("plant_type")
+	varietyName := c.FormValue("name")
+	containerQuantity := c.FormValue("container_quantity")
+	containerType := c.FormValue("container_type")
+	containerCell := c.FormValue("container_cell")
+
+	// Validate //
+	result := <-s.CropReadQuery.FindByID(cropUID)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
+
+	cropRead, ok := result.Result.(storage.CropRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	if cropRead.UID == (uuid.UUID{}) {
+		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+	}
+
+	if plantType != "" && varietyName == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "name"))
+	}
+
+	if varietyName != "" && plantType == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "plant_type"))
+	}
+
+	var ct domain.CropContainerType
+	if containerType != "" {
+		switch containerType {
+		case domain.Tray{}.Code():
+			cc, err := strconv.Atoi(containerCell)
+			if err != nil {
+				return Error(c, err)
+			}
+
+			ct = domain.Tray{Cell: cc}
+		case domain.Pot{}.Code():
+			ct = domain.Pot{}
+		default:
+			return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))
+		}
+	}
+
+	if ct != nil && containerQuantity == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "container_quantity"))
+	}
+
+	// Process //
+	eventQueryResult := <-s.CropEventQuery.FindAllByCropID(cropUID)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events := eventQueryResult.Result.([]storage.CropEvent)
+
+	crop := repository.NewCropBatchFromHistory(events)
+
+	if cropType != "" {
+		err = crop.ChangeCropType(cropType)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if plantType != "" && varietyName != "" {
+		queryResult := <-s.MaterialReadQuery.FindMaterialByPlantTypeCodeAndName(plantType, varietyName)
+		if queryResult.Error != nil {
+			return Error(c, queryResult.Error)
+		}
+
+		material, ok := queryResult.Result.(query.CropMaterialQueryResult)
+		if !ok {
+			return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+		}
+
+		if material.UID == (uuid.UUID{}) {
+			return Error(c, NewRequestValidationError(NOT_FOUND, "name"))
+		}
+
+		err := crop.ChangeInventory(s.CropService, material.UID)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	if containerQuantity != "" && ct != nil {
+		cq, err := strconv.Atoi(containerQuantity)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		err = crop.ChangeContainer(cq, ct)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	// Persist //
+	err = <-s.CropEventRepo.Save(crop.UID, crop.Version, crop.UncommittedChanges)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	// Trigger Events //
+	s.publishUncommittedEvents(crop)
+
+	data := make(map[string]storage.CropRead)
+	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
 	}

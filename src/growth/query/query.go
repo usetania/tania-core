@@ -32,6 +32,7 @@ type CropReadQuery interface {
 
 type CropActivityQuery interface {
 	FindAllByCropID(uid uuid.UUID) <-chan QueryResult
+	FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan QueryResult
 }
 
 type MaterialReadQuery interface {
