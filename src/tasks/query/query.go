@@ -32,7 +32,7 @@ type TaskEventQuery interface {
 type TaskReadQuery interface {
 	FindAll() <-chan QueryResult
 	FindByID(taskUID uuid.UUID) <-chan QueryResult
-	QueryTasksWithFilter(params map[string]string) <-chan QueryResult
+	FindTasksWithFilter(params map[string]string) <-chan QueryResult
 }
 
 type ReservoirQuery interface {

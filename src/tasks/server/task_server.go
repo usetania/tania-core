@@ -117,7 +117,7 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 }
 
 func (s TaskServer) FindFilteredTasks(c echo.Context) error {
-	data := make(map[string][]SimpleTask)
+	data := make(map[string][]storage.TaskRead)
 
 	queryparams := make(map[string]string)
 	queryparams["is_due"] = c.QueryParam("is_due")
@@ -126,18 +126,21 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	queryparams["domain"] = c.QueryParam("domain")
 	queryparams["asset_id"] = c.QueryParam("asset_id")
 
-	result := <-s.TaskRepo.FindTasksWithFilter(queryparams)
+	result := <-s.TaskReadQuery.FindTasksWithFilter(queryparams)
 
 	if result.Error != nil {
 		return result.Error
 	}
 
-	Tasks, ok := result.Result.([]domain.Task)
+	tasks, ok := result.Result.([]storage.TaskRead)
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = MapToSimpleTask(Tasks)
+	data["data"] = []storage.TaskRead{}
+	for _, v := range tasks {
+		data["data"] = append(data["data"], v)
+	}
 
 	return c.JSON(http.StatusOK, data)
 }

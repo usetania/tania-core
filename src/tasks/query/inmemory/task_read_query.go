@@ -51,7 +51,7 @@ func (r TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 	return result
 }
 
-func (s TaskReadQueryInMemory) QueryTasksWithFilter(params map[string]string) <-chan query.QueryResult {
+func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -60,11 +60,10 @@ func (s TaskReadQueryInMemory) QueryTasksWithFilter(params map[string]string) <-
 
 		tasks := []storage.TaskRead{}
 		for _, val := range s.Storage.TaskReadMap {
-
 			is_match := true
 
 			// Is Due
-			if value, ok := params["is_due"]; ok {
+			if value, _ := params["is_due"]; value != "" {
 				b, _ := strconv.ParseBool(value)
 				if val.IsDue != b {
 					is_match = false
@@ -72,29 +71,28 @@ func (s TaskReadQueryInMemory) QueryTasksWithFilter(params map[string]string) <-
 			}
 			if is_match {
 				// Priority
-				if value, ok := params["priority"]; ok {
+				if value, _ := params["priority"]; value != "" {
 					if val.Priority != value {
 						is_match = false
 					}
 				}
 				if is_match {
 					// Status
-					if value, ok := params["status"]; ok {
+					if value, _ := params["status"]; value != "" {
 						if val.Status != value {
 							is_match = false
 						}
 					}
 					if is_match {
 						// Domain
-						if value, ok := params["domain"]; ok {
+						if value, _ := params["domain"]; value != "" {
 							if val.Domain != value {
 								is_match = false
 							}
 						}
 						if is_match {
 							// Asset ID
-							if value, ok := params["asset_id"]; ok {
-
+							if value, _ := params["asset_id"]; value != "" {
 								asset_id, _ := uuid.FromString(value)
 								if *val.AssetID != asset_id {
 									is_match = false
