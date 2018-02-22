@@ -31,17 +31,14 @@ const actions = {
       formData.set('reservoir_id', payload.reservoir_id)
       formData.set('photo', payload.photo)
       formData.set('farm_id', farm.uid)
-
-      if (payload.uid) {
+      if (payload.uid != '') {
         FarmApi.ApiUpdateArea(payload.uid, formData, ({ data }) => {
+          commit(types.UPDATE_AREA, data.data)
           resolve(payload)
         }, error => reject(error.response))
       } else {
         FarmApi.ApiCreateArea(farm.uid, formData, ({ data }) => {
-          commit(types.CREATE_AREA, {
-            ...data.data,
-            photo: '/api/farms/' + farm.uid + '/areas/' + data.data.uid + '/photos'
-          })
+          commit(types.CREATE_AREA, data.data)
           resolve(payload)
         }, error => reject(error.response))
       }
@@ -106,6 +103,11 @@ const actions = {
 const mutations = {
   [types.CREATE_AREA] (state, payload) {
     state.areas.push(payload)
+  },
+  [types.UPDATE_AREA] (state, payload) {
+    const areas = state.areas;
+    var updatedAreas = areas.map(area => (area.uid === payload.uid) ? payload : area);
+    state.areas = Object.assign({}, updatedAreas);
   },
   [types.SET_AREA] (state, payload) {
     state.area = payload
