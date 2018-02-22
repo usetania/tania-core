@@ -122,14 +122,14 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "9cbbadb9-74bd-4d60-86b5-30283a2895e4",
-								"type": "text/javascript",
 								"exec": [
 									"var data = JSON.parse(responseBody)",
 									"if (data.data) {",
 									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
 									"}"
-								]
+								],
+								"id": "9cbbadb9-74bd-4d60-86b5-30283a2895e4",
+								"type": "text/javascript"
 							}
 						}
 					],
@@ -148,13 +148,13 @@
 									"description": "required. string.",
 									"key": "name",
 									"type": "text",
-									"value": "Bayam Lu Hsieh"
+									"value": "Tomato Super One"
 								},
 								{
 									"description": "required. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.",
 									"key": "plant_type",
 									"type": "text",
-									"value": "VEGETABLE"
+									"value": "FRUIT"
 								},
 								{
 									"description": "required. float.",
@@ -1695,6 +1695,28 @@
 						"description": null
 					},
 					"response": []
+				},
+				{
+					"name": "Get Material By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},
@@ -1704,24 +1726,24 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "1932c410-6c41-459e-8624-05f7025dfe3a",
-						"type": "text/javascript",
 						"exec": [
 							"var data = JSON.parse(responseBody)",
 							"if (data.data) {",
 							"    pm.environment.set(\"FARM_ID\", data.data.uid);   ",
 							"}"
-						]
+						],
+						"id": "1932c410-6c41-459e-8624-05f7025dfe3a",
+						"type": "text/javascript"
 					}
 				},
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "e209025f-8988-4097-893a-34bf382171e7",
-						"type": "text/javascript",
 						"exec": [
 							""
-						]
+						],
+						"id": "e209025f-8988-4097-893a-34bf382171e7",
+						"type": "text/javascript"
 					}
 				}
 			],
@@ -1737,46 +1759,40 @@
 					"mode": "urlencoded",
 					"urlencoded": [
 						{
+							"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char",
 							"key": "name",
-							"value": "My Farm 1",
 							"type": "text",
-							"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char"
+							"value": "My Farm 1"
 						},
 						{
-							"key": "description",
-							"value": "",
-							"type": "text",
-							"description": "Optional"
-						},
-						{
+							"description": "Required",
 							"key": "latitude",
-							"value": "10.00",
 							"type": "text",
-							"description": "Required"
+							"value": "10.00"
 						},
 						{
+							"description": "Required",
 							"key": "longitude",
-							"value": "11.00",
 							"type": "text",
-							"description": "Required"
+							"value": "11.00"
 						},
 						{
+							"description": "Required. options: organic, hydroponic",
 							"key": "farm_type",
-							"value": "hydroponic",
 							"type": "text",
-							"description": "Required. options: organic, hydroponic"
+							"value": "organic"
 						},
 						{
+							"description": "Required: options example: ID. This should be got from backend.",
 							"key": "country_code",
-							"value": "ID",
 							"type": "text",
-							"description": "Required: options example: ID. This should be got from backend."
+							"value": "ID"
 						},
 						{
+							"description": "Required: options example: JK. This should be got from backend.",
 							"key": "city_code",
-							"value": "JK",
 							"type": "text",
-							"description": "Required: options example: JK. This should be got from backend."
+							"value": "JK"
 						}
 					]
 				},
@@ -2049,6 +2065,257 @@
 					]
 				},
 				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Update Farm",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "My Farm Updated",
+							"type": "text",
+							"description": "optional. string"
+						},
+						{
+							"key": "latitude",
+							"value": "12.10",
+							"type": "text",
+							"description": "optional. string.\nrequired if longitude is not empty"
+						},
+						{
+							"key": "longitude",
+							"value": "13.20",
+							"type": "text",
+							"description": "optional. string.\nrequired if latitude is not empty"
+						},
+						{
+							"key": "farm_type",
+							"value": "hydroponic",
+							"type": "text",
+							"description": "optional. Options: organic, hydroponic, aquaponic, mushroom, livestock, fisheries, permaculture"
+						},
+						{
+							"key": "country_code",
+							"value": "AU",
+							"type": "text",
+							"description": "optional: options example: ID. This should be got from backend.\nrequired if city_code is not empty."
+						},
+						{
+							"key": "city_code",
+							"value": "QLD",
+							"type": "text",
+							"description": "optional: options example: JK. This should be got from backend.\nrequired if country_code is not empty"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"{{FARM_ID}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Reservoir",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "name",
+							"value": "My Res Updated",
+							"type": "text",
+							"description": "optional. string"
+						},
+						{
+							"key": "type",
+							"value": "BUCKET",
+							"description": "optional. Options: BUCKET, TAP.\nrequired if capacity is not empty",
+							"type": "text"
+						},
+						{
+							"key": "capacity",
+							"value": "30",
+							"description": "optional. numeric.\nrequired if type == BUCKET",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/reservoirs/{{RESERVOIR_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"reservoirs",
+						"{{RESERVOIR_ID}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Area",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "My Area Updated",
+							"type": "text",
+							"description": "optional. string."
+						},
+						{
+							"key": "size",
+							"value": "23",
+							"type": "text",
+							"description": "optional. numeric.\nrequired if size_unit is not empty"
+						},
+						{
+							"key": "size_unit",
+							"value": "Ha",
+							"type": "text",
+							"description": "optional. Options: m2, Ha.\nrequired if size is not empty"
+						},
+						{
+							"key": "type",
+							"value": "GROWING",
+							"type": "text",
+							"description": "optional. Options: SEEDING, GROWING"
+						},
+						{
+							"key": "location",
+							"value": "INDOOR",
+							"type": "text",
+							"description": "optional. Options: INDOOR, OUTDOOR"
+						},
+						{
+							"key": "reservoir_id",
+							"value": "{{RESERVOIR_ID}}",
+							"type": "text",
+							"description": "optional"
+						},
+						{
+							"key": "photo",
+							"description": "optional",
+							"type": "file",
+							"src": "Screen Shot 2018-02-13 at 10.18.21 AM.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"areas",
+						"{{AREA_ID}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Crop Batch",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "crop_type",
+							"value": "GROWING",
+							"description": "optional. Options: SEEDING, GROWING",
+							"type": "text"
+						},
+						{
+							"key": "plant_type",
+							"value": "FRUIT",
+							"description": "optional. Options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.\nrequired if `name` is not empty",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Tomato Super One",
+							"description": "optional. This should be gotten from `Get Farms's Available Inventories`.\nrequired if plant_type is not empty",
+							"type": "text"
+						},
+						{
+							"key": "container_quantity",
+							"value": "22",
+							"description": "optional. numeric.\nrequired if container_type is not empty",
+							"type": "text"
+						},
+						{
+							"key": "container_type",
+							"value": "TRAY",
+							"description": "optional. Options: POT, TRAY.\nrequired if container_quantity is not empty",
+							"type": "text"
+						},
+						{
+							"key": "container_cell",
+							"value": "30",
+							"description": "optional. numeric.\nrequired if container_type is TRAY.",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"farms",
+						"crops",
+						"{{CROP_ID}}"
+					]
+				},
+				"description": ""
 			},
 			"response": []
 		},
@@ -2679,7 +2946,7 @@
 						},
 						{
 							"key": "inventory_id",
-							"value": "{{AGROCHEM_ID}}",
+							"value": "{{MATERIAL_ID}}",
 							"description": "required for CROP domain",
 							"type": "text"
 						},
@@ -2859,7 +3126,7 @@
 			},
 			"response": [
 				{
-					"id": "c5c93d9d-8b1f-42b8-afe1-a5bf555d5525",
+					"id": "d0acab25-379b-4c8a-a67f-6c04ac6e8fe5",
 					"name": "Get Tasks under Asset",
 					"originalRequest": {
 						"method": "GET",
@@ -2969,7 +3236,7 @@
 					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
 				},
 				{
-					"id": "2ef195ea-fb62-4512-8973-9aa87dbaedbc",
+					"id": "e3ae29ba-f543-4450-897b-095c8f74abfc",
 					"name": "Get Tasks that are \"due\"",
 					"originalRequest": {
 						"method": "GET",
@@ -3080,7 +3347,7 @@
 					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
 				},
 				{
-					"id": "067c0e4b-6819-41cf-9a75-7c6a442fb682",
+					"id": "80f51663-3744-46d6-8879-4346672a4d31",
 					"name": "Get Tasks that are \"URGENT\"",
 					"originalRequest": {
 						"method": "GET",
@@ -3191,7 +3458,7 @@
 					"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
 				},
 				{
-					"id": "113bd9e9-9875-4d5b-a4e4-a1f0c522ab4d",
+					"id": "2505cac0-89ea-476f-9873-b0b210621bdc",
 					"name": "Get Tasks under \"CROP\"",
 					"originalRequest": {
 						"method": "GET",
@@ -3834,13 +4101,13 @@
 			"response": []
 		},
 		{
-			"name": "Count Farm's Areas",
+			"name": "Count Total Farm's Areas",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"body": {},
 				"url": {
-					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/count",
+					"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/total",
 					"host": [
 						"{{API_HOST}}"
 					],
@@ -3848,7 +4115,7 @@
 						"farms",
 						"{{FARM_ID}}",
 						"areas",
-						"count"
+						"total"
 					]
 				},
 				"description": ""
