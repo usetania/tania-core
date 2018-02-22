@@ -105,9 +105,8 @@ const mutations = {
     state.areas.push(payload)
   },
   [types.UPDATE_AREA] (state, payload) {
-    const areas = state.areas;
-    var updatedAreas = areas.map(area => (area.uid === payload.uid) ? payload : area);
-    state.areas = Object.assign({}, updatedAreas);
+    const areas = state.areas
+    state.areas = areas.map(area => (area.uid === payload.uid) ? payload : area)
   },
   [types.SET_AREA] (state, payload) {
     state.area = payload
