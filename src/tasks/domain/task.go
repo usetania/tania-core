@@ -19,19 +19,19 @@ type ServiceResult struct {
 }
 
 type Task struct {
-	UID           uuid.UUID         `json:"uid"`
-	Title         string            `json:"title"`
-	Description   string            `json:"description"`
-	CreatedDate   time.Time         `json:"created_date"`
-	DueDate       *time.Time        `json:"due_date, omitempty"`
-	CompletedDate *time.Time        `json:"completed_date"`
-	Priority      string            `json:"priority"`
-	Status        string            `json:"status"`
-	Domain        string            `json:"domain"`
-	DomainDetails domain.TaskDomain `json:"domain_details"`
-	Category      string            `json:"category"`
-	IsDue         bool              `json:"is_due"`
-	AssetID       *uuid.UUID        `json:"asset_id"`
+	UID           uuid.UUID  `json:"uid"`
+	Title         string     `json:"title"`
+	Description   string     `json:"description"`
+	CreatedDate   time.Time  `json:"created_date"`
+	DueDate       *time.Time `json:"due_date, omitempty"`
+	CompletedDate *time.Time `json:"completed_date"`
+	Priority      string     `json:"priority"`
+	Status        string     `json:"status"`
+	Domain        string     `json:"domain"`
+	DomainDetails TaskDomain `json:"domain_details"`
+	Category      string     `json:"category"`
+	IsDue         bool       `json:"is_due"`
+	AssetID       *uuid.UUID `json:"asset_id"`
 
 	// Events
 	Version            int

@@ -5,10 +5,10 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
+	deadlock "github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"sync"
 	"testing"
 	"time"
 )
@@ -40,8 +40,8 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 	// Given
 	done := make(chan bool)
 
-	rwMutex := sync.RWMutex{}
-	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task), Lock: rwMutex}
+	rwMutex := deadlock.RWMutex{}
+	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task), Lock: &rwMutex}
 	repo := NewTaskRepositoryInMemory(&taskStorage)
 
 	title := "My Title"
@@ -94,11 +94,11 @@ func TestTaskInMemoryFindWithFilter(t *testing.T) {
 	var result, tc1_result, tc2_result, tc3_result, tc4_result, tc5_result RepositoryResult
 	go func() {
 		// Given
-		<-repo.Save(&task1)
-		<-repo.Save(&task2)
-		<-repo.Save(&task3)
-		<-repo.Save(&task4)
-		<-repo.Save(&task5)
+		<-repo.Save(task1)
+		<-repo.Save(task2)
+		<-repo.Save(task3)
+		<-repo.Save(task4)
+		<-repo.Save(task5)
 
 		// When
 		result = <-repo.FindAll()
