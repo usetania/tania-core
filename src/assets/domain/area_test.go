@@ -22,6 +22,16 @@ func (m AreaServiceMock) FindReservoirByID(uid uuid.UUID) (AreaReservoirServiceR
 	return args.Get(0).(AreaReservoirServiceResult), nil
 }
 
+func (m AreaServiceMock) CountCropsByAreaID(areaUID uuid.UUID) (int, error) {
+	args := m.Called(areaUID)
+	return args.Get(0).(int), nil
+}
+
+type countCropsResult struct {
+	AreaUID uuid.UUID
+	Count   int
+}
+
 func TestCreateArea(t *testing.T) {
 	// Given
 	farmUID, _ := uuid.NewV4()
@@ -30,7 +40,11 @@ func TestCreateArea(t *testing.T) {
 	reservoirUID, _ := uuid.NewV4()
 	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	areaService := mockAreaService(farmResult, reservoirResult)
+	countCropsResult := countCropsResult{
+		AreaUID: uuid.UUID{},
+		Count:   5,
+	}
+	areaService := mockAreaService(farmResult, reservoirResult, countCropsResult)
 
 	// When
 	area, err := CreateArea(
@@ -60,7 +74,12 @@ func TestInvalidCreateArea(t *testing.T) {
 	reservoirUID, _ := uuid.NewV4()
 	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	areaService := mockAreaService(farmResult, reservoirResult)
+	countCropsResult := countCropsResult{
+		AreaUID: uuid.UUID{},
+		Count:   5,
+	}
+
+	areaService := mockAreaService(farmResult, reservoirResult, countCropsResult)
 
 	var tests = []struct {
 		Name          string
@@ -115,7 +134,12 @@ func TestAreaCreateRemoveNote(t *testing.T) {
 	reservoirUID, _ := uuid.NewV4()
 	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	areaService := mockAreaService(farmResult, reservoirResult)
+	countCropsResult := countCropsResult{
+		AreaUID: uuid.UUID{},
+		Count:   5,
+	}
+
+	areaService := mockAreaService(farmResult, reservoirResult, countCropsResult)
 
 	area, areaErr := CreateArea(
 		areaService,
@@ -169,7 +193,12 @@ func TestAreaChangePhoto(t *testing.T) {
 	reservoirUID, _ := uuid.NewV4()
 	reservoirResult := AreaReservoirServiceResult{UID: reservoirUID}
 
-	areaService := mockAreaService(farmResult, reservoirResult)
+	countCropsResult := countCropsResult{
+		AreaUID: uuid.UUID{},
+		Count:   5,
+	}
+
+	areaService := mockAreaService(farmResult, reservoirResult, countCropsResult)
 
 	area, areaErr := CreateArea(
 		areaService,
@@ -212,6 +241,8 @@ func mockAreaService(results ...interface{}) *AreaServiceMock {
 			areaServiceMock.On("FindFarmByID", res.UID).Return(res)
 		case AreaReservoirServiceResult:
 			areaServiceMock.On("FindReservoirByID", res.UID).Return(res)
+		case countCropsResult:
+			areaServiceMock.On("CountCropsByAreaID", res.AreaUID).Return(res.Count)
 		}
 	}
 
