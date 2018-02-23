@@ -15,18 +15,23 @@ const getters = {
 
 const actions = {
 
-  createCrop ({ commit, state, getters }, payload) {
+  submitCrop ({ commit, state, getters }, payload) {
     const farm = getters.getCurrentFarm
     NProgress.start()
     return new Promise((resolve, reject) => {
-      let areaId = payload.initial_area
-      FarmApi
-        .ApiCreateCrop(areaId, payload, ({ data }) => {
-          payload = data.data
-          payload.farm_id = farm.uid
-          commit(types.CREATE_CROP, payload)
+      if (payload.uid != '') {
+        FarmApi.ApiUpdateCrop(payload.uid, payload, ({ data }) => {
+          commit(types.UPDATE_CROP, data.data)
           resolve(payload)
         }, error => reject(error.response))
+      } else {
+        let areaId = payload.initial_area
+        FarmApi
+          .ApiCreateCrop(areaId, payload, ({ data }) => {
+            commit(types.CREATE_CROP, data.data)
+            resolve(payload)
+        }, error => reject(error.response))
+      }
     })
   },
   fetchCrops ({ commit, state, getters }, payload) {
@@ -145,6 +150,10 @@ const actions = {
 const mutations = {
   [types.CREATE_CROP] (state, payload) {
     state.crops.push(payload)
+  },
+  [types.UPDATE_CROP] (state, payload) {
+    const crops = state.crops
+    state.crops = crops.map(crop => (crop.uid === payload.uid) ? payload : crop)
   },
   [types.SET_CROP] (state, payload) {
     state.crops = payload

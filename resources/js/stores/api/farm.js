@@ -56,6 +56,9 @@ export default {
   ApiCreateCrop: (areaid, payload, cbSuccess, cbError) => {
     http.post('farms/areas/' + areaid + '/crops' , payload, cbSuccess, cbError)
   },
+  ApiUpdateCrop: (cropid, payload, cbSuccess, cbError) => {
+    http.put('farms/crops/' + cropid, payload, cbSuccess, cbError)
+  },
   ApiFetchAreaCrop: (areaid, cbSuccess, cbError) => {
     http.get('farms/areas/' + areaid + '/crops' , cbSuccess, cbError)
   },

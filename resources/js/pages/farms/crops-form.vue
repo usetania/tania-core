@@ -1,7 +1,8 @@
 <template lang="pug">
-  .crops-create(v-if="loading === false")
+  .crops-form(v-if="loading === false")
     .modal-header
-      span.h4.font-bold Add a New Batch
+      span.h4.font-bold(v-if="crop.uid") Update Crop
+      span.h4.font-bold(v-else) Add a New Batch
     .modal-body
       p.text-muted
         | Crop Batch is a quantity or consignment of crops done at one time.
@@ -67,7 +68,7 @@ import { Containers } from '@/stores/helpers/farms/crop'
 import { StubCrop } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 export default {
-  name: "FarmCropCreate",
+  name: "FarmCropForm",
   computed: {
     ...mapGetters({
       areas: 'getAllAreas',
@@ -78,7 +79,9 @@ export default {
         for (var inventory in this.inventories) {
           if (this.inventories[inventory].plant_type === this.crop.plant_type) {
             cropVarieties = this.inventories[inventory].names
-            this.crop.name = ""
+            if (!cropVarieties.includes(this.crop.name)) {
+              this.crop.name = ''
+            }
             break
           }
         }
@@ -109,7 +112,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createCrop',
+      'submitCrop',
       'typeChanged',
       'fetchFarmInventories'
     ]),
@@ -119,12 +122,12 @@ export default {
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     },
-    create () {
-      this.createCrop(this.crop)
+    submit () {
+      this.submitCrop(this.crop)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
@@ -135,6 +138,19 @@ export default {
         this.crop.container_cell = 0
       }
     }
-  }
+  },
+  mounted () {
+    if (typeof this.data.uid != "undefined") {
+      this.crop.uid = this.data.uid
+      this.crop.crop_type = this.data.type
+      this.crop.initial_area = this.data.initial_area.area_id
+      this.crop.plant_type = this.data.inventory.plant_type
+      this.crop.name = this.data.inventory.name
+      this.crop.container_quantity = this.data.container.quantity
+      this.crop.container_type = this.data.container.type
+      this.crop.container_cell = this.data.container.cell
+    }
+  },
+  props: ['data'],
 }
 </script>

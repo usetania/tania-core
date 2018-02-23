@@ -21,20 +21,17 @@ const actions = {
     NProgress.start()
     return new Promise((resolve, reject) => {
       if (payload.uid != '') {
-        console.log('update')
         FarmApi.ApiUpdateReservoir(payload.uid, payload, ({ data }) => {
           commit(types.UPDATE_RESERVOIR, data.data)
           resolve(payload)
         }, error => reject(error.response))
       } else {
-        console.log('create')
         FarmApi
           .ApiCreateReservoir(farm.uid, payload, ({ data }) => {
             commit(types.CREATE_RESERVOIR, data.data)
             resolve(payload)
           }, error => reject(error.response))
       }
-
     })
   },
   fetchReservoirs ({ commit, state, getters }, payload) {

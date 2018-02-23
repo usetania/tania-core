@@ -1,7 +1,7 @@
 <template lang="pug">
   .crops.col
     modal(v-if="showModal" @close="showModal = false")
-      farmCropCreate
+      farmCropForm(:data="data")
     .wrapper-md
       h1.m-t.font-thin.h3.text-black Crops
       .row
@@ -26,7 +26,7 @@
           a.btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
             i.fa.fa-plus
             | Add a New Batch
-        FarmCropsListing(:crops="crops" :domain="'CROPS'")
+        FarmCropsListing(:crops="crops" :domain="'CROPS'" @editCrop="editCrop")
 </template>
 
 <script>
@@ -35,7 +35,7 @@ import Modal from '@/components/modal'
 export default {
   name: "FarmCrops",
   components: {
-    FarmCropCreate: () => import('./crops-create.vue'),
+    FarmCropForm: () => import('./crops-form.vue'),
     FarmCropsListing: () => import('./crops-listing.vue'),
     Modal
   },
@@ -55,6 +55,14 @@ export default {
       'fetchCrops',
       'getInformation',
     ]),
+    editCrop (crop) {
+      this.showModal = true
+      if (crop) {
+        this.data = crop
+      } else {
+        this.data = {}
+      }
+    }
   },
   mounted () {
     this.fetchCrops()
