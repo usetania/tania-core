@@ -16,6 +16,9 @@ export default {
   ApiCreateReservoir: (farmid, payload, cbSuccess, cbError) => {
     http.post('farms/' + farmid + '/reservoirs', payload, cbSuccess, cbError)
   },
+  ApiUpdateReservoir: (reservoirid, payload, cbSuccess, cbError) => {
+    http.put('farms/reservoirs/' + reservoirid, payload, cbSuccess, cbError)
+  },
   ApiFetchReservoir: (farmid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/reservoirs', cbSuccess, cbError)
   },

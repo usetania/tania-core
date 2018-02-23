@@ -1,7 +1,8 @@
 <template lang="pug">
-  .reservoirs-create.col
+  .reservoirs-form.col
     .modal-header
-      span.h4.font-bold Add New Reservoir
+      span.h4.font-bold(v-if="reservoir.uid") Update Reservoir
+      span.h4.font-bold(v-else) Add New Reservoir
     .modal-body
       small.text-muted Reservoir is a water source for your farm. It can be a direct line from well, or water tank that has volume/capacity.
       error-message(:message="message.error_message")
@@ -21,7 +22,7 @@
           span.help-block.text-danger(v-show="errors.has('capacity')") {{ errors.first('capacity') }}
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
+          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
 </template>
 
 
@@ -40,20 +41,20 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createReservoir'
+      'submitReservoir'
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     },
-    create () {
-      this.createReservoir(this.reservoir)
+    submit () {
+      console.log(this.reservoir)
+      this.submitReservoir(this.reservoir)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
-
     },
     typeChanged (type) {
       if (type === 'bucket') {
@@ -62,6 +63,15 @@ export default {
         this.reservoir.capacity = 0
       }
     },
-  }
+  },
+  mounted () {
+    if (typeof this.data.uid != "undefined") {
+      this.reservoir.uid = this.data.uid
+      this.reservoir.name = this.data.name
+      this.reservoir.type = this.data.water_source.type
+      this.reservoir.capacity = this.data.water_source.capacity
+    }
+  },
+  props: ['data'],
 }
 </script>

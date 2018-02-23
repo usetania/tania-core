@@ -1,7 +1,7 @@
 <template lang="pug">
   .areas.col
     modal(v-if="showModal" @close="showModal = false")
-      farmAreaCreate(:data="data")
+      farmAreaForm(:data="data")
     .wrapper-md
       a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
@@ -43,7 +43,7 @@ export default {
     })
   },
   components: {
-    FarmAreaCreate: () => import('./areas-form.vue'),
+    FarmAreaForm: () => import('./areas-form.vue'),
     Modal
   },
   mounted () {

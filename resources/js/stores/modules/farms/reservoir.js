@@ -15,18 +15,26 @@ const getters = {
 }
 
 const actions = {
-  createReservoir ({ commit, state, getters }, payload) {
+  submitReservoir ({ commit, state, getters }, payload) {
     const farm = getters.getCurrentFarm
 
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi
-        .ApiCreateReservoir(farm.uid, payload, ({ data }) => {
-          payload = data.data
-          payload.farm_id = farm.uid
-          commit(types.CREATE_RESERVOIR, payload)
+      if (payload.uid != '') {
+        console.log('update')
+        FarmApi.ApiUpdateReservoir(payload.uid, payload, ({ data }) => {
+          commit(types.UPDATE_RESERVOIR, data.data)
           resolve(payload)
         }, error => reject(error.response))
+      } else {
+        console.log('create')
+        FarmApi
+          .ApiCreateReservoir(farm.uid, payload, ({ data }) => {
+            commit(types.CREATE_RESERVOIR, data.data)
+            resolve(payload)
+          }, error => reject(error.response))
+      }
+
     })
   },
   fetchReservoirs ({ commit, state, getters }, payload) {
@@ -79,6 +87,10 @@ const actions = {
 const mutations = {
   [types.CREATE_RESERVOIR] (state, payload) {
     state.reservoirs.push(payload)
+  },
+  [types.UPDATE_RESERVOIR] (state, payload) {
+    const reservoirs = state.reservoirs
+    state.reservoirs = reservoirs.map(reservoir => (reservoir.uid === payload.uid) ? payload : reservoir)
   },
   [types.SET_RESERVOIR] (state, payload) {
     state.reservoir = payload

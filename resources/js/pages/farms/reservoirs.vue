@@ -1,9 +1,9 @@
 <template lang="pug">
   .reservoirs.col
     modal(v-if="showModal" @close="showModal = false")
-      farmReservoirCreate
+      FarmReservoirForm(:data="data")
     .wrapper-md
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
+      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="openModal()")
         i.fa.fa-plus
         | Add Reservoir
       h1.m-n.font-thin.h3.text-black Water Reservoir
@@ -19,6 +19,7 @@
               th Source Type
               th Capacity
               th Used In
+              th
           tbody
             tr(v-for="reservoir in reservoirs")
               td: router-link(:to="{ name: 'FarmReservoir', params: { id: reservoir.uid } }") {{ reservoir.name }}
@@ -29,6 +30,9 @@
                 span(v-for="(area, index) in reservoir.installed_to_areas")
                   | {{ area.name }}
                   span(v-if="index+1 < reservoir.installed_to_areas.length") , 
+              td
+                a.pull-right(style="cursor: pointer;" @click="openModal(reservoir)")
+                  i.fa.fa-edit
 </template>
 
 <script>
@@ -43,7 +47,7 @@ export default {
     })
   },
   components: {
-    FarmReservoirCreate: () => import('./reservoirs-create.vue'),
+    FarmReservoirForm: () => import('./reservoirs-form.vue'),
     Modal
   },
   data () {
@@ -60,6 +64,14 @@ export default {
     ]),
     getType(key) {
       return FindReservoirType(key)
+    },
+    openModal(data) {
+      this.showModal = true
+      if (data) {
+        this.data = data
+      } else {
+        this.data = {}
+      }
     }
   }
 }
