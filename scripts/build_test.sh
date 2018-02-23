@@ -6,6 +6,10 @@ set -e
 echo "Running go test.."
 go test ./...
 
+# Create empty sqlite db file. Will be overwritten everytime.
+echo "Create empty sqlite db file"
+touch db/sqlite/tania.db
+
 echo "Building golang binaries..."
 # Build and test Golang
 make linux-arm linux-amd64 windows osxcross

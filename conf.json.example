@@ -2,5 +2,5 @@
     "DemoMode": false,
     "UploadPathArea": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas",
     "UploadPathCrop": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/crops",
-    "SqlitePath": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/sqlite/tania.db"
+    "SqlitePath": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/db/sqlite/tania.db"
 }

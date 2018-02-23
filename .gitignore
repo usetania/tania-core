@@ -22,6 +22,7 @@ storage.db
 notes.md
 .vscode
 conf.json
+db/sqlite/tania.db
 
 /resources/tests/unit/coverage/
 /resources/tests/assets/screenshots/
