@@ -31,7 +31,7 @@ import { ReservoirTypes } from '@/stores/helpers/farms/reservoir'
 import { StubReservoir, StubMessage } from '@/stores/stubs'
 import { mapActions } from 'vuex'
 export default {
-  name: "FarmReservoirCreate",
+  name: "FarmReservoirForm",
   data () {
     return {
       message: Object.assign({}, StubMessage),

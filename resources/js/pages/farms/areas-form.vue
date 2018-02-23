@@ -63,7 +63,7 @@ import { StubArea, StubMessage } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 import UploadComponent from '@/components/upload'
 export default {
-  name: "FarmAreasCreate",
+  name: "FarmAreasForm",
   components: {
     UploadComponent
   },
