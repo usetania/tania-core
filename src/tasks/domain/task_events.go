@@ -30,6 +30,7 @@ type TaskCreated struct {
 }
 
 type TaskModified struct {
+	UID           uuid.UUID
 	Title         string
 	Description   string
 	Priority      string

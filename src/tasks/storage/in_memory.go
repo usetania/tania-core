@@ -85,9 +85,10 @@ func (taskRead *TaskRead) BuildTaskFromTaskRead(t domain.Task) (*domain.Task, er
 }
 
 // CreateTask
-func CreateTaskModifiedEvent(title string, description string, duedate *time.Time, priority string, taskdomain domain.TaskDomain, taskcategory string, assetid *uuid.UUID) (*domain.TaskModified, error) {
+func CreateTaskModifiedEvent(uid uuid.UUID, title string, description string, duedate *time.Time, priority string, taskdomain domain.TaskDomain, taskcategory string, assetid *uuid.UUID) (*domain.TaskModified, error) {
 
 	event := domain.TaskModified{
+		UID:           uid,
 		Title:         title,
 		Description:   description,
 		Priority:      priority,

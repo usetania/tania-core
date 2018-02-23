@@ -299,7 +299,11 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	taskModifiedEvent, _ := s.createTaskModifiedEvent(taskRead, c)
+	taskModifiedEvent, err := s.createTaskModifiedEvent(taskRead, c)
+	if err != nil {
+		return Error(c, err)
+	}
+
 	updated_task.TrackChange(*taskModifiedEvent)
 
 	// Save new TaskEvent
@@ -348,6 +352,12 @@ func (s *TaskServer) createTaskModifiedEvent(taskRead storage.TaskRead, c echo.C
 	asset_id_ptr := (*uuid.UUID)(nil)
 	if len(asset_id) == 0 {
 		asset_id_ptr = taskRead.AssetID
+	} else {
+		asset_id, err := uuid.FromString(asset_id)
+		if err != nil {
+			return &domain.TaskModified{}, Error(c, err)
+		}
+		asset_id_ptr = &asset_id
 	}
 
 	// Change Task Category & Domain Details
@@ -370,7 +380,7 @@ func (s *TaskServer) createTaskModifiedEvent(taskRead storage.TaskRead, c echo.C
 		details = taskRead.DomainDetails
 	}
 
-	event, err := storage.CreateTaskModifiedEvent(title, description, due_ptr, priority, details, category, asset_id_ptr)
+	event, err := storage.CreateTaskModifiedEvent(taskRead.UID, title, description, due_ptr, priority, details, category, asset_id_ptr)
 
 	if err != nil {
 		return &domain.TaskModified{}, Error(c, err)
