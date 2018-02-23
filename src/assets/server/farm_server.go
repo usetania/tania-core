@@ -53,8 +53,6 @@ type FarmServer struct {
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer(
 	db *sql.DB,
-	farmEventStorage *storage.FarmEventStorage,
-	farmReadStorage *storage.FarmReadStorage,
 	areaEventStorage *storage.AreaEventStorage,
 	areaReadStorage *storage.AreaReadStorage,
 	reservoirEventStorage *storage.ReservoirEventStorage,

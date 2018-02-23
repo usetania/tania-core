@@ -27,7 +27,6 @@ func main() {
 	e := echo.New()
 
 	// Initialize all In-memory storage, so it can be used in all server
-	farmEventStorage := assetsstorage.CreateFarmEventStorage()
 	farmReadStorage := assetsstorage.CreateFarmReadStorage()
 
 	areaEventStorage := assetsstorage.CreateAreaEventStorage()
@@ -54,8 +53,6 @@ func main() {
 
 	farmServer, err := server.NewFarmServer(
 		db,
-		farmEventStorage,
-		farmReadStorage,
 		areaEventStorage,
 		areaReadStorage,
 		reservoirEventStorage,
