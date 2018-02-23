@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -302,7 +301,6 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 
 	taskModifiedEvent, _ := s.createTaskModifiedEvent(taskRead, c)
 	updated_task.TrackChange(*taskModifiedEvent)
-	fmt.Println(updated_task)
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updated_task.UID, 0, updated_task.UncommittedChanges)
@@ -313,7 +311,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(updated_task)
 
-	data["data"] = updated_task
+	data["data"] = *updated_task
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -585,10 +583,9 @@ func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {
 			name := structhelper.GetName(v)
-			fmt.Println("Publishing event:")
-			fmt.Println(name)
 			s.EventBus.Publish(name, v)
 		}
+	default:
 	}
 
 	return nil

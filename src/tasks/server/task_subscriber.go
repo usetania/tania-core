@@ -25,9 +25,11 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead.IsDue = e.IsDue
 		taskRead.AssetID = e.AssetID
 	case domain.TaskModified:
-		fmt.Println("Task Modified")
+	case domain.TaskCompleted:
+	case domain.TaskCancelled:
+	case domain.TaskDue:
 	default:
-		fmt.Println("Task Event not known")
+		fmt.Println("Unknown Task Event")
 	}
 
 	err := <-s.TaskReadRepo.Save(taskRead)

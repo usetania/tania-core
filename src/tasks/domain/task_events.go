@@ -34,6 +34,7 @@ type TaskModified struct {
 	Description   string
 	Priority      string
 	DueDate       *time.Time
+	Domain        string
 	DomainDetails TaskDomain
 	Category      string
 	AssetID       *uuid.UUID
@@ -56,4 +57,13 @@ type TaskCancelled struct {
 	DomainDetails TaskDomain
 	CreatedDate   time.Time
 	CancelledDate time.Time
+}
+
+type TaskDue struct {
+	UID           uuid.UUID
+	AssetID       *uuid.UUID
+	Domain        string
+	Category      string
+	DomainDetails TaskDomain
+	DueDate       *time.Time
 }
