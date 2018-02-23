@@ -9,21 +9,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type FarmStorage struct {
-	Lock    *deadlock.RWMutex
-	FarmMap map[uuid.UUID]domain.Farm
-}
-
-func CreateFarmStorage() *FarmStorage {
-	rwMutex := deadlock.RWMutex{}
-	deadlock.Opts.DeadlockTimeout = time.Second * 10
-	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("FARM STORAGE DEADLOCK!")
-	}
-
-	return &FarmStorage{FarmMap: make(map[uuid.UUID]domain.Farm), Lock: &rwMutex}
-}
-
 type FarmEventStorage struct {
 	Lock       *deadlock.RWMutex
 	FarmEvents []FarmEvent

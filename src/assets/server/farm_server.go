@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain/service"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/query/inmemory"
+	"github.com/Tanibox/tania-server/src/assets/query/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
@@ -50,6 +52,7 @@ type FarmServer struct {
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer(
+	db *sql.DB,
 	farmEventStorage *storage.FarmEventStorage,
 	farmReadStorage *storage.FarmReadStorage,
 	areaEventStorage *storage.AreaEventStorage,
@@ -61,10 +64,10 @@ func NewFarmServer(
 	cropReadStorage *growthstorage.CropReadStorage,
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
-	farmEventRepo := repository.NewFarmEventRepositoryInMemory(farmEventStorage)
-	farmEventQuery := inmemory.NewFarmEventQueryInMemory(farmEventStorage)
-	farmReadRepo := repository.NewFarmReadRepositoryInMemory(farmReadStorage)
-	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
+	farmEventRepo := repository.NewFarmEventRepositorySqlite(db)
+	farmEventQuery := sqlite.NewFarmEventQuerySqlite(db)
+	farmReadRepo := repository.NewFarmReadRepositorySqlite(db)
+	farmReadQuery := sqlite.NewFarmReadQuerySqlite(db)
 
 	areaEventRepo := repository.NewAreaEventRepositoryInMemory(areaEventStorage)
 	areaReadRepo := repository.NewAreaReadRepositoryInMemory(areaReadStorage)

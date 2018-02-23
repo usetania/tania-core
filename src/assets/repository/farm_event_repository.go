@@ -1,6 +1,9 @@
 package repository
 
 import (
+	"database/sql"
+	"encoding/json"
+
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
@@ -16,6 +19,14 @@ type FarmEventRepositoryInMemory struct {
 
 func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) FarmEventRepository {
 	return &FarmEventRepositoryInMemory{Storage: s}
+}
+
+type FarmEventRepositorySqlite struct {
+	DB *sql.DB
+}
+
+func NewFarmEventRepositorySqlite(db *sql.DB) FarmEventRepository {
+	return &FarmEventRepositorySqlite{DB: db}
 }
 
 func NewFarmFromHistory(events []storage.FarmEvent) *domain.Farm {
@@ -46,6 +57,36 @@ func (f *FarmEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		result <- nil
 
+		close(result)
+	}()
+
+	return result
+}
+
+func (f *FarmEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
+	result := make(chan error)
+
+	go func() {
+		stmt, err := f.DB.Prepare(`INSERT INTO FARM_EVENT (FARM_UID, VERSION, EVENTS) VALUES (?, ?, ?)`)
+		if err != nil {
+			result <- err
+			close(result)
+		}
+
+		latestVersion++
+		em, err := json.Marshal(events)
+		if err != nil {
+			result <- err
+			close(result)
+		}
+
+		_, err = stmt.Exec(uid, latestVersion, em)
+		if err != nil {
+			result <- err
+			close(result)
+		}
+
+		result <- nil
 		close(result)
 	}()
 

@@ -6,4 +6,5 @@ type Configuration struct {
 	DemoMode       *bool
 	UploadPathArea *string
 	UploadPathCrop *string
+	SqlitePath     *string
 }
