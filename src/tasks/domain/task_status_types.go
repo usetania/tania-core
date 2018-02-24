@@ -3,7 +3,7 @@ package domain
 const (
 	TaskStatusCreated   = "CREATED"
 	TaskStatusCancelled = "CANCELLED"
-	TaskStatusComplete  = "COMPLETED"
+	TaskStatusCompleted = "COMPLETED"
 )
 
 type TaskStatus struct {
@@ -15,7 +15,7 @@ func FindAllTaskStatus() []TaskStatus {
 	return []TaskStatus{
 		TaskStatus{Code: TaskStatusCreated, Name: "Created"},
 		TaskStatus{Code: TaskStatusCancelled, Name: "Cancelled"},
-		TaskStatus{Code: TaskStatusComplete, Name: "Completed"},
+		TaskStatus{Code: TaskStatusCompleted, Name: "Completed"},
 	}
 }
 

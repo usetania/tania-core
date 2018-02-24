@@ -25,6 +25,7 @@ type Task struct {
 	CreatedDate   time.Time  `json:"created_date"`
 	DueDate       *time.Time `json:"due_date, omitempty"`
 	CompletedDate *time.Time `json:"completed_date"`
+	CancelledDate *time.Time `json:"cancelled_date"`
 	Priority      string     `json:"priority"`
 	Status        string     `json:"status"`
 	Domain        string     `json:"domain"`
@@ -90,10 +91,6 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 	})
 
 	return initial, nil
-}
-
-func (t *Task) NewTaskModifiedEvent() {
-
 }
 
 // ChangeTitle
@@ -229,7 +226,11 @@ func (state *Task) Transition(event interface{}) {
 		state.Category = e.Category
 		state.AssetID = e.AssetID
 	case TaskCancelled:
+		state.CancelledDate = e.CancelledDate
 		state.Status = TaskStatusCancelled
+	case TaskCompleted:
+		state.CompletedDate = e.CompletedDate
+		state.Status = TaskStatusCompleted
 	}
 }
 

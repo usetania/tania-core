@@ -56,6 +56,7 @@ type TaskRead struct {
 	CreatedDate   time.Time         `json:"created_date"`
 	DueDate       *time.Time        `json:"due_date, omitempty"`
 	CompletedDate *time.Time        `json:"completed_date"`
+	CancelledDate *time.Time        `json:"cancelled_date"`
 	Priority      string            `json:"priority"`
 	Status        string            `json:"status"`
 	Domain        string            `json:"domain"`
@@ -117,6 +118,26 @@ func CreateTaskCancelledEvent(uid uuid.UUID, title string, description string, d
 		Category:      taskcategory,
 		AssetID:       assetid,
 		CancelledDate: &cancelTime,
+	}
+
+	return &event
+}
+
+func CreateTaskCompletedEvent(uid uuid.UUID, title string, description string, duedate *time.Time, priority string, taskdomain domain.TaskDomain, taskcategory string, assetid *uuid.UUID) *domain.TaskCompleted {
+
+	completedTime := time.Now()
+
+	event := domain.TaskCompleted{
+		UID:           uid,
+		Title:         title,
+		Description:   description,
+		Priority:      priority,
+		DueDate:       duedate,
+		Domain:        taskdomain.Code(),
+		DomainDetails: taskdomain,
+		Category:      taskcategory,
+		AssetID:       assetid,
+		CompletedDate: &completedTime,
 	}
 
 	return &event
