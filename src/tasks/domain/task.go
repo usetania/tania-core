@@ -228,6 +228,8 @@ func (state *Task) Transition(event interface{}) {
 		state.DomainDetails = e.DomainDetails
 		state.Category = e.Category
 		state.AssetID = e.AssetID
+	case TaskCancelled:
+		state.Status = TaskStatusCancelled
 	}
 }
 

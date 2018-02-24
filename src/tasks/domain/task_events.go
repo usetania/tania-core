@@ -43,28 +43,38 @@ type TaskModified struct {
 
 type TaskCompleted struct {
 	UID           uuid.UUID
-	AssetID       *uuid.UUID
+	Title         string
+	Description   string
+	Priority      string
+	DueDate       *time.Time
 	Domain        string
-	Category      string
 	DomainDetails TaskDomain
-	CompletedDate time.Time
+	Category      string
+	AssetID       *uuid.UUID
+	CompletedDate *time.Time
 }
 
 type TaskCancelled struct {
 	UID           uuid.UUID
-	AssetID       *uuid.UUID
+	Title         string
+	Description   string
+	Priority      string
+	DueDate       *time.Time
 	Domain        string
-	Category      string
 	DomainDetails TaskDomain
-	CreatedDate   time.Time
-	CancelledDate time.Time
+	Category      string
+	AssetID       *uuid.UUID
+	CancelledDate *time.Time
 }
 
 type TaskDue struct {
 	UID           uuid.UUID
-	AssetID       *uuid.UUID
-	Domain        string
-	Category      string
-	DomainDetails TaskDomain
+	Title         string
+	Description   string
+	Priority      string
 	DueDate       *time.Time
+	Domain        string
+	DomainDetails TaskDomain
+	Category      string
+	AssetID       *uuid.UUID
 }

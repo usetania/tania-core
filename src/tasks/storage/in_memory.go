@@ -101,3 +101,23 @@ func CreateTaskModifiedEvent(uid uuid.UUID, title string, description string, du
 
 	return &event, nil
 }
+
+func CreateTaskCancelledEvent(uid uuid.UUID, title string, description string, duedate *time.Time, priority string, taskdomain domain.TaskDomain, taskcategory string, assetid *uuid.UUID) *domain.TaskCancelled {
+
+	cancelTime := time.Now()
+
+	event := domain.TaskCancelled{
+		UID:           uid,
+		Title:         title,
+		Description:   description,
+		Priority:      priority,
+		DueDate:       duedate,
+		Domain:        taskdomain.Code(),
+		DomainDetails: taskdomain,
+		Category:      taskcategory,
+		AssetID:       assetid,
+		CancelledDate: &cancelTime,
+	}
+
+	return &event
+}
