@@ -81,6 +81,7 @@ func (s *TaskServer) InitSubscriber() {
 	s.EventBus.Subscribe(domain.TaskModifiedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCancelledCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCompletedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskDueCode, s.SaveToTaskReadModel)
 }
 
 // Mount defines the TaskServer's endpoints with its handlers
@@ -405,6 +406,13 @@ func (s *TaskServer) createTaskCompletedEvent(task *domain.Task) *domain.TaskCom
 	return event
 }
 
+func (s *TaskServer) createTaskDueEvent(task *domain.Task) *domain.TaskDue {
+
+	event := storage.CreateTaskDueEvent(task.UID, task.Title, task.Description, task.DueDate, task.Priority, task.DomainDetails, task.Category, task.AssetID)
+
+	return event
+}
+
 func (s *TaskServer) updateTaskAttributes(task domain.Task, c echo.Context) (domain.Task, error) {
 
 	// Change Task Title
@@ -615,33 +623,48 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	result := <-s.TaskRepo.FindByID(c.Param("id"))
-	if result.Error != nil {
-		return result.Error
-	}
+	// Get TaskRead By UID
+	readResult := <-s.TaskReadQuery.FindByID(uid)
 
-	task, ok := result.Result.(domain.Task)
+	taskRead, ok := readResult.Result.(storage.TaskRead)
 
-	if task.UID != uid {
+	if taskRead.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	updatedTask, err := s.updateTaskAttributes(task, c)
+	// Get TaskEvent under Task UID
+	eventQueryResult := <-s.TaskEventQuery.FindAllByTaskID(uid)
+	events := eventQueryResult.Result.([]storage.TaskEvent)
+
+	// Build TaskEvents from history
+	task := repository.BuildTaskEventsFromHistory(events)
+
+	// Construct Task from TaskRead attributes
+	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
+
 	if err != nil {
 		return Error(c, err)
 	}
 
-	updatedTask.SetTaskAsDue()
+	// Create TaskDue event
+	taskDueEvent := s.createTaskDueEvent(updatedTask)
 
-	err = <-s.TaskRepo.Save(&updatedTask)
+	// Track Changes
+	updatedTask.TrackChange(*taskDueEvent)
+
+	// Save new TaskEvent
+	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	data["data"] = updatedTask
+	// Trigger Events
+	s.publishUncommittedEvents(updatedTask)
+
+	data["data"] = *updatedTask
 
 	return c.JSON(http.StatusOK, data)
 }

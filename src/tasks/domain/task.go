@@ -231,6 +231,8 @@ func (state *Task) Transition(event interface{}) {
 	case TaskCompleted:
 		state.CompletedDate = e.CompletedDate
 		state.Status = TaskStatusCompleted
+	case TaskDue:
+		state.IsDue = true
 	}
 }
 

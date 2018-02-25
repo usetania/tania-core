@@ -142,3 +142,20 @@ func CreateTaskCompletedEvent(uid uuid.UUID, title string, description string, d
 
 	return &event
 }
+
+func CreateTaskDueEvent(uid uuid.UUID, title string, description string, duedate *time.Time, priority string, taskdomain domain.TaskDomain, taskcategory string, assetid *uuid.UUID) *domain.TaskDue {
+
+	event := domain.TaskDue{
+		UID:           uid,
+		Title:         title,
+		Description:   description,
+		Priority:      priority,
+		DueDate:       duedate,
+		Domain:        taskdomain.Code(),
+		DomainDetails: taskdomain,
+		Category:      taskcategory,
+		AssetID:       assetid,
+	}
+
+	return &event
+}

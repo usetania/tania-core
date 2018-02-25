@@ -66,6 +66,7 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.CompletedDate = e.CompletedDate
 		taskReadFromRepo.Status = domain.TaskStatusCompleted
 		taskRead = &taskReadFromRepo
+
 	case domain.TaskCancelled:
 
 		// Get TaskRead By UID
@@ -83,7 +84,24 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.CancelledDate = e.CancelledDate
 		taskReadFromRepo.Status = domain.TaskStatusCancelled
 		taskRead = &taskReadFromRepo
+
 	case domain.TaskDue:
+
+		// Get TaskRead By UID
+		readResult := <-s.TaskReadQuery.FindByID(e.UID)
+
+		taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
+
+		if taskReadFromRepo.UID != e.UID {
+			return domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+		}
+		if !ok {
+			return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+		}
+
+		taskReadFromRepo.IsDue = true
+		taskRead = &taskReadFromRepo
+
 	default:
 		fmt.Println("Unknown Task Event")
 	}
