@@ -60,13 +60,13 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createMaterial',
+      'submitMaterial',
     ]),
-    create () {
+    submit () {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
       this.inventory.type = "seeding_container"
       this.inventory.quantity_unit = "PIECES"
-      this.createMaterial(this.inventory)
+      this.submitMaterial(this.inventory)
         .then(this.$emit('closeModal'))
         .catch(({ data }) => this.message = data)
     },
@@ -76,13 +76,14 @@ export default {
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     }
   },
   mounted () {
     if (typeof this.data.uid != "undefined") {
+      this.inventory.uid = this.data.uid
       this.inventory.name = this.data.name
       this.inventory.container_type = this.data.type.type_detail.container_type.code
       this.inventory.produced_by = this.data.produced_by

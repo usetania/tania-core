@@ -77,13 +77,13 @@ export default {
   },
   methods: {
     ...mapActions([
-      'createMaterial',
+      'submitMaterial',
       'openPicker',
     ]),
-    create () {
+    submit () {
       this.inventory.expiration_date = moment(this.inventory.expiration_date).format('YYYY-MM-DD')
       this.inventory.type = "plant"
-      this.createMaterial(this.inventory)
+      this.submitMaterial(this.inventory)
         .then(this.$emit('closeModal'))
         .catch(({ data }) => this.message = data)
     },
@@ -96,13 +96,14 @@ export default {
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     }
   },
   mounted () {
     if (typeof this.data.uid != "undefined") {
+      this.inventory.uid = this.data.uid
       this.inventory.name = this.data.name
       this.inventory.plant_type = this.data.type.type_detail.plant_type.code
       this.inventory.produced_by = this.data.produced_by
