@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
+	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	uuid "github.com/satori/go.uuid"
@@ -20,7 +21,7 @@ func (f *FarmEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 	result := make(chan error)
 
 	go func() {
-		stmt, err := f.DB.Prepare(`INSERT INTO FARM_EVENT (FARM_UID, VERSION, EVENTS) VALUES (?, ?, ?)`)
+		stmt, err := f.DB.Prepare(`INSERT INTO FARM_EVENT (FARM_UID, VERSION, CREATED_DATE, EVENTS) VALUES (?, ?, ?, ?)`)
 		if err != nil {
 			result <- err
 			close(result)
@@ -33,7 +34,7 @@ func (f *FarmEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 			close(result)
 		}
 
-		_, err = stmt.Exec(uid, latestVersion, em)
+		_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), em)
 		if err != nil {
 			result <- err
 			close(result)
