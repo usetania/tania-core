@@ -12,8 +12,9 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain/service"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/query/inmemory"
-	"github.com/Tanibox/tania-server/src/assets/query/sqlite"
+	querySqlite "github.com/Tanibox/tania-server/src/assets/query/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/repository"
+	repoSqlite "github.com/Tanibox/tania-server/src/assets/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
@@ -61,20 +62,20 @@ func NewFarmServer(
 	cropReadStorage *growthstorage.CropReadStorage,
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
-	farmEventRepo := repository.NewFarmEventRepositorySqlite(db)
-	farmEventQuery := sqlite.NewFarmEventQuerySqlite(db)
-	farmReadRepo := repository.NewFarmReadRepositorySqlite(db)
-	farmReadQuery := sqlite.NewFarmReadQuerySqlite(db)
+	farmEventRepo := repoSqlite.NewFarmEventRepositorySqlite(db)
+	farmEventQuery := querySqlite.NewFarmEventQuerySqlite(db)
+	farmReadRepo := repoSqlite.NewFarmReadRepositorySqlite(db)
+	farmReadQuery := querySqlite.NewFarmReadQuerySqlite(db)
 
 	areaEventRepo := repository.NewAreaEventRepositoryInMemory(areaEventStorage)
 	areaReadRepo := repository.NewAreaReadRepositoryInMemory(areaReadStorage)
 	areaEventQuery := inmemory.NewAreaEventQueryInMemory(areaEventStorage)
 	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
 
-	reservoirEventRepo := repository.NewReservoirEventRepositorySqlite(db)
-	reservoirEventQuery := sqlite.NewReservoirEventQuerySqlite(db)
-	reservoirReadRepo := repository.NewReservoirReadRepositorySqlite(db)
-	reservoirReadQuery := sqlite.NewReservoirReadQuerySqlite(db)
+	reservoirEventRepo := repoSqlite.NewReservoirEventRepositorySqlite(db)
+	reservoirEventQuery := querySqlite.NewReservoirEventQuerySqlite(db)
+	reservoirReadRepo := repoSqlite.NewReservoirReadRepositorySqlite(db)
+	reservoirReadQuery := querySqlite.NewReservoirReadQuerySqlite(db)
 
 	materialEventRepo := repository.NewMaterialEventRepositoryInMemory(materialEventStorage)
 	materialEventQuery := inmemory.NewMaterialEventQueryInMemory(materialEventStorage)

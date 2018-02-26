@@ -1,5 +1,11 @@
 package repository
 
+import (
+	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/storage"
+	uuid "github.com/satori/go.uuid"
+)
+
 // RepositoryResult is a struct to wrap repository result
 // so its easy to use it in channel
 type RepositoryResult struct {
@@ -12,4 +18,38 @@ type RepositoryResult struct {
 type EventWrapper struct {
 	EventName string
 	EventData interface{}
+}
+
+type FarmEventRepository interface {
+	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
+}
+
+type FarmReadRepository interface {
+	Save(farmRead *storage.FarmRead) <-chan error
+}
+
+func NewFarmFromHistory(events []storage.FarmEvent) *domain.Farm {
+	state := &domain.Farm{}
+	for _, v := range events {
+		state.Transition(v.Event)
+		state.Version++
+	}
+	return state
+}
+
+type ReservoirEventRepository interface {
+	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
+}
+
+type ReservoirReadRepository interface {
+	Save(reservoirRead *storage.ReservoirRead) <-chan error
+}
+
+func NewReservoirFromHistory(events []storage.ReservoirEvent) *domain.Reservoir {
+	state := &domain.Reservoir{}
+	for _, v := range events {
+		state.Transition(v.Event)
+		state.Version++
+	}
+	return state
 }

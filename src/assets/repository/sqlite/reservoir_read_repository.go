@@ -1,58 +1,19 @@
-package repository
+package sqlite
 
 import (
 	"database/sql"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 )
-
-type ReservoirReadRepository interface {
-	Save(reservoirRead *storage.ReservoirRead) <-chan error
-}
-
-type ReservoirReadRepositoryInMemory struct {
-	Storage *storage.ReservoirReadStorage
-}
-
-func NewReservoirReadRepositoryInMemory(s *storage.ReservoirReadStorage) ReservoirReadRepository {
-	return &ReservoirReadRepositoryInMemory{Storage: s}
-}
 
 type ReservoirReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewReservoirReadRepositorySqlite(db *sql.DB) ReservoirReadRepository {
+func NewReservoirReadRepositorySqlite(db *sql.DB) repository.ReservoirReadRepository {
 	return &ReservoirReadRepositorySqlite{DB: db}
-}
-
-type ReservoirReadResult struct {
-	UID                 string
-	Name                string
-	WaterSourceType     string
-	WaterSourceCapacity float32
-	FarmUID             string
-	FarmName            string
-	CreatedDate         string
-}
-
-// Save is to save
-func (f *ReservoirReadRepositoryInMemory) Save(reservoirRead *storage.ReservoirRead) <-chan error {
-	result := make(chan error)
-
-	go func() {
-		f.Storage.Lock.Lock()
-		defer f.Storage.Lock.Unlock()
-
-		f.Storage.ReservoirReadMap[reservoirRead.UID] = *reservoirRead
-
-		result <- nil
-
-		close(result)
-	}()
-
-	return result
 }
 
 func (f *ReservoirReadRepositorySqlite) Save(reservoirRead *storage.ReservoirRead) <-chan error {

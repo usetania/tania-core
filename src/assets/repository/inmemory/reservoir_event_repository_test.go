@@ -1,4 +1,4 @@
-package repository
+package inmemory
 
 import (
 	"testing"
