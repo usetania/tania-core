@@ -18,7 +18,7 @@ make linux-arm linux-amd64 windows osxcross
 echo "Configuring binary for running ..."
 # Setting up configuration
 cp conf.json.example conf.json
-sed -i.bak "s|/Users/user/Code/golang|$TRAVIS_BUILD_DIR/gopath|g" conf.json
+sed -i.bak "s|/Users/user/Code/golang/src/github.com/Tanibox/tania-server|$TRAVIS_BUILD_DIR|g" conf.json
 
 echo "Starting server for E2E testing ..."
 
