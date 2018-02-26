@@ -33,7 +33,7 @@
         button.btn.btn-addon.btn-success.pull-right(type="submit")
           i.fa.fa-plus
           | Save
-        button.btn.btn-default(style="cursor: pointer;" @click="closeModal()") Cancel
+        button.btn.btn-default(type="button" style="cursor: pointer;" @click="closeModal()") Cancel
 </template>
 
 <script>
