@@ -68,7 +68,7 @@ func (f *ReservoirReadRepositorySqlite) Save(reservoirRead *storage.ReservoirRea
 		if count > 0 {
 			_, err = f.DB.Exec(`UPDATE RESERVOIR_READ SET
 				NAME = ?, WATERSOURCE_TYPE = ?, WATERSOURCE_CAPACITY = ?, FARM_UID = ?,
-				FARM_NAME = ?, CREATED_DATE = ?)
+				FARM_NAME = ?, CREATED_DATE = ?
 				WHERE UID = ?`,
 				reservoirRead.Name,
 				reservoirRead.WaterSource.Type,
@@ -82,23 +82,17 @@ func (f *ReservoirReadRepositorySqlite) Save(reservoirRead *storage.ReservoirRea
 				result <- err
 			}
 
-			for _, v := range reservoirRead.Notes {
-				count := 0
-				err := f.DB.QueryRow(`SELECT COUNT(*) FROM RESERVOIR_READ_NOTES WHERE UID = ?`, v.UID).Scan(&count)
+			if len(reservoirRead.Notes) > 0 {
+				// Just delete them all then insert them all again.
+				// We can refactor it later.
+				_, err := f.DB.Exec(`DELETE FROM RESERVOIR_READ_NOTES WHERE RESERVOIR_UID = ?`, reservoirRead.UID)
 				if err != nil {
 					result <- err
 				}
 
-				if count > 0 {
-					_, err := f.DB.Exec(`UPDATE RESERVOIR_READ_NOTES SET CONTENT = ?, CREATED_DATE = ?
-						WHERE UID = ?`, v.Content, v.CreatedDate.Format(time.RFC3339), v.UID)
-
-					if err != nil {
-						result <- err
-					}
-				} else {
+				for _, v := range reservoirRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO RESERVOIR_READ_NOTES (UID, RESERVOIR_UID, CONTENT, CREATED_DATE)
-						VALUES (?, ?, ?, ?)`, v.UID, reservoirRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
+							VALUES (?, ?, ?, ?)`, v.UID, reservoirRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
 
 					if err != nil {
 						result <- err

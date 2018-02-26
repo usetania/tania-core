@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -87,8 +88,11 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 		for key, v := range mapped {
 			if key == "UID" {
-				val := v.(string)
-				uid, _ := uuid.FromString(val)
+				uid, err := makeUUID(v)
+				if err != nil {
+					return nil, err
+				}
+
 				e.UID = uid
 			}
 			if key == "Name" {
@@ -96,33 +100,77 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.Name = val
 			}
 			if key == "WaterSource" {
-				ws, _ := v.(map[string]interface{})
-
-				convertedMap := map[string]float64{}
-				for i2, v2 := range ws {
-					convertedMap[i2] = v2.(float64)
-				}
-
-				if convertedMap["Capacity"] == 0 {
-					e.WaterSource = domain.Tap{}
-				} else {
-					e.WaterSource = domain.Bucket{Capacity: float32(convertedMap["Capacity"])}
-				}
-			}
-			if key == "FarmUID" {
-				val := v.(string)
-				uid, _ := uuid.FromString(val)
-				e.FarmUID = uid
-			}
-			if key == "CreatedDate" {
-				val := v.(string)
-
-				createdDate, err := time.Parse(time.RFC3339, val)
+				ws, err := makeWaterSource(v)
 				if err != nil {
 					return nil, err
 				}
 
-				e.CreatedDate = createdDate
+				e.WaterSource = ws
+			}
+			if key == "FarmUID" {
+				uid, err := makeUUID(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.FarmUID = uid
+			}
+			if key == "CreatedDate" {
+				d, err := makeTime(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.CreatedDate = d
+			}
+		}
+
+		return e, nil
+
+	case "ReservoirWaterSourceChanged":
+		e := domain.ReservoirWaterSourceChanged{}
+
+		for key, v := range mapped {
+			if key == "ReservoirUID" {
+				uid, err := makeUUID(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.ReservoirUID = uid
+			}
+
+			if key == "WaterSource" {
+				ws, err := makeWaterSource(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.WaterSource = ws
+			}
+		}
+
+		return e, nil
+
+	case "ReservoirNameChanged":
+		e := domain.ReservoirNameChanged{}
+
+		for key, v := range mapped {
+			if key == "ReservoirUID" {
+				uid, err := makeUUID(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.ReservoirUID = uid
+			}
+			if key == "Name" {
+				name, ok := v.(string)
+				if !ok {
+					return nil, errors.New("Internal server error. Error type assertion")
+				}
+
+				e.Name = name
 			}
 		}
 
@@ -133,8 +181,7 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 		for key, v := range mapped {
 			if key == "ReservoirUID" {
-				val := v.(string)
-				uid, err := uuid.FromString(val)
+				uid, err := makeUUID(v)
 				if err != nil {
 					return nil, err
 				}
@@ -142,11 +189,11 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.ReservoirUID = uid
 			}
 			if key == "UID" {
-				val := v.(string)
-				uid, err := uuid.FromString(val)
+				uid, err := makeUUID(v)
 				if err != nil {
 					return nil, err
 				}
+
 				e.UID = uid
 			}
 			if key == "Content" {
@@ -154,14 +201,36 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.Content = val
 			}
 			if key == "CreatedDate" {
-				val := v.(string)
-
-				createdDate, err := time.Parse(time.RFC3339, val)
+				d, err := makeTime(v)
 				if err != nil {
 					return nil, err
 				}
 
-				e.CreatedDate = createdDate
+				e.CreatedDate = d
+			}
+		}
+
+		return e, nil
+
+	case "ReservoirNoteRemoved":
+		e := domain.ReservoirNoteRemoved{}
+
+		for key, v := range mapped {
+			if key == "ReservoirUID" {
+				uid, err := makeUUID(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.ReservoirUID = uid
+			}
+			if key == "UID" {
+				uid, err := makeUUID(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.UID = uid
 			}
 		}
 
@@ -169,4 +238,43 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 	}
 
 	return nil, nil
+}
+
+func makeUUID(v interface{}) (uuid.UUID, error) {
+	val := v.(string)
+	uid, err := uuid.FromString(val)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	return uid, nil
+}
+
+func makeTime(v interface{}) (time.Time, error) {
+	val := v.(string)
+
+	createdDate, err := time.Parse(time.RFC3339, val)
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return createdDate, nil
+}
+
+func makeWaterSource(v interface{}) (domain.WaterSource, error) {
+	ws, ok := v.(map[string]interface{})
+	if !ok {
+		return nil, errors.New("Internal server error. Error type assertion")
+	}
+
+	convertedMap := map[string]float64{}
+	for i, v := range ws {
+		convertedMap[i] = v.(float64)
+	}
+
+	if convertedMap["Capacity"] == 0 {
+		return domain.Tap{}, nil
+	}
+
+	return domain.Bucket{Capacity: float32(convertedMap["Capacity"])}, nil
 }

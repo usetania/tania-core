@@ -618,6 +618,9 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 		return Error(c, err)
 	}
 
+	// Publish //
+	s.publishUncommittedEvents(reservoir)
+
 	resRead, err := MapToReservoirRead(s, *reservoir)
 	if err != nil {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
