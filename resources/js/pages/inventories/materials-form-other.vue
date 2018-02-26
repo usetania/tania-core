@@ -2,9 +2,15 @@
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
-        label(for="name") Name
-        input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
-        span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
+        .row
+          .col-xs-6
+            label(for="name") Name
+            input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
+            span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
+          .col-xs-6
+            label.control-label Produced by
+            input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
+            span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
       .form-group
         .row
           .col-xs-6
@@ -20,9 +26,9 @@
               span.input-group-addon Pieces
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
       .form-group
-        label.control-label(for="notes") Additional Notes
-        textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
-        span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
+          label.control-label(for="notes") Additional Notes
+          textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
+          span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")
           i.fa.fa-plus
@@ -35,7 +41,7 @@ import { StubInventory } from '@/stores/stubs'
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment';
 export default {
-  name: 'InventoriesMaterialsCreateLabelCrop',
+  name: 'InventoriesMaterialsFormOther',
   data () {
     return {
       inventory: Object.assign({}, StubInventory)
@@ -47,7 +53,7 @@ export default {
     ]),
     create () {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
-      this.inventory.type = "label_and_crop_support"
+      this.inventory.type = "other"
       this.inventory.quantity_unit = "PIECES"
       this.createMaterial(this.inventory)
         .then(this.$emit('closeModal'))

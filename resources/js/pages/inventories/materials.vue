@@ -2,8 +2,8 @@
   .material.col
     .wrapper-md
       modal(v-if="showModal" @close="showModal = false")
-        InventoriesMaterialCreate
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="showModal = true")
+        InventoriesMaterialForm(:data="data")
+      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="openModal()")
         i.fa.fa-plus
         |Add Material
       h1.m-t.font-thin.h3.text-black Materials
@@ -31,7 +31,7 @@
               td {{ material.quantity.value }} {{ getQuantityUnit(material.quantity.unit) }}
               td {{ material.notes }}
               td
-                a(href="#")
+                a(@click="openModal(material)")
                   i.fa.fa-edit
 </template>
 
@@ -48,10 +48,11 @@ export default {
   },
   components: {
     Modal,
-    InventoriesMaterialCreate: () => import('./materials-create.vue'),
+    InventoriesMaterialForm: () => import('./materials-form.vue'),
   },
   data () {
     return {
+      data: {},
       showModal: false
     }
   },
@@ -65,6 +66,14 @@ export default {
     getQuantityUnit(key) {
       return FindQuantityUnit(key)
     },
+    openModal(data) {
+      this.showModal = true
+      if (data) {
+        this.data = data
+      } else {
+        this.data = {}
+      }
+    }
   },
   mounted () {
     this.fetchMaterials()

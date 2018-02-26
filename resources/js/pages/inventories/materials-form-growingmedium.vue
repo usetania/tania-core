@@ -2,15 +2,20 @@
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
+        label(for="name") Name
+        input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
+        span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
+      .form-group
         .row
           .col-xs-6
-            label(for="name") Name
-            input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
-            span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
+            label(for="quantity") Quantity
+            input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
+            span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
           .col-xs-6
-            label.control-label Produced by
-            input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
-            span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
+            label(for="quantity_unit") Unit
+            select.form-control#quantity_unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity_unit') }" v-model="inventory.quantity_unit" name="quantity_unit")
+              option(v-for="unit in options.quantityUnits" v-bind:value="unit.key") {{ unit.label }}
+            span.help-block.text-danger(v-show="errors.has('quantity_unit')") {{ errors.first('quantity_unit') }}
       .form-group
         .row
           .col-xs-6
@@ -20,11 +25,9 @@
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
             span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
           .col-xs-6
-            label.control-label(for="quantity") Quantity
-            .input-group.m-b
-              input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
-              span.input-group-addon Pieces
-            span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
+            label.control-label Produced by
+            input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
+            span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
       .form-group
         label.control-label(for="notes") Additional Notes
         textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
@@ -38,13 +41,17 @@
 
 <script>
 import { StubInventory } from '@/stores/stubs'
+import { GrowingMediumQuantityUnits } from '@/stores/helpers/inventories/inventory'
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment';
 export default {
-  name: 'InventoriesMaterialsCreatePotHarvest',
+  name: 'InventoriesMaterialsFormGrowingMedium',
   data () {
     return {
-      inventory: Object.assign({}, StubInventory)
+      inventory: Object.assign({}, StubInventory),
+      options: {
+        quantityUnits: Array.from(GrowingMediumQuantityUnits),
+      }
     }
   },
   methods: {
@@ -53,8 +60,7 @@ export default {
     ]),
     create () {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
-      this.inventory.type = "post_harvest_supply"
-      this.inventory.quantity_unit = "PIECES"
+      this.inventory.type = "growing_medium"
       this.createMaterial(this.inventory)
         .then(this.$emit('closeModal'))
         .catch(({ data }) => this.message = data)
@@ -69,6 +75,9 @@ export default {
         }
       })
     }
+  },
+  mounted () {
+    this.inventory.quantity_unit = this.options.quantityUnits[0].key
   }
 }
 </script>

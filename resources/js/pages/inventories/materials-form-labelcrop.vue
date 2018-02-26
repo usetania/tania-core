@@ -2,16 +2,9 @@
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
-        .row
-          .col-xs-6
-            label(for="name") Name
-            input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
-            span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
-          .col-xs-6
-            label(for="container_type") Type
-            select.form-control#container_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('container_type') }" v-model="inventory.container_type" name="container_type")
-              option(v-for="container in options.containers" v-bind:value="container.key") {{ container.label }}s
-            span.help-block.text-danger(v-show="errors.has('container_type')") {{ errors.first('container_type') }}
+        label(for="name") Name
+        input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
+        span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
       .form-group
         .row
           .col-xs-6
@@ -27,15 +20,9 @@
               span.input-group-addon Pieces
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
       .form-group
-        .row
-          .col-xs-6
-            label.control-label Produced by
-            input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
-            span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
-          .col-xs-6
-            label.control-label(for="notes") Additional Notes
-            textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
-            span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
+        label.control-label(for="notes") Additional Notes
+        textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
+        span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")
           i.fa.fa-plus
@@ -45,17 +32,13 @@
 
 <script>
 import { StubInventory } from '@/stores/stubs'
-import { Containers } from '@/stores/helpers/farms/crop'
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment';
 export default {
-  name: 'InventoriesMaterialsCreateLabelCrop',
+  name: 'InventoriesMaterialsFormLabelCrop',
   data () {
     return {
-      inventory: Object.assign({}, StubInventory),
-      options: {
-        containers: Array.from(Containers),
-      }
+      inventory: Object.assign({}, StubInventory)
     }
   },
   methods: {
@@ -64,7 +47,7 @@ export default {
     ]),
     create () {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
-      this.inventory.type = "seeding_container"
+      this.inventory.type = "label_and_crop_support"
       this.inventory.quantity_unit = "PIECES"
       this.createMaterial(this.inventory)
         .then(this.$emit('closeModal'))
@@ -80,9 +63,6 @@ export default {
         }
       })
     }
-  },
-  mounted () {
-    this.inventory.container_type = this.options.containers[0].key
   }
 }
 </script>

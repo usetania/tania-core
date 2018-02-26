@@ -2,9 +2,20 @@
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
-        label(for="name") Name
+        label.control-label(for="name") Variety Name
         input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
         span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
+      .form-group
+        .row
+          .col-xs-6
+            label.control-label(for="plant_type") Plant Type
+            select.form-control#plant_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('plant_type') }" v-model="inventory.plant_type" name="plant_type")
+              option(v-for="plant in options.plantTypes" v-bind:value="plant.key") {{ plant.label }}
+            span.help-block.text-danger(v-show="errors.has('plant_type')") {{ errors.first('plant_type') }}
+          .col-xs-6
+            label.control-label Produced by
+            input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
+            span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
       .form-group
         .row
           .col-xs-6
@@ -25,9 +36,13 @@
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
             span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
           .col-xs-6
-            label.control-label Produced by
-            input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
-            span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
+            label.control-label(for="expiration_date") Expiration date
+            .input-group
+              datepicker#expiration_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('expiration_date') }" v-model="inventory.expiration_date" name="expiration_date" input-class="form-control" ref="openCal")
+              span.input-group-btn
+                button.btn.btn-primary(type="button" v-on:click="openPicker")
+                  i.fa.fa-calendar
+              span.help-block.text-danger(v-show="errors.has('expiration_date')") {{ errors.first('expiration_date') }}
       .form-group
         label.control-label(for="notes") Additional Notes
         textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
@@ -41,32 +56,42 @@
 
 <script>
 import { StubInventory } from '@/stores/stubs'
-import { GrowingMediumQuantityUnits } from '@/stores/helpers/inventories/inventory'
+import { PlantTypes } from '@/stores/helpers/farms/plant'
+import { QuantityUnits } from '@/stores/helpers/inventories/inventory'
 import { mapGetters, mapActions } from 'vuex'
+import Datepicker from 'vuejs-datepicker';
 import moment from 'moment';
 export default {
-  name: 'InventoriesMaterialsCreateGrowingMedium',
+  name: 'InventoriesMaterialsFormSeed',
+  components: {
+    Datepicker
+  },
   data () {
     return {
       inventory: Object.assign({}, StubInventory),
       options: {
-        quantityUnits: Array.from(GrowingMediumQuantityUnits),
+        plantTypes: Array.from(PlantTypes),
+        quantityUnits: Array.from(QuantityUnits),
       }
     }
   },
   methods: {
     ...mapActions([
       'createMaterial',
+      'openPicker',
     ]),
     create () {
-      this.inventory.expiration_date = moment().format('YYYY-MM-DD')
-      this.inventory.type = "growing_medium"
+      this.inventory.expiration_date = moment(this.inventory.expiration_date).format('YYYY-MM-DD')
+      this.inventory.type = "seed"
       this.createMaterial(this.inventory)
         .then(this.$emit('closeModal'))
         .catch(({ data }) => this.message = data)
     },
     closeModal () {
       this.$emit('closeModal')
+    },
+    openPicker () {
+      this.$refs.openCal.showCalendar()
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
@@ -77,8 +102,20 @@ export default {
     }
   },
   mounted () {
-    this.inventory.quantity_unit = this.options.quantityUnits[0].key
-  }
+    if (typeof this.data.uid != "undefined") {
+      this.inventory.name = this.data.name
+      this.inventory.plant_type = this.data.type.type_detail.plant_type.code
+      this.inventory.produced_by = this.data.produced_by
+      this.inventory.quantity = this.data.quantity.value
+      this.inventory.quantity_unit = this.data.quantity.unit
+      this.inventory.price_per_unit = this.data.price_per_unit.amount
+      this.inventory.expiration_date = moment(this.data.expiration_date).format('YYYY-MM-DD')
+      this.inventory.notes = this.data.notes
+    } else {
+      this.inventory.plant_type = this.options.plantTypes[0].key
+      this.inventory.quantity_unit = this.options.quantityUnits[0].key
+    }
+  },
+  props: ['data'],
 }
 </script>
-
