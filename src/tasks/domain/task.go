@@ -40,7 +40,7 @@ type Task struct {
 }
 
 // CreateTask
-func CreateTask(taskservice TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (*Task, error) {
+func CreateTask(taskService TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (*Task, error) {
 	// add validation
 
 	err := validateTaskTitle(title)
@@ -63,7 +63,7 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 		return &Task{}, err
 	}
 
-	err = validateAssetID(taskservice, assetid, taskdomain.Code())
+	err = validateAssetID(taskService, assetid, taskdomain.Code())
 	if err != nil {
 		return &Task{}, err
 	}
@@ -75,7 +75,7 @@ func CreateTask(taskservice TaskService, title string, description string, dueda
 
 	initial := &Task{}
 
-	initial.TrackChange(TaskCreated{
+	initial.TrackChange(taskService, TaskCreated{
 		Title:         title,
 		UID:           uid,
 		Description:   description,
@@ -197,12 +197,17 @@ func (t *Task) SetTaskCompletedDate() {
 
 // Event Tracking
 
-func (state *Task) TrackChange(event interface{}) {
+func (state *Task) TrackChange(taskService TaskService, event interface{}) error {
 	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+	err := state.Transition(taskService, event)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (state *Task) Transition(event interface{}) {
+func (state *Task) Transition(taskService TaskService, event interface{}) error {
 	switch e := event.(type) {
 	case TaskCreated:
 		state.Title = e.Title
@@ -218,13 +223,38 @@ func (state *Task) Transition(event interface{}) {
 		state.IsDue = e.IsDue
 		state.AssetID = e.AssetID
 	case TaskModified:
-		state.Title = e.Title
-		state.Description = e.Description
-		state.DueDate = e.DueDate
-		state.Priority = e.Priority
-		state.DomainDetails = e.DomainDetails
-		state.Category = e.Category
-		state.AssetID = e.AssetID
+		err := state.ChangeTaskTitle(e.Title)
+		if err != nil {
+			return err
+		}
+
+		err = state.ChangeTaskDescription(e.Description)
+		if err != nil {
+			return err
+		}
+
+		err = state.ChangeTaskDueDate(e.DueDate)
+		if err != nil {
+			return err
+		}
+
+		err = state.ChangeTaskPriority(e.Priority)
+		if err != nil {
+			return err
+		}
+
+		state.ChangeTaskDomainDetails(e.DomainDetails)
+
+		err = state.ChangeTaskCategory(e.Category)
+		if err != nil {
+			return err
+		}
+
+		err = state.ChangeTaskAssetID(taskService, e.AssetID)
+		if err != nil {
+			return err
+		}
+
 	case TaskCancelled:
 		state.CancelledDate = e.CancelledDate
 		state.Status = TaskStatusCancelled
@@ -234,6 +264,8 @@ func (state *Task) Transition(event interface{}) {
 	case TaskDue:
 		state.IsDue = true
 	}
+
+	return nil
 }
 
 // Validation

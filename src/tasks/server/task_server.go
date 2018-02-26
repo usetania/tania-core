@@ -293,7 +293,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(events)
+	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
 
 	// Construct Task from TaskRead attributes
 	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
@@ -307,7 +307,10 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	updatedTask.TrackChange(*taskModifiedEvent)
+	err = updatedTask.TrackChange(s.TaskService, *taskModifiedEvent)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
@@ -413,86 +416,6 @@ func (s *TaskServer) createTaskDueEvent(task *domain.Task) *domain.TaskDue {
 	return event
 }
 
-func (s *TaskServer) updateTaskAttributes(task domain.Task, c echo.Context) (domain.Task, error) {
-
-	// Change Task Title
-	title := c.FormValue("title")
-	if len(title) != 0 {
-		err := task.ChangeTaskTitle(title)
-		if err != nil {
-			return task, Error(c, err)
-		}
-	}
-
-	// Change Task Description
-
-	description := c.FormValue("description")
-	if len(description) != 0 {
-		err := task.ChangeTaskDescription(description)
-		if err != nil {
-			return task, Error(c, err)
-		}
-	}
-
-	// Change Task Due Date
-
-	form_date := c.FormValue("due_date")
-	due_ptr := (*time.Time)(nil)
-	if len(form_date) != 0 {
-		due_date, err := time.Parse(time.RFC3339, form_date)
-
-		if err != nil {
-			return task, Error(c, err)
-		}
-		due_ptr = &due_date
-		task.ChangeTaskDueDate(due_ptr)
-	}
-
-	// Change Task Priority
-
-	priority := c.FormValue("priority")
-	if len(priority) != 0 {
-		err := task.ChangeTaskPriority(priority)
-		if err != nil {
-			return task, Error(c, err)
-		}
-	}
-
-	// Change Task Asset
-
-	asset_id := c.FormValue("asset_id")
-	asset_id_ptr := (*uuid.UUID)(nil)
-	if len(asset_id) != 0 {
-		asset_id, err := uuid.FromString(asset_id)
-		if err != nil {
-			return task, Error(c, err)
-		}
-		asset_id_ptr = &asset_id
-		task.ChangeTaskAssetID(s.TaskService, asset_id_ptr)
-	}
-
-	// Change Task Category & Domain Details
-
-	category := c.FormValue("category")
-	if len(category) != 0 {
-		err := task.ChangeTaskCategory(category)
-		if err != nil {
-			return task, Error(c, err)
-		}
-		// Change Domain Details
-
-		inventory_id := c.FormValue("inventory_id")
-		if len(inventory_id) != 0 {
-			details, err := s.CreateTaskDomainByCode(task.Domain, c)
-			if err != nil {
-				return task, Error(c, err)
-			}
-			task.ChangeTaskDomainDetails(details)
-		}
-	}
-	return task, nil
-}
-
 func (s *TaskServer) CancelTask(c echo.Context) error {
 
 	data := make(map[string]domain.Task)
@@ -518,7 +441,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(events)
+	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
 
 	// Construct Task from TaskRead attributes
 	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
@@ -537,8 +460,15 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	taskCancelledEvent := s.createTaskCancelledEvent(updatedTask)
 
 	// Track Changes
-	updatedTask.TrackChange(*taskModifiedEvent)
-	updatedTask.TrackChange(*taskCancelledEvent)
+	err = updatedTask.TrackChange(s.TaskService, *taskModifiedEvent)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = updatedTask.TrackChange(s.TaskService, *taskCancelledEvent)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
@@ -579,7 +509,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(events)
+	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
 
 	// Construct Task from TaskRead attributes
 	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
@@ -598,8 +528,15 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	taskCompletedEvent := s.createTaskCompletedEvent(updatedTask)
 
 	// Track Changes
-	updatedTask.TrackChange(*taskModifiedEvent)
-	updatedTask.TrackChange(*taskCompletedEvent)
+	err = updatedTask.TrackChange(s.TaskService, *taskModifiedEvent)
+	if err != nil {
+		return Error(c, err)
+	}
+
+	err = updatedTask.TrackChange(s.TaskService, *taskCompletedEvent)
+	if err != nil {
+		return Error(c, err)
+	}
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
@@ -640,7 +577,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(events)
+	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
 
 	// Construct Task from TaskRead attributes
 	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
@@ -653,7 +590,10 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	taskDueEvent := s.createTaskDueEvent(updatedTask)
 
 	// Track Changes
-	updatedTask.TrackChange(*taskDueEvent)
+	err = updatedTask.TrackChange(s.TaskService, *taskDueEvent)
+	if err != nil {
+		return err
+	}
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
