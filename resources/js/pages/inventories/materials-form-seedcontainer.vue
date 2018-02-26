@@ -82,8 +82,18 @@ export default {
     }
   },
   mounted () {
-    this.inventory.container_type = this.options.containers[0].key
-  }
+    if (typeof this.data.uid != "undefined") {
+      this.inventory.name = this.data.name
+      this.inventory.container_type = this.data.type.type_detail.container_type.code
+      this.inventory.produced_by = this.data.produced_by
+      this.inventory.quantity = this.data.quantity.value
+      this.inventory.price_per_unit = this.data.price_per_unit.amount
+      this.inventory.notes = this.data.notes
+    } else {
+      this.inventory.container_type = this.options.containers[0].key
+    }
+  },
+  props: ['data'],
 }
 </script>
 

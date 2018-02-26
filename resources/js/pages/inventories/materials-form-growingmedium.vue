@@ -77,8 +77,18 @@ export default {
     }
   },
   mounted () {
-    this.inventory.quantity_unit = this.options.quantityUnits[0].key
-  }
+    if (typeof this.data.uid != "undefined") {
+      this.inventory.name = this.data.name
+      this.inventory.produced_by = this.data.produced_by
+      this.inventory.quantity = this.data.quantity.value
+      this.inventory.quantity_unit = this.data.quantity.unit
+      this.inventory.price_per_unit = this.data.price_per_unit.amount
+      this.inventory.notes = this.data.notes
+    } else {
+      this.inventory.quantity_unit = this.options.quantityUnits[0].key
+    }
+  },
+  props: ['data'],
 }
 </script>
 

@@ -69,7 +69,17 @@ export default {
         }
       })
     }
-  }
+  },
+  mounted () {
+    if (typeof this.data.uid != "undefined") {
+      this.inventory.name = this.data.name
+      this.inventory.produced_by = this.data.produced_by
+      this.inventory.quantity = this.data.quantity.value
+      this.inventory.price_per_unit = this.data.price_per_unit.amount
+      this.inventory.notes = this.data.notes
+    }
+  },
+  props: ['data'],
 }
 </script>
 

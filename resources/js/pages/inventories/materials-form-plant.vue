@@ -102,8 +102,20 @@ export default {
     }
   },
   mounted () {
-    this.inventory.plant_type = this.options.plantTypes[0].key
-    this.inventory.quantity_unit = this.options.quantityUnits[0].key
-  }
+    if (typeof this.data.uid != "undefined") {
+      this.inventory.name = this.data.name
+      this.inventory.plant_type = this.data.type.type_detail.plant_type.code
+      this.inventory.produced_by = this.data.produced_by
+      this.inventory.quantity = this.data.quantity.value
+      this.inventory.quantity_unit = this.data.quantity.unit
+      this.inventory.price_per_unit = this.data.price_per_unit.amount
+      this.inventory.expiration_date = moment(this.data.expiration_date).format('YYYY-MM-DD')
+      this.inventory.notes = this.data.notes
+    } else {
+      this.inventory.plant_type = this.options.plantTypes[0].key
+      this.inventory.quantity_unit = this.options.quantityUnits[0].key
+    }
+  },
+  props: ['data'],
 }
 </script>
