@@ -2,7 +2,6 @@ package server
 
 import (
 	"database/sql"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -72,10 +71,10 @@ func NewFarmServer(
 	areaEventQuery := inmemory.NewAreaEventQueryInMemory(areaEventStorage)
 	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
 
-	reservoirEventRepo := repository.NewReservoirEventRepositoryInMemory(reservoirEventStorage)
-	reservoirEventQuery := inmemory.NewReservoirEventQueryInMemory(reservoirEventStorage)
-	reservoirReadRepo := repository.NewReservoirReadRepositoryInMemory(reservoirReadStorage)
-	reservoirReadQuery := inmemory.NewReservoirReadQueryInMemory(reservoirReadStorage)
+	reservoirEventRepo := repository.NewReservoirEventRepositorySqlite(db)
+	reservoirEventQuery := sqlite.NewReservoirEventQuerySqlite(db)
+	reservoirReadRepo := repository.NewReservoirReadRepositorySqlite(db)
+	reservoirReadQuery := sqlite.NewReservoirReadQuerySqlite(db)
 
 	materialEventRepo := repository.NewMaterialEventRepositoryInMemory(materialEventStorage)
 	materialEventQuery := inmemory.NewMaterialEventQueryInMemory(materialEventStorage)
@@ -767,7 +766,6 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 }
 
 func (s *FarmServer) UpdateArea(c echo.Context) error {
-	fmt.Println("HEHEHEHEHH")
 	validation := RequestValidation{}
 
 	areaUID, err := uuid.FromString(c.Param("id"))

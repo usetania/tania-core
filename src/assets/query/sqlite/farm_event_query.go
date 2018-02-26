@@ -26,7 +26,6 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 		rows, err := f.DB.Query("SELECT * FROM FARM_EVENT WHERE FARM_UID = ? ORDER BY VERSION ASC", uid)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
-			close(result)
 		}
 
 		rowsData := struct {
@@ -39,18 +38,18 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 		for rows.Next() {
 			rows.Scan(&rowsData.ID, &rowsData.FarmUID, &rowsData.Version, &rowsData.Events)
 
-			farmEvent := json.Unmarshal([]byte(rowsData.Events), storage.FarmEvent{})
+			event := storage.FarmEvent{}
+			err := json.Unmarshal([]byte(rowsData.Events), &event)
 			farmUID, err := uuid.FromString(rowsData.FarmUID)
 
 			if err != nil {
 				result <- query.QueryResult{Error: err}
-				close(result)
 			}
 
 			events = append(events, storage.FarmEvent{
 				FarmUID: farmUID,
 				Version: rowsData.Version,
-				Event:   farmEvent,
+				Event:   event,
 			})
 		}
 

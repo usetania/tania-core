@@ -160,6 +160,7 @@ type ReservoirEventStorage struct {
 type ReservoirEvent struct {
 	ReservoirUID uuid.UUID
 	Version      int
+	CreatedDate  time.Time
 	Event        interface{}
 }
 

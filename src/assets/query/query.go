@@ -123,3 +123,8 @@ type ContainerType struct {
 	Code string `json:"code"`
 	Cell int    `json:"cell"`
 }
+
+type EventWrapper struct {
+	EventName string
+	EventData interface{}
+}
