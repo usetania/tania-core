@@ -20,7 +20,6 @@ import (
 
 // TaskServer ties the routes and handlers with injected dependencies
 type TaskServer struct {
-	TaskRepo       repository.TaskRepository
 	TaskEventRepo  repository.TaskEventRepository
 	TaskReadRepo   repository.TaskReadRepository
 	TaskEventQuery query.TaskEventQuery
@@ -45,9 +44,6 @@ func NewTaskServer(
 	taskEventQuery := inmemory.NewTaskEventQueryInMemory(taskEventStorage)
 	taskReadQuery := inmemory.NewTaskReadQueryInMemory(taskReadStorage)
 
-	taskStorage := storage.TaskStorage{TaskMap: make(map[uuid.UUID]domain.Task)}
-	taskRepo := repository.NewTaskRepositoryInMemory(&taskStorage)
-
 	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
 	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
 	materialReadQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
@@ -61,7 +57,6 @@ func NewTaskServer(
 	}
 
 	taskServer := &TaskServer{
-		TaskRepo:       taskRepo,
 		TaskEventRepo:  taskEventRepo,
 		TaskReadRepo:   taskReadRepo,
 		TaskEventQuery: taskEventQuery,

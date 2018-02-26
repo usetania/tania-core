@@ -8,11 +8,6 @@ import (
 	"time"
 )
 
-type TaskStorage struct {
-	Lock    *deadlock.RWMutex
-	TaskMap map[uuid.UUID]domain.Task
-}
-
 type TaskEventStorage struct {
 	Lock       *deadlock.RWMutex
 	TaskEvents []TaskEvent
