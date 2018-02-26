@@ -9,6 +9,7 @@ go test ./...
 # Create empty sqlite db file. Will be overwritten everytime.
 echo "Create empty sqlite db file"
 touch db/sqlite/tania.db
+chmod 775 db/sqlite/tania.db
 
 echo "Building golang binaries..."
 # Build and test Golang
