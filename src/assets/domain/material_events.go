@@ -29,8 +29,9 @@ type MaterialPriceChanged struct {
 }
 
 type MaterialQuantityChanged struct {
-	MaterialUID uuid.UUID
-	Quantity    MaterialQuantity
+	MaterialUID      uuid.UUID
+	MaterialTypeCode string
+	Quantity         MaterialQuantity
 }
 
 type MaterialTypeChanged struct {

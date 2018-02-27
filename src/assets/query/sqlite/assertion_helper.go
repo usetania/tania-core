@@ -111,3 +111,116 @@ func makeAreaLocation(v interface{}) (domain.AreaLocation, error) {
 
 	return domain.GetAreaLocation(convertedMap["Code"]), nil
 }
+
+func makeMaterialPricePerUnit(v interface{}) (domain.PricePerUnit, error) {
+	mapped := v.(map[string]interface{})
+
+	amount := ""
+	currencyCode := ""
+	for i, v2 := range mapped {
+		if i == "amount" {
+			val := v2.(string)
+			amount = val
+		}
+		if i == "code" {
+			val := v2.(string)
+			currencyCode = val
+		}
+	}
+
+	return domain.PricePerUnit{
+		Amount:       amount,
+		CurrencyCode: currencyCode,
+	}, nil
+}
+
+func makeMaterialType(v interface{}) (domain.MaterialType, error) {
+	mapped := v.(map[string]interface{})
+
+	switch mapped["Type"] {
+	case domain.MaterialTypePlantCode:
+		mapped2 := mapped["Data"].(map[string]interface{})
+		mapped3 := mapped2["PlantType"].(map[string]interface{})
+		typeCode := mapped3["code"].(string)
+
+		t, err := domain.CreateMaterialTypePlant(typeCode)
+		if err != nil {
+			return nil, err
+		}
+
+		return t, nil
+
+	case domain.MaterialTypeSeedCode:
+		mapped2 := mapped["Data"].(map[string]interface{})
+		mapped3 := mapped2["PlantType"].(map[string]interface{})
+		typeCode := mapped3["code"].(string)
+
+		t, err := domain.CreateMaterialTypeSeed(typeCode)
+		if err != nil {
+			return nil, err
+		}
+
+		return t, nil
+
+	case domain.MaterialTypeGrowingMediumCode:
+		return domain.MaterialTypeGrowingMedium{}, nil
+
+	case domain.MaterialTypeAgrochemicalCode:
+		mapped2 := mapped["Data"].(map[string]interface{})
+		mapped3 := mapped2["ChemicalType"].(map[string]interface{})
+		typeCode := mapped3["code"].(string)
+
+		t, err := domain.CreateMaterialTypeAgrochemical(typeCode)
+		if err != nil {
+			return nil, err
+		}
+
+		return t, nil
+
+	case domain.MaterialTypeLabelAndCropSupportCode:
+		return domain.MaterialTypeLabelAndCropSupport{}, nil
+
+	case domain.MaterialTypeSeedingContainerCode:
+		mapped2 := mapped["Data"].(map[string]interface{})
+		mapped3 := mapped2["ContainerType"].(map[string]interface{})
+		typeCode := mapped3["code"].(string)
+
+		t, err := domain.CreateMaterialTypeSeedingContainer(typeCode)
+		if err != nil {
+			return nil, err
+		}
+
+		return t, nil
+
+	case domain.MaterialTypePostHarvestSupplyCode:
+		return domain.MaterialTypePostHarvestSupply{}, nil
+
+	case domain.MaterialTypeOtherCode:
+		return domain.MaterialTypeOther{}, nil
+
+	}
+
+	return nil, nil
+}
+
+func makeMaterialQuantity(v interface{}, materialTypeCode string) (domain.MaterialQuantity, error) {
+	mapped := v.(map[string]interface{})
+
+	value := float32(0)
+	qtyUnit := domain.MaterialQuantityUnit{}
+	for i, v2 := range mapped {
+		if i == "value" {
+			val := v2.(float64)
+			value = float32(val)
+		}
+		if i == "unit" {
+			mapped2 := v2.(map[string]interface{})
+			unitCode := mapped2["code"].(string)
+			u := domain.GetMaterialQuantityUnit(materialTypeCode, unitCode)
+
+			qtyUnit = u
+		}
+	}
+
+	return domain.MaterialQuantity{Unit: qtyUnit, Value: value}, nil
+}

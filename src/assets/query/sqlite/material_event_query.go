@@ -98,107 +98,30 @@ func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
 		}
 
 		if v, ok := mapped["PricePerUnit"]; ok {
-			mapped := v.(map[string]interface{})
-
-			for i2, v2 := range mapped {
-				if i2 == "amount" {
-					val := v2.(string)
-					e.PricePerUnit.Amount = val
-				}
-				if i2 == "code" {
-					val := v2.(string)
-					e.PricePerUnit.CurrencyCode = val
-				}
+			val, err := makeMaterialPricePerUnit(v)
+			if err != nil {
+				return nil, err
 			}
+
+			e.PricePerUnit = val
 		}
 
 		if v, ok := mapped["Type"]; ok {
-			mapped := v.(map[string]interface{})
-
-			switch mapped["Type"] {
-			case domain.MaterialTypePlantCode:
-				mapped2 := mapped["Data"].(map[string]interface{})
-				mapped3 := mapped2["PlantType"].(map[string]interface{})
-				typeCode := mapped3["code"].(string)
-
-				t, err := domain.CreateMaterialTypePlant(typeCode)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Type = t
-
-			case domain.MaterialTypeSeedCode:
-				mapped2 := mapped["Data"].(map[string]interface{})
-				mapped3 := mapped2["PlantType"].(map[string]interface{})
-				typeCode := mapped3["code"].(string)
-
-				t, err := domain.CreateMaterialTypeSeed(typeCode)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Type = t
-
-			case domain.MaterialTypeGrowingMediumCode:
-				e.Type = domain.MaterialTypeGrowingMedium{}
-
-			case domain.MaterialTypeAgrochemicalCode:
-				mapped2 := mapped["Data"].(map[string]interface{})
-				mapped3 := mapped2["ChemicalType"].(map[string]interface{})
-				typeCode := mapped3["code"].(string)
-
-				t, err := domain.CreateMaterialTypeAgrochemical(typeCode)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Type = t
-
-			case domain.MaterialTypeLabelAndCropSupportCode:
-				e.Type = domain.MaterialTypeLabelAndCropSupport{}
-
-			case domain.MaterialTypeSeedingContainerCode:
-				mapped2 := mapped["Data"].(map[string]interface{})
-				mapped3 := mapped2["ContainerType"].(map[string]interface{})
-				typeCode := mapped3["code"].(string)
-
-				t, err := domain.CreateMaterialTypeSeedingContainer(typeCode)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Type = t
-
-			case domain.MaterialTypePostHarvestSupplyCode:
-				e.Type = domain.MaterialTypePostHarvestSupply{}
-
-			case domain.MaterialTypeOtherCode:
-				e.Type = domain.MaterialTypeOther{}
-
+			val, err := makeMaterialType(v)
+			if err != nil {
+				return nil, err
 			}
 
-			fmt.Println("E TYPE", e.Type.Code())
+			e.Type = val
 		}
 
 		if v, ok := mapped["Quantity"]; ok {
-			mapped := v.(map[string]interface{})
-
-			for i2, v2 := range mapped {
-				if i2 == "value" {
-					val := v2.(float64)
-					e.Quantity.Value = float32(val)
-				}
-				if i2 == "unit" {
-					mapped2 := v2.(map[string]interface{})
-					fmt.Println("MAPPED 2", mapped2)
-					unitCode := mapped2["code"].(string)
-					fmt.Println("UNIT CODE", unitCode)
-					unit := domain.GetMaterialQuantityUnit(e.Type.Code(), unitCode)
-
-					e.Quantity.Unit = unit
-				}
+			val, err := makeMaterialQuantity(v, e.Type.Code())
+			if err != nil {
+				return nil, err
 			}
+
+			e.Quantity = val
 		}
 
 		if v, ok := mapped["ExpirationDate"]; ok {
@@ -208,7 +131,7 @@ func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
 					return nil, err
 				}
 
-				e.CreatedDate = d
+				e.ExpirationDate = &d
 			}
 		}
 
@@ -237,7 +160,152 @@ func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 		return e, nil
 
-	case "ReservoirWaterSourceChanged":
+	case "MaterialNameChanged":
+		e := domain.MaterialNameChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["Name"]; ok {
+			val := v.(string)
+			e.Name = val
+		}
+
+		return e, nil
+
+	case "MaterialPriceChanged":
+		e := domain.MaterialPriceChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["Price"]; ok {
+			val, err := makeMaterialPricePerUnit(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.Price = val
+		}
+
+		return e, nil
+
+	case "MaterialQuantityChanged":
+		e := domain.MaterialQuantityChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["Quantity"]; ok {
+			typeCode := mapped["MaterialTypeCode"].(string)
+			val, err := makeMaterialQuantity(v, typeCode)
+			if err != nil {
+				return nil, err
+			}
+
+			e.Quantity = val
+		}
+
+		return e, nil
+
+	case "MaterialTypeChanged":
+		e := domain.MaterialTypeChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["MaterialType"]; ok {
+			val, err := makeMaterialType(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialType = val
+		}
+
+		return e, nil
+
+	case "MaterialExpirationDateChanged":
+		e := domain.MaterialExpirationDateChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["ExpirationDate"]; ok {
+			if v != nil {
+				d, err := makeTime(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.ExpirationDate = d
+			}
+		}
+
+	case "MaterialNotesChanged":
+		e := domain.MaterialNotesChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["Notes"]; ok {
+			if v != nil {
+				val := v.(string)
+				e.Notes = val
+			}
+		}
+
+		return e, nil
+
+	case "MaterialProducedByChanged":
+		e := domain.MaterialProducedByChanged{}
+
+		if v, ok := mapped["MaterialUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MaterialUID = uid
+		}
+		if v, ok := mapped["ProducedBy"]; ok {
+			if v != nil {
+				val := v.(string)
+				e.ProducedBy = val
+			}
+		}
+
+		return e, nil
 	}
 
 	return nil, nil
