@@ -288,27 +288,15 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	// Construct Task from TaskRead attributes
-	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	taskModifiedEvent, err := s.createTaskModifiedEvent(taskRead, c)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = updatedTask.TrackChange(s.TaskService, *taskModifiedEvent)
+	updatedTask, err := s.createTaskModifiedEvent(s.TaskService, task, c)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// Save new TaskEvent
-	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
+	err = <-s.TaskEventRepo.Save(updatedTask.UID, updatedTask.Version, updatedTask.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -321,42 +309,42 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) createTaskModifiedEvent(taskRead storage.TaskRead, c echo.Context) (*domain.TaskModified, error) {
+func (s *TaskServer) createTaskModifiedEvent(taskService domain.TaskService, task *domain.Task, c echo.Context) (*domain.Task, error) {
 
 	// Change Task Title
 	title := c.FormValue("title")
 	if len(title) == 0 {
-		title = taskRead.Title
+		title = task.Title
 	}
 
 	// Change Task Description
 	description := c.FormValue("description")
 	if len(description) == 0 {
-		description = taskRead.Description
+		description = task.Description
 	}
 
 	// Change Task Due Date
 	form_date := c.FormValue("due_date")
 	due_ptr := (*time.Time)(nil)
 	if len(form_date) == 0 {
-		due_ptr = taskRead.DueDate
+		due_ptr = task.DueDate
 	}
 
 	// Change Task Priority
 	priority := c.FormValue("priority")
 	if len(priority) == 0 {
-		priority = taskRead.Priority
+		priority = task.Priority
 	}
 
 	// Change Task Asset
 	asset_id := c.FormValue("asset_id")
 	asset_id_ptr := (*uuid.UUID)(nil)
 	if len(asset_id) == 0 {
-		asset_id_ptr = taskRead.AssetID
+		asset_id_ptr = task.AssetID
 	} else {
 		asset_id, err := uuid.FromString(asset_id)
 		if err != nil {
-			return &domain.TaskModified{}, Error(c, err)
+			return &domain.Task{}, Error(c, err)
 		}
 		asset_id_ptr = &asset_id
 	}
@@ -369,46 +357,25 @@ func (s *TaskServer) createTaskModifiedEvent(taskRead storage.TaskRead, c echo.C
 	if len(category) != 0 {
 		inventory_id := c.FormValue("inventory_id")
 		if len(inventory_id) != 0 {
-			details, err = s.CreateTaskDomainByCode(taskRead.Domain, c)
+			details, err = s.CreateTaskDomainByCode(task.Domain, c)
 			if err != nil {
-				return &domain.TaskModified{}, Error(c, err)
+				return &domain.Task{}, Error(c, err)
 			}
 		} else {
-			details = taskRead.DomainDetails
+			details = task.DomainDetails
 		}
 	} else {
-		category = taskRead.Category
-		details = taskRead.DomainDetails
+		category = task.Category
+		details = task.DomainDetails
 	}
 
-	event, err := storage.CreateTaskModifiedEvent(taskRead.UID, title, description, due_ptr, priority, details, category, asset_id_ptr)
+	task.UpdateTask(taskService, title, description, due_ptr, priority, details, category, asset_id_ptr)
 
 	if err != nil {
-		return &domain.TaskModified{}, Error(c, err)
+		return &domain.Task{}, Error(c, err)
 	}
 
-	return event, nil
-}
-
-func (s *TaskServer) createTaskCancelledEvent(task *domain.Task) *domain.TaskCancelled {
-
-	event := storage.CreateTaskCancelledEvent(task.UID, task.Title, task.Description, task.DueDate, task.Priority, task.DomainDetails, task.Category, task.AssetID)
-
-	return event
-}
-
-func (s *TaskServer) createTaskCompletedEvent(task *domain.Task) *domain.TaskCompleted {
-
-	event := storage.CreateTaskCompletedEvent(task.UID, task.Title, task.Description, task.DueDate, task.Priority, task.DomainDetails, task.Category, task.AssetID)
-
-	return event
-}
-
-func (s *TaskServer) createTaskDueEvent(task *domain.Task) *domain.TaskDue {
-
-	event := storage.CreateTaskDueEvent(task.UID, task.Title, task.Description, task.DueDate, task.Priority, task.DomainDetails, task.Category, task.AssetID)
-
-	return event
+	return task, nil
 }
 
 func (s *TaskServer) CancelTask(c echo.Context) error {
@@ -436,37 +403,17 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	// Construct Task from TaskRead attributes
-	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
-
+	updatedTask, err := s.createTaskModifiedEvent(s.TaskService, task, c)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	// Create TaskModified event
-	taskModifiedEvent, err := s.createTaskModifiedEvent(taskRead, c)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	// Create TaskCancelled event
-	taskCancelledEvent := s.createTaskCancelledEvent(updatedTask)
-
-	// Track Changes
-	err = updatedTask.TrackChange(s.TaskService, *taskModifiedEvent)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = updatedTask.TrackChange(s.TaskService, *taskCancelledEvent)
-	if err != nil {
-		return Error(c, err)
-	}
+	updatedTask.CancelTask(s.TaskService)
 
 	// Save new TaskEvent
-	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
+	err = <-s.TaskEventRepo.Save(updatedTask.UID, updatedTask.Version, updatedTask.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -504,37 +451,17 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	// Construct Task from TaskRead attributes
-	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
-
+	updatedTask, err := s.createTaskModifiedEvent(s.TaskService, task, c)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	// Create TaskModified event
-	taskModifiedEvent, err := s.createTaskModifiedEvent(taskRead, c)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	// Create TaskCompleted event
-	taskCompletedEvent := s.createTaskCompletedEvent(updatedTask)
-
-	// Track Changes
-	err = updatedTask.TrackChange(s.TaskService, *taskModifiedEvent)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	err = updatedTask.TrackChange(s.TaskService, *taskCompletedEvent)
-	if err != nil {
-		return Error(c, err)
-	}
+	updatedTask.CompleteTask(s.TaskService)
 
 	// Save new TaskEvent
-	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
+	err = <-s.TaskEventRepo.Save(updatedTask.UID, updatedTask.Version, updatedTask.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -572,34 +499,20 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskEventsFromHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	// Construct Task from TaskRead attributes
-	updatedTask, err := taskRead.BuildTaskFromTaskRead(*task)
-
-	if err != nil {
-		return Error(c, err)
-	}
-
-	// Create TaskDue event
-	taskDueEvent := s.createTaskDueEvent(updatedTask)
-
-	// Track Changes
-	err = updatedTask.TrackChange(s.TaskService, *taskDueEvent)
-	if err != nil {
-		return err
-	}
+	task.SetTaskAsDue(s.TaskService)
 
 	// Save new TaskEvent
-	err = <-s.TaskEventRepo.Save(updatedTask.UID, 0, updatedTask.UncommittedChanges)
+	err = <-s.TaskEventRepo.Save(task.UID, task.Version, task.UncommittedChanges)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	// Trigger Events
-	s.publishUncommittedEvents(updatedTask)
+	s.publishUncommittedEvents(task)
 
-	data["data"] = *updatedTask
+	data["data"] = *task
 
 	return c.JSON(http.StatusOK, data)
 }

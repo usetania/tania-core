@@ -48,6 +48,11 @@ func CreateTask(taskService TaskService, title string, description string, dueda
 		return &Task{}, err
 	}
 
+	err = validateTaskDescription(description)
+	if err != nil {
+		return &Task{}, err
+	}
+
 	err = validateTaskDueDate(duedate)
 	if err != nil {
 		return &Task{}, err
@@ -93,106 +98,82 @@ func CreateTask(taskService TaskService, title string, description string, dueda
 	return initial, nil
 }
 
-// ChangeTitle
-func (t *Task) ChangeTaskTitle(newtitle string) error {
+// UpdateTask
+func (t *Task) UpdateTask(taskService TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (*Task, error) {
 
-	err := validateTaskTitle(newtitle)
+	err := validateTaskTitle(title)
 	if err != nil {
-		return err
+		return &Task{}, err
 	}
 
-	t.Title = newtitle
-
-	return nil
-}
-
-// ChangeDescription
-func (t *Task) ChangeTaskDescription(newdescription string) error {
-
-	err := validateTaskDescription(newdescription)
+	err = validateTaskDescription(description)
 	if err != nil {
-		return err
+		return &Task{}, err
 	}
 
-	t.Description = newdescription
-
-	return nil
-}
-
-// ChangeDueDate
-func (t *Task) ChangeTaskDueDate(newdate *time.Time) error {
-
-	err := validateTaskDueDate(newdate)
+	err = validateTaskDueDate(duedate)
 	if err != nil {
-		return err
+		return &Task{}, err
 	}
-	t.DueDate = newdate
-
-	return nil
-}
-
-// ChangePriority
-func (t *Task) ChangeTaskPriority(newpriority string) error {
-
-	err := validateTaskPriority(newpriority)
+	err = validateTaskPriority(priority)
 	if err != nil {
-		return err
+		return &Task{}, err
 	}
-	t.Priority = newpriority
 
-	return nil
-}
-
-// ChangeStatus
-func (t *Task) ChangeTaskStatus(newstatus string) error {
-
-	err := validateTaskStatus(newstatus)
+	err = validateTaskCategory(taskcategory)
 	if err != nil {
-		return err
+		return &Task{}, err
 	}
-	t.Status = newstatus
 
-	return nil
-
-}
-
-// ChangeTaskAssetID
-func (t *Task) ChangeTaskAssetID(taskService TaskService, newasset *uuid.UUID) error {
-
-	err := validateAssetID(taskService, newasset, t.Domain)
+	err = validateAssetID(taskService, assetid, taskdomain.Code())
 	if err != nil {
-		return err
+		return &Task{}, err
 	}
-	t.AssetID = newasset
-	return nil
-}
 
-// ChangeCategory
-func (t *Task) ChangeTaskCategory(newtaskcategory string) error {
-
-	err := validateTaskCategory(newtaskcategory)
-	if err != nil {
-		return err
+	event := TaskModified{
+		UID:           t.UID,
+		Title:         title,
+		Description:   description,
+		Priority:      priority,
+		DueDate:       duedate,
+		Domain:        taskdomain.Code(),
+		DomainDetails: taskdomain,
+		Category:      taskcategory,
+		AssetID:       assetid,
 	}
-	t.Category = newtaskcategory
 
-	return nil
-}
+	t.TrackChange(taskService, event)
 
-// Chnage TaskDomainDetails
-func (t *Task) ChangeTaskDomainDetails(newdetails TaskDomain) {
-	t.DomainDetails = newdetails
+	return t, nil
 }
 
 // SetTaskAsDue
-func (t *Task) SetTaskAsDue() {
-	t.IsDue = true
+func (t *Task) SetTaskAsDue(taskService TaskService) {
+	t.TrackChange(taskService, TaskDue{
+		UID: t.UID,
+	})
 }
 
-// SetTaskCompletedDate()
-func (t *Task) SetTaskCompletedDate() {
-	currenttime := time.Now()
-	t.CompletedDate = &currenttime
+// CompleteTask
+func (t *Task) CompleteTask(taskService TaskService) {
+	completedTime := time.Now()
+
+	t.TrackChange(taskService, TaskCompleted{
+		UID:           t.UID,
+		Status:        TaskCompletedCode,
+		CompletedDate: &completedTime,
+	})
+}
+
+// CompleteTask
+func (t *Task) CancelTask(taskService TaskService) {
+	cancelledTime := time.Now()
+
+	t.TrackChange(taskService, TaskCancelled{
+		UID:           t.UID,
+		Status:        TaskCancelledCode,
+		CancelledDate: &cancelledTime,
+	})
 }
 
 // Event Tracking
@@ -223,38 +204,13 @@ func (state *Task) Transition(taskService TaskService, event interface{}) error 
 		state.IsDue = e.IsDue
 		state.AssetID = e.AssetID
 	case TaskModified:
-		err := state.ChangeTaskTitle(e.Title)
-		if err != nil {
-			return err
-		}
-
-		err = state.ChangeTaskDescription(e.Description)
-		if err != nil {
-			return err
-		}
-
-		err = state.ChangeTaskDueDate(e.DueDate)
-		if err != nil {
-			return err
-		}
-
-		err = state.ChangeTaskPriority(e.Priority)
-		if err != nil {
-			return err
-		}
-
-		state.ChangeTaskDomainDetails(e.DomainDetails)
-
-		err = state.ChangeTaskCategory(e.Category)
-		if err != nil {
-			return err
-		}
-
-		err = state.ChangeTaskAssetID(taskService, e.AssetID)
-		if err != nil {
-			return err
-		}
-
+		state.Title = e.Title
+		state.Description = e.Description
+		state.DueDate = e.DueDate
+		state.Priority = e.Priority
+		state.DomainDetails = e.DomainDetails
+		state.Category = e.Category
+		state.AssetID = e.AssetID
 	case TaskCancelled:
 		state.CancelledDate = e.CancelledDate
 		state.Status = TaskStatusCancelled

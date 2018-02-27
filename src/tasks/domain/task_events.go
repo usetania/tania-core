@@ -43,38 +43,16 @@ type TaskModified struct {
 
 type TaskCompleted struct {
 	UID           uuid.UUID  `json:"uid"`
-	Title         string     `json:"title"`
-	Description   string     `json:"description"`
-	Priority      string     `json:"priority"`
-	DueDate       *time.Time `json:"due_date"`
-	Domain        string     `json:"domain"`
-	DomainDetails TaskDomain `json:"domain_details"`
-	Category      string     `json:"category"`
-	AssetID       *uuid.UUID `json:"asset_id"`
+	Status        string     `json:"status"`
 	CompletedDate *time.Time `json:"completed_date"`
 }
 
 type TaskCancelled struct {
 	UID           uuid.UUID  `json:"uid"`
-	Title         string     `json:"title"`
-	Description   string     `json:"description"`
-	Priority      string     `json:"priority"`
-	DueDate       *time.Time `json:"due_date"`
-	Domain        string     `json:"domain"`
-	DomainDetails TaskDomain `json:"domain_details"`
-	Category      string     `json:"category"`
-	AssetID       *uuid.UUID `json:"asset_id"`
+	Status        string     `json:"status"`
 	CancelledDate *time.Time `json:"cancelled_date"`
 }
 
 type TaskDue struct {
-	UID           uuid.UUID  `json:"uid"`
-	Title         string     `json:"title"`
-	Description   string     `json:"description"`
-	Priority      string     `json:"priority"`
-	DueDate       *time.Time `json:"due_date"`
-	Domain        string     `json:"domain"`
-	DomainDetails TaskDomain `json:"domain_details"`
-	Category      string     `json:"category"`
-	AssetID       *uuid.UUID `json:"asset_id"`
+	UID uuid.UUID `json:"uid"`
 }
