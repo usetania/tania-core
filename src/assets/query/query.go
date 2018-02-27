@@ -48,8 +48,6 @@ type MaterialEventQuery interface {
 type MaterialReadQuery interface {
 	FindAll() <-chan QueryResult
 	FindByID(materialUID uuid.UUID) <-chan QueryResult
-	FindAllMaterialByPlantType(plantTypeCode string) <-chan QueryResult
-	FindMaterialByPlantTypeAndName(plantTypeCode string, name string) <-chan QueryResult
 }
 
 type QueryResult struct {
