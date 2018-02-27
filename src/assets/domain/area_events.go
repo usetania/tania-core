@@ -52,10 +52,10 @@ type AreaPhotoAdded struct {
 }
 
 type AreaNoteAdded struct {
-	AreaUID      uuid.UUID
-	UID          uuid.UUID
-	Content      string
-	CreatedDated time.Time
+	AreaUID     uuid.UUID
+	UID         uuid.UUID
+	Content     string
+	CreatedDate time.Time
 }
 
 type AreaNoteRemoved struct {

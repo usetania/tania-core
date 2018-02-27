@@ -390,7 +390,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 		areaRead.Notes = append(areaRead.Notes, storage.AreaNote{
 			UID:         e.UID,
 			Content:     e.Content,
-			CreatedDate: e.CreatedDated,
+			CreatedDate: e.CreatedDate,
 		})
 
 	case domain.AreaNoteRemoved:

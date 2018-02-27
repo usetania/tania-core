@@ -30,9 +30,10 @@ type AreaEventStorage struct {
 }
 
 type AreaEvent struct {
-	AreaUID uuid.UUID
-	Version int
-	Event   interface{}
+	AreaUID     uuid.UUID
+	Version     int
+	CreatedDate time.Time
+	Event       interface{}
 }
 
 func CreateAreaEventStorage() *AreaEventStorage {

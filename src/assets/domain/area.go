@@ -189,7 +189,7 @@ func (state *Area) Transition(event interface{}) {
 		state.Notes[e.UID] = AreaNote{
 			UID:         e.UID,
 			Content:     e.Content,
-			CreatedDate: e.CreatedDated,
+			CreatedDate: e.CreatedDate,
 		}
 
 	case AreaNoteRemoved:
@@ -376,10 +376,10 @@ func (a *Area) AddNewNote(content string) error {
 	}
 
 	a.TrackChange(AreaNoteAdded{
-		AreaUID:      a.UID,
-		UID:          uid,
-		Content:      content,
-		CreatedDated: time.Now(),
+		AreaUID:     a.UID,
+		UID:         uid,
+		Content:     content,
+		CreatedDate: time.Now(),
 	})
 
 	return nil
