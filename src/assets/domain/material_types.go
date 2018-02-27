@@ -82,8 +82,8 @@ const (
 )
 
 type ChemicalType struct {
-	Code  string
-	Label string
+	Code  string `json:"code"`
+	Label string `json:"label"`
 }
 
 func ChemicalTypes() []ChemicalType {

@@ -3,7 +3,6 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -45,8 +44,6 @@ func (f *MaterialEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Query
 			json.Unmarshal(rowsData.Event, &wrapper)
 
 			event, err := assertMaterialEvent(wrapper)
-			fmt.Println("EVENT", event)
-			fmt.Println("ERR", err)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
