@@ -4,36 +4,73 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
 	deadlock "github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
 )
 
-type AreaStorage struct {
-	Lock    *deadlock.RWMutex
-	AreaMap map[uuid.UUID]domain.Area
+type FarmEventStorage struct {
+	Lock       *deadlock.RWMutex
+	FarmEvents []FarmEvent
 }
 
-func CreateAreaStorage() *AreaStorage {
+func CreateFarmEventStorage() *FarmEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("AREA STORAGE DEADLOCK!")
+		fmt.Println("FARM EVENT STORAGE DEADLOCK!")
 	}
 
-	return &AreaStorage{AreaMap: make(map[uuid.UUID]domain.Area), Lock: &rwMutex}
+	return &FarmEventStorage{Lock: &rwMutex}
+}
+
+type FarmReadStorage struct {
+	Lock        *deadlock.RWMutex
+	FarmReadMap map[uuid.UUID]FarmRead
+}
+
+func CreateFarmReadStorage() *FarmReadStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("FARM READ STORAGE DEADLOCK!")
+	}
+
+	return &FarmReadStorage{FarmReadMap: make(map[uuid.UUID]FarmRead), Lock: &rwMutex}
+}
+
+type ReservoirEventStorage struct {
+	Lock            *deadlock.RWMutex
+	ReservoirEvents []ReservoirEvent
+}
+
+func CreateReservoirEventStorage() *ReservoirEventStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("RESERVOIR EVENT STORAGE DEADLOCK!")
+	}
+
+	return &ReservoirEventStorage{Lock: &rwMutex}
+}
+
+type ReservoirReadStorage struct {
+	Lock             *deadlock.RWMutex
+	ReservoirReadMap map[uuid.UUID]ReservoirRead
+}
+
+func CreateReservoirReadStorage() *ReservoirReadStorage {
+	rwMutex := deadlock.RWMutex{}
+	deadlock.Opts.DeadlockTimeout = time.Second * 10
+	deadlock.Opts.OnPotentialDeadlock = func() {
+		fmt.Println("RESERVOIR READ STORAGE DEADLOCK!")
+	}
+
+	return &ReservoirReadStorage{ReservoirReadMap: make(map[uuid.UUID]ReservoirRead), Lock: &rwMutex}
 }
 
 type AreaEventStorage struct {
 	Lock       *deadlock.RWMutex
 	AreaEvents []AreaEvent
-}
-
-type AreaEvent struct {
-	AreaUID     uuid.UUID
-	Version     int
-	CreatedDate time.Time
-	Event       interface{}
 }
 
 func CreateAreaEventStorage() *AreaEventStorage {
@@ -45,35 +82,6 @@ func CreateAreaEventStorage() *AreaEventStorage {
 
 	return &AreaEventStorage{Lock: &rwMutex}
 }
-
-type AreaRead struct {
-	UID         uuid.UUID     `json:"uid"`
-	Name        string        `json:"name"`
-	Size        AreaSize      `json:"size"`
-	Location    AreaLocation  `json:"location"`
-	Type        string        `json:"type"`
-	Photo       AreaPhoto     `json:"photo"`
-	CreatedDate time.Time     `json:"created_date"`
-	Notes       []AreaNote    `json:"notes"`
-	Farm        AreaFarm      `json:"farm"`
-	Reservoir   AreaReservoir `json:"reservoir"`
-}
-
-type AreaFarm struct {
-	UID  uuid.UUID `json:"uid"`
-	Name string    `json:"name"`
-}
-
-type AreaReservoir struct {
-	UID  uuid.UUID `json:"uid"`
-	Name string    `json:"name"`
-}
-
-type AreaSize domain.AreaSize
-type AreaLocation domain.AreaLocation
-type AreaType domain.AreaType
-type AreaPhoto domain.AreaPhoto
-type AreaNote domain.AreaNote
 
 type AreaReadStorage struct {
 	Lock        *deadlock.RWMutex
@@ -95,12 +103,6 @@ type MaterialEventStorage struct {
 	MaterialEvents []MaterialEvent
 }
 
-type MaterialEvent struct {
-	MaterialUID uuid.UUID
-	Version     int
-	Event       interface{}
-}
-
 func CreateMaterialEventStorage() *MaterialEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
@@ -110,23 +112,6 @@ func CreateMaterialEventStorage() *MaterialEventStorage {
 
 	return &MaterialEventStorage{Lock: &rwMutex}
 }
-
-type MaterialRead struct {
-	UID            uuid.UUID        `json:"uid"`
-	Name           string           `json:"name"`
-	PricePerUnit   Money            `json:"price_per_unit"`
-	Type           MaterialType     `json:"type"`
-	Quantity       MaterialQuantity `json:"quantity"`
-	ExpirationDate *time.Time       `json:"expiration_date"`
-	Notes          *string          `json:"notes"`
-	IsExpense      *bool            `json:"is_expense"`
-	ProducedBy     *string          `json:"produced_by"`
-	CreatedDate    time.Time        `json:"created_date"`
-}
-
-type Money domain.Money
-type MaterialType domain.MaterialType
-type MaterialQuantity domain.MaterialQuantity
 
 type MaterialReadStorage struct {
 	Lock            *deadlock.RWMutex
