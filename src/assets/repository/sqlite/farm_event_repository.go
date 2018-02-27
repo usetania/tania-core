@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/repository"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -21,23 +22,23 @@ func (f *FarmEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 	result := make(chan error)
 
 	go func() {
-		stmt, err := f.DB.Prepare(`INSERT INTO FARM_EVENT (FARM_UID, VERSION, CREATED_DATE, EVENTS) VALUES (?, ?, ?, ?)`)
-		if err != nil {
-			result <- err
-			close(result)
-		}
+		for _, v := range events {
+			stmt, err := f.DB.Prepare(`INSERT INTO FARM_EVENT (FARM_UID, VERSION, CREATED_DATE, EVENTS) VALUES (?, ?, ?, ?)`)
+			if err != nil {
+				result <- err
+			}
 
-		latestVersion++
-		em, err := json.Marshal(events)
-		if err != nil {
-			result <- err
-			close(result)
-		}
+			latestVersion++
 
-		_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), em)
-		if err != nil {
-			result <- err
-			close(result)
+			e, err := json.Marshal(repository.EventWrapper{
+				EventName: structhelper.GetName(v),
+				EventData: v,
+			})
+
+			_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), e)
+			if err != nil {
+				result <- err
+			}
 		}
 
 		result <- nil

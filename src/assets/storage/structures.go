@@ -15,9 +15,10 @@ type FarmEventStorage struct {
 }
 
 type FarmEvent struct {
-	FarmUID uuid.UUID
-	Version int
-	Event   interface{}
+	FarmUID     uuid.UUID
+	Version     int
+	CreatedDate time.Time
+	Event       interface{}
 }
 
 func CreateFarmEventStorage() *FarmEventStorage {

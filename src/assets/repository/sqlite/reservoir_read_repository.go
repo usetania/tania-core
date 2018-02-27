@@ -78,7 +78,7 @@ func (f *ReservoirReadRepositorySqlite) Save(reservoirRead *storage.ReservoirRea
 			}
 		}
 
-		result <- err
+		result <- nil
 		close(result)
 	}()
 

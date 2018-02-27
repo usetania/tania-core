@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -46,10 +45,7 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Quer
 			wrapper := query.EventWrapper{}
 			json.Unmarshal(rowsData.Event, &wrapper)
 
-			fmt.Println("EVENT NAME", wrapper.EventName)
-			fmt.Println("EVENT DATA", wrapper.EventData)
-			event, err := assertEvent(wrapper)
-
+			event, err := assertReservoirEvent(wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -79,7 +75,7 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Quer
 	return result
 }
 
-func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
+func assertReservoirEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
 	switch wrapper.EventName {
@@ -238,43 +234,4 @@ func assertEvent(wrapper query.EventWrapper) (interface{}, error) {
 	}
 
 	return nil, nil
-}
-
-func makeUUID(v interface{}) (uuid.UUID, error) {
-	val := v.(string)
-	uid, err := uuid.FromString(val)
-	if err != nil {
-		return uuid.UUID{}, err
-	}
-
-	return uid, nil
-}
-
-func makeTime(v interface{}) (time.Time, error) {
-	val := v.(string)
-
-	createdDate, err := time.Parse(time.RFC3339, val)
-	if err != nil {
-		return time.Time{}, err
-	}
-
-	return createdDate, nil
-}
-
-func makeWaterSource(v interface{}) (domain.WaterSource, error) {
-	ws, ok := v.(map[string]interface{})
-	if !ok {
-		return nil, errors.New("Internal server error. Error type assertion")
-	}
-
-	convertedMap := map[string]float64{}
-	for i, v := range ws {
-		convertedMap[i] = v.(float64)
-	}
-
-	if convertedMap["Capacity"] == 0 {
-		return domain.Tap{}, nil
-	}
-
-	return domain.Bucket{Capacity: float32(convertedMap["Capacity"])}, nil
 }
