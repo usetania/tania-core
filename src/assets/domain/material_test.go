@@ -18,7 +18,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	assert.Nil(t, err1)
 	assert.Nil(t, err2)
 	assert.Equal(t, "Bayam Lu Hsieh", material1.Name)
-	assert.Equal(t, "12", material1.PricePerUnit.Amount())
+	assert.Equal(t, "12", material1.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, PlantTypeVegetable, tp.PlantType.Code)
 
@@ -31,7 +31,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	assert.Nil(t, err1)
 	assert.Nil(t, err2)
 	assert.Equal(t, "Green Disinfectant", material2.Name)
-	assert.Equal(t, "5", material2.PricePerUnit.Amount())
+	assert.Equal(t, "5", material2.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, ChemicalTypeDisinfectant, ta.ChemicalType.Code)
 
@@ -44,7 +44,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	assert.Nil(t, err1)
 	assert.Nil(t, err2)
 	assert.Equal(t, "Soft Indoor Tray Pack", material3.Name)
-	assert.Equal(t, "10", material3.PricePerUnit.Amount())
+	assert.Equal(t, "10", material3.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, ContainerTypeTray, tsc.ContainerType.Code)
 
@@ -56,7 +56,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	// Then
 	assert.Nil(t, err1)
 	assert.Equal(t, "Organic Super Soil", material4.Name)
-	assert.Equal(t, "2", material4.PricePerUnit.Amount())
+	assert.Equal(t, "2", material4.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, MaterialTypeGrowingMediumCode, tgm.Code())
 
@@ -68,7 +68,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	// Then
 	assert.Nil(t, err1)
 	assert.Equal(t, "Clean Label", material5.Name)
-	assert.Equal(t, "5", material5.PricePerUnit.Amount())
+	assert.Equal(t, "5", material5.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, MaterialTypeLabelAndCropSupportCode, tl.Code())
 
@@ -80,7 +80,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	// Then
 	assert.Nil(t, err1)
 	assert.Equal(t, "Warm Solid Plastic", material6.Name)
-	assert.Equal(t, "5", material6.PricePerUnit.Amount())
+	assert.Equal(t, "5", material6.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, MaterialTypePostHarvestSupplyCode, tph.Code())
 
@@ -92,7 +92,7 @@ func TestCreateInventorySeed(t *testing.T) {
 	// Then
 	assert.Nil(t, err1)
 	assert.Equal(t, "Night Lamp Bright", material7.Name)
-	assert.Equal(t, "3", material7.PricePerUnit.Amount())
+	assert.Equal(t, "3", material7.PricePerUnit.Amount)
 	assert.Equal(t, true, ok)
 	assert.Equal(t, MaterialTypeOtherCode, mo.Code())
 }

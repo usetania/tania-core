@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
 )
@@ -9,7 +10,7 @@ type MaterialEventRepositoryInMemory struct {
 	Storage *storage.MaterialEventStorage
 }
 
-func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) MaterialEventRepository {
+func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) repository.MaterialEventRepository {
 	return &MaterialEventRepositoryInMemory{Storage: s}
 }
 
