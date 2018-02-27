@@ -5,7 +5,7 @@
         th 
         th Items
         th Category
-        th(v-if="domain == 'CROP'")
+        th(v-if="domain != 'AREA' && domain != 'RESERVOIR'")
     tbody
       tr(v-if="tasks.length == 0")
         td(colspan="3") No Task Created
@@ -25,7 +25,7 @@
               span.text-success(v-if="isToday(task.due_date)") Today
         td
           TaskLabel(:type="'CATEGORY'" :task="task")
-        td(v-if="domain == 'CROP'")
+        td(v-if="domain != 'AREA' && domain != 'RESERVOIR'")
           a.h3(href="#")
             i.fas.fa-edit
 </template>
