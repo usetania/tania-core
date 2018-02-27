@@ -99,13 +99,14 @@ type AreaNote domain.AreaNote
 type MaterialEvent struct {
 	MaterialUID uuid.UUID
 	Version     int
+	CreatedDate time.Time
 	Event       interface{}
 }
 
 type MaterialRead struct {
 	UID            uuid.UUID        `json:"uid"`
 	Name           string           `json:"name"`
-	PricePerUnit   Money            `json:"price_per_unit"`
+	PricePerUnit   PricePerUnit     `json:"price_per_unit"`
 	Type           MaterialType     `json:"type"`
 	Quantity       MaterialQuantity `json:"quantity"`
 	ExpirationDate *time.Time       `json:"expiration_date"`
@@ -115,6 +116,6 @@ type MaterialRead struct {
 	CreatedDate    time.Time        `json:"created_date"`
 }
 
-type Money domain.Money
+type PricePerUnit domain.PricePerUnit
 type MaterialType domain.MaterialType
 type MaterialQuantity domain.MaterialQuantity

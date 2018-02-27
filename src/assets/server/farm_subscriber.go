@@ -435,7 +435,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialCreated:
 		materialRead.UID = e.UID
 		materialRead.Name = e.Name
-		materialRead.PricePerUnit = e.PricePerUnit
+		materialRead.PricePerUnit = storage.PricePerUnit(e.PricePerUnit)
 		materialRead.Type = e.Type
 		materialRead.Quantity = storage.MaterialQuantity(e.Quantity)
 		materialRead.ExpirationDate = e.ExpirationDate
@@ -471,7 +471,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		materialRead = &material
 
-		materialRead.PricePerUnit = e.Price
+		materialRead.PricePerUnit = storage.PricePerUnit(e.Price)
 
 	case domain.MaterialQuantityChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)

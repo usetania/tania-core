@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	uuid "github.com/satori/go.uuid"
@@ -30,9 +31,31 @@ func (f *MaterialEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, e
 
 			latestVersion++
 
+			var eTemp interface{}
+			switch val := v.(type) {
+			case domain.MaterialCreated:
+				val.Type = repository.MaterialEventTypeWrapper{
+					Type: val.Type.Code(),
+					Data: val.Type,
+				}
+
+				eTemp = val
+
+			case domain.MaterialTypeChanged:
+				val.MaterialType = repository.MaterialEventTypeWrapper{
+					Type: val.MaterialType.Code(),
+					Data: val.MaterialType,
+				}
+
+				eTemp = val
+
+			default:
+				eTemp = val
+			}
+
 			e, err := json.Marshal(repository.EventWrapper{
-				EventName: structhelper.GetName(v),
-				EventData: v,
+				EventName: structhelper.GetName(eTemp),
+				EventData: eTemp,
 			})
 
 			_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), e)

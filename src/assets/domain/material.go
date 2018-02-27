@@ -10,7 +10,7 @@ import (
 type Material struct {
 	UID            uuid.UUID        `json:"uid"`
 	Name           string           `json:"name"`
-	PricePerUnit   Money            `json:"price_per_unit"`
+	PricePerUnit   PricePerUnit     `json:"price_per_unit"`
 	Type           MaterialType     `json:"type"`
 	Quantity       MaterialQuantity `json:"quantity"`
 	ExpirationDate *time.Time       `json:"expiration_date"`
@@ -28,48 +28,39 @@ const (
 	MoneyIDR = "IDR"
 )
 
-type Money interface {
-	Code() string
-	Symbol() string
-	Amount() string
-	SetAmount(amount string)
+type PricePerUnit struct {
+	Amount       string `json:"amount"`
+	CurrencyCode string `json:"code"`
 }
 
-type EUR struct {
-	amount string
-}
-
-func (e EUR) Code() string {
-	return MoneyEUR
-}
-
-func (e EUR) Symbol() string {
-	return "€"
-}
-
-func (e EUR) Amount() string {
-	return e.amount
-}
-
-func (e *EUR) SetAmount(amount string) {
-	e.amount = amount
-}
-
-func CreateMoney(price, priceUnit string) (Money, error) {
-	if price == "" {
-		return nil, errors.New("price cannot be empty")
-	}
-
-	var money Money
-	switch priceUnit {
-	case EUR{}.Code():
-		money = &EUR{}
-		money.SetAmount(price)
+func (p PricePerUnit) Symbol() string {
+	switch p.CurrencyCode {
+	case MoneyEUR:
+		return "€"
 	default:
-		return nil, errors.New("money not found")
+		return ""
+	}
+}
+
+func CreatePricePerUnit(amount, currencyCode string) (PricePerUnit, error) {
+	cc, err := GetCurrencyCode(currencyCode)
+	if err != nil {
+		return PricePerUnit{}, err
 	}
 
-	return money, nil
+	return PricePerUnit{
+		Amount:       amount,
+		CurrencyCode: cc,
+	}, nil
+}
+
+func GetCurrencyCode(currencyCode string) (string, error) {
+	switch currencyCode {
+	case MoneyEUR:
+		return MoneyEUR, nil
+	default:
+		return "", errors.New("Wrong currency code")
+	}
 }
 
 const (
@@ -208,7 +199,7 @@ func CreateMaterial(
 		return nil, err
 	}
 
-	money, err := CreateMoney(price, priceUnit)
+	pricePerUnit, err := CreatePricePerUnit(price, priceUnit)
 	if err != nil {
 		return nil, err
 	}
@@ -230,7 +221,7 @@ func CreateMaterial(
 	initial := &Material{
 		UID:          uid,
 		Name:         name,
-		PricePerUnit: money,
+		PricePerUnit: pricePerUnit,
 		Type:         materialType,
 		Quantity: MaterialQuantity{
 			Value: quantity,
@@ -272,12 +263,12 @@ func (m *Material) ChangeName(name string) error {
 }
 
 func (m *Material) ChangePricePerUnit(price, priceUnit string) error {
-	money, err := CreateMoney(price, priceUnit)
+	ppu, err := CreatePricePerUnit(price, priceUnit)
 	if err != nil {
 		return err
 	}
 
-	m.TrackChange(MaterialPriceChanged{MaterialUID: m.UID, Price: money})
+	m.TrackChange(MaterialPriceChanged{MaterialUID: m.UID, Price: ppu})
 
 	return nil
 }

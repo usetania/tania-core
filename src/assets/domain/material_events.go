@@ -9,7 +9,7 @@ import (
 type MaterialCreated struct {
 	UID            uuid.UUID
 	Name           string
-	PricePerUnit   Money
+	PricePerUnit   PricePerUnit
 	Type           MaterialType
 	Quantity       MaterialQuantity
 	ExpirationDate *time.Time
@@ -25,7 +25,7 @@ type MaterialNameChanged struct {
 
 type MaterialPriceChanged struct {
 	MaterialUID uuid.UUID
-	Price       Money
+	Price       PricePerUnit
 }
 
 type MaterialQuantityChanged struct {

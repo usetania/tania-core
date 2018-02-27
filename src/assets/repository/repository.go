@@ -84,6 +84,15 @@ func NewMaterialFromHistory(events []storage.MaterialEvent) *domain.Material {
 	return state
 }
 
+type MaterialEventTypeWrapper struct {
+	Type string
+	Data interface{}
+}
+
+func (w MaterialEventTypeWrapper) Code() string {
+	return w.Type
+}
+
 type MaterialReadRepository interface {
 	Save(materialRead *storage.MaterialRead) <-chan error
 }

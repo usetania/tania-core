@@ -86,7 +86,7 @@ func (q MaterialReadQuerySqlite) FindAll() <-chan query.QueryResult {
 				result <- query.QueryResult{Error: err}
 			}
 
-			money, err := domain.CreateMoney(rowsData.PricePerUnit, rowsData.CurrencyCode)
+			pricePerUnit, err := domain.CreatePricePerUnit(rowsData.PricePerUnit, rowsData.CurrencyCode)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -143,7 +143,7 @@ func (q MaterialReadQuerySqlite) FindAll() <-chan query.QueryResult {
 			materialReads = append(materialReads, storage.MaterialRead{
 				UID:          materialUID,
 				Name:         rowsData.Name,
-				PricePerUnit: money,
+				PricePerUnit: storage.PricePerUnit(pricePerUnit),
 				Type:         materialType,
 				Quantity: storage.MaterialQuantity{
 					Unit:  qtyUnit,
@@ -213,7 +213,7 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 			result <- query.QueryResult{Error: err}
 		}
 
-		money, err := domain.CreateMoney(rowsData.PricePerUnit, rowsData.CurrencyCode)
+		pricePerUnit, err := domain.CreatePricePerUnit(rowsData.PricePerUnit, rowsData.CurrencyCode)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -270,7 +270,7 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 		materialRead = storage.MaterialRead{
 			UID:          materialUID,
 			Name:         rowsData.Name,
-			PricePerUnit: money,
+			PricePerUnit: storage.PricePerUnit(pricePerUnit),
 			Type:         materialType,
 			Quantity: storage.MaterialQuantity{
 				Unit:  qtyUnit,

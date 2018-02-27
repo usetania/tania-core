@@ -71,7 +71,7 @@ type ReservoirTap struct{ domain.Tap }
 type Material struct {
 	UID            uuid.UUID        `json:"uid"`
 	Name           string           `json:"name"`
-	PricePerUnit   Money            `json:"price_per_unit"`
+	PricePerUnit   PricePerUnit     `json:"price_per_unit"`
 	Type           MaterialType     `json:"type"`
 	Quantity       MaterialQuantity `json:"quantity"`
 	ExpirationDate *time.Time       `json:"expiration_date,omitempty"`
@@ -80,7 +80,7 @@ type Material struct {
 	CreatedDate    time.Time        `json:"created_date"`
 }
 
-type Money struct {
+type PricePerUnit struct {
 	Code   string `json:"code"`
 	Symbol string `json:"symbol"`
 	Amount string `json:"amount"`
@@ -417,10 +417,10 @@ func MapToMaterial(material domain.Material) Material {
 
 	m.UID = material.UID
 	m.Name = material.Name
-	m.PricePerUnit = Money{
-		Code:   material.PricePerUnit.Code(),
+	m.PricePerUnit = PricePerUnit{
+		Code:   material.PricePerUnit.CurrencyCode,
 		Symbol: material.PricePerUnit.Symbol(),
-		Amount: material.PricePerUnit.Amount(),
+		Amount: material.PricePerUnit.Amount,
 	}
 
 	m.ExpirationDate = nil
@@ -493,10 +493,12 @@ func MapToMaterialFromRead(material storage.MaterialRead) Material {
 
 	m.UID = material.UID
 	m.Name = material.Name
-	m.PricePerUnit = Money{
-		Code:   material.PricePerUnit.Code(),
-		Symbol: material.PricePerUnit.Symbol(),
-		Amount: material.PricePerUnit.Amount(),
+
+	ppu := domain.PricePerUnit(material.PricePerUnit)
+	m.PricePerUnit = PricePerUnit{
+		Amount: ppu.Amount,
+		Code:   ppu.CurrencyCode,
+		Symbol: ppu.Symbol(),
 	}
 
 	m.ExpirationDate = nil
