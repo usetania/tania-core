@@ -72,7 +72,7 @@ func (q MaterialReadQuerySqlite) FindAll() <-chan query.QueryResult {
 			}
 
 			var mExpDate *time.Time
-			if rowsData.ExpirationDate.Valid {
+			if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 				date, err := time.Parse(time.RFC3339, rowsData.ExpirationDate.String)
 				if err != nil {
 					result <- query.QueryResult{Error: err}
@@ -199,7 +199,7 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 		}
 
 		var mExpDate *time.Time
-		if rowsData.ExpirationDate.Valid {
+		if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 			date, err := time.Parse(time.RFC3339, rowsData.ExpirationDate.String)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -287,10 +287,4 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 	}()
 
 	return result
-}
-func (q MaterialReadQuerySqlite) FindAllMaterialByPlantType(plantTypeCode string) <-chan query.QueryResult {
-	return nil
-}
-func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
-	return nil
 }
