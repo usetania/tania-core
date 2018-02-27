@@ -70,3 +70,20 @@ func NewReservoirFromHistory(events []storage.ReservoirEvent) *domain.Reservoir 
 	}
 	return state
 }
+
+type MaterialEventRepository interface {
+	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
+}
+
+func NewMaterialFromHistory(events []storage.MaterialEvent) *domain.Material {
+	state := &domain.Material{}
+	for _, v := range events {
+		state.Transition(v.Event)
+		state.Version++
+	}
+	return state
+}
+
+type MaterialReadRepository interface {
+	Save(materialRead *storage.MaterialRead) <-chan error
+}

@@ -77,10 +77,10 @@ func NewFarmServer(
 	reservoirReadRepo := repoSqlite.NewReservoirReadRepositorySqlite(db)
 	reservoirReadQuery := querySqlite.NewReservoirReadQuerySqlite(db)
 
-	materialEventRepo := repository.NewMaterialEventRepositoryInMemory(materialEventStorage)
+	materialEventRepo := repoSqlite.NewMaterialEventRepositorySqlite(db)
 	materialEventQuery := inmemory.NewMaterialEventQueryInMemory(materialEventStorage)
-	materialReadRepo := repository.NewMaterialReadRepositoryInMemory(materialReadStorage)
-	materialReadQuery := inmemory.NewMaterialReadQueryInMemory(materialReadStorage)
+	materialReadRepo := repoSqlite.NewMaterialReadRepositorySqlite(db)
+	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)
 
 	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
 

@@ -1,14 +1,9 @@
-package repository
+package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
 )
-
-type MaterialEventRepository interface {
-	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
-}
 
 type MaterialEventRepositoryInMemory struct {
 	Storage *storage.MaterialEventStorage
@@ -18,16 +13,6 @@ func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) Materia
 	return &MaterialEventRepositoryInMemory{Storage: s}
 }
 
-func NewMaterialFromHistory(events []storage.MaterialEvent) *domain.Material {
-	state := &domain.Material{}
-	for _, v := range events {
-		state.Transition(v.Event)
-		state.Version++
-	}
-	return state
-}
-
-// Save is to save
 func (f *MaterialEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 

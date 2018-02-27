@@ -1,18 +1,15 @@
-package repository
+package inmemory
 
 import (
+	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 )
-
-type MaterialReadRepository interface {
-	Save(materialRead *storage.MaterialRead) <-chan error
-}
 
 type MaterialReadRepositoryInMemory struct {
 	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) MaterialReadRepository {
+func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) repository.MaterialReadRepository {
 	return &MaterialReadRepositoryInMemory{Storage: s}
 }
 
