@@ -31,7 +31,7 @@ type AreaEventQuery interface {
 type AreaReadQuery interface {
 	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
 	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
-	FindByIDAndArea(areaUID, farmUID uuid.UUID) <-chan QueryResult
+	FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan QueryResult
 	FindAreasByReservoirID(reservoirUID uuid.UUID) <-chan QueryResult
 	CountAreas(farmUID uuid.UUID) <-chan QueryResult
 }

@@ -37,6 +37,23 @@ func NewFarmFromHistory(events []storage.FarmEvent) *domain.Farm {
 	return state
 }
 
+type AreaEventRepository interface {
+	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
+}
+
+type AreaReadRepository interface {
+	Save(areaRead *storage.AreaRead) <-chan error
+}
+
+func NewAreaFromHistory(events []storage.AreaEvent) *domain.Area {
+	state := &domain.Area{}
+	for _, v := range events {
+		state.Transition(v.Event)
+		state.Version++
+	}
+	return state
+}
+
 type ReservoirEventRepository interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }

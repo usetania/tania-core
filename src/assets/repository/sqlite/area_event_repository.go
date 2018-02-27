@@ -10,20 +10,20 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-type FarmEventRepositorySqlite struct {
+type AreaEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewFarmEventRepositorySqlite(db *sql.DB) repository.FarmEventRepository {
-	return &FarmEventRepositorySqlite{DB: db}
+func NewAreaEventRepositorySqlite(db *sql.DB) repository.AreaEventRepository {
+	return &AreaEventRepositorySqlite{DB: db}
 }
 
-func (f *FarmEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
+func (f *AreaEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 
 	go func() {
 		for _, v := range events {
-			stmt, err := f.DB.Prepare(`INSERT INTO FARM_EVENT (FARM_UID, VERSION, CREATED_DATE, EVENT) VALUES (?, ?, ?, ?)`)
+			stmt, err := f.DB.Prepare(`INSERT INTO AREA_EVENT (AREA_UID, VERSION, CREATED_DATE, EVENT) VALUES (?, ?, ?, ?)`)
 			if err != nil {
 				result <- err
 			}

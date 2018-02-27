@@ -67,10 +67,10 @@ func NewFarmServer(
 	farmReadRepo := repoSqlite.NewFarmReadRepositorySqlite(db)
 	farmReadQuery := querySqlite.NewFarmReadQuerySqlite(db)
 
-	areaEventRepo := repository.NewAreaEventRepositoryInMemory(areaEventStorage)
-	areaReadRepo := repository.NewAreaReadRepositoryInMemory(areaReadStorage)
-	areaEventQuery := inmemory.NewAreaEventQueryInMemory(areaEventStorage)
-	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
+	areaEventRepo := repoSqlite.NewAreaEventRepositorySqlite(db)
+	areaEventQuery := querySqlite.NewAreaEventQuerySqlite(db)
+	areaReadRepo := repoSqlite.NewAreaReadRepositorySqlite(db)
+	areaReadQuery := querySqlite.NewAreaReadQuerySqlite(db)
 
 	reservoirEventRepo := repoSqlite.NewReservoirEventRepositorySqlite(db)
 	reservoirEventQuery := querySqlite.NewReservoirEventQuerySqlite(db)
@@ -1092,7 +1092,7 @@ func (s *FarmServer) GetAreasByID(c echo.Context) error {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "farm_id"))
 	}
 
-	queryResult = <-s.AreaReadQuery.FindByIDAndArea(areaUID, farmUID)
+	queryResult = <-s.AreaReadQuery.FindByIDAndFarm(areaUID, farmUID)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}
@@ -1143,7 +1143,7 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "farm_id"))
 	}
 
-	queryResult = <-s.AreaReadQuery.FindByIDAndArea(areaUID, farmUID)
+	queryResult = <-s.AreaReadQuery.FindByIDAndFarm(areaUID, farmUID)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}

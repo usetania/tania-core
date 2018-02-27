@@ -58,7 +58,7 @@ func (s AreaReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan query.Que
 	return result
 }
 
-func (s AreaReadQueryInMemory) FindByIDAndArea(areaUID, farmUID uuid.UUID) <-chan query.QueryResult {
+func (s AreaReadQueryInMemory) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
