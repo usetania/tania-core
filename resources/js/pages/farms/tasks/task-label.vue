@@ -4,6 +4,7 @@
       span.label.label-pestcontrol(v-if="task.category == 'PESTCONTROL'") PEST CONTROL
       span.label.label-sanitation(v-if="task.category == 'SANITATION'") SANITATION
       span.label.label-area(v-if="task.category == 'AREA'") AREA
+      span.label.label-reservoir(v-if="task.category == 'RESERVOIR'") RESERVOIR
       span.label.label-safety(v-if="task.category == 'SAFETY'") SAFETY
       span.label.label-finance(v-if="task.category == 'FINANCE'") FINANCE
       span.label.label-crop(v-if="task.category == 'CROP'") CROP

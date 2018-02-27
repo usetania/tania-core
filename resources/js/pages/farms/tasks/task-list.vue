@@ -43,7 +43,7 @@ export default {
     TaskLabel
   },
   created () {
-    this.fetchTasks() 
+    this.getTasks() 
   },
   data () {
     return {
@@ -54,6 +54,7 @@ export default {
   methods: {
     ...mapActions([
       'getTasksByDomainAndAssetId',
+      'getTasks',
       'fetchTasks',
       'isToday',
       'isCompleted',
@@ -61,13 +62,22 @@ export default {
       'setTaskDue',
       'setTaskStatus',
     ]),
-    fetchTasks () {
-      this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id })
-        .then(({ data }) => {
-          this.loading = false
-          this.tasks = AddClicked(data)
-        })
-        .catch(error => console.log(error))
+    getTasks () {
+      if (this.domain) {
+        this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id })
+          .then(({ data }) => {
+            this.loading = false
+            this.tasks = AddClicked(data)
+          })
+          .catch(error => console.log(error))
+      } else {
+        this.fetchTasks()
+          .then(({ data }) => {
+            this.loading = false
+            this.tasks = AddClicked(data)
+          })
+          .catch(error => console.log(error))
+      }
     },
     isCompleted (status) {
       return (status == "COMPLETED") ? true : false
@@ -77,13 +87,13 @@ export default {
     },
     setTaskStatus (task_id, status) {
       this.setTaskCompleted(task_id)
-        .then(this.fetchTasks())
+        .then(this.getTasks())
         .catch(({ data }) => this.message = data)
     },
   },
   mounted(){
     this.$watch('reload', reload => {
-      this.fetchTasks()
+      this.getTasks()
     }, {})
   },
   props: ['domain', 'asset_id', 'reload'],
