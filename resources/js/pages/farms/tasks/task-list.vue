@@ -54,6 +54,7 @@ export default {
   methods: {
     ...mapActions([
       'getTasksByDomainAndAssetId',
+      'getTasksByCategoryAndPriorityAndStatus',
       'getTasks',
       'fetchTasks',
       'isToday',
@@ -65,6 +66,14 @@ export default {
     getTasks () {
       if (this.domain) {
         this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id })
+          .then(({ data }) => {
+            this.loading = false
+            this.tasks = AddClicked(data)
+          })
+          .catch(error => console.log(error))
+      } else if (this.category != '' || this.priority != '') {
+        console.log('task page')
+        this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: this.status })
           .then(({ data }) => {
             this.loading = false
             this.tasks = AddClicked(data)
@@ -95,7 +104,16 @@ export default {
     this.$watch('reload', reload => {
       this.getTasks()
     }, {})
+    this.$watch('category', category => {
+      this.getTasks()
+    }, {})
+    this.$watch('priority', priority => {
+      this.getTasks()
+    }, {})
+    this.$watch('status', priority => {
+      this.getTasks()
+    }, {})
   },
-  props: ['domain', 'asset_id', 'reload'],
+  props: ['asset_id', 'category', 'domain', 'priority', 'reload', 'status'],
 }
 </script>

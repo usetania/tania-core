@@ -31,6 +31,15 @@ const actions = {
         }, error => reject(error.response))
     })
   },
+  getTasksByCategoryAndPriorityAndStatus ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiFindTasksByCategoryAndPriorityAndStatus(payload.category, payload.priority, payload.status, ({ data }) => {
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
   createTask ({ commit, state, getters }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
