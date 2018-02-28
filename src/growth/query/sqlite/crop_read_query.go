@@ -260,19 +260,327 @@ func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID) <-chan query.
 }
 
 func (s CropReadQuerySqlite) FindAllCropsArchives(farmUID uuid.UUID) <-chan query.QueryResult {
-	return nil
+	result := make(chan query.QueryResult)
+
+	go func() {
+		cropReads := []storage.CropRead{}
+
+		// TODO: REFACTOR TO REDUCE QUERY CALLS
+		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		for rows.Next() {
+			cropRead := storage.CropRead{}
+
+			uid := ""
+			err := rows.Scan(&uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropUID, err := uuid.FromString(uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCrop(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCropMovedArea(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			// Only a crop's current quantity which have zero value should go to archives
+			if cropRead.InitialArea.CurrentQuantity != 0 {
+				continue
+			}
+
+			isEmpty := true
+			for _, v := range cropRead.MovedArea {
+				if v.CurrentQuantity != 0 {
+					isEmpty = false
+				}
+			}
+
+			if !isEmpty {
+				continue
+			}
+
+			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCropTrash(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCropNotes(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCropPhotos(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropReads = append(cropReads, cropRead)
+		}
+
+		result <- query.QueryResult{Result: cropReads}
+		close(result)
+	}()
+
+	return result
 }
 
 func (s CropReadQuerySqlite) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
-	return nil
+	result := make(chan query.QueryResult)
+
+	go func() {
+		crops := []query.CropAreaByAreaQueryResult{}
+
+		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE INITIAL_AREA_UID = ?", areaUID)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		for rows.Next() {
+			cropRead := storage.CropRead{}
+
+			uid := ""
+			err := rows.Scan(&uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropUID, err := uuid.FromString(uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCrop(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			if cropRead.InitialArea.AreaUID == areaUID {
+				crops = append(crops, query.CropAreaByAreaQueryResult{
+					UID:         cropRead.UID,
+					BatchID:     cropRead.BatchID,
+					CreatedDate: cropRead.InitialArea.CreatedDate,
+					Area: query.Area{
+						UID:             cropRead.InitialArea.AreaUID,
+						Name:            cropRead.InitialArea.Name,
+						InitialQuantity: cropRead.InitialArea.InitialQuantity,
+						CurrentQuantity: cropRead.InitialArea.CurrentQuantity,
+						InitialArea: query.InitialArea{
+							UID:         cropRead.InitialArea.AreaUID,
+							Name:        cropRead.InitialArea.Name,
+							CreatedDate: cropRead.InitialArea.CreatedDate,
+						},
+						LastWatered: cropRead.InitialArea.LastWatered,
+						MovingDate:  cropRead.InitialArea.CreatedDate,
+					},
+					Container: query.Container{
+						Type:     cropRead.Container.Type,
+						Cell:     cropRead.Container.Cell,
+						Quantity: cropRead.Container.Quantity,
+					},
+					Inventory: query.Inventory{
+						UID:       cropRead.Inventory.UID,
+						Name:      cropRead.Inventory.Name,
+						PlantType: cropRead.Inventory.PlantType,
+					},
+				})
+			}
+		}
+
+		rows, err = s.DB.Query(`SELECT UID FROM CROP_READ
+			LEFT JOIN CROP_READ_MOVED_AREA ON CROP_READ.UID = CROP_READ_MOVED_AREA.CROP_UID
+			WHERE CROP_READ_MOVED_AREA.AREA_UID = ?`, areaUID)
+
+		for rows.Next() {
+			cropRead := storage.CropRead{}
+
+			uid := ""
+			err := rows.Scan(&uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropUID, err := uuid.FromString(uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCrop(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCropMovedArea(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			for _, val := range cropRead.MovedArea {
+				if val.AreaUID == areaUID {
+					crops = append(crops, query.CropAreaByAreaQueryResult{
+						UID:         cropRead.UID,
+						BatchID:     cropRead.BatchID,
+						CreatedDate: val.CreatedDate,
+						Area: query.Area{
+							UID:             val.AreaUID,
+							Name:            val.Name,
+							InitialQuantity: val.InitialQuantity,
+							CurrentQuantity: val.CurrentQuantity,
+							InitialArea: query.InitialArea{
+								UID:         cropRead.InitialArea.AreaUID,
+								Name:        cropRead.InitialArea.Name,
+								CreatedDate: cropRead.InitialArea.CreatedDate,
+							},
+							LastWatered: val.LastWatered,
+							MovingDate:  val.CreatedDate,
+						},
+						Container: query.Container{
+							Type:     cropRead.Container.Type,
+							Cell:     cropRead.Container.Cell,
+							Quantity: cropRead.Container.Quantity,
+						},
+						Inventory: query.Inventory{
+							UID:       cropRead.Inventory.UID,
+							Name:      cropRead.Inventory.Name,
+							PlantType: cropRead.Inventory.PlantType,
+						},
+					})
+				}
+			}
+		}
+
+		result <- query.QueryResult{Result: crops}
+		close(result)
+	}()
+
+	return result
 }
 
 func (s CropReadQuerySqlite) FindCropsInformation(farmUID uuid.UUID) <-chan query.QueryResult {
-	return nil
+	result := make(chan query.QueryResult)
+
+	go func() {
+		cropInf := query.CropInformationQueryResult{}
+		harvestProduced := float32(0)
+		plantType := make(map[string]bool)
+		totalPlantVariety := 0
+
+		// TODO: REFACTOR TO REDUCE QUERY CALLS
+		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		for rows.Next() {
+			cropRead := storage.CropRead{}
+
+			uid := ""
+			err := rows.Scan(&uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropUID, err := uuid.FromString(uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCrop(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			for _, val := range cropRead.HarvestedStorage {
+				harvestProduced += val.ProducedGramQuantity
+			}
+
+			if _, ok := plantType[cropRead.Inventory.Name]; !ok {
+				totalPlantVariety++
+				plantType[cropRead.Inventory.Name] = true
+			}
+		}
+
+		cropInf.TotalHarvestProduced = harvestProduced
+		cropInf.TotalPlantVariety = totalPlantVariety
+
+		result <- query.QueryResult{Result: cropInf}
+
+		close(result)
+	}()
+
+	return result
 }
 
 func (s CropReadQuerySqlite) CountTotalBatch(farmUID uuid.UUID) <-chan query.QueryResult {
-	return nil
+	result := make(chan query.QueryResult)
+
+	go func() {
+		varQty := []query.CountTotalBatchQueryResult{}
+		varietyName := make(map[string]int)
+
+		// TODO: REFACTOR TO REDUCE QUERY CALLS
+		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		for rows.Next() {
+			cropRead := storage.CropRead{}
+
+			uid := ""
+			err := rows.Scan(&uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropUID, err := uuid.FromString(uid)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			err = s.populateCrop(cropUID, &cropRead)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			if _, ok := varietyName[cropRead.Inventory.Name]; !ok {
+				varietyName[cropRead.Inventory.Name]++
+			}
+		}
+
+		for i, v := range varietyName {
+			varQty = append(varQty, query.CountTotalBatchQueryResult{
+				VarietyName: i,
+				TotalBatch:  v,
+			})
+		}
+
+		result <- query.QueryResult{Result: varQty}
+		close(result)
+	}()
+
+	return result
 }
 
 func (s CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.CropRead) error {
