@@ -248,7 +248,38 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 }
 
 func (s CropReadQuerySqlite) FindByBatchID(batchID string) <-chan query.QueryResult {
-	return nil
+	result := make(chan query.QueryResult)
+
+	go func() {
+		cropRead := storage.CropRead{}
+		rowsData := cropReadResult{}
+
+		err := s.DB.QueryRow(`SELECT UID, BATCH_ID FROM CROP_READ WHERE BATCH_ID = ?`, batchID).Scan(
+			&rowsData.UID,
+			&rowsData.BatchID,
+		)
+
+		if err != nil && err != sql.ErrNoRows {
+			result <- query.QueryResult{Error: err}
+		}
+
+		if err == sql.ErrNoRows {
+			result <- query.QueryResult{Result: cropRead}
+		}
+
+		cropUID, err := uuid.FromString(rowsData.UID)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		cropRead.UID = cropUID
+		cropRead.BatchID = rowsData.BatchID
+
+		result <- query.QueryResult{Result: cropRead}
+		close(result)
+	}()
+
+	return result
 }
 
 func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {

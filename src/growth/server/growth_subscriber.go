@@ -707,7 +707,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 
 	err := <-s.CropActivityRepo.Save(cropActivity)
 	if err != nil {
-		return err
+		log.Error(err)
 	}
 
 	return nil

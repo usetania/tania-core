@@ -56,8 +56,8 @@ func NewGrowthServer(
 	cropEventQuery := inmemory.NewCropEventQueryInMemory(cropEventStorage)
 	cropReadRepo := repoSqlite.NewCropReadRepositorySqlite(db)
 	cropReadQuery := querySqlite.NewCropReadQuerySqlite(db)
-	cropActivityRepo := repository.NewCropActivityRepositoryInMemory(cropActivityStorage)
-	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
+	cropActivityRepo := repoSqlite.NewCropActivityRepositorySqlite(db)
+	cropActivityQuery := querySqlite.NewCropActivityQuerySqlite(db)
 
 	areaReadQuery := querySqlite.NewAreaReadQuerySqlite(db)
 	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)

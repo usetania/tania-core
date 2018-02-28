@@ -1,12 +1,8 @@
-package repository
+package inmemory
 
 import (
 	"github.com/Tanibox/tania-server/src/growth/storage"
 )
-
-type CropActivityRepository interface {
-	Save(cropActivity *storage.CropActivity) <-chan error
-}
 
 type CropActivityRepositoryInMemory struct {
 	Storage *storage.CropActivityStorage

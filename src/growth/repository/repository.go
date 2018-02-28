@@ -20,6 +20,11 @@ type EventWrapper struct {
 	EventData interface{}
 }
 
+type ActivityTypeWrapper struct {
+	ActivityName string
+	ActivityData interface{}
+}
+
 type CropEventRepository interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
@@ -35,4 +40,8 @@ func NewCropBatchFromHistory(events []storage.CropEvent) *domain.Crop {
 		state.Version++
 	}
 	return state
+}
+
+type CropActivityRepository interface {
+	Save(cropActivity *storage.CropActivity) <-chan error
 }
