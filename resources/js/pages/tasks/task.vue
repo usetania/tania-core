@@ -45,27 +45,27 @@
               option(value="NORMAL") Normal
       .wrapper
         ul.list-group.no-bg.no-borders.pull-in
-          li.list-group-item
+          li.list-group-item(v-bind:class="{ active: isActive('COMPLETED') }")
             .wrapper-xs
               .h4.text-info
                 a(style="cursor: pointer;" @click="statusSelected('COMPLETED')") Completed
-          li.list-group-item.active
+          li.list-group-item(v-bind:class="{ active: isActive('INCOMPLETE') }")
             .wrapper-xs
               .h4.text-muted
                 a(style="cursor: pointer;" @click="statusSelected('INCOMPLETE')") Incomplete
-          li.list-group-item.m-l
+          li.list-group-item(v-bind:class="{ active: isActive('OVERDUE') }")
             .wrapper-xs
               .h5.text-danger
                 a(style="cursor: pointer;" @click="statusSelected('OVERDUE')") Overdue
-          li.list-group-item.m-l
+          li.list-group-item(v-bind:class="{ active: isActive('TODAY') }")
             .wrapper-xs
               .h5.text-success
                 a(style="cursor: pointer;" @click="statusSelected('TODAY')") Today
-          li.list-group-item.m-l
+          li.list-group-item(v-bind:class="{ active: isActive('THISWEEK') }")
             .wrapper-xs
               .h5.text-lt
                 a(style="cursor: pointer;" @click="statusSelected('THISWEEK')") This Week
-          li.list-group-item.m-l
+          li.list-group-item(v-bind:class="{ active: isActive('THISMONTH') }")
             .wrapper-xs
               .h5.text-lt
                 a(style="cursor: pointer;" @click="statusSelected('THISMONTH')") This Month
@@ -118,6 +118,10 @@ export default {
     statusSelected (status) {
       this.status = status
     },
+    isActive (status) {
+      console.log(this.status == status)
+      return this.status == status
+    }
   }
 }
 </script>
