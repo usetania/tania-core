@@ -1,14 +1,9 @@
-package repository
+package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
-
-type CropEventRepository interface {
-	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
-}
 
 type CropEventRepositoryInMemory struct {
 	Storage *storage.CropEventStorage
@@ -16,15 +11,6 @@ type CropEventRepositoryInMemory struct {
 
 func NewCropEventRepositoryInMemory(s *storage.CropEventStorage) CropEventRepository {
 	return &CropEventRepositoryInMemory{Storage: s}
-}
-
-func NewCropBatchFromHistory(events []storage.CropEvent) *domain.Crop {
-	state := &domain.Crop{}
-	for _, v := range events {
-		state.Transition(v.Event)
-		state.Version++
-	}
-	return state
 }
 
 // Save is to save

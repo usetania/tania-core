@@ -1,12 +1,6 @@
-package repository
+package inmemory
 
-import (
-	"github.com/Tanibox/tania-server/src/growth/storage"
-)
-
-type CropReadRepository interface {
-	Save(cropRead *storage.CropRead) <-chan error
-}
+import "github.com/Tanibox/tania-server/src/growth/storage"
 
 type CropReadRepositoryInMemory struct {
 	Storage *storage.CropReadStorage

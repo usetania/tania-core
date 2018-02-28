@@ -79,6 +79,7 @@ func main() {
 	}
 
 	growthServer, err := growthserver.NewGrowthServer(
+		db,
 		bus,
 		cropEventStorage,
 		cropReadStorage,

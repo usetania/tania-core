@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 	"time"
@@ -9,6 +10,8 @@ import (
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/domain/service"
 	"github.com/Tanibox/tania-server/src/growth/query/inmemory"
+	querySqlite "github.com/Tanibox/tania-server/src/growth/query/sqlite"
+	repoSqlite "github.com/Tanibox/tania-server/src/growth/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
@@ -40,6 +43,7 @@ type GrowthServer struct {
 
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
 func NewGrowthServer(
+	db *sql.DB,
 	bus EventBus.Bus,
 	cropEventStorage *storage.CropEventStorage,
 	cropReadStorage *storage.CropReadStorage,
@@ -48,16 +52,16 @@ func NewGrowthServer(
 	materialReadStorage *assetsstorage.MaterialReadStorage,
 	farmReadStorage *assetsstorage.FarmReadStorage,
 ) (*GrowthServer, error) {
-	cropEventRepo := repository.NewCropEventRepositoryInMemory(cropEventStorage)
+	cropEventRepo := repoSqlite.NewCropEventRepositorySqlite(db)
 	cropEventQuery := inmemory.NewCropEventQueryInMemory(cropEventStorage)
-	cropReadRepo := repository.NewCropReadRepositoryInMemory(cropReadStorage)
-	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
+	cropReadRepo := repoSqlite.NewCropReadRepositorySqlite(db)
+	cropReadQuery := querySqlite.NewCropReadQuerySqlite(db)
 	cropActivityRepo := repository.NewCropActivityRepositoryInMemory(cropActivityStorage)
 	cropActivityQuery := inmemory.NewCropActivityQueryInMemory(cropActivityStorage)
 
-	areaReadQuery := inmemory.NewAreaReadQueryInMemory(areaReadStorage)
-	materialReadQuery := inmemory.NewMaterialReadQueryInMemory(materialReadStorage)
-	farmReadQuery := inmemory.NewFarmReadQueryInMemory(farmReadStorage)
+	areaReadQuery := querySqlite.NewAreaReadQuerySqlite(db)
+	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)
+	farmReadQuery := querySqlite.NewFarmReadQuerySqlite(db)
 
 	cropService := service.CropServiceInMemory{
 		MaterialReadQuery: materialReadQuery,
