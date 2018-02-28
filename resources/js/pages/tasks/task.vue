@@ -100,7 +100,7 @@ export default {
       selected_category: '',
       selected_priority: '',
       showModal: false,
-      status: '',
+      status: 'INCOMPLETE',
     }
   },
   methods: {
@@ -119,7 +119,6 @@ export default {
       this.status = status
     },
     isActive (status) {
-      console.log(this.status == status)
       return this.status == status
     }
   }

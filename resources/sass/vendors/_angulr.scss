@@ -250,9 +250,9 @@ a.list-group-item.hover {
 }
 
 .list-group-item.active {
-  color: #fff;
-  background-color: #23b7e5 !important;
-  border-color: #23b7e5 !important;
+  background-color: #FFF !important;
+  border-top-color: #dee5e7 !important;
+  border-bottom-color: #dee5e7 !important;
 }
 
 .list-group-item.active .text-muted {
@@ -260,7 +260,7 @@ a.list-group-item.hover {
 }
 
 .list-group-item.active a {
-  color: #fff;
+  color: #3a3f51;
 }
 
 .list-group-item.focus {
