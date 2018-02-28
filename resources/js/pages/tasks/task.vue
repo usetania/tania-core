@@ -1,7 +1,7 @@
 <template lang="pug">
   .col
     modal(v-if="showModal" @close="showModal = false")
-      TaskCreate
+      TaskCreate(:asset="'General'" :data="data")
     .vbox
       .row-row
         .cell
@@ -44,6 +44,7 @@ export default {
   },
   data () {
     return {
+      data: {},
       showModal: false,
     }
   },

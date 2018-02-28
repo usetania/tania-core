@@ -1,10 +1,10 @@
 <template lang="pug">
   .tasks-create
     .modal-header
-      h4.font-bold (v-if="asset")
+      h4.font-bold(v-if="asset != 'General'")
         | {{ asset }}: Add New Task on 
         span.areatag {{ data.name }}
-      h4.font-bold (v-else) Add New Task
+      h4.font-bold(v-else) Add New Task
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
@@ -37,6 +37,7 @@
             option(value="") Please select category
             option(v-if="asset == 'Area'" value="AREA") Area
             option(v-if="asset == 'Reservoir'" value="RESERVOIR") Reservoir
+            option(v-if="asset == 'General'" value="GENERAL") General
             option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
           span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group
@@ -91,12 +92,18 @@ export default {
       this.$refs.openCal.showCalendar()
     },
     create () {
-      this.task.asset_id = this.data.uid
+      console.log(this.data.uid)
+      if (typeof this.data.uid != "undefined") {
+        this.task.asset_id = this.data.uid
+      }
       this.task.domain = this.asset.toUpperCase()
       this.createTask(this.task)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
+  },
+  mounted () {
+    console.log(this.asset)
   },
   props: ['data', 'asset'],
 }
