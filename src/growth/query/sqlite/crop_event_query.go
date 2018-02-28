@@ -103,36 +103,20 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 			}
 		}
 		if v, ok := mapped["Type"]; ok {
-			mapped2 := v.(map[string]interface{})
-
-			if v2, ok2 := mapped2["Code"]; ok2 {
-				c := v2.(string)
-				e.Type = domain.GetCropType(c)
+			val, err := makeCropType(v)
+			if err != nil {
+				return nil, err
 			}
+
+			e.Type = val
 		}
 		if v, ok := mapped["Container"]; ok {
-			mapped2 := v.(map[string]interface{})
-
-			if v2, ok2 := mapped2["Quantity"]; ok2 {
-				qty := v2.(float64)
-				e.Container.Quantity = int(qty)
-			}
-			if v2, ok2 := mapped2["Type"]; ok2 {
-				mapped3 := v2.(map[string]interface{})
-
-				if v3, ok3 := mapped3["Cell"]; ok3 {
-					cell := v3.(float64)
-					cellInt := int(cell)
-
-					if cellInt == 0 {
-						e.Container.Type = domain.Pot{}
-					} else {
-						e.Container.Type = domain.Tray{Cell: cellInt}
-					}
-				}
+			val, err := makeCropContainer(v)
+			if err != nil {
+				return nil, err
 			}
 
-			fmt.Println("CODE", e.Container.Type.Code())
+			e.Container = val
 		}
 		if v, ok := mapped["InventoryUID"]; ok {
 			uid, err := makeUUID(v)
@@ -172,6 +156,209 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 		}
 
 		return e, nil
+
+	case "CropBatchTypeChanged":
+		e := domain.CropBatchTypeChanged{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["Type"]; ok {
+			val, err := makeCropType(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.Type = val
+		}
+
+		return e, nil
+
+	case "CropBatchInventoryChanged":
+		e := domain.CropBatchInventoryChanged{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["InventoryUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.InventoryUID = uid
+		}
+		if v, ok := mapped["BatchID"]; ok {
+			val := v.(string)
+			e.BatchID = val
+		}
+
+		return e, nil
+
+	case "CropBatchContainerChanged":
+		e := domain.CropBatchContainerChanged{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["Container"]; ok {
+			val, err := makeCropContainer(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.Container = val
+		}
+
+		return e, nil
+
+	case "CropBatchMoved":
+		e := domain.CropBatchMoved{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["Quantity"]; ok {
+			val := v.(float64)
+			e.Quantity = int(val)
+		}
+		if v, ok := mapped["SrcAreaUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.SrcAreaUID = uid
+		}
+		if v, ok := mapped["DstAreaUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.DstAreaUID = uid
+		}
+		if v, ok := mapped["MovedDate"]; ok {
+			val, err := makeTime(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.MovedDate = val
+		}
+		if v, ok := mapped["UpdatedSrcArea"]; ok {
+			code := mapped["UpdatedSrcAreaCode"].(string)
+			fmt.Println("CODE NIIII")
+
+			if code == "INITIAL_AREA" {
+				fmt.Println("MASUK INITIAL NIH 1")
+				initialArea, err := makeCropInitialArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.UpdatedSrcArea = initialArea
+			}
+			if code == "MOVED_AREA" {
+				fmt.Println("MASUK MOVED NIH 1")
+				movedArea, err := makeCropMovedArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.UpdatedSrcArea = movedArea
+			}
+
+			fmt.Println("")
+		}
+		if v, ok := mapped["UpdatedDstArea"]; ok {
+			code := mapped["UpdatedDstAreaCode"].(string)
+
+			if code == "INITIAL_AREA" {
+				fmt.Println("MASUK INITIAL NIH 2")
+				initialArea, err := makeCropInitialArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.UpdatedDstArea = initialArea
+			}
+			if code == "MOVED_AREA" {
+				fmt.Println("MASUK MOVED NIH 2")
+				movedArea, err := makeCropMovedArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.UpdatedDstArea = movedArea
+			}
+		}
+
+		return e, nil
+
+	case "CropBatchPhotoCreated":
+		e := domain.CropBatchPhotoCreated{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["CropUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.CropUID = uid
+		}
+		if v, ok := mapped["Filename"]; ok {
+			val := v.(string)
+			e.Filename = val
+		}
+		if v, ok := mapped["MimeType"]; ok {
+			val := v.(string)
+			e.MimeType = val
+		}
+		if v, ok := mapped["Size"]; ok {
+			val := v.(float64)
+			e.Size = int(val)
+		}
+		if v, ok := mapped["Width"]; ok {
+			val := v.(float64)
+			e.Width = int(val)
+		}
+		if v, ok := mapped["Height"]; ok {
+			val := v.(float64)
+			e.Height = int(val)
+		}
+		if v, ok := mapped["Description"]; ok {
+			val := v.(string)
+			e.Description = val
+		}
 	}
 
 	return nil, nil

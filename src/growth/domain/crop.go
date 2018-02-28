@@ -145,32 +145,32 @@ type InitialArea struct {
 }
 
 type MovedArea struct {
-	AreaUID         uuid.UUID
-	SourceAreaUID   uuid.UUID
-	InitialQuantity int
-	CurrentQuantity int
-	CreatedDate     time.Time
-	LastUpdated     time.Time
+	AreaUID         uuid.UUID `json:"area_id"`
+	SourceAreaUID   uuid.UUID `json:"source_area_id"`
+	InitialQuantity int       `json:"initial_quantity"`
+	CurrentQuantity int       `json:"current_quantity"`
+	CreatedDate     time.Time `json:"created_date"`
+	LastUpdated     time.Time `json:"last_updated"`
 
-	LastWatered    time.Time
-	LastFertilized time.Time
-	LastPruned     time.Time
-	LastPesticided time.Time
+	LastWatered    time.Time `json:"last_watered"`
+	LastFertilized time.Time `json:"last_fertilized"`
+	LastPruned     time.Time `json:"last_pruned"`
+	LastPesticided time.Time `json:"last_pesticided"`
 }
 
 type HarvestedStorage struct {
-	Quantity             int
-	ProducedGramQuantity float32
-	SourceAreaUID        uuid.UUID
-	CreatedDate          time.Time
-	LastUpdated          time.Time
+	Quantity             int       `json:"quantity"`
+	ProducedGramQuantity float32   `json:"produced_gram_quantity"`
+	SourceAreaUID        uuid.UUID `json:"source_area_id"`
+	CreatedDate          time.Time `json:"created_date"`
+	LastUpdated          time.Time `json:"last_updated"`
 }
 
 type Trash struct {
-	Quantity      int
-	SourceAreaUID uuid.UUID
-	CreatedDate   time.Time
-	LastUpdated   time.Time
+	Quantity      int       `json:"quantity"`
+	SourceAreaUID uuid.UUID `json:"source_area_id"`
+	CreatedDate   time.Time `json:"created_date"`
+	LastUpdated   time.Time `json:"last_updated"`
 }
 
 const (
@@ -559,10 +559,12 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	movedDate := time.Now()
 
 	var updatedSrcArea interface{}
+	updatedSrcAreaCode := ""
 	if c.InitialArea.AreaUID == srcArea.UID {
 		ia := c.InitialArea
 		ia.CurrentQuantity -= quantity
 
+		updatedSrcAreaCode = "INITIAL_AREA"
 		updatedSrcArea = ia
 	}
 
@@ -571,11 +573,13 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 			ma := v
 			ma.CurrentQuantity -= quantity
 
+			updatedSrcAreaCode = "MOVED_AREA"
 			updatedSrcArea = ma
 		}
 	}
 
 	var updatedDstArea interface{}
+	updatedDstAreaCode := ""
 	isDstFoundInInitial := false
 	isDstFoundInMoved := false
 
@@ -585,6 +589,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 		ia.LastUpdated = movedDate
 
 		updatedDstArea = ia
+		updatedDstAreaCode = "INITIAL_AREA"
 		isDstFoundInInitial = true
 	}
 
@@ -598,6 +603,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 				da.LastUpdated = movedDate
 
 				updatedDstArea = da
+				updatedDstAreaCode = "MOVED_AREA"
 				isDstFoundInMoved = true
 			}
 		}
@@ -616,13 +622,15 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 
 	// Process //
 	c.TrackChange(CropBatchMoved{
-		UID:            c.UID,
-		Quantity:       quantity,
-		SrcAreaUID:     srcArea.UID,
-		DstAreaUID:     dstArea.UID,
-		MovedDate:      movedDate,
-		UpdatedSrcArea: updatedSrcArea,
-		UpdatedDstArea: updatedDstArea,
+		UID:                c.UID,
+		Quantity:           quantity,
+		SrcAreaUID:         srcArea.UID,
+		DstAreaUID:         dstArea.UID,
+		MovedDate:          movedDate,
+		UpdatedSrcArea:     updatedSrcArea,
+		UpdatedSrcAreaCode: updatedSrcAreaCode,
+		UpdatedDstArea:     updatedDstArea,
+		UpdatedDstAreaCode: updatedDstAreaCode,
 	})
 
 	return nil

@@ -55,6 +55,42 @@ type cropReadPhotoResult struct {
 	Description string
 }
 
+type cropReadMovedAreaResult struct {
+	ID              int
+	CropUID         string
+	AreaUID         string
+	Name            string
+	InitialQuantity int
+	CurrentQuantity int
+	LastWatered     sql.NullString
+	LastFertilized  sql.NullString
+	LastPesticided  sql.NullString
+	LastPruned      sql.NullString
+	CreatedDate     string
+	LastUpdated     string
+}
+
+type cropReadHarvestedStorageResult struct {
+	ID                   int
+	CropUID              string
+	Quantity             int
+	ProducedGramQuantity float32
+	SourceAreaUID        string
+	SourceAreaName       string
+	CreatedDate          string
+	LastUpdated          string
+}
+
+type cropReadTrashResult struct {
+	ID             int
+	CropUID        string
+	Quantity       int
+	SourceAreaUID  string
+	SourceAreaName string
+	CreatedDate    string
+	LastUpdated    string
+}
+
 func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
@@ -62,6 +98,9 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		cropRead := storage.CropRead{}
 		rowsData := cropReadResult{}
 		photoRowsData := cropReadPhotoResult{}
+		movedRowsData := cropReadMovedAreaResult{}
+		harvestedRowsData := cropReadHarvestedStorageResult{}
+		trashRowsData := cropReadTrashResult{}
 
 		err := s.DB.QueryRow(`SELECT UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,
 			INVENTORY_UID, INVENTORY_PLANT_TYPE, INVENTORY_NAME,
@@ -214,6 +253,181 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			})
 		}
 
+		rows, err = s.DB.Query("SELECT * FROM CROP_READ_MOVED_AREA WHERE CROP_UID = ?", uid)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		movedAreas := []storage.MovedArea{}
+		for rows.Next() {
+			err = rows.Scan(
+				&movedRowsData.ID,
+				&movedRowsData.CropUID,
+				&movedRowsData.AreaUID,
+				&movedRowsData.Name,
+				&movedRowsData.InitialQuantity,
+				&movedRowsData.CurrentQuantity,
+				&movedRowsData.LastWatered,
+				&movedRowsData.LastFertilized,
+				&movedRowsData.LastPesticided,
+				&movedRowsData.LastPruned,
+				&movedRowsData.CreatedDate,
+				&movedRowsData.LastUpdated,
+			)
+
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			var lw *time.Time
+			if movedRowsData.LastWatered.Valid && movedRowsData.LastWatered.String != "" {
+				date, err := time.Parse(time.RFC3339, movedRowsData.LastWatered.String)
+				if err != nil {
+					result <- query.QueryResult{Error: err}
+				}
+
+				lw = &date
+			}
+
+			var lf *time.Time
+			if movedRowsData.LastFertilized.Valid && movedRowsData.LastFertilized.String != "" {
+				date, err := time.Parse(time.RFC3339, movedRowsData.LastFertilized.String)
+				if err != nil {
+					result <- query.QueryResult{Error: err}
+				}
+
+				lf = &date
+			}
+
+			var lp *time.Time
+			if movedRowsData.LastPesticided.Valid && movedRowsData.LastPesticided.String != "" {
+				date, err := time.Parse(time.RFC3339, movedRowsData.LastPesticided.String)
+				if err != nil {
+					result <- query.QueryResult{Error: err}
+				}
+
+				lp = &date
+			}
+
+			var lpr *time.Time
+			if movedRowsData.LastPruned.Valid && movedRowsData.LastPruned.String != "" {
+				date, err := time.Parse(time.RFC3339, movedRowsData.LastPruned.String)
+				if err != nil {
+					result <- query.QueryResult{Error: err}
+				}
+
+				lpr = &date
+			}
+
+			areaUID, err := uuid.FromString(movedRowsData.AreaUID)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			createdDate, err := time.Parse(time.RFC3339, movedRowsData.CreatedDate)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			lastUpdated, err := time.Parse(time.RFC3339, movedRowsData.LastUpdated)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			movedAreas = append(movedAreas, storage.MovedArea{
+				AreaUID:         areaUID,
+				Name:            movedRowsData.Name,
+				InitialQuantity: movedRowsData.InitialQuantity,
+				CurrentQuantity: movedRowsData.CurrentQuantity,
+				LastWatered:     lw,
+				LastFertilized:  lf,
+				LastPesticided:  lp,
+				LastPruned:      lpr,
+				CreatedDate:     createdDate,
+				LastUpdated:     lastUpdated,
+			})
+		}
+
+		rows, err = s.DB.Query("SELECT * FROM CROP_READ_HARVESTED_STORAGE WHERE CROP_UID = ?", uid)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		harvestedStorages := []storage.HarvestedStorage{}
+		for rows.Next() {
+			err = rows.Scan(
+				&harvestedRowsData.ID,
+				&harvestedRowsData.CropUID,
+				&harvestedRowsData.ProducedGramQuantity,
+				&harvestedRowsData.SourceAreaUID,
+				&harvestedRowsData.SourceAreaName,
+				&harvestedRowsData.CreatedDate,
+				&harvestedRowsData.LastUpdated)
+
+			sourceAreaUID, err := uuid.FromString(harvestedRowsData.SourceAreaUID)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			createdDate, err := time.Parse(time.RFC3339, harvestedRowsData.CreatedDate)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			lastUpdated, err := time.Parse(time.RFC3339, harvestedRowsData.LastUpdated)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			harvestedStorages = append(harvestedStorages, storage.HarvestedStorage{
+				Quantity:             harvestedRowsData.Quantity,
+				ProducedGramQuantity: harvestedRowsData.ProducedGramQuantity,
+				SourceAreaUID:        sourceAreaUID,
+				SourceAreaName:       harvestedRowsData.SourceAreaName,
+				CreatedDate:          createdDate,
+				LastUpdated:          lastUpdated,
+			})
+		}
+
+		rows, err = s.DB.Query("SELECT * FROM CROP_READ_TRASH WHERE CROP_UID = ?", uid)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		trash := []storage.Trash{}
+		for rows.Next() {
+			err = rows.Scan(
+				&trashRowsData.ID,
+				&trashRowsData.CropUID,
+				&trashRowsData.SourceAreaUID,
+				&trashRowsData.SourceAreaName,
+				&trashRowsData.CreatedDate,
+				&trashRowsData.LastUpdated)
+
+			sourceAreaUID, err := uuid.FromString(harvestedRowsData.SourceAreaUID)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			createdDate, err := time.Parse(time.RFC3339, harvestedRowsData.CreatedDate)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			lastUpdated, err := time.Parse(time.RFC3339, harvestedRowsData.LastUpdated)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			trash = append(trash, storage.Trash{
+				Quantity:       harvestedRowsData.Quantity,
+				SourceAreaUID:  sourceAreaUID,
+				SourceAreaName: harvestedRowsData.SourceAreaName,
+				CreatedDate:    createdDate,
+				LastUpdated:    lastUpdated,
+			})
+		}
+
 		cropRead.UID = cropUID
 		cropRead.BatchID = rowsData.BatchID
 		cropRead.Status = rowsData.Status
@@ -239,6 +453,9 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		cropRead.InitialArea.CreatedDate = initialAreaCreatedDate
 		cropRead.InitialArea.LastUpdated = initialAreaLastUpdated
 		cropRead.Photos = photos
+		cropRead.MovedArea = movedAreas
+		cropRead.HarvestedStorage = harvestedStorages
+		cropRead.Trash = trash
 
 		result <- query.QueryResult{Result: cropRead}
 		close(result)

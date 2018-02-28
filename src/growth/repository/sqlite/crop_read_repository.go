@@ -118,6 +118,140 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 				}
 			}
 
+			if len(cropRead.MovedArea) > 0 {
+				for _, v := range cropRead.MovedArea {
+					var movedLastWatered string
+					if v.LastWatered != nil && !v.LastWatered.IsZero() {
+						movedLastWatered = v.LastWatered.Format(time.RFC3339)
+					}
+
+					var movedLastFertilized string
+					if v.LastFertilized != nil && !v.LastFertilized.IsZero() {
+						movedLastFertilized = v.LastFertilized.Format(time.RFC3339)
+					}
+
+					var movedLastPesticided string
+					if v.LastPesticided != nil && !v.LastPesticided.IsZero() {
+						movedLastPesticided = v.LastPesticided.Format(time.RFC3339)
+					}
+
+					var movedLastPruned string
+					if v.LastPruned != nil && !v.LastPruned.IsZero() {
+						movedLastPruned = v.LastPruned.Format(time.RFC3339)
+					}
+
+					cd := v.CreatedDate.Format(time.RFC3339)
+					lu := v.LastUpdated.Format(time.RFC3339)
+
+					res, err := f.DB.Exec(`UPDATE CROP_READ_MOVED_AREA
+						SET NAME = ?, INITIAL_QUANTITY = ?, CURRENT_QUANTITY = ?,
+						LAST_WATERED = ?, LAST_FERTILIZED = ?, LAST_PESTICIDED = ?, LAST_PRUNED = ?,
+						CREATED_DATE = ?, LAST_UPDATED = ?
+						WHERE AREA_UID = ?`,
+						v.Name, v.InitialQuantity, v.CurrentQuantity,
+						movedLastWatered, movedLastFertilized, movedLastPesticided, movedLastPruned,
+						cd, lu,
+						v.AreaUID)
+
+					if err != nil {
+						result <- err
+					}
+
+					rowsAffected, err := res.RowsAffected()
+					if err != nil {
+						result <- err
+					}
+
+					if rowsAffected == 0 {
+						_, err = f.DB.Exec(`INSERT INTO CROP_READ_MOVED_AREA (
+							CROP_UID, AREA_UID, NAME, INITIAL_QUANTITY, CURRENT_QUANTITY,
+							LAST_WATERED, LAST_FERTILIZED, LAST_PESTICIDED, LAST_PRUNED,
+							CREATED_DATE, LAST_UPDATED)
+							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+							cropRead.UID, v.AreaUID, v.Name, v.InitialQuantity, v.CurrentQuantity,
+							movedLastWatered, movedLastFertilized, movedLastPesticided, movedLastPruned,
+							cd, lu)
+
+						if err != nil {
+							result <- err
+						}
+					}
+				}
+			}
+
+			if len(cropRead.HarvestedStorage) > 0 {
+				for _, v := range cropRead.HarvestedStorage {
+					cd := v.CreatedDate.Format(time.RFC3339)
+					lu := v.LastUpdated.Format(time.RFC3339)
+
+					res, err := f.DB.Exec(`UPDATE CROP_READ_HARVESTED_STORAGE
+						SET QUANTITY = ?, PRODUCED_GRAM_QUANTITY = ?,
+						SOURCE_AREA_NAME = ?,
+						CREATED_DATE = ?, LAST_UPDATED = ?
+						WHERE SOURCE_AREA_UID = ?`,
+						v.Quantity, v.ProducedGramQuantity,
+						v.SourceAreaName,
+						cd, lu,
+						v.SourceAreaUID)
+
+					if err != nil {
+						result <- err
+					}
+
+					rowsAffected, err := res.RowsAffected()
+					if err != nil {
+						result <- err
+					}
+
+					if rowsAffected == 0 {
+						_, err = f.DB.Exec(`INSERT INTO CROP_READ_HARVESTED_STORAGE (
+							CROP_UID, QUANTITY, PRODUCED_GRAM_QUANTITY,
+							SOURCE_AREA_UID, SOURCE_AREA_NAME,
+							CREATED_DATE, LAST_UPDATED)
+							VALUES (?, ?, ?, ?, ?, ?, ?)`,
+							cropRead.UID, v.Quantity, v.ProducedGramQuantity,
+							v.SourceAreaUID, v.SourceAreaName, cd, lu)
+
+						if err != nil {
+							result <- err
+						}
+					}
+				}
+			}
+
+			if len(cropRead.Trash) > 0 {
+				for _, v := range cropRead.Trash {
+					cd := v.CreatedDate.Format(time.RFC3339)
+					lu := v.LastUpdated.Format(time.RFC3339)
+
+					res, err := f.DB.Exec(`UPDATE CROP_READ_TRASH
+						SET QUANTITY = ?, SOURCE_AREA_UID = ?, SOURCE_AREA_NAME = ?,
+						CREATED_DATE = ?, LAST_UPDATED = ?`,
+						v.Quantity, v.SourceAreaUID, v.SourceAreaName, cd, lu)
+
+					if err != nil {
+						result <- err
+					}
+
+					rowsAffected, err := res.RowsAffected()
+					if err != nil {
+						result <- err
+					}
+
+					if rowsAffected == 0 {
+						_, err = f.DB.Exec(`INSERT INTO CROP_READ_TRASH (
+							CROP_UID, QUANTITY, SOURCE_AREA_UID, SOURCE_AREA_NAME,
+							CREATED_DATE, LAST_UPDATED)
+							VALUES (?, ?, ?, ?, ?)`,
+							cropRead.UID, v.Quantity, v.SourceAreaUID, v.SourceAreaName, cd, lu)
+
+						if err != nil {
+							result <- err
+						}
+					}
+				}
+			}
+
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO CROP_READ
 				(UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,
