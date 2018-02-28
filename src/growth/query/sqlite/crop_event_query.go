@@ -308,6 +308,188 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 		return e, nil
 
+	case "CropBatchHarvested":
+		e := domain.CropBatchHarvested{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["HarvestType"]; ok {
+			val := v.(string)
+			e.HarvestType = val
+		}
+		if v, ok := mapped["HarvestedQuantity"]; ok {
+			val := v.(float64)
+			e.HarvestedQuantity = int(val)
+		}
+		if v, ok := mapped["ProducedGramQuantity"]; ok {
+			val := v.(float64)
+			e.ProducedGramQuantity = float32(val)
+		}
+		if v, ok := mapped["UpdatedHarvestedStorage"]; ok {
+			mapped2 := v.(map[string]interface{})
+			harvestedStorage := domain.HarvestedStorage{}
+
+			if v2, ok2 := mapped2["quantity"]; ok2 {
+				val := v2.(float64)
+				harvestedStorage.Quantity = int(val)
+			}
+			if v2, ok2 := mapped2["produced_gram_quantity"]; ok2 {
+				val := v2.(float64)
+				harvestedStorage.ProducedGramQuantity = float32(val)
+			}
+			if v2, ok2 := mapped2["source_area_id"]; ok2 {
+				uid, err := makeUUID(v2)
+				if err != nil {
+					return nil, err
+				}
+
+				harvestedStorage.SourceAreaUID = uid
+			}
+			if v2, ok2 := mapped["created_date"]; ok2 {
+				val, err := makeTime(v2)
+				if err != nil {
+					return nil, err
+				}
+
+				harvestedStorage.CreatedDate = val
+			}
+			if v2, ok2 := mapped["last_updated"]; ok2 {
+				val, err := makeTime(v2)
+				if err != nil {
+					return nil, err
+				}
+
+				harvestedStorage.LastUpdated = val
+			}
+
+			e.UpdatedHarvestedStorage = harvestedStorage
+		}
+		if v, ok := mapped["HarvestedArea"]; ok {
+			code := mapped["HarvestedAreaCode"].(string)
+
+			if code == "INITIAL_AREA" {
+				initialArea, err := makeCropInitialArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.HarvestedArea = initialArea
+			}
+			if code == "MOVED_AREA" {
+				movedArea, err := makeCropMovedArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.HarvestedArea = movedArea
+			}
+		}
+		if v, ok := mapped["HarvestDate"]; ok {
+			val, err := makeTime(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.HarvestDate = val
+		}
+		if v, ok := mapped["Notes"]; ok {
+			val := v.(string)
+			e.Notes = val
+		}
+
+		return e, nil
+
+	case "CropBatchDumped":
+		e := domain.CropBatchDumped{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["Quantity"]; ok {
+			val := v.(float64)
+			e.Quantity = int(val)
+		}
+		if v, ok := mapped["UpdatedTrash"]; ok {
+			mapped2 := v.(map[string]interface{})
+			trash := domain.Trash{}
+
+			if v2, ok2 := mapped2["quantity"]; ok2 {
+				val := v2.(float64)
+				trash.Quantity = int(val)
+			}
+			if v2, ok2 := mapped2["source_area_id"]; ok2 {
+				uid, err := makeUUID(v2)
+				if err != nil {
+					return nil, err
+				}
+
+				trash.SourceAreaUID = uid
+			}
+			if v2, ok2 := mapped["created_date"]; ok2 {
+				val, err := makeTime(v2)
+				if err != nil {
+					return nil, err
+				}
+
+				trash.CreatedDate = val
+			}
+			if v2, ok2 := mapped["last_updated"]; ok2 {
+				val, err := makeTime(v2)
+				if err != nil {
+					return nil, err
+				}
+
+				trash.LastUpdated = val
+			}
+
+			e.UpdatedTrash = trash
+		}
+		if v, ok := mapped["DumpedArea"]; ok {
+			code := mapped["DumpedAreaCode"].(string)
+
+			if code == "INITIAL_AREA" {
+				initialArea, err := makeCropInitialArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.DumpedArea = initialArea
+			}
+			if code == "MOVED_AREA" {
+				movedArea, err := makeCropMovedArea(v)
+				if err != nil {
+					return nil, err
+				}
+
+				e.DumpedArea = movedArea
+			}
+		}
+		if v, ok := mapped["DumpDate"]; ok {
+			val, err := makeTime(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.DumpDate = val
+		}
+		if v, ok := mapped["Notes"]; ok {
+			val := v.(string)
+			e.Notes = val
+		}
+
+		return e, nil
+
 	case "CropBatchPhotoCreated":
 		e := domain.CropBatchPhotoCreated{}
 

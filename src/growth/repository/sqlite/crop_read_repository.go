@@ -242,7 +242,7 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						_, err = f.DB.Exec(`INSERT INTO CROP_READ_TRASH (
 							CROP_UID, QUANTITY, SOURCE_AREA_UID, SOURCE_AREA_NAME,
 							CREATED_DATE, LAST_UPDATED)
-							VALUES (?, ?, ?, ?, ?)`,
+							VALUES (?, ?, ?, ?, ?, ?)`,
 							cropRead.UID, v.Quantity, v.SourceAreaUID, v.SourceAreaName, cd, lu)
 
 						if err != nil {
