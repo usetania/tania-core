@@ -1,5 +1,7 @@
 <template lang="pug">
   .col
+    modal(v-if="showModal" @close="showModal = false")
+      TaskCreate
     .vbox
       .row-row
         .cell
@@ -13,7 +15,7 @@
                         .col-sm-8
                           .h3.text-lt Incomplete Tasks
                         .col-sm-4.text-right
-                          a.btn.btn-sm.btn-primary.btn-addon(href="task-add.html")
+                          a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="showModal = true")
                             i.fas.fa-plus
                             | Add Task
                     .panel-body.bg-white-only

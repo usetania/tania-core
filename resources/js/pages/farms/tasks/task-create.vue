@@ -1,9 +1,10 @@
 <template lang="pug">
   .tasks-create
     .modal-header
-      h4.font-bold 
+      h4.font-bold (v-if="asset")
         | {{ asset }}: Add New Task on 
         span.areatag {{ data.name }}
+      h4.font-bold (v-else) Add New Task
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
