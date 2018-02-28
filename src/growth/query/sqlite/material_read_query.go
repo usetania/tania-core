@@ -33,7 +33,7 @@ func (s MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 		rowsData := materialReadResult{}
 
 		err := s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA FROM MATERIAL_READ
-			WHERE UID = ? AND TYPE = ? OR TYPE = ? `, materialUID, "SEED", "PLANT").Scan(
+			WHERE UID = ?`, materialUID).Scan(
 			&rowsData.UID,
 			&rowsData.Name,
 			&rowsData.Type,
