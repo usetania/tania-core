@@ -252,6 +252,24 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 				}
 			}
 
+			if len(cropRead.Notes) > 0 {
+				// Just delete them all then insert them all again.
+				// We can refactor it later.
+				_, err := f.DB.Exec(`DELETE FROM CROP_READ_NOTES WHERE CROP_UID = ?`, cropRead.UID)
+				if err != nil {
+					result <- err
+				}
+
+				for _, v := range cropRead.Notes {
+					_, err := f.DB.Exec(`INSERT INTO CROP_READ_NOTES (UID, CROP_UID, CONTENT, CREATED_DATE)
+							VALUES (?, ?, ?, ?)`, v.UID, cropRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
+
+					if err != nil {
+						result <- err
+					}
+				}
+			}
+
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO CROP_READ
 				(UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,

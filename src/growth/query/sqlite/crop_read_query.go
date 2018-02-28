@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
@@ -91,6 +92,13 @@ type cropReadTrashResult struct {
 	LastUpdated    string
 }
 
+type cropReadNotesResult struct {
+	UID         string
+	CropUID     string
+	Content     string
+	CreatedDate string
+}
+
 func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
@@ -101,6 +109,7 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		movedRowsData := cropReadMovedAreaResult{}
 		harvestedRowsData := cropReadHarvestedStorageResult{}
 		trashRowsData := cropReadTrashResult{}
+		notesRowsData := cropReadNotesResult{}
 
 		err := s.DB.QueryRow(`SELECT UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,
 			INVENTORY_UID, INVENTORY_PLANT_TYPE, INVENTORY_NAME,
@@ -429,6 +438,37 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			})
 		}
 
+		rows, err = s.DB.Query("SELECT * FROM CROP_READ_NOTES WHERE CROP_UID = ?", uid)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		notes := []domain.CropNote{}
+		for rows.Next() {
+			rows.Scan(
+				&notesRowsData.UID,
+				&notesRowsData.CropUID,
+				&notesRowsData.Content,
+				&notesRowsData.CreatedDate,
+			)
+
+			noteUID, err := uuid.FromString(notesRowsData.UID)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			notes = append(notes, domain.CropNote{
+				UID:         noteUID,
+				Content:     notesRowsData.Content,
+				CreatedDate: noteCreatedDate,
+			})
+		}
+
 		cropRead.UID = cropUID
 		cropRead.BatchID = rowsData.BatchID
 		cropRead.Status = rowsData.Status
@@ -457,6 +497,7 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		cropRead.MovedArea = movedAreas
 		cropRead.HarvestedStorage = harvestedStorages
 		cropRead.Trash = trash
+		cropRead.Notes = notes
 
 		result <- query.QueryResult{Result: cropRead}
 		close(result)

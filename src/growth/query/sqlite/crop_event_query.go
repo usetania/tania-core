@@ -490,6 +490,48 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 		return e, nil
 
+	case "CropBatchWatered":
+		e := domain.CropBatchWatered{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["BatchID"]; ok {
+			val := v.(string)
+			e.BatchID = val
+		}
+		if v, ok := mapped["ContainerType"]; ok {
+			val := v.(string)
+			e.ContainerType = val
+		}
+		if v, ok := mapped["AreaUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.AreaUID = uid
+		}
+		if v, ok := mapped["AreaName"]; ok {
+			val := v.(string)
+			e.AreaName = val
+		}
+		if v, ok := mapped["WateringDate"]; ok {
+			val, err := makeTime(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.WateringDate = val
+		}
+
+		return e, nil
+
 	case "CropBatchPhotoCreated":
 		e := domain.CropBatchPhotoCreated{}
 
@@ -533,6 +575,76 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 			val := v.(string)
 			e.Description = val
 		}
+
+		return e, nil
+
+	case "CropBatchNoteCreated":
+		e := domain.CropBatchNoteCreated{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["CropUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.CropUID = uid
+		}
+		if v, ok := mapped["Content"]; ok {
+			val := v.(string)
+			e.Content = val
+		}
+		if v, ok := mapped["CreatedDate"]; ok {
+			d, err := makeTime(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.CreatedDate = d
+		}
+
+		return e, nil
+
+	case "CropBatchNoteRemoved":
+		e := domain.CropBatchNoteRemoved{}
+
+		if v, ok := mapped["UID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.UID = uid
+		}
+		if v, ok := mapped["CropUID"]; ok {
+			uid, err := makeUUID(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.CropUID = uid
+		}
+		if v, ok := mapped["Content"]; ok {
+			val := v.(string)
+			e.Content = val
+		}
+		if v, ok := mapped["CreatedDate"]; ok {
+			d, err := makeTime(v)
+			if err != nil {
+				return nil, err
+			}
+
+			e.CreatedDate = d
+		}
+
+		return e, nil
 	}
 
 	return nil, nil
