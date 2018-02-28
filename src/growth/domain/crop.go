@@ -334,10 +334,10 @@ func (state *Crop) Transition(event interface{}) {
 			state.HarvestedStorage = append(state.HarvestedStorage, e.UpdatedHarvestedStorage)
 		}
 
-		if e.HarvestedAreaType == "INITIAL_AREA" {
+		if e.HarvestedAreaCode == "INITIAL_AREA" {
 			ha := e.HarvestedArea.(InitialArea)
 			state.InitialArea = ha
-		} else if e.HarvestedAreaType == "MOVED_AREA" {
+		} else if e.HarvestedAreaCode == "MOVED_AREA" {
 			ma := e.HarvestedArea.(MovedArea)
 
 			for i, v := range state.MovedArea {
@@ -360,10 +360,10 @@ func (state *Crop) Transition(event interface{}) {
 			state.Trash = append(state.Trash, e.UpdatedTrash)
 		}
 
-		if e.DumpedAreaType == "INITIAL_AREA" {
+		if e.DumpedAreaCode == "INITIAL_AREA" {
 			da := e.DumpedArea.(InitialArea)
 			state.InitialArea = da
-		} else if e.DumpedAreaType == "MOVED_AREA" {
+		} else if e.DumpedAreaCode == "MOVED_AREA" {
 			da := e.DumpedArea.(MovedArea)
 
 			for i, v := range state.MovedArea {
@@ -618,6 +618,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 			CreatedDate:     movedDate,
 			LastUpdated:     movedDate,
 		}
+		updatedDstAreaCode = "MOVED_AREA"
 	}
 
 	// Process //
@@ -691,7 +692,7 @@ func (c *Crop) Harvest(
 	// Else if harvestType Partial, then we assume that the quantity of moved plant is 0
 	harvestedQuantity := 0
 	var harvestedArea interface{}
-	harvesterdAreaType := ""
+	harvestedAreaCode := ""
 	if ht.Code == HarvestTypeAll {
 		if c.InitialArea.AreaUID == srcArea.UID {
 			ia := c.InitialArea
@@ -704,7 +705,7 @@ func (c *Crop) Harvest(
 			ia.CurrentQuantity = 0
 
 			harvestedArea = ia
-			harvesterdAreaType = "INITIAL_AREA"
+			harvestedAreaCode = "INITIAL_AREA"
 		}
 		for _, v := range c.MovedArea {
 			if v.AreaUID == srcArea.UID {
@@ -718,7 +719,7 @@ func (c *Crop) Harvest(
 				ma.CurrentQuantity = 0
 
 				harvestedArea = ma
-				harvesterdAreaType = "MOVED_AREA"
+				harvestedAreaCode = "MOVED_AREA"
 			}
 		}
 	}
@@ -760,7 +761,7 @@ func (c *Crop) Harvest(
 		ProducedGramQuantity:    totalProduced,
 		UpdatedHarvestedStorage: harvestedStorage,
 		HarvestedArea:           harvestedArea,
-		HarvestedAreaType:       harvesterdAreaType,
+		HarvestedAreaCode:       harvestedAreaCode,
 		HarvestDate:             harvestDate,
 		Notes:                   notes,
 	})
@@ -839,14 +840,14 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	}
 
 	// Reduce the quantity in the area because it has been dumped
-	dumpedAreaType := ""
+	dumpedAreaCode := ""
 	if c.InitialArea.AreaUID == srcArea.UID {
 		ia := c.InitialArea
 		ia.CurrentQuantity -= quantity
 		ia.LastUpdated = dumpDate
 
 		dumpedArea = ia
-		dumpedAreaType = "INITIAL_AREA"
+		dumpedAreaCode = "INITIAL_AREA"
 	}
 	for _, v := range c.MovedArea {
 		if v.AreaUID == srcArea.UID {
@@ -855,7 +856,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 			ma.LastUpdated = dumpDate
 
 			dumpedArea = ma
-			dumpedAreaType = "MOVED_AREA"
+			dumpedAreaCode = "MOVED_AREA"
 		}
 	}
 
@@ -865,7 +866,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 		Quantity:       quantity,
 		UpdatedTrash:   updatedTrash,
 		DumpedArea:     dumpedArea,
-		DumpedAreaType: dumpedAreaType,
+		DumpedAreaCode: dumpedAreaCode,
 		DumpDate:       time.Now(),
 		Notes:          notes,
 	})

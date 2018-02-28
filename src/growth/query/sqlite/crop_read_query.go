@@ -358,6 +358,7 @@ func (s CropReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			err = rows.Scan(
 				&harvestedRowsData.ID,
 				&harvestedRowsData.CropUID,
+				&harvestedRowsData.Quantity,
 				&harvestedRowsData.ProducedGramQuantity,
 				&harvestedRowsData.SourceAreaUID,
 				&harvestedRowsData.SourceAreaName,

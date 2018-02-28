@@ -3,7 +3,6 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -268,10 +267,8 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 		}
 		if v, ok := mapped["UpdatedSrcArea"]; ok {
 			code := mapped["UpdatedSrcAreaCode"].(string)
-			fmt.Println("CODE NIIII")
 
 			if code == "INITIAL_AREA" {
-				fmt.Println("MASUK INITIAL NIH 1")
 				initialArea, err := makeCropInitialArea(v)
 				if err != nil {
 					return nil, err
@@ -280,7 +277,6 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.UpdatedSrcArea = initialArea
 			}
 			if code == "MOVED_AREA" {
-				fmt.Println("MASUK MOVED NIH 1")
 				movedArea, err := makeCropMovedArea(v)
 				if err != nil {
 					return nil, err
@@ -288,14 +284,11 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 				e.UpdatedSrcArea = movedArea
 			}
-
-			fmt.Println("")
 		}
 		if v, ok := mapped["UpdatedDstArea"]; ok {
 			code := mapped["UpdatedDstAreaCode"].(string)
 
 			if code == "INITIAL_AREA" {
-				fmt.Println("MASUK INITIAL NIH 2")
 				initialArea, err := makeCropInitialArea(v)
 				if err != nil {
 					return nil, err
@@ -304,7 +297,6 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.UpdatedDstArea = initialArea
 			}
 			if code == "MOVED_AREA" {
-				fmt.Println("MASUK MOVED NIH 2")
 				movedArea, err := makeCropMovedArea(v)
 				if err != nil {
 					return nil, err

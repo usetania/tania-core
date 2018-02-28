@@ -152,7 +152,7 @@ func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
-		movedArea.AreaUID = uid
+		movedArea.SourceAreaUID = uid
 	}
 	if v, ok := mapped["initial_quantity"]; ok {
 		qty := v.(float64)

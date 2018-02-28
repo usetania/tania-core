@@ -54,7 +54,7 @@ type CropBatchHarvested struct {
 	ProducedGramQuantity    float32
 	UpdatedHarvestedStorage HarvestedStorage
 	HarvestedArea           interface{}
-	HarvestedAreaType       string
+	HarvestedAreaCode       string // Values: INITIAL_AREA / MOVED_AREA
 	HarvestDate             time.Time
 	Notes                   string
 }
@@ -64,7 +64,7 @@ type CropBatchDumped struct {
 	Quantity       int
 	UpdatedTrash   Trash
 	DumpedArea     interface{}
-	DumpedAreaType string
+	DumpedAreaCode string // Values: INITIAL_AREA / MOVED_AREA
 	DumpDate       time.Time
 	Notes          string
 }

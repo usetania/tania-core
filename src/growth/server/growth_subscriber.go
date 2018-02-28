@@ -2,7 +2,6 @@ package server
 
 import (
 	"errors"
-	"fmt"
 	"sort"
 	"time"
 
@@ -17,7 +16,6 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 	switch e := event.(type) {
 	case domain.CropBatchCreated:
-		fmt.Println("MASUK SUBS NIH")
 		queryResult := <-s.AreaReadQuery.FindByID(e.InitialAreaUID)
 		if queryResult.Error != nil {
 			log.Error(queryResult.Error)
@@ -37,7 +35,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		if !ok {
 			log.Error(errors.New("Internal server error. Error type assertion"))
 		}
-		fmt.Println("LOLOS NIH")
+
 		cropRead.UID = e.UID
 		cropRead.BatchID = e.BatchID
 		cropRead.Status = e.Status.Code
@@ -86,7 +84,6 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		cropRead.FarmUID = e.FarmUID
-		fmt.Println("GA SAMPE BAWAH")
 
 	case domain.CropBatchTypeChanged:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
@@ -313,11 +310,11 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			cropRead.HarvestedStorage = append(cropRead.HarvestedStorage, hs)
 		}
 
-		if e.HarvestedAreaType == "INITIAL_AREA" {
+		if e.HarvestedAreaCode == "INITIAL_AREA" {
 			ha := e.HarvestedArea.(domain.InitialArea)
 			cropRead.InitialArea.CurrentQuantity = ha.CurrentQuantity
 			cropRead.InitialArea.LastUpdated = ha.LastUpdated
-		} else if e.HarvestedAreaType == "MOVED_AREA" {
+		} else if e.HarvestedAreaCode == "MOVED_AREA" {
 			ma := e.HarvestedArea.(domain.MovedArea)
 
 			for i, v := range cropRead.MovedArea {
@@ -378,12 +375,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			})
 		}
 
-		if e.DumpedAreaType == "INITIAL_AREA" {
+		if e.DumpedAreaCode == "INITIAL_AREA" {
 			da := e.DumpedArea.(domain.InitialArea)
 			cropRead.InitialArea.CurrentQuantity = da.CurrentQuantity
 			cropRead.InitialArea.LastUpdated = da.LastUpdated
 
-		} else if e.DumpedAreaType == "MOVED_AREA" {
+		} else if e.DumpedAreaCode == "MOVED_AREA" {
 			da := e.DumpedArea.(domain.MovedArea)
 
 			for i, v := range cropRead.MovedArea {
