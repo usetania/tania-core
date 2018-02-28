@@ -9,7 +9,6 @@ import (
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/domain/service"
-	"github.com/Tanibox/tania-server/src/growth/query/inmemory"
 	querySqlite "github.com/Tanibox/tania-server/src/growth/query/sqlite"
 	repoSqlite "github.com/Tanibox/tania-server/src/growth/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
@@ -53,7 +52,7 @@ func NewGrowthServer(
 	farmReadStorage *assetsstorage.FarmReadStorage,
 ) (*GrowthServer, error) {
 	cropEventRepo := repoSqlite.NewCropEventRepositorySqlite(db)
-	cropEventQuery := inmemory.NewCropEventQueryInMemory(cropEventStorage)
+	cropEventQuery := querySqlite.NewCropEventQuerySqlite(db)
 	cropReadRepo := repoSqlite.NewCropReadRepositorySqlite(db)
 	cropReadQuery := querySqlite.NewCropReadQuerySqlite(db)
 	cropActivityRepo := repoSqlite.NewCropActivityRepositorySqlite(db)
