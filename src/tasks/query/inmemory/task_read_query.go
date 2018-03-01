@@ -5,6 +5,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
 	"strconv"
+	"time"
 )
 
 type TaskReadQueryInMemory struct {
@@ -98,6 +99,33 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string) <-c
 									is_match = false
 								}
 							}
+							if is_match {
+								// Category
+								if value, _ := params["category"]; value != "" {
+									if val.Category != value {
+										is_match = false
+									}
+								}
+								if is_match {
+									// Due Start Date & Due End Date
+									start, _ := params["due_start"]
+									end, _ := params["due_end"]
+
+									if (start != "") && (end != "") {
+										start_date, err := time.Parse(time.RFC3339Nano, start)
+
+										if err == nil {
+											end_date, err := time.Parse(time.RFC3339Nano, end)
+
+											if err == nil {
+												if !checkWithinTimeRange(start_date, end_date, *val.DueDate) {
+													is_match = false
+												}
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
@@ -113,4 +141,12 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string) <-c
 	}()
 
 	return result
+}
+
+func checkWithinTimeRange(start time.Time, end time.Time, check time.Time) bool {
+
+	is_start := check.Equal(start)
+	is_end := check.Equal(end)
+	is_between := check.After(start) && check.Before(end)
+	return is_start || is_end || is_between
 }

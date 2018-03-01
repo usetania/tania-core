@@ -124,6 +124,9 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	queryparams["status"] = c.QueryParam("status")
 	queryparams["domain"] = c.QueryParam("domain")
 	queryparams["asset_id"] = c.QueryParam("asset_id")
+	queryparams["category"] = c.QueryParam("category")
+	queryparams["due_start"] = c.QueryParam("due_start")
+	queryparams["due_end"] = c.QueryParam("due_end")
 
 	result := <-s.TaskReadQuery.FindTasksWithFilter(queryparams)
 
