@@ -3,11 +3,13 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -77,147 +79,47 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 func assertFarmEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
+	f := mapstructure.ComposeDecodeHookFunc(
+		query.UIDHook(),
+		query.TimeRFC3339Hook(time.RFC3339),
+	)
+
 	switch wrapper.EventName {
 	case "FarmCreated":
 		e := domain.FarmCreated{}
 
-		for key, v := range mapped {
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-			if key == "Name" {
-				val := v.(string)
-				e.Name = val
-			}
-			if key == "Type" {
-				val := v.(string)
-				e.Type = val
-			}
-			if key == "Latitude" {
-				val := v.(string)
-				e.Latitude = val
-			}
-			if key == "Longitude" {
-				val := v.(string)
-				e.Longitude = val
-			}
-			if key == "CountryCode" {
-				val := v.(string)
-				e.CountryCode = val
-			}
-			if key == "CityCode" {
-				val := v.(string)
-				e.CityCode = val
-			}
-			if key == "IsActive" {
-				val := v.(bool)
-				e.IsActive = val
-			}
-			if key == "CreatedDate" {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.CreatedDate = d
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmNameChanged":
 		e := domain.FarmNameChanged{}
 
-		for key, v := range mapped {
-			if key == "FarmUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.FarmUID = uid
-			}
-			if key == "Name" {
-				val := v.(string)
-				e.Name = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmTypeChanged":
 		e := domain.FarmTypeChanged{}
 
-		for key, v := range mapped {
-			if key == "FarmUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.FarmUID = uid
-			}
-			if key == "Type" {
-				val := v.(string)
-				e.Type = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmGeolocationChanged":
 		e := domain.FarmGeolocationChanged{}
 
-		for key, v := range mapped {
-			if key == "FarmUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.FarmUID = uid
-			}
-			if key == "Latitude" {
-				val := v.(string)
-				e.Latitude = val
-			}
-			if key == "Longitude" {
-				val := v.(string)
-				e.Longitude = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmRegionChanged":
 		e := domain.FarmRegionChanged{}
 
-		for key, v := range mapped {
-			if key == "FarmUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.FarmUID = uid
-			}
-			if key == "CountryCode" {
-				val := v.(string)
-				e.CountryCode = val
-			}
-			if key == "CityCode" {
-				val := v.(string)
-				e.CityCode = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 	}
 
-	return nil, nil
+	return nil, errors.New("Event not decoded succesfully")
 }

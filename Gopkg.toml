@@ -43,3 +43,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/asaskevich/EventBus"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/mitchellh/mapstructure"
