@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"github.com/Tanibox/tania-server/src/growth/repository"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
@@ -9,7 +10,7 @@ type CropEventRepositoryInMemory struct {
 	Storage *storage.CropEventStorage
 }
 
-func NewCropEventRepositoryInMemory(s *storage.CropEventStorage) CropEventRepository {
+func NewCropEventRepositoryInMemory(s *storage.CropEventStorage) repository.CropEventRepository {
 	return &CropEventRepositoryInMemory{Storage: s}
 }
 

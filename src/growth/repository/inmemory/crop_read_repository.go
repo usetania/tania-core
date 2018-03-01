@@ -1,12 +1,15 @@
 package inmemory
 
-import "github.com/Tanibox/tania-server/src/growth/storage"
+import (
+	"github.com/Tanibox/tania-server/src/growth/repository"
+	"github.com/Tanibox/tania-server/src/growth/storage"
+)
 
 type CropReadRepositoryInMemory struct {
 	Storage *storage.CropReadStorage
 }
 
-func NewCropReadRepositoryInMemory(s *storage.CropReadStorage) CropReadRepository {
+func NewCropReadRepositoryInMemory(s *storage.CropReadStorage) repository.CropReadRepository {
 	return &CropReadRepositoryInMemory{Storage: s}
 }
 
