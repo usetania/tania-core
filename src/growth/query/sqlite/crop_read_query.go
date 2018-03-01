@@ -564,9 +564,7 @@ func (s CropReadQuerySqlite) CountTotalBatch(farmUID uuid.UUID) <-chan query.Que
 				result <- query.QueryResult{Error: err}
 			}
 
-			if _, ok := varietyName[cropRead.Inventory.Name]; !ok {
-				varietyName[cropRead.Inventory.Name]++
-			}
+			varietyName[cropRead.Inventory.Name]++
 		}
 
 		for i, v := range varietyName {
