@@ -46,7 +46,7 @@ func NewTaskServer(
 	taskReadRepo := repoSqlite.NewTaskReadRepositorySqlite(db)
 
 	taskEventQuery := inmemory.NewTaskEventQueryInMemory(taskEventStorage)
-	taskReadQuery := inmemory.NewTaskReadQueryInMemory(taskReadStorage)
+	taskReadQuery := querySqlite.NewTaskReadQuerySqlite(db)
 
 	cropQuery := querySqlite.NewCropQuerySqlite(db)
 	areaQuery := querySqlite.NewAreaQuerySqlite(db)
