@@ -1,11 +1,13 @@
 package server
 
 import (
-	"fmt"
+	"errors"
+	"net/http"
+
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/labstack/echo"
-	"net/http"
+	"github.com/labstack/gommon/log"
 )
 
 func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
@@ -34,10 +36,10 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
 
 		if taskReadFromRepo.UID != e.UID {
-			return domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+			log.Error(domain.TaskError{domain.TaskErrorTaskNotFoundCode})
 		}
 		if !ok {
-			return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			log.Error(echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 		}
 
 		taskReadFromRepo.Title = e.Title
@@ -57,10 +59,10 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
 
 		if taskReadFromRepo.UID != e.UID {
-			return domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+			log.Error(domain.TaskError{domain.TaskErrorTaskNotFoundCode})
 		}
 		if !ok {
-			return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			log.Error(echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 		}
 
 		taskReadFromRepo.CompletedDate = e.CompletedDate
@@ -75,10 +77,10 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
 
 		if taskReadFromRepo.UID != e.UID {
-			return domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+			log.Error(domain.TaskError{domain.TaskErrorTaskNotFoundCode})
 		}
 		if !ok {
-			return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			log.Error(echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 		}
 
 		taskReadFromRepo.CancelledDate = e.CancelledDate
@@ -93,22 +95,22 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
 
 		if taskReadFromRepo.UID != e.UID {
-			return domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+			log.Error(domain.TaskError{domain.TaskErrorTaskNotFoundCode})
 		}
 		if !ok {
-			return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			log.Error(echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
 		}
 
 		taskReadFromRepo.IsDue = true
 		taskRead = &taskReadFromRepo
 
 	default:
-		fmt.Println("Unknown Task Event")
+		log.Error(errors.New("Unknown task event"))
 	}
 
 	err := <-s.TaskReadRepo.Save(taskRead)
 	if err != nil {
-		return err
+		log.Error(err)
 	}
 
 	return nil
