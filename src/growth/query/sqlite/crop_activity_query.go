@@ -37,7 +37,7 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 		cropActivities := []storage.CropActivity{}
 		rowsData := cropActivityResult{}
 
-		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY WHERE CROP_UID = ?`, uid)
+		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY WHERE CROP_UID = ? ORDER BY CREATED_DATE DESC`, uid)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
