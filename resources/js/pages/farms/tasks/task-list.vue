@@ -19,7 +19,7 @@
           a(href="#")
             div {{ task.title }}
             MoreDetail(:data="task" :description="task.description")
-            small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+            small.text-muted(v-if="task.due_date") Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
               TaskLabel(:type="'PRIORITY'" :task="task")
               span.text-danger(v-if="task.is_due == true") Overdue!
               span.text-success(v-if="isToday(task.due_date)") Today
@@ -72,8 +72,8 @@ export default {
           })
           .catch(error => console.log(error))
       } else if (this.category != '' || this.priority != '') {
-        console.log('task page')
-        this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: this.status })
+        let status = (this.status == 'INCOMPLETE') ? '' : this.status
+        this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: status })
           .then(({ data }) => {
             this.loading = false
             this.tasks = AddClicked(data)
