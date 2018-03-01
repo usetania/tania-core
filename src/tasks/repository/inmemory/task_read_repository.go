@@ -1,18 +1,15 @@
-package repository
+package inmemory
 
 import (
+	"github.com/Tanibox/tania-server/src/tasks/repository"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 )
-
-type TaskReadRepository interface {
-	Save(taskRead *storage.TaskRead) <-chan error
-}
 
 type TaskReadRepositoryInMemory struct {
 	Storage *storage.TaskReadStorage
 }
 
-func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) TaskReadRepository {
+func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) repository.TaskReadRepository {
 	return &TaskReadRepositoryInMemory{Storage: s}
 }
 

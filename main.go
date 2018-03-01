@@ -67,6 +67,7 @@ func main() {
 	}
 
 	taskServer, err := taskserver.NewTaskServer(
+		db,
 		bus,
 		cropReadStorage,
 		areaReadStorage,

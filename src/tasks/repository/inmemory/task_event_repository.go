@@ -1,30 +1,17 @@
-package repository
+package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/tasks/domain"
+	"github.com/Tanibox/tania-server/src/tasks/repository"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
 )
-
-type TaskEventRepository interface {
-	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
-}
 
 type TaskEventRepositoryInMemory struct {
 	Storage *storage.TaskEventStorage
 }
 
-func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) TaskEventRepository {
+func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) repository.TaskEventRepository {
 	return &TaskEventRepositoryInMemory{Storage: s}
-}
-
-func BuildTaskFromEventHistory(taskService domain.TaskService, events []storage.TaskEvent) *domain.Task {
-	state := &domain.Task{}
-	for _, v := range events {
-		state.Transition(taskService, v.Event)
-		state.Version++
-	}
-	return state
 }
 
 // Save is to save

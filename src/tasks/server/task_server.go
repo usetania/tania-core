@@ -1,6 +1,7 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/query/inmemory"
 	"github.com/Tanibox/tania-server/src/tasks/repository"
+	repoSqlite "github.com/Tanibox/tania-server/src/tasks/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
@@ -30,6 +32,7 @@ type TaskServer struct {
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
 func NewTaskServer(
+	db *sql.DB,
 	bus EventBus.Bus,
 	cropStorage *cropstorage.CropReadStorage,
 	areaStorage *assetsstorage.AreaReadStorage,
@@ -38,8 +41,8 @@ func NewTaskServer(
 	taskEventStorage *storage.TaskEventStorage,
 	taskReadStorage *storage.TaskReadStorage) (*TaskServer, error) {
 
-	taskEventRepo := repository.NewTaskEventRepositoryInMemory(taskEventStorage)
-	taskReadRepo := repository.NewTaskReadRepositoryInMemory(taskReadStorage)
+	taskEventRepo := repoSqlite.NewTaskEventRepositorySqlite(db)
+	taskReadRepo := repoSqlite.NewTaskReadRepositorySqlite(db)
 
 	taskEventQuery := inmemory.NewTaskEventQueryInMemory(taskEventStorage)
 	taskReadQuery := inmemory.NewTaskReadQueryInMemory(taskReadStorage)
