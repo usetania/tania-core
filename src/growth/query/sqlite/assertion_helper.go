@@ -57,11 +57,11 @@ func makeCropContainer(v interface{}) (domain.CropContainer, error) {
 			cell := v2.(float64)
 			cellInt := int(cell)
 
-			if cellInt == 0 {
-				containerType = domain.Pot{}
-			} else {
+			if cellInt != 0 {
 				containerType = domain.Tray{Cell: cellInt}
 			}
+		} else {
+			containerType = domain.Pot{}
 		}
 	}
 
