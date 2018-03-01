@@ -138,6 +138,7 @@ func MapToFarmRead(farm *domain.Farm) *storage.FarmRead {
 	farmRead.CountryCode = farm.CountryCode
 	farmRead.CityCode = farm.CityCode
 	farmRead.CreatedDate = farm.CreatedDate
+	farmRead.IsActive = farm.IsActive
 
 	return farmRead
 }
