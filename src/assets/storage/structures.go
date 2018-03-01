@@ -119,3 +119,62 @@ type MaterialRead struct {
 type PricePerUnit domain.PricePerUnit
 type MaterialType domain.MaterialType
 type MaterialQuantity domain.MaterialQuantity
+
+type CropRead struct {
+	UID        uuid.UUID  `json:"uid"`
+	BatchID    string     `json:"batch_id"`
+	Status     string     `json:"status"`
+	Type       string     `json:"type"`
+	Container  Container  `json:"container"`
+	Inventory  Inventory  `json:"inventory"`
+	AreaStatus AreaStatus `json:"area_status"`
+	FarmUID    uuid.UUID  `json:"farm_id"`
+
+	// Fields to track crop's movement
+	InitialArea InitialArea `json:"initial_area"`
+	MovedArea   []MovedArea `json:"moved_area"`
+}
+
+type InitialArea struct {
+	AreaUID         uuid.UUID  `json:"area_id"`
+	Name            string     `json:"name"`
+	InitialQuantity int        `json:"initial_quantity"`
+	CurrentQuantity int        `json:"current_quantity"`
+	LastWatered     *time.Time `json:"last_watered"`
+	LastFertilized  *time.Time `json:"last_fertilized"`
+	LastPruned      *time.Time `json:"last_pruned"`
+	LastPesticided  *time.Time `json:"last_pesticided"`
+	CreatedDate     time.Time  `json:"created_date"`
+	LastUpdated     time.Time  `json:"last_updated"`
+}
+
+type MovedArea struct {
+	AreaUID         uuid.UUID  `json:"area_id"`
+	Name            string     `json:"name"`
+	InitialQuantity int        `json:"initial_quantity"`
+	CurrentQuantity int        `json:"current_quantity"`
+	LastWatered     *time.Time `json:"last_watered"`
+	LastFertilized  *time.Time `json:"last_fertilized"`
+	LastPruned      *time.Time `json:"last_pruned"`
+	LastPesticided  *time.Time `json:"last_pesticided"`
+	CreatedDate     time.Time  `json:"created_date"`
+	LastUpdated     time.Time  `json:"last_updated"`
+}
+
+type Container struct {
+	Type     string `json:"type"`
+	Quantity int    `json:"quantity"`
+	Cell     int    `json:"cell"`
+}
+
+type AreaStatus struct {
+	Seeding int `json:"seeding"`
+	Growing int `json:"growing"`
+	Dumped  int `json:"dumped"`
+}
+
+type Inventory struct {
+	UID       uuid.UUID `json:"uid"`
+	PlantType string    `json:"plant_type"`
+	Name      string    `json:"name"`
+}

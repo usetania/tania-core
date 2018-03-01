@@ -11,7 +11,6 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/domain/service"
 	"github.com/Tanibox/tania-server/src/assets/query"
-	"github.com/Tanibox/tania-server/src/assets/query/inmemory"
 	querySqlite "github.com/Tanibox/tania-server/src/assets/query/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	repoSqlite "github.com/Tanibox/tania-server/src/assets/repository/sqlite"
@@ -82,7 +81,7 @@ func NewFarmServer(
 	materialReadRepo := repoSqlite.NewMaterialReadRepositorySqlite(db)
 	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)
 
-	cropReadQuery := inmemory.NewCropReadQueryInMemory(cropReadStorage)
+	cropReadQuery := querySqlite.NewCropReadQuerySqlite(db)
 
 	areaService := service.AreaServiceInMemory{
 		FarmReadQuery:      farmReadQuery,
