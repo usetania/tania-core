@@ -1,7 +1,7 @@
 <template lang="pug">
   .crop-detail.col(v-if="loading === false")
     modal(v-if="showTaskModal" @close="closeModal")
-      cropTask(:crop="crop")
+      cropTask(:crop="crop" :data="data")
     .row.wrapper-md
       .col-xs-8.col-xs-offset-2
         .m-t.m-b
@@ -19,12 +19,12 @@
               .col-sm-8
                 .h4.font-bold Tasks
               .col-sm-4.text-right
-                a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="showTaskModal = true")
+                a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
                   i.fa.fa-plus
                   | Add Task
           .panel-body.bg-white-only
             .row
-              TasksList(:domain="'CROP'" :asset_id="crop.uid" :reload="reload")
+              TasksList(:domain="'CROP'" :asset_id="crop.uid" :reload="reload"  @openModal="openModal")
               .col-sm-12
                 .h4.font-bold.m-b Notes
                 .row
@@ -53,7 +53,7 @@ import Modal from '@/components/modal'
 export default {
   name: 'FarmCropNotes',
   components: {
-    cropTask: () => import('./tasks/crop-task-create.vue'),
+    cropTask: () => import('./tasks/crop-task-form.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },
@@ -61,6 +61,7 @@ export default {
     return {
       crop: Object.assign({}, StubCrop),
       cropNotes: [],
+      data: {},
       loading: true,
       note: Object.assign({}, StubNote),
       reload: false,
@@ -100,6 +101,14 @@ export default {
     },
     getCropContainer(key, count) {
       return FindContainer(key).label + ((count != 1)? 's':'')
+    },
+    openModal(data) {
+      if (data) {
+        this.data = data
+      } else {
+        this.data = {}
+      }
+      this.showTaskModal = true
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {

@@ -1,8 +1,10 @@
 <template lang="pug">
   .hbox
     .col
+      modal(v-if="showCropModal" @close="showCropModal = false")
+        CropTaskForm(:asset="'Crop'" :data="data")
       modal(v-if="showModal" @close="showModal = false")
-        TaskCreate(:asset="'General'" :data="data")
+        TaskForm(:asset="'General'" :data="data")
       .vbox
         .row-row
           .cell
@@ -16,12 +18,12 @@
                           .col-sm-8
                             .h3.text-lt Tasks
                           .col-sm-4.text-right
-                            a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="showModal = true")
+                            a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
                               i.fas.fa-plus
                               | Add Task
                       .panel-body.bg-white-only
                         .row
-                        TasksList(:category="selected_category" :priority="selected_priority" :status="status")
+                        TasksList(:category="selected_category" :priority="selected_priority" :status="status" @openModal="openModal")
     .col.w-lg.bg-light.lter.b-l.bg-auto.no-border-xs
       .wrapper
         .form-group
@@ -75,14 +77,16 @@
 import { mapActions, mapGetters } from 'vuex'
 import Modal from '@/components/modal'
 import TasksList from '@/pages/farms/tasks/task-list.vue'
-import TaskCreate from '@/pages/farms/tasks/task-create.vue'
+import TaskForm from '@/pages/farms/tasks/task-form.vue'
+import CropTaskForm from '@/pages/farms/tasks/crop-task-form.vue'
 import { TaskDomainCategories } from '@/stores/helpers/farms/task'
 
 export default {
   name: 'Tasks',
   components: {
+    CropTaskForm,
     Modal,
-    TaskCreate,
+    TaskForm,
     TasksList,
   },
   computed: {
@@ -99,6 +103,7 @@ export default {
       },
       selected_category: '',
       selected_priority: '',
+      showCropModal: false,
       showModal: false,
       status: 'INCOMPLETE',
     }
@@ -111,6 +116,19 @@ export default {
     },
     categoryChange (type) {
       this.selected_category = type
+    },
+    openModal(data) {
+      if (data) {
+        this.data = data
+        if (data.domain == 'CROP') {
+          this.showCropModal = true
+        }
+      } else {
+        this.data = {}
+      }
+      if (!this.showCropModal) {
+        this.showModal = true
+      }
     },
     priorityChange (type) {
       this.selected_priority = type

@@ -2,7 +2,7 @@
   .crop-task
     .modal-header
       span.h4.font-bold Crop: Add New Task for 
-        span.identifier {{ crop.batch_id }}
+        span.identifier {{ batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
@@ -31,12 +31,12 @@
         .row
           .col-xs-6
             .form-group
-              label(for="asset_id") 
+              label(for="area_id") 
                 | Select area to do your task
-              select.form-control#asset_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('asset_id') }" v-model="task.asset_id" name="asset_id")
+              select.form-control#area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area_id') }" v-model="task.area_id" name="area_id")
                 option(value="") Please select area
                 option(v-for="area in areas" :value="area.uid") {{ area.name }}
-              span.help-block.text-danger(v-show="errors.has('asset_id')") {{ errors.first('asset_id') }}
+              span.help-block.text-danger(v-show="errors.has('area_id')") {{ errors.first('area_id') }}
           .col-xs-6
             .form-group
               label(for="category") 
@@ -96,6 +96,8 @@ export default {
   },
   data () {
     return {
+      batch_id: '',
+      crop_id: '',
       isfertilizer: false,
       ispesticide: false,
       fertilizers: [],
@@ -109,20 +111,21 @@ export default {
   methods: {
     ...mapActions([
       'fetchAreas',
+      'getCropByUid',
       'openPicker',
-      'createTask',
+      'submitTask',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     },
-    create () {
-      this.task.asset_id = this.crop.uid
+    submit () {
+      this.task.asset_id = this.crop_id
       this.task.domain = "CROP"
-      this.createTask(this.task)
+      this.submitTask(this.task)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
@@ -141,7 +144,23 @@ export default {
   },
   mounted () {
     this.fetchAreas()
+    if (typeof this.data.uid != "undefined") {
+      this.task.uid = this.data.uid
+      this.task.due_date = this.data.due_date
+      this.task.priority = this.data.priority
+      this.task.category = this.data.category
+      this.task.title = this.data.title
+      this.task.description = this.data.description
+      this.crop_id = this.data.asset_id
+      this.getCropByUid(this.data.asset_id)
+        .then(({ data }) =>  {
+          this.batch_id = data.batch_id
+          }).catch(error => console.log(error))
+    } else {
+      this.batch_id = this.crop.batch_id
+      this.crop_id = this.crop.uid
+    }
   },
-  props: ['crop'],
+  props: ['crop', 'data'],
 }
 </script>

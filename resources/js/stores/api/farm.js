@@ -103,6 +103,9 @@ export default {
   ApiCreateTask: (payload, cbSuccess, cbError) => {
     http.post('tasks', payload, cbSuccess, cbError)
   },
+  ApiUpdateTask: (taskid, payload, cbSuccess, cbError) => {
+    http.put('tasks/' + taskid, payload, cbSuccess, cbError)
+  },
   ApiFetchTask: (cbSuccess, cbError) => {
     http.get('tasks', cbSuccess, cbError)
   },

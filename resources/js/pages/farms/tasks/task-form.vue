@@ -1,7 +1,8 @@
 <template lang="pug">
-  .tasks-create
+  .tasks-form
     .modal-header
-      h4.font-bold(v-if="asset != 'General'")
+      h4.font-bold(v-if="task.uid") Update Task
+      h4.font-bold(v-else-if="asset != 'General'")
         | {{ asset }}: Add New Task on 
         span.areatag {{ data.name }}
       h4.font-bold(v-else) Add New Task
@@ -35,9 +36,9 @@
             | Task Category
           select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
             option(value="") Please select category
-            option(v-if="asset == 'Area'" value="AREA") Area
-            option(v-if="asset == 'Reservoir'" value="RESERVOIR") Reservoir
-            option(v-if="asset == 'General'" value="GENERAL") General
+            option(v-if="asset_name == 'AREA'" value="AREA") Area
+            option(v-if="asset_name == 'RESERVOIR'" value="RESERVOIR") Reservoir
+            option(v-if="asset_name == 'GENERAL'" value="GENERAL") General
             option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
           span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group
@@ -64,13 +65,14 @@ import Datepicker from 'vuejs-datepicker';
 import { TaskDomainCategories } from '@/stores/helpers/farms/task'
 
 export default {
-  name: "FarmTasksCreate",
+  name: "FarmTasksForm",
   components: {
       Datepicker
   },
   data () {
     return {
       task: Object.assign({}, StubTask),
+      asset_name: '',
       options: {
         taskCategories: Array.from(TaskDomainCategories),
       }
@@ -79,31 +81,44 @@ export default {
   methods: {
     ...mapActions([
       'openPicker',
-      'createTask',
+      'submitTask',
     ]),
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
-          this.create()
+          this.submit()
         }
       })
     },
     openPicker () {
       this.$refs.openCal.showCalendar()
     },
-    create () {
-      console.log(this.data.uid)
+    submit () {
       if (typeof this.data.uid != "undefined") {
         this.task.asset_id = this.data.uid
       }
-      this.task.domain = this.asset.toUpperCase()
-      this.createTask(this.task)
+      if (typeof this.data.uid != "undefined") {
+        this.task.domain = this.data.domain
+      } else {
+        this.task.domain = this.asset.toUpperCase()
+      }
+      this.submitTask(this.task)
         .then(this.$parent.$emit('close'))
         .catch(({ data }) => this.message = data)
     },
   },
   mounted () {
-    console.log(this.asset)
+    if (typeof this.data.uid != "undefined") {
+      this.task.uid = this.data.uid
+      this.task.due_date = this.data.due_date
+      this.task.priority = this.data.priority
+      this.task.category = this.data.category
+      this.task.title = this.data.title
+      this.task.description = this.data.description
+      this.asset_name = this.data.domain
+    } else {
+      this.asset_name = this.asset.toUpperCase()
+    }
   },
   props: ['data', 'asset'],
 }

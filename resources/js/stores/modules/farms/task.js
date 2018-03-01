@@ -40,15 +40,24 @@ const actions = {
         }, error => reject(error.response))
     })
   },
-  createTask ({ commit, state, getters }, payload) {
+  submitTask ({ commit, state, getters }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi
-        .ApiCreateTask(payload, ({ data }) => {
-          payload = data.data
-          commit(types.CREATE_TASK, payload)
-          resolve(payload)
-        }, error => reject(error.response))
+      if (payload.uid != '') {
+        FarmApi
+          .ApiUpdateTask(payload.uid, payload, ({ data }) => {
+            payload = data.data
+            commit(types.UPDATE_TASK, payload)
+            resolve(payload)
+          }, error => reject(error.response))
+      } else {
+        FarmApi
+          .ApiCreateTask(payload, ({ data }) => {
+            payload = data.data
+            commit(types.CREATE_TASK, payload)
+            resolve(payload)
+          }, error => reject(error.response))
+      }
     })
   },
   setTaskDue ({ commit, state, getters }, taskId) {
@@ -74,6 +83,10 @@ const actions = {
 const mutations = {
   [types.CREATE_TASK] (state, payload) {
     state.tasks.push(payload)
+  },
+  [types.UPDATE_TASK] (state, payload) {
+    const tasks = state.tasks
+    state.tasks = tasks.map(task => (task.uid === payload.uid) ? payload : task)
   },
   [types.FETCH_TASKS] (state, payload) {
     state.tasks = payload

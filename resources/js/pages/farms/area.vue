@@ -1,7 +1,7 @@
 <template lang="pug">
   .area-detail.col(v-if="loading === false")
     modal(v-if="showModal" @close="closeModal")
-      farmAreaTaskCreate(:data="area" :asset="'Area'")
+      FarmAreaTaskForm(:data="area" :asset="'Area'")
     modal(v-if="showWaterTaskModal" @close="closeModal")
       WaterTaskModal(:crops="areaCrops" :area="area")
     .wrapper-md
@@ -93,7 +93,7 @@ import moment from 'moment-timezone'
 export default {
   name: 'Area',
   components: {
-    FarmAreaTaskCreate: () => import('./tasks/task-create.vue'),
+    FarmAreaTaskForm: () => import('./tasks/task-form.vue'),
     FarmCropsListing: () => import('./crops-listing.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
     WaterTaskModal: () => import('./tasks/water-task.vue'),

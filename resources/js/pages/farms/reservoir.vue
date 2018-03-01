@@ -1,7 +1,7 @@
 <template lang="pug">
   .reservoir-detail.col(v-if="loading === false")
     modal(v-if="showModal" @close="closeModal")
-      farmReservoirTaskCreate(:data="reservoir" :asset="asset")
+      FarmReservoirTaskForm(:data="reservoir" :asset="asset")
     .wrapper-md
       a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
         i.fas.fa-plus
@@ -83,7 +83,7 @@ export default {
     }
   },
   components: {
-    FarmReservoirTaskCreate: () => import('./tasks/task-create.vue'),
+    FarmReservoirTaskForm: () => import('./tasks/task-form.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
     Modal
   },

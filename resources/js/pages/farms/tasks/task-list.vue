@@ -26,7 +26,7 @@
         td
           TaskLabel(:type="'CATEGORY'" :task="task")
         td(v-if="domain != 'AREA' && domain != 'RESERVOIR'")
-          a.h3(href="#")
+          a.h3(style="cursor: pointer;" @click="openModal(task)")
             i.fas.fa-edit
 </template>
 
@@ -93,6 +93,10 @@ export default {
     },
     isToday (date) {
       return moment(date).tz('Asia/Jakarta').isSame(moment(), 'day')
+    },
+    openModal (data) {
+      this.data = data
+      this.$emit('openModal', this.data)
     },
     setTaskStatus (task_id, status) {
       this.setTaskCompleted(task_id)
