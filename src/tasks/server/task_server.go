@@ -12,6 +12,7 @@ import (
 	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/query/inmemory"
+	querySqlite "github.com/Tanibox/tania-server/src/tasks/query/sqlite"
 	"github.com/Tanibox/tania-server/src/tasks/repository"
 	repoSqlite "github.com/Tanibox/tania-server/src/tasks/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
@@ -47,10 +48,10 @@ func NewTaskServer(
 	taskEventQuery := inmemory.NewTaskEventQueryInMemory(taskEventStorage)
 	taskReadQuery := inmemory.NewTaskReadQueryInMemory(taskReadStorage)
 
-	cropQuery := inmemory.NewCropQueryInMemory(cropStorage)
-	areaQuery := inmemory.NewAreaQueryInMemory(areaStorage)
-	materialReadQuery := inmemory.NewMaterialQueryInMemory(materialStorage)
-	reservoirQuery := inmemory.NewReservoirQueryInMemory(reservoirStorage)
+	cropQuery := querySqlite.NewCropQuerySqlite(db)
+	areaQuery := querySqlite.NewAreaQuerySqlite(db)
+	materialReadQuery := querySqlite.NewMaterialQuerySqlite(db)
+	reservoirQuery := querySqlite.NewReservoirQuerySqlite(db)
 
 	taskService := service.TaskServiceInMemory{
 		CropQuery:      cropQuery,
