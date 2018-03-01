@@ -503,6 +503,10 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	cropActivity := &storage.CropActivity{}
 
+	// Change isUpdate to true for events that updates existing activity
+	// instead of append to activity list
+	isUpdate := false
+
 	switch e := event.(type) {
 	case domain.CropBatchCreated:
 		queryResult := <-s.AreaReadQuery.FindByID(e.InitialAreaUID)
@@ -551,7 +555,25 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			Quantity:    e.Container.Quantity,
 			SeedingDate: time.Now(),
 		}
-		cropActivity.Description = "UPDATED"
+
+		isUpdate = true
+
+	case domain.CropBatchInventoryChanged:
+		queryResult := <-s.CropActivityQuery.FindByCropIDAndActivityType(e.UID, storage.SeedActivity{})
+		if queryResult.Error != nil {
+			log.Error(queryResult.Error)
+		}
+
+		ca, ok := queryResult.Result.(storage.CropActivity)
+		if !ok {
+			log.Error(errors.New("Internal server error. Error type assertion"))
+		}
+
+		cropActivity = &ca
+
+		cropActivity.BatchID = e.BatchID
+
+		isUpdate = true
 
 	case domain.CropBatchMoved:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
@@ -702,7 +724,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 		}
 	}
 
-	err := <-s.CropActivityRepo.Save(cropActivity)
+	err := <-s.CropActivityRepo.Save(cropActivity, isUpdate)
 	if err != nil {
 		log.Error(err)
 	}

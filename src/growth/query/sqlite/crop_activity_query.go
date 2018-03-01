@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/query"
@@ -19,13 +20,14 @@ func NewCropActivityQuerySqlite(db *sql.DB) query.CropActivityQuery {
 }
 
 type cropActivityResult struct {
-	ID            string
-	CropUID       string
-	BatchID       string
-	ContainerType string
-	ActivityType  []byte
-	CreatedDate   string
-	Description   string
+	ID               string
+	CropUID          string
+	BatchID          string
+	ContainerType    string
+	ActivityType     []byte
+	ActivityTypeCode string
+	CreatedDate      string
+	Description      string
 }
 
 func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.QueryResult {
@@ -47,6 +49,7 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 				&rowsData.BatchID,
 				&rowsData.ContainerType,
 				&rowsData.ActivityType,
+				&rowsData.ActivityTypeCode,
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
@@ -88,7 +91,66 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 
 func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
-	result <- query.QueryResult{}
+
+	go func() {
+		cropActivity := storage.CropActivity{}
+		rowsData := cropActivityResult{}
+
+		at, ok := activityType.(storage.ActivityType)
+		if !ok {
+			result <- query.QueryResult{Error: errors.New("Wrong activity type")}
+		}
+
+		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY
+			WHERE CROP_UID = ? AND ACTIVITY_TYPE_CODE = ?`, uid, at.Code())
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		for rows.Next() {
+			err = rows.Scan(
+				&rowsData.ID,
+				&rowsData.CropUID,
+				&rowsData.BatchID,
+				&rowsData.ContainerType,
+				&rowsData.ActivityType,
+				&rowsData.ActivityTypeCode,
+				&rowsData.CreatedDate,
+				&rowsData.Description,
+			)
+
+			cropUID, err := uuid.FromString(rowsData.CropUID)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			wrapper := query.ActivityTypeWrapper{}
+			json.Unmarshal(rowsData.ActivityType, &wrapper)
+
+			rowsActivityType, err := assertActivityType(wrapper)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
+
+			cropActivity = storage.CropActivity{
+				UID:           cropUID,
+				BatchID:       rowsData.BatchID,
+				ContainerType: rowsData.ContainerType,
+				ActivityType:  rowsActivityType,
+				CreatedDate:   createdDate,
+				Description:   rowsData.Description,
+			}
+		}
+
+		result <- query.QueryResult{Result: cropActivity}
+		close(result)
+	}()
+
 	return result
 }
 

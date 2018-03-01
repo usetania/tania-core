@@ -43,5 +43,5 @@ func NewCropBatchFromHistory(events []storage.CropEvent) *domain.Crop {
 }
 
 type CropActivityRepository interface {
-	Save(cropActivity *storage.CropActivity) <-chan error
+	Save(cropActivity *storage.CropActivity, isUpdate bool) <-chan error
 }

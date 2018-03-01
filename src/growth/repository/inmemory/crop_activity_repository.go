@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"github.com/Tanibox/tania-server/src/growth/repository"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 )
 
@@ -8,12 +9,12 @@ type CropActivityRepositoryInMemory struct {
 	Storage *storage.CropActivityStorage
 }
 
-func NewCropActivityRepositoryInMemory(s *storage.CropActivityStorage) CropActivityRepository {
+func NewCropActivityRepositoryInMemory(s *storage.CropActivityStorage) repository.CropActivityRepository {
 	return &CropActivityRepositoryInMemory{Storage: s}
 }
 
 // Save is to save
-func (f *CropActivityRepositoryInMemory) Save(cropActivity *storage.CropActivity) <-chan error {
+func (f *CropActivityRepositoryInMemory) Save(cropActivity *storage.CropActivity, isUpdate bool) <-chan error {
 	result := make(chan error)
 
 	go func() {

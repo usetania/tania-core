@@ -17,7 +17,7 @@ func NewCropActivityRepositorySqlite(db *sql.DB) repository.CropActivityReposito
 	return &CropActivityRepositorySqlite{DB: db}
 }
 
-func (f *CropActivityRepositorySqlite) Save(cropActivity *storage.CropActivity) <-chan error {
+func (f *CropActivityRepositorySqlite) Save(cropActivity *storage.CropActivity, isUpdate bool) <-chan error {
 	result := make(chan error)
 
 	go func() {
@@ -26,18 +26,37 @@ func (f *CropActivityRepositorySqlite) Save(cropActivity *storage.CropActivity) 
 			ActivityData: cropActivity.ActivityType,
 		})
 
-		_, err = f.DB.Exec(`INSERT INTO CROP_ACTIVITY
-			(CROP_UID, BATCH_ID, CONTAINER_TYPE, ACTIVITY_TYPE, CREATED_DATE, DESCRIPTION)
-			VALUES (?, ?, ?, ?, ?, ?)`,
-			cropActivity.UID,
-			cropActivity.BatchID,
-			cropActivity.ContainerType,
-			at,
-			cropActivity.CreatedDate.Format(time.RFC3339),
-			cropActivity.Description)
+		if isUpdate {
+			_, err = f.DB.Exec(`UPDATE CROP_ACTIVITY
+				SET BATCH_ID = ?, CONTAINER_TYPE = ?, ACTIVITY_TYPE = ?, ACTIVITY_TYPE_CODE = ?,
+				CREATED_DATE = ?, DESCRIPTION = ?
+				WHERE CROP_UID = ?`,
+				cropActivity.BatchID,
+				cropActivity.ContainerType,
+				at,
+				cropActivity.ActivityType.Code(),
+				cropActivity.CreatedDate.Format(time.RFC3339),
+				cropActivity.Description,
+				cropActivity.UID)
 
-		if err != nil {
-			result <- err
+			if err != nil {
+				result <- err
+			}
+		} else {
+			_, err = f.DB.Exec(`INSERT INTO CROP_ACTIVITY
+				(CROP_UID, BATCH_ID, CONTAINER_TYPE, ACTIVITY_TYPE, ACTIVITY_TYPE_CODE, CREATED_DATE, DESCRIPTION)
+				VALUES (?, ?, ?, ?, ?, ?, ?)`,
+				cropActivity.UID,
+				cropActivity.BatchID,
+				cropActivity.ContainerType,
+				at,
+				cropActivity.ActivityType.Code(),
+				cropActivity.CreatedDate.Format(time.RFC3339),
+				cropActivity.Description)
+
+			if err != nil {
+				result <- err
+			}
 		}
 
 		result <- nil

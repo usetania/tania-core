@@ -94,6 +94,7 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchTypeChanged", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchInventoryChanged", s.SaveToCropReadModel)
+	s.EventBus.Subscribe("CropBatchInventoryChanged", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchContainerChanged", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchContainerChanged", s.SaveToCropActivityReadModel)
 	s.EventBus.Subscribe("CropBatchMoved", s.SaveToCropReadModel)
@@ -293,7 +294,8 @@ func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
 		}
 	}
 
-	if plantType != "" && varietyName != "" {
+	// Only change inventory when the input is different from existing variety name
+	if cropRead.Inventory.Name != varietyName && plantType != "" && varietyName != "" {
 		queryResult := <-s.MaterialReadQuery.FindMaterialByPlantTypeCodeAndName(plantType, varietyName)
 		if queryResult.Error != nil {
 			return Error(c, queryResult.Error)
