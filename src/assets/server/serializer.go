@@ -259,12 +259,29 @@ func MapToReservoirRead(s *FarmServer, reservoir domain.Reservoir) (storage.Rese
 	return resRead, nil
 }
 
-func MapToReservoirReadFromRead(reservoir storage.ReservoirRead) storage.ReservoirRead {
+func MapToReservoirReadFromRead(s *FarmServer, reservoir storage.ReservoirRead) (storage.ReservoirRead, error) {
+	queryResult := <-s.AreaReadQuery.FindAreasByReservoirID(reservoir.UID)
+	if queryResult.Error != nil {
+		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	areas, ok := queryResult.Result.([]storage.AreaRead)
+	if !ok {
+		return storage.ReservoirRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+
+	for _, v := range areas {
+		reservoir.InstalledToArea = append(reservoir.InstalledToArea, storage.AreaInstalled{
+			UID:  v.UID,
+			Name: v.Name,
+		})
+	}
+
 	sort.Slice(reservoir.Notes, func(i, j int) bool {
 		return reservoir.Notes[i].CreatedDate.After(reservoir.Notes[j].CreatedDate)
 	})
 
-	return reservoir
+	return reservoir, nil
 }
 
 func MapToDetailAreaFromStorage(s *FarmServer, areaRead storage.AreaRead) (DetailArea, error) {

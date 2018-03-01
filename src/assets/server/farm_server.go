@@ -640,7 +640,7 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 
 	result := <-s.ReservoirReadQuery.FindAllByFarm(farmUID)
 	if result.Error != nil {
-		return result.Error
+		return Error(c, result.Error)
 	}
 
 	reservoirs, ok := result.Result.([]storage.ReservoirRead)
@@ -650,7 +650,12 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 
 	data := make(map[string][]storage.ReservoirRead)
 	for _, v := range reservoirs {
-		data["data"] = append(data["data"], MapToReservoirReadFromRead(v))
+		r, err := MapToReservoirReadFromRead(s, v)
+		if err != nil {
+			return Error(c, err)
+		}
+
+		data["data"] = append(data["data"], r)
 	}
 
 	return c.JSON(http.StatusOK, data)
@@ -678,7 +683,10 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 	}
 
 	data := make(map[string]storage.ReservoirRead)
-	data["data"] = MapToReservoirReadFromRead(reservoir)
+	data["data"], err = MapToReservoirReadFromRead(s, reservoir)
+	if err != nil {
+		Error(c, err)
+	}
 
 	return c.JSON(http.StatusOK, data)
 }
