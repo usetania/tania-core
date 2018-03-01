@@ -25,7 +25,7 @@ func (s ReservoirQuerySqlite) FindReservoirByID(uid uuid.UUID) <-chan query.Quer
 		}{}
 		reservoir := query.TaskReservoirQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, BATCH_ID
+		err := s.DB.QueryRow(`SELECT UID, NAME
 			FROM RESERVOIR_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name)
 
 		reservoirUID, err := uuid.FromString(rowsData.UID)

@@ -51,15 +51,18 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 	case domain.TaskDomainAreaCode:
 		domainDetails = domain.TaskDomainArea{}
 	case domain.TaskDomainCropCode:
-		if v2, ok2 := mapped["InventoryUID"]; ok2 {
-			val := v2.(string)
+		if v, ok := mapped["InventoryUID"]; ok {
+			val, ok2 := v.(string)
+			if ok2 {
+				uid, err := makeUUID(val)
+				if err != nil {
+					return nil, err
+				}
 
-			uid, err := makeUUID(val)
-			if err != nil {
-				return nil, err
+				domainDetails = domain.TaskDomainCrop{InventoryUID: &uid}
+			} else {
+				domainDetails = domain.TaskDomainCrop{}
 			}
-
-			domainDetails = domain.TaskDomainCrop{InventoryUID: &uid}
 		}
 	case domain.TaskDomainFinanceCode:
 		domainDetails = domain.TaskDomainFinance{}

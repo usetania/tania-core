@@ -283,16 +283,16 @@ func assertAreaEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.MimeType = val
 			}
 			if key == "Size" {
-				val := v.(int)
-				e.Size = val
+				val := v.(float64)
+				e.Size = int(val)
 			}
 			if key == "Width" {
-				val := v.(int)
-				e.Width = val
+				val := v.(float64)
+				e.Width = int(val)
 			}
 			if key == "Height" {
-				val := v.(int)
-				e.Height = val
+				val := v.(float64)
+				e.Height = int(val)
 			}
 		}
 
