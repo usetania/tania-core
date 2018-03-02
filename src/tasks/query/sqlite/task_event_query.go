@@ -3,11 +3,14 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/Tanibox/tania-server/src/tasks/util/decoder"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -77,205 +80,48 @@ func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Query
 func assertTaskEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
+	f := mapstructure.ComposeDecodeHookFunc(
+		decoder.UIDHook(),
+		decoder.TimeHook(time.RFC3339),
+		decoder.TaskDomainDetailHook(),
+	)
+
 	switch wrapper.EventName {
 	case "TaskCreated":
 		e := domain.TaskCreated{}
 
-		if v, ok := mapped["uid"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["title"]; ok {
-			val := v.(string)
-			e.Title = val
-		}
-		if v, ok := mapped["description"]; ok {
-			val := v.(string)
-			e.Description = val
-		}
-		if v, ok := mapped["created_date"]; ok {
-			val, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CreatedDate = val
-		}
-		if v, ok := mapped["due_date"]; ok {
-			val, err := makeTimePointer(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.DueDate = val
-		}
-		if v, ok := mapped["priority"]; ok {
-			val := v.(string)
-			e.Priority = val
-		}
-		if v, ok := mapped["status"]; ok {
-			val := v.(string)
-			e.Status = val
-		}
-		if v, ok := mapped["domain"]; ok {
-			val := v.(string)
-			e.Domain = val
-		}
-		if v, ok := mapped["domain_details"]; ok {
-			domainDetails, err := makeDomainDetails(v, e.Domain)
-			if err != nil {
-				return nil, err
-			}
-
-			e.DomainDetails = domainDetails
-		}
-		if v, ok := mapped["category"]; ok {
-			val := v.(string)
-			e.Category = val
-		}
-		if v, ok := mapped["is_due"]; ok {
-			val := v.(bool)
-			e.IsDue = val
-		}
-		if v, ok := mapped["asset_id"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.AssetID = &uid
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "TaskModified":
 		e := domain.TaskModified{}
 
-		if v, ok := mapped["uid"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["title"]; ok {
-			val := v.(string)
-			e.Title = val
-		}
-		if v, ok := mapped["description"]; ok {
-			val := v.(string)
-			e.Description = val
-		}
-		if v, ok := mapped["due_date"]; ok {
-			val, err := makeTimePointer(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.DueDate = val
-		}
-		if v, ok := mapped["priority"]; ok {
-			val := v.(string)
-			e.Priority = val
-		}
-		if v, ok := mapped["domain"]; ok {
-			val := v.(string)
-			e.Domain = val
-		}
-		if v, ok := mapped["domain_details"]; ok {
-			domainDetails, err := makeDomainDetails(v, e.Domain)
-			if err != nil {
-				return nil, err
-			}
-
-			e.DomainDetails = domainDetails
-		}
-		if v, ok := mapped["category"]; ok {
-			val := v.(string)
-			e.Category = val
-		}
-		if v, ok := mapped["asset_id"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.AssetID = &uid
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "TaskCompleted":
 		e := domain.TaskCompleted{}
 
-		if v, ok := mapped["uid"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["status"]; ok {
-			val := v.(string)
-			e.Status = val
-		}
-		if v, ok := mapped["completed_date"]; ok {
-			val, err := makeTimePointer(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CompletedDate = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "TaskCancelled":
 		e := domain.TaskCancelled{}
 
-		if v, ok := mapped["uid"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["status"]; ok {
-			val := v.(string)
-			e.Status = val
-		}
-		if v, ok := mapped["cancelled_date"]; ok {
-			val, err := makeTimePointer(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CancelledDate = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "TaskDue":
 		e := domain.TaskDue{}
 
-		if v, ok := mapped["uid"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 	}
 
-	return nil, nil
+	return nil, errors.New("Event not decoded succesfully")
 }
