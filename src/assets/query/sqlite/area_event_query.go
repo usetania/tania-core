@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/assets/util/decoder"
 	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
@@ -79,71 +80,71 @@ func assertAreaEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
 	f := mapstructure.ComposeDecodeHookFunc(
-		query.UIDHook(),
-		query.TimeHook(time.RFC3339),
+		decoder.UIDHook(),
+		decoder.TimeHook(time.RFC3339),
 	)
 
 	switch wrapper.EventName {
 	case "AreaCreated":
 		e := domain.AreaCreated{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaNameChanged":
 		e := domain.AreaNameChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaSizeChanged":
 		e := domain.AreaSizeChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaTypeChanged":
 		e := domain.AreaTypeChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaLocationChanged":
 		e := domain.AreaLocationChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaReservoirChanged":
 		e := domain.AreaReservoirChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaPhotoAdded":
 		e := domain.AreaPhotoAdded{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaNoteAdded":
 		e := domain.AreaNoteAdded{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaNoteRemoved":
 		e := domain.AreaNoteRemoved{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 	}

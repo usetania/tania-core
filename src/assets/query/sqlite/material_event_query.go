@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/assets/util/decoder"
 	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
@@ -78,65 +79,65 @@ func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
 	f := mapstructure.ComposeDecodeHookFunc(
-		query.UIDHook(),
-		query.TimeHook(time.RFC3339),
-		query.MaterialTypeHook(),
+		decoder.UIDHook(),
+		decoder.TimeHook(time.RFC3339),
+		decoder.MaterialTypeHook(),
 	)
 
 	switch wrapper.EventName {
 	case "MaterialCreated":
 		e := domain.MaterialCreated{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialNameChanged":
 		e := domain.MaterialNameChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialPriceChanged":
 		e := domain.MaterialPriceChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialQuantityChanged":
 		e := domain.MaterialQuantityChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialTypeChanged":
 		e := domain.MaterialTypeChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialExpirationDateChanged":
 		e := domain.MaterialExpirationDateChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialNotesChanged":
 		e := domain.MaterialNotesChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialProducedByChanged":
 		e := domain.MaterialProducedByChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 	}

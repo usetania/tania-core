@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/assets/util/decoder"
 	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
@@ -79,44 +80,44 @@ func assertReservoirEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
 	f := mapstructure.ComposeDecodeHookFunc(
-		query.UIDHook(),
-		query.TimeHook(time.RFC3339),
-		query.WaterSourceHook(),
+		decoder.UIDHook(),
+		decoder.TimeHook(time.RFC3339),
+		decoder.WaterSourceHook(),
 	)
 
 	switch wrapper.EventName {
 	case "ReservoirCreated":
 		e := domain.ReservoirCreated{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirWaterSourceChanged":
 		e := domain.ReservoirWaterSourceChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirNameChanged":
 		e := domain.ReservoirNameChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirNoteAdded":
 		e := domain.ReservoirNoteAdded{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirNoteRemoved":
 		e := domain.ReservoirNoteRemoved{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 	}

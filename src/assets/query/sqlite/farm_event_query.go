@@ -9,6 +9,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/assets/util/decoder"
 	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
@@ -80,43 +81,43 @@ func assertFarmEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
 	f := mapstructure.ComposeDecodeHookFunc(
-		query.UIDHook(),
-		query.TimeHook(time.RFC3339),
+		decoder.UIDHook(),
+		decoder.TimeHook(time.RFC3339),
 	)
 
 	switch wrapper.EventName {
 	case "FarmCreated":
 		e := domain.FarmCreated{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmNameChanged":
 		e := domain.FarmNameChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmTypeChanged":
 		e := domain.FarmTypeChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmGeolocationChanged":
 		e := domain.FarmGeolocationChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "FarmRegionChanged":
 		e := domain.FarmRegionChanged{}
 
-		query.Decode(f, &mapped, &e)
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 	}
