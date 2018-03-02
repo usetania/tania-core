@@ -3,12 +3,12 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -78,157 +78,45 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Quer
 func assertReservoirEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
+	f := mapstructure.ComposeDecodeHookFunc(
+		query.UIDHook(),
+		query.TimeHook(time.RFC3339),
+		query.WaterSourceHook(),
+	)
+
 	switch wrapper.EventName {
 	case "ReservoirCreated":
 		e := domain.ReservoirCreated{}
 
-		for key, v := range mapped {
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-			if key == "Name" {
-				val := v.(string)
-				e.Name = val
-			}
-			if key == "WaterSource" {
-				ws, err := makeWaterSource(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.WaterSource = ws
-			}
-			if key == "FarmUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.FarmUID = uid
-			}
-			if key == "CreatedDate" {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.CreatedDate = d
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirWaterSourceChanged":
 		e := domain.ReservoirWaterSourceChanged{}
 
-		for key, v := range mapped {
-			if key == "ReservoirUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ReservoirUID = uid
-			}
-
-			if key == "WaterSource" {
-				ws, err := makeWaterSource(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.WaterSource = ws
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirNameChanged":
 		e := domain.ReservoirNameChanged{}
 
-		for key, v := range mapped {
-			if key == "ReservoirUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ReservoirUID = uid
-			}
-			if key == "Name" {
-				name, ok := v.(string)
-				if !ok {
-					return nil, errors.New("Internal server error. Error type assertion")
-				}
-
-				e.Name = name
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirNoteAdded":
 		e := domain.ReservoirNoteAdded{}
 
-		for key, v := range mapped {
-			if key == "ReservoirUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ReservoirUID = uid
-			}
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-			if key == "Content" {
-				val := v.(string)
-				e.Content = val
-			}
-			if key == "CreatedDate" {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.CreatedDate = d
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "ReservoirNoteRemoved":
 		e := domain.ReservoirNoteRemoved{}
 
-		for key, v := range mapped {
-			if key == "ReservoirUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ReservoirUID = uid
-			}
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 	}

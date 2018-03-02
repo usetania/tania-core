@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
@@ -40,7 +41,7 @@ func UIDHook() mapstructure.DecodeHookFunc {
 	}
 }
 
-func TimeRFC3339Hook(layout string) mapstructure.DecodeHookFunc {
+func TimeHook(layout string) mapstructure.DecodeHookFunc {
 	return func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
 		if f.Kind() != reflect.String {
 			return data, nil
@@ -51,5 +52,38 @@ func TimeRFC3339Hook(layout string) mapstructure.DecodeHookFunc {
 
 		// Convert it by parsing
 		return time.Parse(layout, data.(string))
+	}
+}
+
+func WaterSourceHook() mapstructure.DecodeHookFunc {
+	return func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
+		if f != reflect.TypeOf(map[string]interface{}{}) {
+			return data, nil
+		}
+
+		mapped := data.(map[string]interface{})
+		cap := float32(0)
+
+		// If Tap, it won't have Capacity, then it won't go inside loop.
+		for key, val := range mapped {
+			if key != "Capacity" {
+				return data, nil
+			}
+
+			c := val.(float64)
+			cap = float32(c)
+		}
+
+		// reflect.TypeOf((*domain.WaterSource)(nil)).Elem() is to find
+		// the reflect.Type from interface variable.
+		if t != reflect.TypeOf((*domain.WaterSource)(nil)).Elem() {
+			return data, nil
+		}
+
+		if cap == 0 {
+			return domain.Tap{}, nil
+		}
+
+		return domain.Bucket{Capacity: cap}, nil
 	}
 }

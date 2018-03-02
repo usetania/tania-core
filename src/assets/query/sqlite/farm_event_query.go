@@ -81,7 +81,7 @@ func assertFarmEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 	f := mapstructure.ComposeDecodeHookFunc(
 		query.UIDHook(),
-		query.TimeRFC3339Hook(time.RFC3339),
+		query.TimeHook(time.RFC3339),
 	)
 
 	switch wrapper.EventName {
