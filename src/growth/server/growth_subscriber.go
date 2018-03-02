@@ -141,6 +141,16 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			log.Error(errors.New("Internal server error. Error type assertion"))
 		}
 
+		queryResult = <-s.AreaReadQuery.FindByID(cr.InitialArea.AreaUID)
+		if queryResult.Error != nil {
+			log.Error(queryResult.Error)
+		}
+
+		initialArea, ok := queryResult.Result.(query.CropAreaQueryResult)
+		if !ok {
+			log.Error(errors.New("Internal server error. Error type assertion"))
+		}
+
 		cropRead = &cr
 
 		switch v := e.Container.Type.(type) {
@@ -160,9 +170,9 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		cropRead.InitialArea.InitialQuantity = e.Container.Quantity
 		cropRead.InitialArea.CurrentQuantity = e.Container.Quantity
 
-		if cropRead.Type == domain.CropTypeSeeding {
+		if initialArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding = e.Container.Quantity
-		} else if cropRead.Type == domain.CropTypeGrowing {
+		} else if initialArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing = e.Container.Quantity
 		}
 
