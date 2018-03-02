@@ -3,11 +3,14 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/Tanibox/tania-server/src/growth/util/decoder"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -77,194 +80,47 @@ func (f *CropEventQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Query
 func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
+	f := mapstructure.ComposeDecodeHookFunc(
+		decoder.UIDHook(),
+		decoder.TimeHook(time.RFC3339),
+		decoder.CropContainerHook(),
+	)
+
 	switch wrapper.EventName {
 	case "CropBatchCreated":
 		e := domain.CropBatchCreated{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["BatchID"]; ok {
-			val := v.(string)
-			e.BatchID = val
-		}
-		if v, ok := mapped["Status"]; ok {
-			mapped2 := v.(map[string]interface{})
-
-			if v2, ok2 := mapped2["code"]; ok2 {
-				st := v2.(string)
-				e.Status = domain.GetCropStatus(st)
-			}
-		}
-		if v, ok := mapped["Type"]; ok {
-			val, err := makeCropType(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Type = val
-		}
-		if v, ok := mapped["Container"]; ok {
-			val, err := makeCropContainer(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Container = val
-		}
-		if v, ok := mapped["InventoryUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.InventoryUID = uid
-		}
-		if v, ok := mapped["FarmUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.FarmUID = uid
-		}
-		if v, ok := mapped["CreatedDate"]; ok {
-			d, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CreatedDate = d
-		}
-		if v, ok := mapped["InitialAreaUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.InitialAreaUID = uid
-		}
-		if v, ok := mapped["Quantity"]; ok {
-			val := v.(float64)
-			e.Quantity = int(val)
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchTypeChanged":
 		e := domain.CropBatchTypeChanged{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["Type"]; ok {
-			val, err := makeCropType(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Type = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchInventoryChanged":
 		e := domain.CropBatchInventoryChanged{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["InventoryUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.InventoryUID = uid
-		}
-		if v, ok := mapped["BatchID"]; ok {
-			val := v.(string)
-			e.BatchID = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchContainerChanged":
 		e := domain.CropBatchContainerChanged{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["Container"]; ok {
-			val, err := makeCropContainer(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Container = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchMoved":
 		e := domain.CropBatchMoved{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
+		decoder.Decode(f, &mapped, &e)
 
-			e.UID = uid
-		}
-		if v, ok := mapped["Quantity"]; ok {
-			val := v.(float64)
-			e.Quantity = int(val)
-		}
-		if v, ok := mapped["SrcAreaUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.SrcAreaUID = uid
-		}
-		if v, ok := mapped["DstAreaUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.DstAreaUID = uid
-		}
-		if v, ok := mapped["MovedDate"]; ok {
-			val, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MovedDate = val
-		}
+		// This decoding is too complex so we do this here instead in DecodeHookFunc
 		if v, ok := mapped["UpdatedSrcArea"]; ok {
 			code := mapped["UpdatedSrcAreaCode"].(string)
 
@@ -311,26 +167,9 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 	case "CropBatchHarvested":
 		e := domain.CropBatchHarvested{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
+		decoder.Decode(f, &mapped, &e)
 
-			e.UID = uid
-		}
-		if v, ok := mapped["HarvestType"]; ok {
-			val := v.(string)
-			e.HarvestType = val
-		}
-		if v, ok := mapped["HarvestedQuantity"]; ok {
-			val := v.(float64)
-			e.HarvestedQuantity = int(val)
-		}
-		if v, ok := mapped["ProducedGramQuantity"]; ok {
-			val := v.(float64)
-			e.ProducedGramQuantity = float32(val)
-		}
+		// This decoding is too complex so we do this here instead in DecodeHookFunc
 		if v, ok := mapped["UpdatedHarvestedStorage"]; ok {
 			mapped2 := v.(map[string]interface{})
 			harvestedStorage := domain.HarvestedStorage{}
@@ -351,7 +190,8 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 				harvestedStorage.SourceAreaUID = uid
 			}
-			if v2, ok2 := mapped["created_date"]; ok2 {
+			if v2, ok2 := mapped2["created_date"]; ok2 {
+				fmt.Println("MASUK SINI GA SIH")
 				val, err := makeTime(v2)
 				if err != nil {
 					return nil, err
@@ -359,7 +199,7 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 				harvestedStorage.CreatedDate = val
 			}
-			if v2, ok2 := mapped["last_updated"]; ok2 {
+			if v2, ok2 := mapped2["last_updated"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
 					return nil, err
@@ -390,36 +230,14 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.HarvestedArea = movedArea
 			}
 		}
-		if v, ok := mapped["HarvestDate"]; ok {
-			val, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.HarvestDate = val
-		}
-		if v, ok := mapped["Notes"]; ok {
-			val := v.(string)
-			e.Notes = val
-		}
 
 		return e, nil
 
 	case "CropBatchDumped":
 		e := domain.CropBatchDumped{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
+		decoder.Decode(f, &mapped, &e)
 
-			e.UID = uid
-		}
-		if v, ok := mapped["Quantity"]; ok {
-			val := v.(float64)
-			e.Quantity = int(val)
-		}
 		if v, ok := mapped["UpdatedTrash"]; ok {
 			mapped2 := v.(map[string]interface{})
 			trash := domain.Trash{}
@@ -436,7 +254,7 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 				trash.SourceAreaUID = uid
 			}
-			if v2, ok2 := mapped["created_date"]; ok2 {
+			if v2, ok2 := mapped2["created_date"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
 					return nil, err
@@ -444,7 +262,7 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 
 				trash.CreatedDate = val
 			}
-			if v2, ok2 := mapped["last_updated"]; ok2 {
+			if v2, ok2 := mapped2["last_updated"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
 					return nil, err
@@ -475,174 +293,36 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.DumpedArea = movedArea
 			}
 		}
-		if v, ok := mapped["DumpDate"]; ok {
-			val, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
 
-			e.DumpDate = val
-		}
-		if v, ok := mapped["Notes"]; ok {
-			val := v.(string)
-			e.Notes = val
-		}
+		fmt.Println("DUMPED E", e)
 
 		return e, nil
 
 	case "CropBatchWatered":
 		e := domain.CropBatchWatered{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["BatchID"]; ok {
-			val := v.(string)
-			e.BatchID = val
-		}
-		if v, ok := mapped["ContainerType"]; ok {
-			val := v.(string)
-			e.ContainerType = val
-		}
-		if v, ok := mapped["AreaUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.AreaUID = uid
-		}
-		if v, ok := mapped["AreaName"]; ok {
-			val := v.(string)
-			e.AreaName = val
-		}
-		if v, ok := mapped["WateringDate"]; ok {
-			val, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.WateringDate = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchPhotoCreated":
 		e := domain.CropBatchPhotoCreated{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["CropUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CropUID = uid
-		}
-		if v, ok := mapped["Filename"]; ok {
-			val := v.(string)
-			e.Filename = val
-		}
-		if v, ok := mapped["MimeType"]; ok {
-			val := v.(string)
-			e.MimeType = val
-		}
-		if v, ok := mapped["Size"]; ok {
-			val := v.(float64)
-			e.Size = int(val)
-		}
-		if v, ok := mapped["Width"]; ok {
-			val := v.(float64)
-			e.Width = int(val)
-		}
-		if v, ok := mapped["Height"]; ok {
-			val := v.(float64)
-			e.Height = int(val)
-		}
-		if v, ok := mapped["Description"]; ok {
-			val := v.(string)
-			e.Description = val
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchNoteCreated":
 		e := domain.CropBatchNoteCreated{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["CropUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CropUID = uid
-		}
-		if v, ok := mapped["Content"]; ok {
-			val := v.(string)
-			e.Content = val
-		}
-		if v, ok := mapped["CreatedDate"]; ok {
-			d, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CreatedDate = d
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "CropBatchNoteRemoved":
 		e := domain.CropBatchNoteRemoved{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-		if v, ok := mapped["CropUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CropUID = uid
-		}
-		if v, ok := mapped["Content"]; ok {
-			val := v.(string)
-			e.Content = val
-		}
-		if v, ok := mapped["CreatedDate"]; ok {
-			d, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CreatedDate = d
-		}
+		decoder.Decode(f, &mapped, &e)
 
 		return e, nil
 	}
