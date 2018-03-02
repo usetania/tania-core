@@ -94,12 +94,10 @@ export default {
       this.$refs.openCal.showCalendar()
     },
     submit () {
-      if (typeof this.data.uid != "undefined") {
-        this.task.asset_id = this.data.uid
-      }
-      if (typeof this.data.uid != "undefined") {
+      if (typeof this.data.domain != "undefined") {
         this.task.domain = this.data.domain
       } else {
+        this.task.asset_id = this.data.uid
         this.task.domain = this.asset.toUpperCase()
       }
       this.submitTask(this.task)
@@ -108,7 +106,7 @@ export default {
     },
   },
   mounted () {
-    if (typeof this.data.uid != "undefined") {
+    if (typeof this.data.domain != "undefined") {
       this.task.uid = this.data.uid
       this.task.due_date = this.data.due_date
       this.task.priority = this.data.priority

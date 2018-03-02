@@ -6,7 +6,7 @@
       WaterTaskModal(:crops="areaCrops" :area="area")
     .wrapper-md
       .pull-right
-        a.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="showModal = true")
+        a.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="openModal()")
           i.fas.fa-plus
           | Add Task
         a.btn.btn-sm.btn-addon.btn-info(style="cursor: pointer;" @click="showWaterTaskModal = true")
@@ -166,6 +166,10 @@ export default {
     getType (key) {
       return FindAreaType(key)
     },
+    openModal() {
+      this.data = {}
+      this.showModal = true
+    },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
         if (result) {
@@ -173,7 +177,6 @@ export default {
         }
       })
     },
-
   }
 }
 </script>

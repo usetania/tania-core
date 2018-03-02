@@ -3,7 +3,7 @@
     modal(v-if="showModal" @close="closeModal")
       FarmReservoirTaskForm(:data="reservoir" :asset="asset")
     .wrapper-md
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
+      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="openModal()")
         i.fas.fa-plus
         | Add Task
       h1.m-n.font-thin.h3.text-black {{ reservoir.name }}
@@ -123,6 +123,10 @@ export default {
     },
     getReservoirType(key) {
       return FindReservoirType(key)
+    },
+    openModal() {
+      this.data = {}
+      this.showModal = true
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
