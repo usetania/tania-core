@@ -147,11 +147,11 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						SET NAME = ?, INITIAL_QUANTITY = ?, CURRENT_QUANTITY = ?,
 						LAST_WATERED = ?, LAST_FERTILIZED = ?, LAST_PESTICIDED = ?, LAST_PRUNED = ?,
 						CREATED_DATE = ?, LAST_UPDATED = ?
-						WHERE AREA_UID = ?`,
+						WHERE CROP_UID = ? AND AREA_UID = ?`,
 						v.Name, v.InitialQuantity, v.CurrentQuantity,
 						movedLastWatered, movedLastFertilized, movedLastPesticided, movedLastPruned,
 						cd, lu,
-						v.AreaUID)
+						cropRead.UID, v.AreaUID)
 
 					if err != nil {
 						result <- err
@@ -188,11 +188,11 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						SET QUANTITY = ?, PRODUCED_GRAM_QUANTITY = ?,
 						SOURCE_AREA_NAME = ?,
 						CREATED_DATE = ?, LAST_UPDATED = ?
-						WHERE SOURCE_AREA_UID = ?`,
+						WHERE CROP_UID = ? AND SOURCE_AREA_UID = ?`,
 						v.Quantity, v.ProducedGramQuantity,
 						v.SourceAreaName,
 						cd, lu,
-						v.SourceAreaUID)
+						cropRead.UID, v.SourceAreaUID)
 
 					if err != nil {
 						result <- err
@@ -225,9 +225,11 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 					lu := v.LastUpdated.Format(time.RFC3339)
 
 					res, err := f.DB.Exec(`UPDATE CROP_READ_TRASH
-						SET QUANTITY = ?, SOURCE_AREA_UID = ?, SOURCE_AREA_NAME = ?,
-						CREATED_DATE = ?, LAST_UPDATED = ?`,
-						v.Quantity, v.SourceAreaUID, v.SourceAreaName, cd, lu)
+						SET QUANTITY = ?, SOURCE_AREA_NAME = ?,
+						CREATED_DATE = ?, LAST_UPDATED = ?
+						WHERE CROP_UID = ? AND SOURCE_AREA_UID = ?`,
+						v.Quantity, v.SourceAreaName, cd, lu,
+						cropRead.UID, v.SourceAreaUID)
 
 					if err != nil {
 						result <- err
