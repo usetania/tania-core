@@ -290,7 +290,7 @@ func (m *Material) ChangeQuantityUnit(quantity float32, quantityUnit string, mat
 			Value: quantity,
 			Unit:  qu,
 		},
-		MaterialTypeCode: m.Type.Code(),
+		MaterialTypeCode: materialType.Code(),
 	})
 
 	return nil

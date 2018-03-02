@@ -87,3 +87,85 @@ func WaterSourceHook() mapstructure.DecodeHookFunc {
 		return domain.Bucket{Capacity: cap}, nil
 	}
 }
+
+func MaterialTypeHook() mapstructure.DecodeHookFunc {
+	return func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
+		if f != reflect.TypeOf(map[string]interface{}{}) {
+			return data, nil
+		}
+
+		// reflect.TypeOf((*domain.MaterialType)(nil)).Elem() is to find
+		// the reflect.Type from interface variable.
+		if t != reflect.TypeOf((*domain.MaterialType)(nil)).Elem() {
+			return data, nil
+		}
+
+		mapped := data.(map[string]interface{})
+
+		if val, ok := mapped["Type"]; ok {
+			switch val {
+			case domain.MaterialTypePlantCode:
+				mapped2 := mapped["Data"].(map[string]interface{})
+				mapped3 := mapped2["PlantType"].(map[string]interface{})
+				typeCode := mapped3["code"].(string)
+
+				t, err := domain.CreateMaterialTypePlant(typeCode)
+				if err != nil {
+					return data, err
+				}
+
+				return t, nil
+
+			case domain.MaterialTypeSeedCode:
+				mapped2 := mapped["Data"].(map[string]interface{})
+				mapped3 := mapped2["PlantType"].(map[string]interface{})
+				typeCode := mapped3["code"].(string)
+
+				t, err := domain.CreateMaterialTypeSeed(typeCode)
+				if err != nil {
+					return data, err
+				}
+
+				return t, nil
+
+			case domain.MaterialTypeGrowingMediumCode:
+				return domain.MaterialTypeGrowingMedium{}, nil
+
+			case domain.MaterialTypeAgrochemicalCode:
+				mapped2 := mapped["Data"].(map[string]interface{})
+				mapped3 := mapped2["ChemicalType"].(map[string]interface{})
+				typeCode := mapped3["code"].(string)
+
+				t, err := domain.CreateMaterialTypeAgrochemical(typeCode)
+				if err != nil {
+					return data, err
+				}
+
+				return t, nil
+
+			case domain.MaterialTypeLabelAndCropSupportCode:
+				return domain.MaterialTypeLabelAndCropSupport{}, nil
+
+			case domain.MaterialTypeSeedingContainerCode:
+				mapped2 := mapped["Data"].(map[string]interface{})
+				mapped3 := mapped2["ContainerType"].(map[string]interface{})
+				typeCode := mapped3["code"].(string)
+
+				t, err := domain.CreateMaterialTypeSeedingContainer(typeCode)
+				if err != nil {
+					return nil, err
+				}
+
+				return t, nil
+
+			case domain.MaterialTypePostHarvestSupplyCode:
+				return domain.MaterialTypePostHarvestSupply{}, nil
+
+			case domain.MaterialTypeOtherCode:
+				return domain.MaterialTypeOther{}, nil
+			}
+		}
+
+		return data, nil
+	}
+}

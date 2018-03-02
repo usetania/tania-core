@@ -80,6 +80,7 @@ func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
 	f := mapstructure.ComposeDecodeHookFunc(
 		query.UIDHook(),
 		query.TimeHook(time.RFC3339),
+		query.MaterialTypeHook(),
 	)
 
 	switch wrapper.EventName {
