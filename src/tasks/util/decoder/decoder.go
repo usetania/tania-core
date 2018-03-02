@@ -67,23 +67,26 @@ func TaskDomainDetailHook() mapstructure.DecodeHookFunc {
 			return data, nil
 		}
 
-		var domainDetails domain.TaskDomain
-		if v, ok := data.(map[string]interface{}); ok {
-			if v2, ok2 := v["InventoryUID"]; ok2 {
-				u, ok3 := v2.(string)
-				if !ok3 {
-					return data, nil
-				}
-
-				uid, err := uuid.FromString(u)
-				if err != nil {
-					return data, err
-				}
-
-				domainDetails = domain.TaskDomainCrop{InventoryUID: &uid}
-			}
+		v, ok := data.(map[string]interface{})
+		if !ok {
+			return data, nil
 		}
 
-		return domainDetails, nil
+		uid, ok := v["InventoryUID"]
+		if !ok {
+			return data, nil
+		}
+
+		uidStr, ok := uid.(string)
+		if !ok {
+			return data, nil
+		}
+
+		invUID, err := uuid.FromString(uidStr)
+		if err != nil {
+			return data, err
+		}
+
+		return domain.TaskDomainCrop{InventoryUID: &invUID}, nil
 	}
 }
