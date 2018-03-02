@@ -38,17 +38,9 @@
             li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
-              a
-                i.fa.fa-cog
-                span General
-            aside-item-component
-              a
+              a: router-link(:to="{ name: 'Account' }")
                 i.fa.fa-user
                 span Account
-            aside-item-component
-              a
-                i.fa.fa-wrench
-                span Preferences
             li.line.dk
             li
               a.btn.no-shadow.navbar-btn(:class="folded == true ? 'active': ''" @click="setFolded")

@@ -28,7 +28,10 @@ const router = new VueRouter({
     { path: '/task', name: 'Task', meta: { requiresAuth: true }, component: () => import('./pages/tasks/task') },
 
     // Inventories
-    { path: '/materials', name: 'InventoriesMaterials', meta: { requiresAuth: true }, component: () => import('./pages/inventories/materials.vue') }
+    { path: '/materials', name: 'InventoriesMaterials', meta: { requiresAuth: true }, component: () => import('./pages/inventories/materials.vue') },
+
+    // Settings
+    { path: '/settings/account', name: 'Account', meta: { requiresAuth: true }, component: () => import('./pages/settings/account') },
   ]
 })
 
