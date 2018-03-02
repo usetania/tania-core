@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -76,231 +77,65 @@ func (f *MaterialEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Query
 func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
+	f := mapstructure.ComposeDecodeHookFunc(
+		query.UIDHook(),
+		query.TimeHook(time.RFC3339),
+	)
+
 	switch wrapper.EventName {
 	case "MaterialCreated":
 		e := domain.MaterialCreated{}
 
-		if v, ok := mapped["UID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.UID = uid
-		}
-
-		if v, ok := mapped["Name"]; ok {
-			val := v.(string)
-			e.Name = val
-		}
-
-		if v, ok := mapped["PricePerUnit"]; ok {
-			val, err := makeMaterialPricePerUnit(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.PricePerUnit = val
-		}
-
-		if v, ok := mapped["Type"]; ok {
-			val, err := makeMaterialType(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Type = val
-		}
-
-		if v, ok := mapped["Quantity"]; ok {
-			val, err := makeMaterialQuantity(v, e.Type.Code())
-			if err != nil {
-				return nil, err
-			}
-
-			e.Quantity = val
-		}
-
-		if v, ok := mapped["ExpirationDate"]; ok {
-			if v != nil {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ExpirationDate = &d
-			}
-		}
-
-		if v, ok := mapped["Notes"]; ok {
-			if v != nil {
-				v := v.(string)
-				e.Notes = &v
-			}
-		}
-
-		if v, ok := mapped["ProducedBy"]; ok {
-			if v != nil {
-				v := v.(string)
-				e.ProducedBy = &v
-			}
-		}
-
-		if v, ok := mapped["CreatedDate"]; ok {
-			d, err := makeTime(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.CreatedDate = d
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialNameChanged":
 		e := domain.MaterialNameChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["Name"]; ok {
-			val := v.(string)
-			e.Name = val
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialPriceChanged":
 		e := domain.MaterialPriceChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["Price"]; ok {
-			val, err := makeMaterialPricePerUnit(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Price = val
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialQuantityChanged":
 		e := domain.MaterialQuantityChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["Quantity"]; ok {
-			typeCode := mapped["MaterialTypeCode"].(string)
-			val, err := makeMaterialQuantity(v, typeCode)
-			if err != nil {
-				return nil, err
-			}
-
-			e.Quantity = val
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialTypeChanged":
 		e := domain.MaterialTypeChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["MaterialType"]; ok {
-			val, err := makeMaterialType(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialType = val
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialExpirationDateChanged":
 		e := domain.MaterialExpirationDateChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
+		query.Decode(f, &mapped, &e)
 
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["ExpirationDate"]; ok {
-			if v != nil {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ExpirationDate = d
-			}
-		}
+		return e, nil
 
 	case "MaterialNotesChanged":
 		e := domain.MaterialNotesChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["Notes"]; ok {
-			if v != nil {
-				val := v.(string)
-				e.Notes = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "MaterialProducedByChanged":
 		e := domain.MaterialProducedByChanged{}
 
-		if v, ok := mapped["MaterialUID"]; ok {
-			uid, err := makeUUID(v)
-			if err != nil {
-				return nil, err
-			}
-
-			e.MaterialUID = uid
-		}
-		if v, ok := mapped["ProducedBy"]; ok {
-			if v != nil {
-				val := v.(string)
-				e.ProducedBy = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 	}
