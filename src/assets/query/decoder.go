@@ -61,6 +61,12 @@ func WaterSourceHook() mapstructure.DecodeHookFunc {
 			return data, nil
 		}
 
+		// reflect.TypeOf((*domain.WaterSource)(nil)).Elem() is to find
+		// the reflect.Type from interface variable.
+		if t != reflect.TypeOf((*domain.WaterSource)(nil)).Elem() {
+			return data, nil
+		}
+
 		mapped := data.(map[string]interface{})
 		cap := float32(0)
 
@@ -72,12 +78,6 @@ func WaterSourceHook() mapstructure.DecodeHookFunc {
 
 			c := val.(float64)
 			cap = float32(c)
-		}
-
-		// reflect.TypeOf((*domain.WaterSource)(nil)).Elem() is to find
-		// the reflect.Type from interface variable.
-		if t != reflect.TypeOf((*domain.WaterSource)(nil)).Elem() {
-			return data, nil
 		}
 
 		if cap == 0 {

@@ -8,6 +8,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -77,284 +78,72 @@ func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 func assertAreaEvent(wrapper query.EventWrapper) (interface{}, error) {
 	mapped := wrapper.EventData.(map[string]interface{})
 
+	f := mapstructure.ComposeDecodeHookFunc(
+		query.UIDHook(),
+		query.TimeHook(time.RFC3339),
+	)
+
 	switch wrapper.EventName {
 	case "AreaCreated":
 		e := domain.AreaCreated{}
 
-		for key, v := range mapped {
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-			if key == "Name" {
-				val := v.(string)
-				e.Name = val
-			}
-			if key == "Type" {
-				at, err := makeAreaType(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Type = at
-			}
-			if key == "Location" {
-				al, err := makeAreaLocation(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Location = al
-			}
-			if key == "Size" {
-				areaSize, err := makeAreaSize(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Size = areaSize
-			}
-			if key == "FarmUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.FarmUID = uid
-			}
-			if key == "ReservoirUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ReservoirUID = uid
-			}
-			if key == "CreatedDate" {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.CreatedDate = d
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaNameChanged":
 		e := domain.AreaNameChanged{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "Name" {
-				val := v.(string)
-				e.Name = val
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaSizeChanged":
 		e := domain.AreaSizeChanged{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "Size" {
-				areaSize, err := makeAreaSize(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Size = areaSize
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaTypeChanged":
 		e := domain.AreaTypeChanged{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "Type" {
-				at, err := makeAreaType(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Type = at
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaLocationChanged":
 		e := domain.AreaLocationChanged{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "Location" {
-				al, err := makeAreaLocation(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.Location = al
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaReservoirChanged":
 		e := domain.AreaReservoirChanged{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "ReservoirUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.ReservoirUID = uid
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaPhotoAdded":
 		e := domain.AreaPhotoAdded{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "Filename" {
-				val := v.(string)
-				e.Filename = val
-			}
-			if key == "MimeType" {
-				val := v.(string)
-				e.MimeType = val
-			}
-			if key == "Size" {
-				val := v.(float64)
-				e.Size = int(val)
-			}
-			if key == "Width" {
-				val := v.(float64)
-				e.Width = int(val)
-			}
-			if key == "Height" {
-				val := v.(float64)
-				e.Height = int(val)
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaNoteAdded":
 		e := domain.AreaNoteAdded{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-			if key == "Content" {
-				val := v.(string)
-				e.Content = val
-			}
-			if key == "CreatedDate" {
-				d, err := makeTime(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.CreatedDate = d
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 
 	case "AreaNoteRemoved":
 		e := domain.AreaNoteRemoved{}
 
-		for key, v := range mapped {
-			if key == "AreaUID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.AreaUID = uid
-			}
-			if key == "UID" {
-				uid, err := makeUUID(v)
-				if err != nil {
-					return nil, err
-				}
-
-				e.UID = uid
-			}
-		}
+		query.Decode(f, &mapped, &e)
 
 		return e, nil
 	}
