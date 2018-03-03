@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/decoder"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
-	"github.com/Tanibox/tania-server/src/assets/util/decoder"
-	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -43,10 +41,8 @@ func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 		for rows.Next() {
 			rows.Scan(&rowsData.ID, &rowsData.AreaUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
-			wrapper := query.EventWrapper{}
-			json.Unmarshal(rowsData.Event, &wrapper)
-
-			event, err := assertAreaEvent(wrapper)
+			wrapper := decoder.AreaEventWrapper{}
+			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -65,7 +61,7 @@ func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 				AreaUID:     areaUID,
 				Version:     rowsData.Version,
 				CreatedDate: createdDate,
-				Event:       event,
+				Event:       wrapper.EventData,
 			})
 		}
 
@@ -74,80 +70,4 @@ func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 	}()
 
 	return result
-}
-
-func assertAreaEvent(wrapper query.EventWrapper) (interface{}, error) {
-	mapped := wrapper.EventData.(map[string]interface{})
-
-	f := mapstructure.ComposeDecodeHookFunc(
-		decoder.UIDHook(),
-		decoder.TimeHook(time.RFC3339),
-	)
-
-	switch wrapper.EventName {
-	case "AreaCreated":
-		e := domain.AreaCreated{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaNameChanged":
-		e := domain.AreaNameChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaSizeChanged":
-		e := domain.AreaSizeChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaTypeChanged":
-		e := domain.AreaTypeChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaLocationChanged":
-		e := domain.AreaLocationChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaReservoirChanged":
-		e := domain.AreaReservoirChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaPhotoAdded":
-		e := domain.AreaPhotoAdded{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaNoteAdded":
-		e := domain.AreaNoteAdded{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "AreaNoteRemoved":
-		e := domain.AreaNoteRemoved{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-	}
-
-	return nil, nil
 }

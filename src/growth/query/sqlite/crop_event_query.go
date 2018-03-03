@@ -3,7 +3,6 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -191,7 +190,6 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 				harvestedStorage.SourceAreaUID = uid
 			}
 			if v2, ok2 := mapped2["created_date"]; ok2 {
-				fmt.Println("MASUK SINI GA SIH")
 				val, err := makeTime(v2)
 				if err != nil {
 					return nil, err
@@ -293,8 +291,6 @@ func assertCropEvent(wrapper query.EventWrapper) (interface{}, error) {
 				e.DumpedArea = movedArea
 			}
 		}
-
-		fmt.Println("DUMPED E", e)
 
 		return e, nil
 

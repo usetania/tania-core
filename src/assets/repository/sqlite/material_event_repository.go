@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/assets/decoder"
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
@@ -53,7 +54,7 @@ func (f *MaterialEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, e
 				eTemp = val
 			}
 
-			e, err := json.Marshal(repository.EventWrapper{
+			e, err := json.Marshal(decoder.EventWrapper{
 				EventName: structhelper.GetName(eTemp),
 				EventData: eTemp,
 			})

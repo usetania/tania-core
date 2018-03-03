@@ -5,11 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/decoder"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
-	"github.com/Tanibox/tania-server/src/assets/util/decoder"
-	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -42,10 +40,9 @@ func (f *MaterialEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Query
 
 		for rows.Next() {
 			rows.Scan(&rowsData.ID, &rowsData.MaterialUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
-			wrapper := query.EventWrapper{}
-			json.Unmarshal(rowsData.Event, &wrapper)
 
-			event, err := assertMaterialEvent(wrapper)
+			wrapper := decoder.MaterialEventWrapper{}
+			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -64,7 +61,7 @@ func (f *MaterialEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Query
 				MaterialUID: materialUID,
 				Version:     rowsData.Version,
 				CreatedDate: createdDate,
-				Event:       event,
+				Event:       wrapper.EventData,
 			})
 		}
 
@@ -73,74 +70,4 @@ func (f *MaterialEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Query
 	}()
 
 	return result
-}
-
-func assertMaterialEvent(wrapper query.EventWrapper) (interface{}, error) {
-	mapped := wrapper.EventData.(map[string]interface{})
-
-	f := mapstructure.ComposeDecodeHookFunc(
-		decoder.UIDHook(),
-		decoder.TimeHook(time.RFC3339),
-		decoder.MaterialTypeHook(),
-	)
-
-	switch wrapper.EventName {
-	case "MaterialCreated":
-		e := domain.MaterialCreated{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialNameChanged":
-		e := domain.MaterialNameChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialPriceChanged":
-		e := domain.MaterialPriceChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialQuantityChanged":
-		e := domain.MaterialQuantityChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialTypeChanged":
-		e := domain.MaterialTypeChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialExpirationDateChanged":
-		e := domain.MaterialExpirationDateChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialNotesChanged":
-		e := domain.MaterialNotesChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "MaterialProducedByChanged":
-		e := domain.MaterialProducedByChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-	}
-
-	return nil, nil
 }

@@ -9,8 +9,15 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// EventWrapper is used to wrap the event interface with its struct name,
+// so it will be easier to unmarshal later
+type EventWrapper struct {
+	EventName string
+	EventData interface{}
+}
+
 func Decode(f mapstructure.DecodeHookFunc, data *map[string]interface{}, e interface{}) (interface{}, error) {
-	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+	dc, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		DecodeHook:       f,
 		TagName:          "json",
 		Result:           e,
@@ -20,7 +27,7 @@ func Decode(f mapstructure.DecodeHookFunc, data *map[string]interface{}, e inter
 		return nil, err
 	}
 
-	err = decoder.Decode(data)
+	err = dc.Decode(data)
 	if err != nil {
 		return nil, err
 	}

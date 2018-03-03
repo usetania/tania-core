@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/assets/decoder"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	uuid "github.com/satori/go.uuid"
@@ -33,7 +34,7 @@ func (f *ReservoirEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, 
 				result <- err
 			}
 
-			e, err := json.Marshal(repository.EventWrapper{
+			e, err := json.Marshal(decoder.EventWrapper{
 				EventName: structhelper.GetName(v),
 				EventData: v,
 			})

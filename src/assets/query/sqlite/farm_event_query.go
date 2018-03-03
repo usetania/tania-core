@@ -3,14 +3,11 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/assets/decoder"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
-	"github.com/Tanibox/tania-server/src/assets/util/decoder"
-	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -44,10 +41,8 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 		for rows.Next() {
 			rows.Scan(&rowsData.ID, &rowsData.FarmUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
-			wrapper := query.EventWrapper{}
-			json.Unmarshal(rowsData.Event, &wrapper)
-
-			event, err := assertFarmEvent(wrapper)
+			wrapper := decoder.FarmEventWrapper{}
+			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -66,7 +61,7 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 				FarmUID:     farmUID,
 				Version:     rowsData.Version,
 				CreatedDate: createdDate,
-				Event:       event,
+				Event:       wrapper.EventData,
 			})
 		}
 
@@ -75,52 +70,4 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 	}()
 
 	return result
-}
-
-func assertFarmEvent(wrapper query.EventWrapper) (interface{}, error) {
-	mapped := wrapper.EventData.(map[string]interface{})
-
-	f := mapstructure.ComposeDecodeHookFunc(
-		decoder.UIDHook(),
-		decoder.TimeHook(time.RFC3339),
-	)
-
-	switch wrapper.EventName {
-	case "FarmCreated":
-		e := domain.FarmCreated{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "FarmNameChanged":
-		e := domain.FarmNameChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "FarmTypeChanged":
-		e := domain.FarmTypeChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "FarmGeolocationChanged":
-		e := domain.FarmGeolocationChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "FarmRegionChanged":
-		e := domain.FarmRegionChanged{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-	}
-
-	return nil, errors.New("Event not decoded succesfully")
 }
