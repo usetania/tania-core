@@ -3,14 +3,12 @@ package sqlite
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/tasks/domain"
+	"github.com/Tanibox/tania-server/src/tasks/decoder"
+
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
-	"github.com/Tanibox/tania-server/src/tasks/util/decoder"
-	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -44,13 +42,8 @@ func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Query
 		for rows.Next() {
 			rows.Scan(&rowsData.ID, &rowsData.TaskUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
-			wrapper := query.EventWrapper{}
+			wrapper := decoder.TaskEventWrapper{}
 			json.Unmarshal(rowsData.Event, &wrapper)
-
-			event, err := assertTaskEvent(wrapper)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
 
 			taskUID, err := uuid.FromString(rowsData.TaskUID)
 			if err != nil {
@@ -66,7 +59,7 @@ func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Query
 				TaskUID:     taskUID,
 				Version:     rowsData.Version,
 				CreatedDate: createdDate,
-				Event:       event,
+				Event:       wrapper.Data,
 			})
 		}
 
@@ -75,53 +68,4 @@ func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Query
 	}()
 
 	return result
-}
-
-func assertTaskEvent(wrapper query.EventWrapper) (interface{}, error) {
-	mapped := wrapper.EventData.(map[string]interface{})
-
-	f := mapstructure.ComposeDecodeHookFunc(
-		decoder.UIDHook(),
-		decoder.TimeHook(time.RFC3339),
-		decoder.TaskDomainDetailHook(),
-	)
-
-	switch wrapper.EventName {
-	case "TaskCreated":
-		e := domain.TaskCreated{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "TaskModified":
-		e := domain.TaskModified{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "TaskCompleted":
-		e := domain.TaskCompleted{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "TaskCancelled":
-		e := domain.TaskCancelled{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-
-	case "TaskDue":
-		e := domain.TaskDue{}
-
-		decoder.Decode(f, &mapped, &e)
-
-		return e, nil
-	}
-
-	return nil, errors.New("Event not decoded succesfully")
 }

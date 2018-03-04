@@ -3,7 +3,6 @@ package decoder
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/growth/domain"
@@ -22,7 +21,6 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 	}
 
 	mapped, ok := wrapper.Data.(map[string]interface{})
-	fmt.Println("NOT OK", ok)
 	if !ok {
 		return errors.New("Error type assertion")
 	}
