@@ -128,6 +128,8 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 			}
 		}
 
+		w.Data = e
+
 	case "CropBatchHarvested":
 		e := domain.CropBatchHarvested{}
 
@@ -212,6 +214,8 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 			}
 		}
 
+		w.Data = e
+
 	case "CropBatchDumped":
 		e := domain.CropBatchDumped{}
 
@@ -286,6 +290,8 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 				e.DumpedArea = movedArea
 			}
 		}
+
+		w.Data = e
 
 	case "CropBatchWatered":
 		e := domain.CropBatchWatered{}
