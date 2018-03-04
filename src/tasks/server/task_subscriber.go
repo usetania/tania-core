@@ -7,7 +7,6 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/labstack/echo"
-	"github.com/labstack/gommon/log"
 )
 
 func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
@@ -28,27 +27,65 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead.Category = e.Category
 		taskRead.IsDue = e.IsDue
 		taskRead.AssetID = e.AssetID
-	case domain.TaskModified:
+	case domain.TaskTitleChanged:
 
 		// Get TaskRead By UID
-		readResult := <-s.TaskReadQuery.FindByID(e.UID)
-
-		taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
-
-		if taskReadFromRepo.UID != e.UID {
-			log.Error(domain.TaskError{domain.TaskErrorTaskNotFoundCode})
-		}
-		if !ok {
-			log.Error(echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
+		if err != nil {
+			log.Error(err)
 		}
 
 		taskReadFromRepo.Title = e.Title
+		taskRead = taskReadFromRepo
+	case domain.TaskDescriptionChanged:
+
+		// Get TaskRead By UID
+		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
+		if err != nil {
+			log.Error(err)
+		}
+
 		taskReadFromRepo.Description = e.Description
+		taskRead = taskReadFromRepo
+	case domain.TaskPriorityChanged:
+
+		// Get TaskRead By UID
+		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
+		if err != nil {
+			log.Error(err)
+		}
+
 		taskReadFromRepo.Priority = e.Priority
+		taskRead = taskReadFromRepo
+	case domain.TaskDueDateChanged:
+
+		// Get TaskRead By UID
+		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
+		if err != nil {
+			return err
+		}
+
 		taskReadFromRepo.DueDate = e.DueDate
-		taskReadFromRepo.DomainDetails = e.DomainDetails
+		taskRead = taskReadFromRepo
+	case domain.TaskCategoryChanged:
+
+		// Get TaskRead By UID
+		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
+		if err != nil {
+			log.Error(err)
+		}
+
 		taskReadFromRepo.Category = e.Category
-		taskReadFromRepo.AssetID = e.AssetID
+		taskRead = &taskReadFromRepo
+	case domain.TaskDetailsChanged:
+
+		// Get TaskRead By UID
+		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
+		if err != nil {
+			log.Error(err)
+		}
+
+		taskReadFromRepo.DomainDetails = e.DomainDetails
 		taskRead = &taskReadFromRepo
 
 	case domain.TaskCompleted:
@@ -114,4 +151,20 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 	}
 
 	return nil
+}
+
+func (s *TaskServer) getTaskReadFromID(uid uuid.UUID) (*storage.TaskRead, error) {
+
+	readResult := <-s.TaskReadQuery.FindByID(uid)
+
+	taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
+
+	if taskReadFromRepo.UID != uid {
+		return &storage.TaskRead{}, domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+	}
+	if !ok {
+		return &storage.TaskRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	} else {
+		return &taskReadFromRepo, nil
+	}
 }

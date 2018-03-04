@@ -98,48 +98,79 @@ func CreateTask(taskService TaskService, title string, description string, dueda
 	return initial, nil
 }
 
-// UpdateTask
-func (t *Task) UpdateTask(taskService TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (*Task, error) {
-
+func (t *Task) ChangeTaskTitle(taskService TaskService, title string) (*Task, error) {
 	err := validateTaskTitle(title)
 	if err != nil {
 		return &Task{}, err
 	}
 
-	err = validateTaskDescription(description)
+	event := TaskTitleChanged{
+		UID:   t.UID,
+		Title: title,
+	}
+
+	t.TrackChange(taskService, event)
+
+	return t, nil
+}
+
+func (t *Task) ChangeTaskDescription(taskService TaskService, description string) (*Task, error) {
+	err := validateTaskDescription(description)
 	if err != nil {
 		return &Task{}, err
 	}
 
-	err = validateTaskDueDate(duedate)
-	if err != nil {
-		return &Task{}, err
+	event := TaskDescriptionChanged{
+		UID:         t.UID,
+		Description: description,
 	}
-	err = validateTaskPriority(priority)
+
+	t.TrackChange(taskService, event)
+
+	return t, nil
+}
+
+func (t *Task) ChangeTaskDueDate(taskService TaskService, duedate *time.Time) (*Task, error) {
+	err := validateTaskDueDate(duedate)
 	if err != nil {
 		return &Task{}, err
 	}
 
-	err = validateTaskCategory(taskcategory)
+	event := TaskDueDateChanged{
+		UID:     t.UID,
+		DueDate: duedate,
+	}
+
+	t.TrackChange(taskService, event)
+
+	return t, nil
+}
+
+func (t *Task) ChangeTaskPriority(taskService TaskService, priority string) (*Task, error) {
+	err := validateTaskDescription(priority)
 	if err != nil {
 		return &Task{}, err
 	}
 
-	err = validateAssetID(taskService, assetid, taskdomain.Code())
+	event := TaskPriorityChanged{
+		UID:      t.UID,
+		Priority: priority,
+	}
+
+	t.TrackChange(taskService, event)
+
+	return t, nil
+}
+
+func (t *Task) ChangeTaskCategory(taskService TaskService, category string, details TaskDomain) (*Task, error) {
+	err := validateTaskDescription(category)
 	if err != nil {
 		return &Task{}, err
 	}
 
-	event := TaskModified{
-		UID:           t.UID,
-		Title:         title,
-		Description:   description,
-		Priority:      priority,
-		DueDate:       duedate,
-		Domain:        taskdomain.Code(),
-		DomainDetails: taskdomain,
-		Category:      taskcategory,
-		AssetID:       assetid,
+	event := TaskCategoryChanged{
+		UID:      t.UID,
+		Category: category,
 	}
 
 	t.TrackChange(taskService, event)
@@ -203,14 +234,17 @@ func (state *Task) Transition(taskService TaskService, event interface{}) error 
 		state.Category = e.Category
 		state.IsDue = e.IsDue
 		state.AssetID = e.AssetID
-	case TaskModified:
+	case TaskTitleChanged:
 		state.Title = e.Title
+	case TaskDescriptionChanged:
 		state.Description = e.Description
+	case TaskDueDateChanged:
 		state.DueDate = e.DueDate
+	case TaskPriorityChanged:
 		state.Priority = e.Priority
-		state.DomainDetails = e.DomainDetails
+	case TaskCategoryChanged:
 		state.Category = e.Category
-		state.AssetID = e.AssetID
+		state.DomainDetails = e.DomainDetails
 	case TaskCancelled:
 		state.CancelledDate = e.CancelledDate
 		state.Status = TaskStatusCancelled

@@ -76,7 +76,11 @@ func NewTaskServer(
 // InitSubscriber defines the mapping of which event this domain listen with their handler
 func (s *TaskServer) InitSubscriber() {
 	s.EventBus.Subscribe(domain.TaskCreatedCode, s.SaveToTaskReadModel)
-	s.EventBus.Subscribe(domain.TaskModifiedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskTitleChangedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskDescriptionChangedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskPriorityChangedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskDueDateChangedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskCategoryChangedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCancelledCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCompletedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskDueCode, s.SaveToTaskReadModel)
@@ -158,7 +162,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	form_date := c.FormValue("due_date")
 	due_ptr := (*time.Time)(nil)
 	if len(form_date) != 0 {
-		due_date, err := time.Parse(time.RFC3339, form_date)
+		due_date, err := time.Parse(time.RFC3339Nano, form_date)
 
 		if err != nil {
 			return Error(c, err)
@@ -319,44 +323,38 @@ func (s *TaskServer) createTaskModifiedEvent(taskService domain.TaskService, tas
 
 	// Change Task Title
 	title := c.FormValue("title")
-	if len(title) == 0 {
-		title = task.Title
+	if len(title) != 0 {
+		task.ChangeTaskTitle(s.TaskService, title)
 	}
 
 	// Change Task Description
 	description := c.FormValue("description")
-	if len(description) == 0 {
-		description = task.Description
+	if len(description) != 0 {
+		task.ChangeTaskDescription(s.TaskService, description)
 	}
 
 	// Change Task Due Date
 	form_date := c.FormValue("due_date")
 	due_ptr := (*time.Time)(nil)
-	if len(form_date) == 0 {
-		due_ptr = task.DueDate
+	if len(form_date) != 0 {
+
+		due_date, err := time.Parse(time.RFC3339Nano, form_date)
+
+		if err != nil {
+			return task, Error(c, err)
+		}
+		due_ptr = &due_date
+		task.ChangeTaskDueDate(s.TaskService, due_ptr)
 	}
 
 	// Change Task Priority
 	priority := c.FormValue("priority")
-	if len(priority) == 0 {
-		priority = task.Priority
-	}
-
-	// Change Task Asset
-	asset_id := c.FormValue("asset_id")
-	asset_id_ptr := (*uuid.UUID)(nil)
-	if len(asset_id) == 0 {
-		asset_id_ptr = task.AssetID
-	} else {
-		asset_id, err := uuid.FromString(asset_id)
-		if err != nil {
-			return &domain.Task{}, Error(c, err)
-		}
-		asset_id_ptr = &asset_id
+	if len(priority) != 0 {
+		task.ChangeTaskPriority(s.TaskService, priority)
 	}
 
 	// Change Task Category & Domain Details
-	var category string
+	/*var category string
 	var details domain.TaskDomain
 	var err error
 	category = c.FormValue("category")
@@ -373,13 +371,7 @@ func (s *TaskServer) createTaskModifiedEvent(taskService domain.TaskService, tas
 	} else {
 		category = task.Category
 		details = task.DomainDetails
-	}
-
-	task.UpdateTask(taskService, title, description, due_ptr, priority, details, category, asset_id_ptr)
-
-	if err != nil {
-		return &domain.Task{}, Error(c, err)
-	}
+	}*/
 
 	return task, nil
 }

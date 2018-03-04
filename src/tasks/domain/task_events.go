@@ -7,11 +7,15 @@ import (
 )
 
 const (
-	TaskCreatedCode   = "TaskCreated"
-	TaskCompletedCode = "TaskCompleted"
-	TaskCancelledCode = "TaskCancelled"
-	TaskDueCode       = "TaskDue"
-	TaskModifiedCode  = "TaskModified"
+	TaskCreatedCode            = "TaskCreated"
+	TaskTitleChangedCode       = "TaskTitleChanged"
+	TaskDescriptionChangedCode = "TaskDescriptionChanged"
+	TaskPriorityChangedCode    = "TaskPriorityChanged"
+	TaskDueDateChangedCode     = "TaskDueDateChanged"
+	TaskCategoryChangedCode    = "TaskCategoryChanged"
+	TaskCompletedCode          = "TaskCompleted"
+	TaskCancelledCode          = "TaskCancelled"
+	TaskDueCode                = "TaskDue"
 )
 
 type TaskCreated struct {
@@ -29,16 +33,35 @@ type TaskCreated struct {
 	AssetID       *uuid.UUID `json:"asset_id"`
 }
 
-type TaskModified struct {
+type TaskTitleChanged struct {
+	UID   uuid.UUID `json:"uid"`
+	Title string    `json:"title"`
+}
+
+type TaskDescriptionChanged struct {
+	UID         uuid.UUID `json:"uid"`
+	Description string    `json:"description"`
+}
+
+type TaskPriorityChanged struct {
+	UID      uuid.UUID `json:"uid"`
+	Priority string    `json:"priority"`
+}
+
+type TaskDueDateChanged struct {
+	UID     uuid.UUID  `json:"uid"`
+	DueDate *time.Time `json:"due_date"`
+}
+
+type TaskCategoryChanged struct {
 	UID           uuid.UUID  `json:"uid"`
-	Title         string     `json:"title"`
-	Description   string     `json:"description"`
-	Priority      string     `json:"priority"`
-	DueDate       *time.Time `json:"due_date"`
-	Domain        string     `json:"domain"`
-	DomainDetails TaskDomain `json:"domain_details"`
 	Category      string     `json:"category"`
-	AssetID       *uuid.UUID `json:"asset_id"`
+	DomainDetails TaskDomain `json:"domain_details"`
+}
+
+type TaskAssetIDChanged struct {
+	UID     uuid.UUID  `json:"uid"`
+	AssetID *uuid.UUID `json:"asset_id"`
 }
 
 type TaskCompleted struct {
