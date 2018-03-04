@@ -40,6 +40,7 @@ func (d TaskDomainCrop) Code() string {
 
 type TaskCropMaterial struct {
 	MaterialID   uuid.UUID                 `json:"material_id"`
+	MaterialName string                    `json:"material_name"`
 	MaterialType assetsdomain.MaterialType `json:"material_type"`
 }
 
@@ -116,6 +117,7 @@ func CreateTaskDomainCrop(taskService TaskService, category string, cropID *uuid
 		materialResult := serviceResult.Result.(query.TaskMaterialQueryResult)
 		material = &TaskCropMaterial{
 			MaterialID:   materialResult.UID,
+			MaterialName: materialResult.Name,
 			MaterialType: materialResult.Type,
 		}
 	}
