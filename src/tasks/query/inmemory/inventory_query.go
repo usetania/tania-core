@@ -26,6 +26,7 @@ func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan q
 
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
+				ci.Type = val.Type
 				ci.Name = val.Name
 			}
 		}

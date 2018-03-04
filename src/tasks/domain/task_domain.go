@@ -1,6 +1,8 @@
 package domain
 
 import (
+	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -27,11 +29,23 @@ func (d TaskDomainArea) Code() string {
 
 // CROP
 type TaskDomainCrop struct {
-	InventoryUID *uuid.UUID
+	Material *TaskCropMaterial `json:"material"`
+	Area     *TaskCropArea     `json:"area"`
+	BatchID  string            `json:"batch_id"`
 }
 
 func (d TaskDomainCrop) Code() string {
 	return TaskDomainCropCode
+}
+
+type TaskCropMaterial struct {
+	MaterialID   uuid.UUID                 `json:"material_id"`
+	MaterialType assetsdomain.MaterialType `json:"material_type"`
+}
+
+type TaskCropArea struct {
+	AreaID   uuid.UUID `json:"area_id"`
+	AreaName string    `json:"area_name"`
 }
 
 // FINANCE
@@ -72,16 +86,60 @@ func CreateTaskDomainArea() (TaskDomainArea, error) {
 }
 
 // CreateTaskDomainCrop
-func CreateTaskDomainCrop(taskservice TaskService, inventoryuid *uuid.UUID) (TaskDomainCrop, error) {
+func CreateTaskDomainCrop(taskService TaskService, category string, cropID *uuid.UUID, materialID *uuid.UUID, areaID *uuid.UUID) (TaskDomainCrop, error) {
 
-	if inventoryuid != nil {
-		err := validateDomainAssetID(taskservice, inventoryuid, TaskDomainInventoryCode)
-		if err != nil {
-			return TaskDomainCrop{}, TaskError{TaskErrorInvalidInventoryIDCode}
+	err := validateTaskCategory(category)
+	if err != nil {
+		return TaskDomainCrop{}, err
+	}
+
+	material := (*TaskCropMaterial)(nil)
+	area := (*TaskCropArea)(nil)
+
+	serviceResult := taskService.FindCropByID(*cropID)
+
+	if serviceResult.Error != nil {
+		return TaskDomainCrop{}, serviceResult.Error
+	}
+
+	cropResult := serviceResult.Result.(query.TaskCropQueryResult)
+	batchID := cropResult.BatchID
+
+	if materialID != nil {
+
+		serviceResult := taskService.FindMaterialByID(*materialID)
+
+		if serviceResult.Error != nil {
+			return TaskDomainCrop{}, serviceResult.Error
+		}
+
+		materialResult := serviceResult.Result.(query.TaskMaterialQueryResult)
+		material = &TaskCropMaterial{
+			MaterialID:   materialResult.UID,
+			MaterialType: materialResult.Type,
 		}
 	}
 
-	return TaskDomainCrop{InventoryUID: inventoryuid}, nil
+	if areaID != nil {
+
+		serviceResult := taskService.FindAreaByID(*areaID)
+
+		if serviceResult.Error != nil {
+			return TaskDomainCrop{}, serviceResult.Error
+		}
+
+		areaResult := serviceResult.Result.(query.TaskAreaQueryResult)
+		area = &TaskCropArea{
+			AreaID:   areaResult.UID,
+			AreaName: areaResult.Name,
+		}
+	}
+
+	return TaskDomainCrop{
+		Material: material,
+		Area:     area,
+		BatchID:  batchID,
+	}, nil
 }
 
 // CreateTaskDomainFinance

@@ -54,8 +54,12 @@ type TaskDueDateChanged struct {
 }
 
 type TaskCategoryChanged struct {
+	UID      uuid.UUID `json:"uid"`
+	Category string    `json:"category"`
+}
+
+type TaskDetailsChanged struct {
 	UID           uuid.UUID  `json:"uid"`
-	Category      string     `json:"category"`
 	DomainDetails TaskDomain `json:"domain_details"`
 }
 

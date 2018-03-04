@@ -147,7 +147,7 @@ func (t *Task) ChangeTaskDueDate(taskService TaskService, duedate *time.Time) (*
 }
 
 func (t *Task) ChangeTaskPriority(taskService TaskService, priority string) (*Task, error) {
-	err := validateTaskDescription(priority)
+	err := validateTaskPriority(priority)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -162,8 +162,8 @@ func (t *Task) ChangeTaskPriority(taskService TaskService, priority string) (*Ta
 	return t, nil
 }
 
-func (t *Task) ChangeTaskCategory(taskService TaskService, category string, details TaskDomain) (*Task, error) {
-	err := validateTaskDescription(category)
+func (t *Task) ChangeTaskCategory(taskService TaskService, category string) (*Task, error) {
+	err := validateTaskCategory(category)
 	if err != nil {
 		return &Task{}, err
 	}
@@ -171,6 +171,18 @@ func (t *Task) ChangeTaskCategory(taskService TaskService, category string, deta
 	event := TaskCategoryChanged{
 		UID:      t.UID,
 		Category: category,
+	}
+
+	t.TrackChange(taskService, event)
+
+	return t, nil
+}
+
+func (t *Task) ChangeTaskDetails(taskService TaskService, details TaskDomain) (*Task, error) {
+
+	event := TaskDetailsChanged{
+		UID:           t.UID,
+		DomainDetails: details,
 	}
 
 	t.TrackChange(taskService, event)
@@ -244,6 +256,7 @@ func (state *Task) Transition(taskService TaskService, event interface{}) error 
 		state.Priority = e.Priority
 	case TaskCategoryChanged:
 		state.Category = e.Category
+	case TaskDetailsChanged:
 		state.DomainDetails = e.DomainDetails
 	case TaskCancelled:
 		state.CancelledDate = e.CancelledDate

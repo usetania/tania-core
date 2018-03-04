@@ -1,6 +1,7 @@
 package query
 
 import (
+	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -72,8 +73,9 @@ type TaskCropQueryResult struct {
 }
 
 type TaskMaterialQueryResult struct {
-	UID  uuid.UUID `json:"uid"`
-	Name string    `json:"name"`
+	UID  uuid.UUID                 `json:"uid"`
+	Name string                    `json:"name"`
+	Type assetsdomain.MaterialType `json:"type"`
 }
 
 type TaskReservoirQueryResult struct {

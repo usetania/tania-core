@@ -182,7 +182,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 
 	domaincode := c.FormValue("domain")
 
-	domaintask, err := s.CreateTaskDomainByCode(domaincode, c)
+	domaintask, err := s.CreateTaskDomainByCode(domaincode, asset_id_ptr, c)
 
 	if err != nil {
 		return Error(c, err)
@@ -215,7 +215,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (domain.TaskDomain, error) {
+func (s *TaskServer) CreateTaskDomainByCode(domaincode string, assetPtr *uuid.UUID, c echo.Context) (domain.TaskDomain, error) {
 	domainvalue := domaincode
 	if domainvalue == "" {
 		return nil, NewRequestValidationError(REQUIRED, "domain")
@@ -226,17 +226,29 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 		return domain.CreateTaskDomainArea()
 	case domain.TaskDomainCropCode:
 
-		inv_id := c.FormValue("inventory_id")
+		category := c.FormValue("category")
+		materialID := c.FormValue("material_id")
+		areaID := c.FormValue("area_id")
 
-		inventory_id_ptr := (*uuid.UUID)(nil)
-		if len(inv_id) != 0 {
-			inv_id, err := uuid.FromString(inv_id)
+		materialPtr := (*uuid.UUID)(nil)
+		if len(materialID) != 0 {
+			uid, err := uuid.FromString(materialID)
 			if err != nil {
-				return nil, Error(c, err)
+				return domain.TaskDomainCrop{}, err
 			}
-			inventory_id_ptr = &inv_id
+			materialPtr = &uid
 		}
-		return domain.CreateTaskDomainCrop(s.TaskService, inventory_id_ptr)
+
+		areaPtr := (*uuid.UUID)(nil)
+		if len(areaID) != 0 {
+			uid, err := uuid.FromString(areaID)
+			if err != nil {
+				return domain.TaskDomainCrop{}, err
+			}
+			areaPtr = &uid
+		}
+
+		return domain.CreateTaskDomainCrop(s.TaskService, category, assetPtr, materialPtr, areaPtr)
 	case domain.TaskDomainFinanceCode:
 		return domain.CreateTaskDomainFinance()
 	case domain.TaskDomainGeneralCode:
@@ -300,7 +312,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	updatedTask, err := s.createTaskModifiedEvent(s.TaskService, task, c)
+	updatedTask, err := s.updateTaskAttributes(s.TaskService, task, c)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -319,7 +331,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) createTaskModifiedEvent(taskService domain.TaskService, task *domain.Task, c echo.Context) (*domain.Task, error) {
+func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *domain.Task, c echo.Context) (*domain.Task, error) {
 
 	// Change Task Title
 	title := c.FormValue("title")
@@ -354,24 +366,16 @@ func (s *TaskServer) createTaskModifiedEvent(taskService domain.TaskService, tas
 	}
 
 	// Change Task Category & Domain Details
-	/*var category string
-	var details domain.TaskDomain
-	var err error
-	category = c.FormValue("category")
+	category := c.FormValue("category")
 	if len(category) != 0 {
-		inventory_id := c.FormValue("inventory_id")
-		if len(inventory_id) != 0 {
-			details, err = s.CreateTaskDomainByCode(task.Domain, c)
-			if err != nil {
-				return &domain.Task{}, Error(c, err)
-			}
-		} else {
-			details = task.DomainDetails
+		task.ChangeTaskCategory(s.TaskService, category)
+		details, err := s.CreateTaskDomainByCode(task.Domain, task.AssetID, c)
+
+		if err != nil {
+			return &domain.Task{}, Error(c, err)
 		}
-	} else {
-		category = task.Category
-		details = task.DomainDetails
-	}*/
+		task.ChangeTaskDetails(s.TaskService, details)
+	}
 
 	return task, nil
 }
@@ -403,7 +407,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	updatedTask, err := s.createTaskModifiedEvent(s.TaskService, task, c)
+	updatedTask, err := s.updateTaskAttributes(s.TaskService, task, c)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -458,7 +462,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	updatedTask, err := s.createTaskModifiedEvent(s.TaskService, task, c)
+	updatedTask, err := s.updateTaskAttributes(s.TaskService, task, c)
 	if err != nil {
 		return Error(c, err)
 	}
