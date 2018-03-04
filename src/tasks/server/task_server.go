@@ -454,7 +454,14 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 
 	// Get TaskEvent under Task UID
 	eventQueryResult := <-s.TaskEventQuery.FindAllByTaskID(uid)
-	events := eventQueryResult.Result.([]storage.TaskEvent)
+	if eventQueryResult.Error != nil {
+		return Error(c, eventQueryResult.Error)
+	}
+
+	events, ok := eventQueryResult.Result.([]storage.TaskEvent)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusBadRequest, "Internal server error"))
+	}
 
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)

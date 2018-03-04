@@ -2,10 +2,12 @@ package decoder
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/mitchellh/mapstructure"
+	uuid "github.com/satori/go.uuid"
 )
 
 type TaskEventWrapper InterfaceWrapper
@@ -35,6 +37,18 @@ func (w *TaskEventWrapper) UnmarshalJSON(b []byte) error {
 			return err
 		}
 
+		if v, ok := mapped["domain_details"]; ok {
+			domainCode, ok := mapped["domain"].(string)
+			if !ok {
+				return errors.New("Error type assertion")
+			}
+
+			e.DomainDetails, err = makeDomainDetails(v, domainCode)
+			if err != nil {
+				return err
+			}
+		}
+
 		w.Data = e
 
 	case "TaskModified":
@@ -43,6 +57,18 @@ func (w *TaskEventWrapper) UnmarshalJSON(b []byte) error {
 		_, err := Decode(f, &mapped, &e)
 		if err != nil {
 			return err
+		}
+
+		if v, ok := mapped["domain_details"]; ok {
+			domainCode, ok := mapped["domain"].(string)
+			if !ok {
+				return errors.New("Error type assertion")
+			}
+
+			e.DomainDetails, err = makeDomainDetails(v, domainCode)
+			if err != nil {
+				return err
+			}
 		}
 
 		w.Data = e
@@ -80,4 +106,38 @@ func (w *TaskEventWrapper) UnmarshalJSON(b []byte) error {
 	}
 
 	return nil
+}
+
+func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, error) {
+	mapped := v.(map[string]interface{})
+
+	var domainDetails domain.TaskDomain
+	switch domainCode {
+	case domain.TaskDomainAreaCode:
+		domainDetails = domain.TaskDomainArea{}
+	case domain.TaskDomainCropCode:
+		if v2, ok2 := mapped["InventoryUID"]; ok2 {
+			val, ok := v2.(string)
+			if !ok {
+				return domain.TaskDomainCrop{}, nil
+			}
+
+			uid, err := uuid.FromString(val)
+			if err != nil {
+				return domain.TaskDomainCrop{}, err
+			}
+
+			domainDetails = domain.TaskDomainCrop{InventoryUID: &uid}
+		}
+	case domain.TaskDomainFinanceCode:
+		domainDetails = domain.TaskDomainFinance{}
+	case domain.TaskDomainGeneralCode:
+		domainDetails = domain.TaskDomainGeneral{}
+	case domain.TaskDomainInventoryCode:
+		domainDetails = domain.TaskDomainInventory{}
+	case domain.TaskDomainReservoirCode:
+		domainDetails = domain.TaskDomainReservoir{}
+	}
+
+	return domainDetails, nil
 }
