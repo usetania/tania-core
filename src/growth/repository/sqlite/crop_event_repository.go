@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/growth/decoder"
 	"github.com/Tanibox/tania-server/src/growth/repository"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	uuid "github.com/satori/go.uuid"
@@ -30,9 +31,9 @@ func (f *CropEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 
 			latestVersion++
 
-			e, err := json.Marshal(repository.EventWrapper{
-				EventName: structhelper.GetName(v),
-				EventData: v,
+			e, err := json.Marshal(decoder.InterfaceWrapper{
+				Name: structhelper.GetName(v),
+				Data: v,
 			})
 
 			_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), e)

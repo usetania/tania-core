@@ -9,6 +9,13 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
+// InterfaceWrapper is used to wrap an interface with its struct name,
+// so it will be easier to unmarshal later
+type InterfaceWrapper struct {
+	Name string
+	Data interface{}
+}
+
 func Decode(f mapstructure.DecodeHookFunc, data *map[string]interface{}, e interface{}) (interface{}, error) {
 	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		DecodeHook:       f,

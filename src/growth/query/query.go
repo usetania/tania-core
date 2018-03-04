@@ -118,13 +118,3 @@ type CountTotalBatchQueryResult struct {
 	VarietyName string `json:"variety_name"`
 	TotalBatch  int    `json:"total_batch"`
 }
-
-type EventWrapper struct {
-	EventName string
-	EventData interface{}
-}
-
-type ActivityTypeWrapper struct {
-	ActivityName string
-	ActivityData interface{}
-}

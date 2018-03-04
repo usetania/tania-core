@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/Tanibox/tania-server/src/growth/decoder"
 	"github.com/Tanibox/tania-server/src/growth/repository"
 	"github.com/Tanibox/tania-server/src/growth/storage"
 )
@@ -21,9 +22,9 @@ func (f *CropActivityRepositorySqlite) Save(cropActivity *storage.CropActivity, 
 	result := make(chan error)
 
 	go func() {
-		at, err := json.Marshal(repository.ActivityTypeWrapper{
-			ActivityName: cropActivity.ActivityType.Code(),
-			ActivityData: cropActivity.ActivityType,
+		at, err := json.Marshal(decoder.InterfaceWrapper{
+			Name: cropActivity.ActivityType.Code(),
+			Data: cropActivity.ActivityType,
 		})
 
 		if isUpdate {
