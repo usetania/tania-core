@@ -117,9 +117,9 @@ const actions = {
     NProgress.start()
     return new Promise((resolve, reject) => {
       let cropId = payload.obj_uid
-      const formData = new FormData()
-      formData.set('photo', payload.photo)
-      formData.set('description', payload.description)
+      var formData = new FormData()
+      formData.append('photo', payload.photo)
+      formData.append('description', payload.description)
       FarmApi
         .ApiPhotoCrop(cropId, formData, ({ data }) => {
           resolve(payload)

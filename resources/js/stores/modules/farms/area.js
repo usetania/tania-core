@@ -22,15 +22,15 @@ const actions = {
 
     NProgress.start()
     return new Promise((resolve, reject) => {
-      const formData = new FormData()
-      formData.set('name', payload.name)
-      formData.set('size', payload.size)
-      formData.set('size_unit', payload.size_unit)
-      formData.set('type', payload.type)
-      formData.set('location', payload.location)
-      formData.set('reservoir_id', payload.reservoir_id)
-      formData.set('photo', payload.photo)
-      formData.set('farm_id', farm.uid)
+      var formData = new FormData()
+      formData.append('name', payload.name)
+      formData.append('size', payload.size)
+      formData.append('size_unit', payload.size_unit)
+      formData.append('type', payload.type)
+      formData.append('location', payload.location)
+      formData.append('reservoir_id', payload.reservoir_id)
+      formData.append('photo', payload.photo)
+      formData.append('farm_id', farm.uid)
       if (payload.uid != '') {
         FarmApi.ApiUpdateArea(payload.uid, formData, ({ data }) => {
           commit(types.UPDATE_AREA, data.data)

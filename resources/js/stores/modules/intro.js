@@ -76,14 +76,14 @@ const actions = {
       if (state.area.uid !== '') {
         resolve(state.area)
       } else {
-        const formData = new FormData()
-        formData.set('name', state.area.name)
-        formData.set('size', state.area.size)
-        formData.set('size_unit', state.area.size_unit)
-        formData.set('type', state.area.type)
-        formData.set('location', state.area.location)
-        formData.set('reservoir_id', state.area.reservoir_id)
-        formData.set('photo', state.area.photo)
+        var formData = new FormData()
+        formData.append('name', state.area.name)
+        formData.append('size', state.area.size)
+        formData.append('size_unit', state.area.size_unit)
+        formData.append('type', state.area.type)
+        formData.append('location', state.area.location)
+        formData.append('reservoir_id', state.area.reservoir_id)
+        formData.append('photo', state.area.photo)
 
         Api.ApiCreateArea(state.farm.uid, formData, ({ data }) => {
           let area = {
