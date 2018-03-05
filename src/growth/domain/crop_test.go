@@ -222,14 +222,14 @@ func TestCropHarvestArchiveStatus(t *testing.T) {
 	crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 2000, GetProducedUnit(Gr), "Notes")
 
 	// Then
-	assert.Equal(t, crop.Status, CropActive)
+	assert.Equal(t, crop.Status.Code, CropActive)
 
 	// When
 	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 5)
 	crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 3000, GetProducedUnit(Gr), "Notes")
 
 	// Then
-	assert.Equal(t, 0, crop.Status, CropArchived)
+	assert.Equal(t, crop.Status.Code, CropArchived)
 }
 
 func TestCropDumpArchiveStatus(t *testing.T) {
@@ -268,11 +268,11 @@ func TestCropDumpArchiveStatus(t *testing.T) {
 	crop.Dump(cropServiceMock, areaBUID, 15, "Notes")
 
 	// Then
-	assert.Equal(t, crop.Status, CropActive)
+	assert.Equal(t, crop.Status.Code, CropActive)
 
 	// When
 	crop.Dump(cropServiceMock, areaAUID, 5, "Notes")
 
 	// Then
-	assert.Equal(t, 0, crop.Status, CropArchived)
+	assert.Equal(t, crop.Status.Code, CropArchived)
 }
