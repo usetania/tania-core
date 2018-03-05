@@ -904,19 +904,31 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	// if its all empty then crop status is marked to archive
 	initialAreaEmpty := false
 	if dumpedAreaCode == "INITIAL_AREA" {
+		ia := dumpedArea.(InitialArea)
+
+		if ia.CurrentQuantity == 0 {
+			initialAreaEmpty = true
+		}
+	} else if c.InitialArea.CurrentQuantity == 0 {
 		initialAreaEmpty = true
 	}
 
 	movedAreaEmpty := true
 	if dumpedAreaCode == "MOVED_AREA" {
 		for _, v := range c.MovedArea {
-			da := dumpedArea.(MovedArea)
+			ha := dumpedArea.(MovedArea)
 
-			if v.AreaUID == da.AreaUID {
-				da.CurrentQuantity = 0
+			if v.AreaUID == ha.AreaUID {
+				ha.CurrentQuantity = 0
 			}
 
-			if da.CurrentQuantity != 0 {
+			if ha.CurrentQuantity != 0 {
+				movedAreaEmpty = false
+			}
+		}
+	} else {
+		for _, v := range c.MovedArea {
+			if v.CurrentQuantity != 0 {
 				movedAreaEmpty = false
 			}
 		}
