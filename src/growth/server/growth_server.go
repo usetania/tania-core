@@ -874,10 +874,27 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 }
 
 func (s *GrowthServer) FindAllCropArchives(c echo.Context) error {
-	data := make(map[string][]storage.CropRead)
-
 	// Params //
 	farmID := c.Param("id")
+	page := c.QueryParam("page")
+	limit := c.QueryParam("limit")
+
+	pageInt := paginationhelper.DefaultPage
+	limitInt := paginationhelper.DefaultLimit
+	var err error
+
+	if page != "" {
+		pageInt, err = strconv.Atoi(page)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+	if limit != "" {
+		limitInt, err = strconv.Atoi(limit)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
 
 	// Validate //
 	farmUID, err := uuid.FromString(farmID)
@@ -896,7 +913,7 @@ func (s *GrowthServer) FindAllCropArchives(c echo.Context) error {
 	}
 
 	// Process //
-	resultQuery := <-s.CropReadQuery.FindAllCropsArchives(farm.UID)
+	resultQuery := <-s.CropReadQuery.FindAllCropsArchives(farm.UID, pageInt, limitInt)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
@@ -906,10 +923,25 @@ func (s *GrowthServer) FindAllCropArchives(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = []storage.CropRead{}
-	for _, v := range crops {
-		data["data"] = append(data["data"], v)
+	resultQuery = <-s.CropReadQuery.CountAllArchivedCropsByFarm(farm.UID)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
 	}
+
+	total, ok := resultQuery.Result.(int)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]interface{})
+
+	temp := []storage.CropRead{}
+	for _, v := range crops {
+		temp = append(temp, v)
+	}
+	data["data"] = temp
+	data["total"] = total
+	data["page"] = pageInt
 
 	return c.JSON(http.StatusOK, data)
 }

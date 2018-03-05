@@ -122,7 +122,7 @@ func (s CropReadQueryInMemory) CountAllCropsByFarm(farmUID uuid.UUID) <-chan que
 	return result
 }
 
-func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -163,6 +163,54 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID) <-chan qu
 		}
 
 		result <- query.QueryResult{Result: archives}
+
+		close(result)
+	}()
+
+	return result
+}
+
+func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		s.Storage.Lock.RLock()
+		defer s.Storage.Lock.RUnlock()
+
+		total := 0
+		for _, val := range s.Storage.CropReadMap {
+			if val.FarmUID == farmUID {
+
+				// A crop's current quantity which have zero value should go to archives
+				initialEmpty := true
+				allMovedEmpty := []bool{}
+
+				if val.InitialArea.CurrentQuantity > 0 {
+					initialEmpty = false
+				}
+
+				for _, v := range val.MovedArea {
+					if v.CurrentQuantity > 0 {
+						allMovedEmpty = append(allMovedEmpty, false)
+					}
+				}
+
+				if initialEmpty {
+					movedEmpty := true
+					for _, v := range allMovedEmpty {
+						if !v {
+							movedEmpty = false
+						}
+					}
+
+					if movedEmpty {
+						total++
+					}
+				}
+			}
+		}
+
+		result <- query.QueryResult{Result: total}
 
 		close(result)
 	}()

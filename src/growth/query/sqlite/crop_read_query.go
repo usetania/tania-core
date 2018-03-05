@@ -284,14 +284,20 @@ func (s CropReadQuerySqlite) CountAllCropsByFarm(farmUID uuid.UUID) <-chan query
 	return result
 }
 
-func (s CropReadQuerySqlite) FindAllCropsArchives(farmUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQuerySqlite) FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		cropReads := []storage.CropRead{}
 
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
-		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID)
+
+		offset := paginationhelper.CalculatePageToOffset(page, limit)
+
+		rows, err := s.DB.Query(`SELECT UID FROM CROP_READ
+			WHERE FARM_UID = ? AND STATUS = ? ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`,
+			farmUID, domain.CropArchived, limit, offset)
+
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -320,22 +326,6 @@ func (s CropReadQuerySqlite) FindAllCropsArchives(farmUID uuid.UUID) <-chan quer
 				result <- query.QueryResult{Error: err}
 			}
 
-			// Only a crop's current quantity which have zero value should go to archives
-			if cropRead.InitialArea.CurrentQuantity != 0 {
-				continue
-			}
-
-			isEmpty := true
-			for _, v := range cropRead.MovedArea {
-				if v.CurrentQuantity != 0 {
-					isEmpty = false
-				}
-			}
-
-			if !isEmpty {
-				continue
-			}
-
 			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -360,6 +350,25 @@ func (s CropReadQuerySqlite) FindAllCropsArchives(farmUID uuid.UUID) <-chan quer
 		}
 
 		result <- query.QueryResult{Result: cropReads}
+		close(result)
+	}()
+
+	return result
+}
+
+func (s CropReadQuerySqlite) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		total := 0
+
+		err := s.DB.QueryRow(`SELECT COUNT(UID) FROM CROP_READ
+			WHERE FARM_UID = ? AND STATUS = ?`, farmUID, domain.CropArchived).Scan(&total)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		result <- query.QueryResult{Result: total}
 		close(result)
 	}()
 
