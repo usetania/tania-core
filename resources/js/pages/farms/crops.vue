@@ -43,12 +43,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      crops: 'getAllCrops',
       cropInformation: 'getInformation'
     })
   },
   data () {
     return {
+      crops: {},
       data: {},
       showModal: false,
       status: "BATCH"
@@ -68,14 +68,17 @@ export default {
         this.data = {}
       }
     },
+    getCrops () {
+      this.fetchCrops()
+        .then(({ data }) =>  {
+          this.crops = data
+        })
+        .catch(error => console.log(error))
+    },
     statusSelected (status) {
       this.status = status
       if (status == 'BATCH') {
-        this.fetchCrops()
-          .then(({ data }) =>  {
-            this.crops = data
-          })
-          .catch(error => console.log(error))
+        this.getCrops()
       } else {
         this.fetchArchivedCrops()
           .then(({ data }) =>  {
@@ -89,7 +92,7 @@ export default {
     }
   },
   mounted () {
-    this.fetchCrops()
+    this.getCrops()
     this.getInformation()
   },
 }
