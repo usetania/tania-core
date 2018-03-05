@@ -9,7 +9,7 @@
       h1.m-n.font-thin.h3.text-black {{ reservoir.name }}
     .wrapper
       .row.basicinfo
-        .col-md-4
+        .col-md-6
           .panel
             .panel-heading
               span.h4.text-lt Basic Info
@@ -30,19 +30,7 @@
                 .col-md-6
                   small.text-muted Created On
                   .h4.text-lt {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-        .col-md-8
-          .panel
-            .panel-heading
-              span.h4.text-lt Watering Schedule
-            .panel-body
-              span.h4.text-lt Graph here
-      .row
-        .task-list.col-sm-6.col-xs-12
-          .panel
-            .panel-heading
-              span.h4.text-lt Tasks
-            TasksList(:domain="'RESERVOIR'" :asset_id="reservoir.uid" :reload="reload")
-        .col-sm-6.col-xs-12
+        .col-md-6
           .panel
             .panel-heading
               span.h4.text-lt Notes
@@ -62,6 +50,12 @@
                 .col-sm-3
                   button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(reservoirNote.uid)")
                     i.fa.fa-trash
+      .row
+        .task-list.col-xs-12
+          .panel
+            .panel-heading
+              span.h4.text-lt Tasks
+            TasksList(:domain="'RESERVOIR'" :asset_id="reservoir.uid" :reload="reload")
 </template>
 
 <script>
