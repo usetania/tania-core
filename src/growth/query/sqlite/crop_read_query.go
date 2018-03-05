@@ -266,6 +266,24 @@ func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, page, limit i
 	return result
 }
 
+func (s CropReadQuerySqlite) CountAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		total := 0
+
+		err := s.DB.QueryRow(`SELECT COUNT(UID) FROM CROP_READ WHERE FARM_UID = ?`, farmUID).Scan(&total)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		result <- query.QueryResult{Result: total}
+		close(result)
+	}()
+
+	return result
+}
+
 func (s CropReadQuerySqlite) FindAllCropsArchives(farmUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 

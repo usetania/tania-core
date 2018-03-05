@@ -800,7 +800,7 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 }
 
 func (s *GrowthServer) FindAllCrops(c echo.Context) error {
-	data := make(map[string][]storage.CropRead)
+	data := make(map[string]interface{})
 
 	// Params //
 	farmID := c.Param("id")
@@ -851,10 +851,24 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	data["data"] = []storage.CropRead{}
-	for _, v := range crops {
-		data["data"] = append(data["data"], v)
+	resultQuery = <-s.CropReadQuery.CountAllCropsByFarm(farm.UID)
+	if resultQuery.Error != nil {
+		return Error(c, resultQuery.Error)
 	}
+
+	total, ok := resultQuery.Result.(int)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	temp := []storage.CropRead{}
+	for _, v := range crops {
+		temp = append(temp, v)
+	}
+
+	data["data"] = temp
+	data["total_rows"] = total
+	data["page"] = page
 
 	return c.JSON(http.StatusOK, data)
 }
