@@ -9,6 +9,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -35,7 +36,7 @@ type materialReadResult struct {
 	CreatedDate    string
 }
 
-func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string) <-chan query.QueryResult {
+func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -68,7 +69,10 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 			}
 		}
 
-		sql += " ORDER BY CREATED_DATE DESC"
+		offset := paginationhelper.CalculatePageToOffset(page, limit)
+
+		sql += " ORDER BY CREATED_DATE DESC LIMIT ? OFFSET ?"
+		params = append(params, limit, offset)
 
 		rows, err := q.DB.Query(sql, params...)
 		if err != nil {
@@ -186,6 +190,50 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 		}
 
 		result <- query.QueryResult{Result: materialReads}
+		close(result)
+	}()
+
+	return result
+}
+
+func (q MaterialReadQuerySqlite) CountAll(materialType, materialTypeDetail string) <-chan query.QueryResult {
+	result := make(chan query.QueryResult)
+
+	go func() {
+		total := 0
+		var params []interface{}
+
+		sql := "SELECT COUNT(UID) FROM MATERIAL_READ WHERE 1 = 1"
+
+		if materialType != "" {
+			t := strings.Split(materialType, ",")
+
+			sql += " AND TYPE = ?"
+			params = append(params, t[0])
+
+			for _, v := range t[1:] {
+				sql += " OR TYPE = ?"
+				params = append(params, v)
+			}
+		}
+		if materialTypeDetail != "" {
+			t := strings.Split(materialTypeDetail, ",")
+
+			sql += " AND TYPE_DATA = ?"
+			params = append(params, t[0])
+
+			for _, v := range t[1:] {
+				sql += " OR TYPE_DATA = ?"
+				params = append(params, v)
+			}
+		}
+
+		err := q.DB.QueryRow(sql, params...).Scan(&total)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
+
+		result <- query.QueryResult{Result: total}
 		close(result)
 	}()
 

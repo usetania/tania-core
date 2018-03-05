@@ -46,7 +46,8 @@ type MaterialEventQuery interface {
 }
 
 type MaterialReadQuery interface {
-	FindAll(materialType, materialTypeDetail string) <-chan QueryResult
+	FindAll(materialType, materialTypeDetail string, page, limit int) <-chan QueryResult
+	CountAll(materialType, materialTypeDetail string) <-chan QueryResult
 	FindByID(materialUID uuid.UUID) <-chan QueryResult
 }
 

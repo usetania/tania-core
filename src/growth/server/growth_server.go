@@ -868,7 +868,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 
 	data["data"] = temp
 	data["total_rows"] = total
-	data["page"] = page
+	data["page"] = pageInt
 
 	return c.JSON(http.StatusOK, data)
 }

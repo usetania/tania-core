@@ -17,6 +17,7 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
+	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/asaskevich/EventBus"
@@ -1209,8 +1210,27 @@ func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 func (s *FarmServer) GetMaterials(c echo.Context) error {
 	materialType := c.QueryParam("type")
 	materialTypeDetail := c.QueryParam("type_detail")
+	page := c.QueryParam("page")
+	limit := c.QueryParam("limit")
 
-	queryResult := <-s.MaterialReadQuery.FindAll(materialType, materialTypeDetail)
+	pageInt := paginationhelper.DefaultPage
+	limitInt := paginationhelper.DefaultLimit
+	var err error
+
+	if page != "" {
+		pageInt, err = strconv.Atoi(page)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+	if limit != "" {
+		limitInt, err = strconv.Atoi(limit)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
+	queryResult := <-s.MaterialReadQuery.FindAll(materialType, materialTypeDetail, pageInt, limitInt)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}
@@ -1225,8 +1245,20 @@ func (s *FarmServer) GetMaterials(c echo.Context) error {
 		materials = append(materials, MapToMaterialFromRead(v))
 	}
 
-	data := make(map[string][]Material)
+	queryResult = <-s.MaterialReadQuery.CountAll(materialType, materialTypeDetail)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	total, ok := queryResult.Result.(int)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string]interface{})
 	data["data"] = materials
+	data["total"] = total
+	data["page"] = pageInt
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -1568,7 +1600,8 @@ func (s *FarmServer) GetAvailableMaterialPlantType(c echo.Context) error {
 	params := domain.MaterialTypeSeedCode + "," + domain.MaterialTypePlantCode
 
 	// Process //
-	result := <-s.MaterialReadQuery.FindAll(params, "")
+	// TODO: Refactor this query to only get material by plant type
+	result := <-s.MaterialReadQuery.FindAll(params, "", 0, 100)
 
 	materials, ok := result.Result.([]storage.MaterialRead)
 	if !ok {
