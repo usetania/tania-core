@@ -23,7 +23,7 @@ type CropEventQuery interface {
 type CropReadQuery interface {
 	FindByID(uid uuid.UUID) <-chan QueryResult
 	FindByBatchID(batchID string) <-chan QueryResult
-	FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryResult
+	FindAllCropsByFarm(farmUID uuid.UUID, page, limit int) <-chan QueryResult
 	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
 	FindAllCropsArchives(farmUID uuid.UUID) <-chan QueryResult
 	FindCropsInformation(farmUID uuid.UUID) <-chan QueryResult

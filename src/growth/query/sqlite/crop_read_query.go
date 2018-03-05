@@ -7,6 +7,7 @@ import (
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -177,14 +178,20 @@ func (s CropReadQuerySqlite) FindByBatchID(batchID string) <-chan query.QueryRes
 	return result
 }
 
-func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
+		// TODO: REFACTOR TO REDUCE QUERY CALLS
+
 		cropReads := []storage.CropRead{}
 
-		// TODO: REFACTOR TO REDUCE QUERY CALLS
-		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID)
+		offset := paginationhelper.CalculatePageToOffset(page, limit)
+
+		rows, err := s.DB.Query(`SELECT UID FROM CROP_READ
+			WHERE FARM_UID = ? ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`,
+			farmUID, limit, offset)
+
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}

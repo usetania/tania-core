@@ -12,6 +12,7 @@ import (
 	querySqlite "github.com/Tanibox/tania-server/src/growth/query/sqlite"
 	repoSqlite "github.com/Tanibox/tania-server/src/growth/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
+	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 
@@ -804,6 +805,9 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	// Params //
 	farmID := c.Param("id")
 
+	page := c.QueryParam("page")
+	limit := c.QueryParam("limit")
+
 	// Validate //
 	farmUID, err := uuid.FromString(farmID)
 	if err != nil {
@@ -820,8 +824,24 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
+	pageInt := paginationhelper.DefaultPage
+	limitInt := paginationhelper.DefaultLimit
+
+	if page != "" {
+		pageInt, err = strconv.Atoi(page)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+	if limit != "" {
+		limitInt, err = strconv.Atoi(limit)
+		if err != nil {
+			return Error(c, err)
+		}
+	}
+
 	// Process //
-	resultQuery := <-s.CropReadQuery.FindAllCropsByFarm(farm.UID)
+	resultQuery := <-s.CropReadQuery.FindAllCropsByFarm(farm.UID, pageInt, limitInt)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
