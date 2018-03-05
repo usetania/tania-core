@@ -16,7 +16,7 @@
       small.text-muted {{ getType(area.type).label }}
     .wrapper-md
       .row
-        .col-md-4.col-xs-12
+        .col-md-6.col-xs-12
           .panel.basicinfo
             .panel-heading
               span.h4.text-lt Basic info
@@ -39,30 +39,7 @@
               .list-group-item
                 span.col-sm-7.text-muted.point Reservoir
                 span {{ area.reservoir.name }}
-        .col-md-8
-          .panel
-            .panel-heading
-              span.pull-right
-                i.fa.fa-cog
-              span.h4.text-lt Current status
-            .panel-body
-      //- Ending row
-
-      //- Starting row
-      .panel
-        .panel-heading
-          span.h4.text-lt Current status
-        FarmCropsListing(:crops="areaCrops" :domain="'AREA'")
-      //- Ending row
-
-      //- Starting row
-      .row
-        .task-list.col-sm-6.col-xs-12
-          .panel
-            .panel-heading
-              span.h4.text-lt Tasks
-            TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
-        .col-sm-6.col-xs-12
+        .col-md-6.col-xs-12
           .panel
             .panel-heading
               span.h4.text-lt Notes
@@ -82,6 +59,22 @@
                 .col-sm-3
                   button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(areaNote.uid)")
                     i.fas.fa-trash
+      //- Ending row
+
+      //- Starting row
+      .panel
+        .panel-heading
+          span.h4.text-lt Current status
+        FarmCropsListing(:crops="areaCrops" :domain="'AREA'")
+      //- Ending row
+
+      //- Starting row
+      .row
+        .task-list.col-xs-12
+          .panel
+            .panel-heading
+              span.h4.text-lt Tasks
+            TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
 </template>
 
 <script>
