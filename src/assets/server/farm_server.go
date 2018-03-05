@@ -1207,7 +1207,10 @@ func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 }
 
 func (s *FarmServer) GetMaterials(c echo.Context) error {
-	queryResult := <-s.MaterialReadQuery.FindAll()
+	materialType := c.QueryParam("type")
+	materialTypeDetail := c.QueryParam("type_detail")
+
+	queryResult := <-s.MaterialReadQuery.FindAll(materialType, materialTypeDetail)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
 	}
@@ -1562,8 +1565,10 @@ func (s *FarmServer) GetMaterialByID(c echo.Context) error {
 func (s *FarmServer) GetAvailableMaterialPlantType(c echo.Context) error {
 	data := make(map[string][]AvailableMaterialPlantType)
 
+	params := domain.MaterialTypeSeedCode + "," + domain.MaterialTypePlantCode
+
 	// Process //
-	result := <-s.MaterialReadQuery.FindAll()
+	result := <-s.MaterialReadQuery.FindAll(params, "")
 
 	materials, ok := result.Result.([]storage.MaterialRead)
 	if !ok {

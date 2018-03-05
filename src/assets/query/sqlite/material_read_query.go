@@ -3,6 +3,7 @@ package sqlite
 import (
 	"database/sql"
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -34,14 +35,42 @@ type materialReadResult struct {
 	CreatedDate    string
 }
 
-func (q MaterialReadQuerySqlite) FindAll() <-chan query.QueryResult {
+func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		materialReads := []storage.MaterialRead{}
 		rowsData := materialReadResult{}
+		var params []interface{}
 
-		rows, err := q.DB.Query(`SELECT * FROM MATERIAL_READ ORDER BY CREATED_DATE DESC`)
+		sql := "SELECT * FROM MATERIAL_READ WHERE 1 = 1"
+
+		if materialType != "" {
+			t := strings.Split(materialType, ",")
+
+			sql += " AND TYPE = ?"
+			params = append(params, t[0])
+
+			for _, v := range t[1:] {
+				sql += " OR TYPE = ?"
+				params = append(params, v)
+			}
+		}
+		if materialTypeDetail != "" {
+			t := strings.Split(materialTypeDetail, ",")
+
+			sql += " AND TYPE_DATA = ?"
+			params = append(params, t[0])
+
+			for _, v := range t[1:] {
+				sql += " OR TYPE_DATA = ?"
+				params = append(params, v)
+			}
+		}
+
+		sql += " ORDER BY CREATED_DATE DESC"
+
+		rows, err := q.DB.Query(sql, params...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
