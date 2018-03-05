@@ -34,7 +34,6 @@
               slot(name="item")
                 ul.nav.nav-sub.dk
                   li <router-link :to="{ name: 'InventoriesMaterials'}"><span>Material</span></router-link>
-                  li <a><span>Tools</span></a>
             li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
