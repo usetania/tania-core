@@ -56,8 +56,8 @@ type ReservoirFarm struct {
 type ReservoirNote domain.ReservoirNote
 
 type AreaInstalled struct {
-	UID  uuid.UUID
-	Name string
+	UID  uuid.UUID `json:"uid"`
+	Name string    `json:"name"`
 }
 
 type AreaEvent struct {
