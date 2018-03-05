@@ -19,6 +19,9 @@ The future of Tania farm management system is here.
 - Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
 - Call `npm install` to install Vue dependencies
 - Call `npm run dev` to build the Vue
+- Setup SQLite:
+    - Edit `SqlitePath` in `conf.json` to your sqlite DB file path (ex: /Users/user/Programs/sqlite/tania.db)
+    - Create empty file with the exact filename and path that match the `SqlitePath` config.
 - Run the Go server using `go run main.go` and open it in the `http://localhost:8080`
 
 ## Test
