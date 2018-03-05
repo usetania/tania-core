@@ -134,9 +134,6 @@ func TestHarvestCropBatch(t *testing.T) {
 	assert.Equal(t, 15, crop.HarvestedStorage[0].Quantity)
 	assert.Equal(t, float32(12000), crop.HarvestedStorage[0].ProducedGramQuantity)
 
-	// When
-	// crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 0, )
-
 }
 
 func TestWaterCrop(t *testing.T) {
@@ -187,4 +184,95 @@ func TestWaterCrop(t *testing.T) {
 	assert.Nil(t, errWater2)
 	assert.Equal(t, wDate, crop.InitialArea.LastWatered)
 	assert.Equal(t, wDate, crop.MovedArea[0].LastWatered)
+}
+
+func TestCropHarvestArchiveStatus(t *testing.T) {
+	// Given
+	cropServiceMock := new(CropServiceMock)
+
+	areaAUID, _ := uuid.NewV4()
+	areaBUID, _ := uuid.NewV4()
+	areaAServiceResult := ServiceResult{
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
+	}
+	areaBServiceResult := ServiceResult{
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
+	}
+	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
+	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
+
+	inventoryUID, _ := uuid.NewV4()
+	inventoryServiceResult := ServiceResult{
+		Result: query.CropMaterialQueryResult{
+			UID:  inventoryUID,
+			Name: "Tomato Super One",
+		},
+	}
+	cropServiceMock.On("FindMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(ServiceResult{})
+
+	containerType := Tray{Cell: 15}
+
+	// When
+	crop, _ := CreateCropBatch(cropServiceMock, areaAUID, CropTypeSeeding, inventoryUID, 20, containerType)
+	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
+	crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 2000, GetProducedUnit(Gr), "Notes")
+
+	// Then
+	assert.Equal(t, crop.Status, CropActive)
+
+	// When
+	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 5)
+	crop.Harvest(cropServiceMock, areaBUID, HarvestTypeAll, 3000, GetProducedUnit(Gr), "Notes")
+
+	// Then
+	assert.Equal(t, 0, crop.Status, CropArchived)
+}
+
+func TestCropDumpArchiveStatus(t *testing.T) {
+	// Given
+	cropServiceMock := new(CropServiceMock)
+
+	areaAUID, _ := uuid.NewV4()
+	areaBUID, _ := uuid.NewV4()
+	areaAServiceResult := ServiceResult{
+		Result: query.CropAreaQueryResult{UID: areaAUID, Type: "SEEDING"},
+	}
+	areaBServiceResult := ServiceResult{
+		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
+	}
+	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
+	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
+
+	inventoryUID, _ := uuid.NewV4()
+	inventoryServiceResult := ServiceResult{
+		Result: query.CropMaterialQueryResult{
+			UID:  inventoryUID,
+			Name: "Tomato Super One",
+		},
+	}
+	cropServiceMock.On("FindMaterialByID", inventoryUID).Return(inventoryServiceResult)
+
+	date := strings.ToLower(time.Now().Format("2Jan"))
+	batchID := fmt.Sprintf("%s%s", "tom-sup-one-", date)
+	cropServiceMock.On("FindByBatchID", batchID).Return(ServiceResult{})
+
+	containerType := Tray{Cell: 15}
+
+	// When
+	crop, _ := CreateCropBatch(cropServiceMock, areaAUID, CropTypeSeeding, inventoryUID, 20, containerType)
+	crop.MoveToArea(cropServiceMock, areaAUID, areaBUID, 15)
+	crop.Dump(cropServiceMock, areaBUID, 15, "Notes")
+
+	// Then
+	assert.Equal(t, crop.Status, CropActive)
+
+	// When
+	crop.Dump(cropServiceMock, areaAUID, 5, "Notes")
+
+	// Then
+	assert.Equal(t, 0, crop.Status, CropArchived)
 }
