@@ -157,7 +157,7 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 // SaveTask is a TaskServer's handler to save new Task
 func (s *TaskServer) SaveTask(c echo.Context) error {
 
-	data := make(map[string]domain.Task)
+	data := make(map[string]storage.TaskRead)
 
 	form_date := c.FormValue("due_date")
 	due_ptr := (*time.Time)(nil)
@@ -210,7 +210,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(task)
 
-	data["data"] = *task
+	data["data"] = *MapTaskToTaskRead(task)
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -287,7 +287,7 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 
 func (s *TaskServer) UpdateTask(c echo.Context) error {
 
-	data := make(map[string]domain.Task)
+	data := make(map[string]storage.TaskRead)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -326,7 +326,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(updatedTask)
 
-	data["data"] = *updatedTask
+	data["data"] = *MapTaskToTaskRead(updatedTask)
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -382,7 +382,7 @@ func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *
 
 func (s *TaskServer) CancelTask(c echo.Context) error {
 
-	data := make(map[string]domain.Task)
+	data := make(map[string]storage.TaskRead)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -423,14 +423,14 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(updatedTask)
 
-	data["data"] = *updatedTask
+	data["data"] = *MapTaskToTaskRead(updatedTask)
 
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s *TaskServer) CompleteTask(c echo.Context) error {
 
-	data := make(map[string]domain.Task)
+	data := make(map[string]storage.TaskRead)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -478,14 +478,14 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(updatedTask)
 
-	data["data"] = *updatedTask
+	data["data"] = *MapTaskToTaskRead(updatedTask)
 
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 
-	data := make(map[string]domain.Task)
+	data := make(map[string]storage.TaskRead)
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -521,7 +521,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(task)
 
-	data["data"] = *task
+	data["data"] = *MapTaskToTaskRead(task)
 
 	return c.JSON(http.StatusOK, data)
 }
