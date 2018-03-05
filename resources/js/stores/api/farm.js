@@ -65,6 +65,9 @@ export default {
   ApiFetchCrop: (farmid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/crops', cbSuccess, cbError)
   },
+  ApiFetchArchivedCrop: (farmid, cbSuccess, cbError) => {
+    http.get('farms/' + farmid + '/crops/archives', cbSuccess, cbError)
+  },
   ApiFindCropByUid: (farmid, cropid, cbSuccess, cbError) => {
     http.get('farms/crops/' + cropid, cbSuccess, cbError)
   },

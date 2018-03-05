@@ -18,15 +18,17 @@
     .wrapper
       .m-b
         ul.nav.nav-tabs.h4
-          li(role="presentation" class="active"): a(href="#") Batch
-          li: a(href="#") Archives
+          li(role="presentation"  v-bind:class="{ active: isActive('BATCH') }")
+            a(style="cursor: pointer;" @click="statusSelected('BATCH')") Batch
+          li(role="presentation"  v-bind:class="{ active: isActive('ARCHIVES') }")
+            a(style="cursor: pointer;" @click="statusSelected('ARCHIVES')") Archives
       .panel.no-border
         .panel-heading.wrapper.m-b
           span.h4.text-lt All Growing Batches on This Farm
           a.btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
             i.fa.fa-plus
             | Add a New Batch
-        FarmCropsListing(:crops="crops" :domain="'CROPS'" @editCrop="editCrop")
+        FarmCropsListing(:crops="crops" :domain="'CROPS'" :batch="isActive('BATCH')" @editCrop="editCrop")
 </template>
 
 <script>
@@ -49,10 +51,12 @@ export default {
     return {
       data: {},
       showModal: false,
+      status: "BATCH"
     }
   },
   methods: {
     ...mapActions([
+      'fetchArchivedCrops',
       'fetchCrops',
       'getInformation',
     ]),
@@ -63,6 +67,25 @@ export default {
       } else {
         this.data = {}
       }
+    },
+    statusSelected (status) {
+      this.status = status
+      if (status == 'BATCH') {
+        this.fetchCrops()
+          .then(({ data }) =>  {
+            this.crops = data
+          })
+          .catch(error => console.log(error))
+      } else {
+        this.fetchArchivedCrops()
+          .then(({ data }) =>  {
+            this.crops = data
+          })
+          .catch(error => console.log(error))
+      }
+    },
+    isActive (status) {
+      return this.status == status
     }
   },
   mounted () {

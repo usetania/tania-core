@@ -45,6 +45,17 @@ const actions = {
       }, error => reject(error.response))
     })
   },
+  fetchArchivedCrops ({ commit, state, getters }, payload) {
+    const farm = getters.getCurrentFarm
+
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi.ApiFetchArchivedCrop(farm.uid, ({ data }) => {
+        commit(types.FETCH_CROP, data.data)
+        resolve(data)
+      }, error => reject(error.response))
+    })
+  },
   getCropByUid ({ commit, state, getters }, cropId) {
     const farm = getters.getCurrentFarm
 
