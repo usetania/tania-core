@@ -49,6 +49,7 @@ type CropBatchMoved struct {
 
 type CropBatchHarvested struct {
 	UID                     uuid.UUID
+	CropStatus              string // Values: ACTIVE / ARCHIVED
 	HarvestType             string
 	HarvestedQuantity       int
 	ProducedGramQuantity    float32
@@ -61,6 +62,7 @@ type CropBatchHarvested struct {
 
 type CropBatchDumped struct {
 	UID            uuid.UUID
+	CropStatus     string // Values: ACTIVE / ARCHIVED
 	Quantity       int
 	UpdatedTrash   Trash
 	DumpedArea     interface{}

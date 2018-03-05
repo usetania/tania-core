@@ -56,8 +56,8 @@ type ServiceResult struct {
 // So we can't have crop batch with a status, for example `HARVESTED`,
 // because not all the crop has harvested
 const (
-	CropActive = "ACTIVE"
-	CropEnd    = "END"
+	CropActive   = "ACTIVE"
+	CropArchived = "ARCHIVED"
 )
 
 type CropStatus struct {
@@ -68,7 +68,7 @@ type CropStatus struct {
 func CropStatuses() []CropStatus {
 	return []CropStatus{
 		{Code: CropActive, Label: "Active"},
-		{Code: CropEnd, Label: "End"},
+		{Code: CropArchived, Label: "Archived"},
 	}
 }
 
@@ -347,6 +347,8 @@ func (state *Crop) Transition(event interface{}) {
 			}
 		}
 
+		state.Status = GetCropStatus(e.CropStatus)
+
 	case CropBatchDumped:
 		isFound := false
 		for i, v := range state.Trash {
@@ -372,6 +374,8 @@ func (state *Crop) Transition(event interface{}) {
 				}
 			}
 		}
+
+		state.Status = GetCropStatus(e.CropStatus)
 
 	case CropBatchWatered:
 		if state.InitialArea.AreaUID == e.AreaUID {
@@ -753,9 +757,45 @@ func (c *Crop) Harvest(
 
 	harvestedStorage.ProducedGramQuantity += totalProduced
 
+	// Check all the quantity in InitialArea and MovedArea,
+	// if its all empty then crop status is marked to archive
+	initialAreaEmpty := false
+	if harvestedAreaCode == "INITIAL_AREA" {
+		initialAreaEmpty = true
+	} else if c.InitialArea.CurrentQuantity == 0 {
+		initialAreaEmpty = true
+	}
+
+	movedAreaEmpty := true
+	if harvestedAreaCode == "MOVED_AREA" {
+		for _, v := range c.MovedArea {
+			ha := harvestedArea.(MovedArea)
+
+			if v.AreaUID == ha.AreaUID {
+				ha.CurrentQuantity = 0
+			}
+
+			if ha.CurrentQuantity != 0 {
+				movedAreaEmpty = false
+			}
+		}
+	} else {
+		for _, v := range c.MovedArea {
+			if v.CurrentQuantity != 0 {
+				movedAreaEmpty = false
+			}
+		}
+	}
+
+	status := CropActive
+	if initialAreaEmpty && movedAreaEmpty {
+		status = CropArchived
+	}
+
 	// Process //
 	c.TrackChange(CropBatchHarvested{
 		UID:                     c.UID,
+		CropStatus:              status,
 		HarvestType:             ht.Code,
 		HarvestedQuantity:       harvestedQuantity,
 		ProducedGramQuantity:    totalProduced,
@@ -860,9 +900,37 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 		}
 	}
 
+	// Check all the quantity in InitialArea and MovedArea,
+	// if its all empty then crop status is marked to archive
+	initialAreaEmpty := false
+	if dumpedAreaCode == "INITIAL_AREA" {
+		initialAreaEmpty = true
+	}
+
+	movedAreaEmpty := true
+	if dumpedAreaCode == "MOVED_AREA" {
+		for _, v := range c.MovedArea {
+			da := dumpedArea.(MovedArea)
+
+			if v.AreaUID == da.AreaUID {
+				da.CurrentQuantity = 0
+			}
+
+			if da.CurrentQuantity != 0 {
+				movedAreaEmpty = false
+			}
+		}
+	}
+
+	status := CropActive
+	if initialAreaEmpty && movedAreaEmpty {
+		status = CropArchived
+	}
+
 	// Process //
 	c.TrackChange(CropBatchDumped{
 		UID:            c.UID,
+		CropStatus:     status,
 		Quantity:       quantity,
 		UpdatedTrash:   updatedTrash,
 		DumpedArea:     dumpedArea,

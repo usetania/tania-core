@@ -338,6 +338,8 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		// Because Harvest should only be done in the GROWING area
 		cropRead.AreaStatus.Growing -= e.HarvestedQuantity
 
+		cropRead.Status = e.CropStatus
+
 	case domain.CropBatchDumped:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
@@ -409,6 +411,8 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		cropRead.AreaStatus.Dumped += e.Quantity
+
+		cropRead.Status = e.CropStatus
 
 	case domain.CropBatchWatered:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
