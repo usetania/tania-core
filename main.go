@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"io/ioutil"
+	"log"
+	"os"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
@@ -115,21 +117,35 @@ func main() {
 }
 
 func initSqlite() *sql.DB {
+	if _, err := os.Stat(*config.Config.SqlitePath); os.IsNotExist(err) {
+		log.Print("Creating database file ", *config.Config.SqlitePath)
+	}
+
 	db, err := sql.Open("sqlite3", *config.Config.SqlitePath)
 	if err != nil {
 		panic(err)
 	}
 
-	ddl, err := ioutil.ReadFile("db/sqlite/ddl.sql")
-	if err != nil {
-		panic(err)
-	}
-	sql := string(ddl)
+	log.Print("Using database ", *config.Config.SqlitePath)
 
-	_, err = db.Exec(sql)
-
+	// Check if database exist by checking a table existance
+	result := ""
+	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='FARM_READ'").Scan(&result)
 	if err != nil {
-		panic(err)
+		log.Print("Executing DDL file for ", *config.Config.SqlitePath)
+
+		ddl, err := ioutil.ReadFile("db/sqlite/ddl.sql")
+		if err != nil {
+			panic(err)
+		}
+		sql := string(ddl)
+
+		_, err = db.Exec(sql)
+		if err != nil {
+			panic(err)
+		}
+
+		log.Print("DDL file executed")
 	}
 
 	return db
@@ -170,14 +186,18 @@ func initConfig() {
 		UploadPathArea: conf.String("UploadPathArea", "/home/tania/uploads", "Upload path for the Area photo"),
 		UploadPathCrop: conf.String("UploadPathCrop", "/home/tania/uploads", "Upload path for the Crop photo"),
 		DemoMode:       conf.Bool("DemoMode", true, "Switch for the demo mode"),
-		SqlitePath:     conf.String("SqlitePath", "db/sqlite/tania.db", "Path of sqlite file db"),
+		SqlitePath:     conf.String("SqlitePath", "tania.db", "Path of sqlite file db"),
 	}
 
 	// This config will read the first configuration.
 	// If it doesn't find the key, then it go to the next configuration.
 	conf.Use(configure.NewEnvironment())
 	conf.Use(configure.NewFlag())
-	conf.Use(configure.NewJSONFromFile("conf.json"))
+
+	if _, err := os.Stat("conf.json"); err == nil {
+		log.Print("Using 'conf.json' configuration")
+		conf.Use(configure.NewJSONFromFile("conf.json"))
+	}
 
 	conf.Parse()
 

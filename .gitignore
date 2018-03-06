@@ -23,6 +23,8 @@ notes.md
 .vscode
 conf.json
 db/sqlite/tania.db
+tania.db
+tania-server
 
 /resources/tests/unit/coverage/
 /resources/tests/assets/screenshots/
