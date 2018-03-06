@@ -25,6 +25,7 @@ conf.json
 db/sqlite/tania.db
 tania.db
 tania-server
+tania-uploads
 
 /resources/tests/unit/coverage/
 /resources/tests/assets/screenshots/

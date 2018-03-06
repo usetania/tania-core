@@ -3,6 +3,7 @@ package server
 import (
 	"io"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"os"
 	"strings"
@@ -36,7 +37,12 @@ func (f LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
 	s := strings.Split(destPath, "/")
 	s = s[:len(s)-1]
 	sJoin := strings.Join(s, "/")
-	os.MkdirAll(sJoin, os.ModePerm)
+
+	if _, err := os.Stat(sJoin); os.IsNotExist(err) {
+		log.Print("Upload folder is missing. Creating folder...")
+		os.MkdirAll(sJoin, os.ModePerm)
+		log.Print("Folder created in ", sJoin)
+	}
 
 	// Destination
 	dst, err := os.Create(destPath)

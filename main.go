@@ -183,8 +183,8 @@ func initConfig() {
 	conf := configure.New()
 
 	configuration := config.Configuration{
-		UploadPathArea: conf.String("UploadPathArea", "/home/tania/uploads", "Upload path for the Area photo"),
-		UploadPathCrop: conf.String("UploadPathCrop", "/home/tania/uploads", "Upload path for the Crop photo"),
+		UploadPathArea: conf.String("UploadPathArea", "tania-uploads/area", "Upload path for the Area photo"),
+		UploadPathCrop: conf.String("UploadPathCrop", "tania-uploads/crop", "Upload path for the Crop photo"),
 		DemoMode:       conf.Bool("DemoMode", true, "Switch for the demo mode"),
 		SqlitePath:     conf.String("SqlitePath", "tania.db", "Path of sqlite file db"),
 	}
