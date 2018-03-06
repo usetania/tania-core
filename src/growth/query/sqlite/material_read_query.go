@@ -2,10 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
-	"errors"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
-	"github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 )
@@ -55,26 +52,8 @@ func (s MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 
 		materialQueryResult.UID = materialUID
 		materialQueryResult.Name = rowsData.Name
-
-		var materialType storage.MaterialType
-		switch rowsData.Type {
-		case "PLANT":
-			materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
-
-			materialQueryResult.MaterialSeedPlantTypeCode = materialType.Code()
-		case "SEED":
-			materialType, err = domain.CreateMaterialTypeSeed(rowsData.TypeData)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
-
-			materialQueryResult.MaterialSeedPlantTypeCode = materialType.Code()
-		default:
-			result <- query.QueryResult{Error: errors.New("Invalid material type")}
-		}
+		materialQueryResult.TypeCode = rowsData.Type
+		materialQueryResult.PlantTypeCode = rowsData.TypeData
 
 		result <- query.QueryResult{Result: materialQueryResult}
 		close(result)
@@ -113,26 +92,8 @@ func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCod
 
 		materialQueryResult.UID = materialUID
 		materialQueryResult.Name = rowsData.Name
-
-		var materialType storage.MaterialType
-		switch rowsData.Type {
-		case "PLANT":
-			materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
-
-			materialQueryResult.MaterialSeedPlantTypeCode = materialType.Code()
-		case "SEED":
-			materialType, err = domain.CreateMaterialTypeSeed(rowsData.TypeData)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
-
-			materialQueryResult.MaterialSeedPlantTypeCode = materialType.Code()
-		default:
-			result <- query.QueryResult{Error: errors.New("Invalid material type")}
-		}
+		materialQueryResult.TypeCode = rowsData.Type
+		materialQueryResult.PlantTypeCode = rowsData.TypeData
 
 		result <- query.QueryResult{Result: materialQueryResult}
 		close(result)

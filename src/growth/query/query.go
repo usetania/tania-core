@@ -52,9 +52,10 @@ type QueryResult struct {
 }
 
 type CropMaterialQueryResult struct {
-	UID                       uuid.UUID `json:"uid"`
-	MaterialSeedPlantTypeCode string    `json:"plant_type"`
-	Name                      string    `json:"name"`
+	UID           uuid.UUID `json:"uid"`
+	TypeCode      string    `json:"type"`
+	PlantTypeCode string    `json:"plant_type"`
+	Name          string    `json:"name"`
 }
 
 type CropAreaQueryResult struct {

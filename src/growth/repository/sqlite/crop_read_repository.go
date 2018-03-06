@@ -50,7 +50,7 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 			_, err = f.DB.Exec(`UPDATE CROP_READ SET
 				BATCH_ID = ?, STATUS = ?, TYPE = ?,
 				CONTAINER_QUANTITY = ?, CONTAINER_TYPE = ?, CONTAINER_CELL = ?,
-				INVENTORY_UID = ?, INVENTORY_PLANT_TYPE = ?, INVENTORY_NAME = ?,
+				INVENTORY_UID = ?, INVENTORY_TYPE =?, INVENTORY_PLANT_TYPE = ?, INVENTORY_NAME = ?,
 				AREA_STATUS_SEEDING = ?, AREA_STATUS_GROWING = ?, AREA_STATUS_DUMPED = ?,
 				FARM_UID = ?,
 				INITIAL_AREA_UID = ?, INITIAL_AREA_NAME = ?,
@@ -66,6 +66,7 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 				cropRead.Container.Type,
 				cropRead.Container.Cell,
 				cropRead.Inventory.UID,
+				cropRead.Inventory.Type,
 				cropRead.Inventory.PlantType,
 				cropRead.Inventory.Name,
 				cropRead.AreaStatus.Seeding,
@@ -275,14 +276,14 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO CROP_READ
 				(UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,
-				INVENTORY_UID, INVENTORY_PLANT_TYPE, INVENTORY_NAME,
+				INVENTORY_UID, INVENTORY_TYPE, INVENTORY_PLANT_TYPE, INVENTORY_NAME,
 				AREA_STATUS_SEEDING, AREA_STATUS_GROWING, AREA_STATUS_DUMPED,
 				FARM_UID,
 				INITIAL_AREA_UID, INITIAL_AREA_NAME,
 				INITIAL_AREA_INITIAL_QUANTITY, INITIAL_AREA_CURRENT_QUANTITY,
 				INITIAL_AREA_LAST_WATERED, INITIAL_AREA_LAST_FERTILIZED, INITIAL_AREA_LAST_PESTICIDED,
 				INITIAL_AREA_LAST_PRUNED, INITIAL_AREA_CREATED_DATE, INITIAL_AREA_LAST_UPDATED)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				cropRead.UID,
 				cropRead.BatchID,
 				cropRead.Status,
@@ -291,6 +292,7 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 				cropRead.Container.Type,
 				cropRead.Container.Cell,
 				cropRead.Inventory.UID,
+				cropRead.Inventory.Type,
 				cropRead.Inventory.PlantType,
 				cropRead.Inventory.Name,
 				cropRead.AreaStatus.Seeding,

@@ -104,6 +104,7 @@ type AreaStatus struct {
 
 type Inventory struct {
 	UID       uuid.UUID `json:"uid"`
+	Type      string    `json:"type"`
 	PlantType string    `json:"plant_type"`
 	Name      string    `json:"name"`
 }

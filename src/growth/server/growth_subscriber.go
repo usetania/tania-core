@@ -58,7 +58,8 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		cropRead.Inventory = storage.Inventory{
 			UID:       inv.UID,
 			Name:      inv.Name,
-			PlantType: inv.MaterialSeedPlantTypeCode,
+			PlantType: inv.PlantTypeCode,
+			Type:      inv.TypeCode,
 		}
 
 		cropRead.InitialArea = storage.InitialArea{
@@ -127,7 +128,8 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		cropRead.Inventory = storage.Inventory{
 			UID:       inv.UID,
 			Name:      inv.Name,
-			PlantType: inv.MaterialSeedPlantTypeCode,
+			PlantType: inv.PlantTypeCode,
+			Type:      inv.TypeCode,
 		}
 
 	case domain.CropBatchContainerChanged:

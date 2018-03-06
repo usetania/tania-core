@@ -28,6 +28,7 @@ type cropReadResult struct {
 	ContainerType              string
 	ContainerCell              int
 	InventoryUID               string
+	InventoryType              string
 	InventoryPlantType         string
 	InventoryName              string
 	AreaStatusSeeding          int
@@ -619,7 +620,7 @@ func (s CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 	rowsData := cropReadResult{}
 
 	err := s.DB.QueryRow(`SELECT UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,
-		INVENTORY_UID, INVENTORY_PLANT_TYPE, INVENTORY_NAME,
+		INVENTORY_UID, INVENTORY_TYPE, INVENTORY_PLANT_TYPE, INVENTORY_NAME,
 		AREA_STATUS_SEEDING, AREA_STATUS_GROWING, AREA_STATUS_DUMPED,
 		FARM_UID,
 		INITIAL_AREA_UID, INITIAL_AREA_NAME,
@@ -635,6 +636,7 @@ func (s CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 		&rowsData.ContainerType,
 		&rowsData.ContainerCell,
 		&rowsData.InventoryUID,
+		&rowsData.InventoryType,
 		&rowsData.InventoryPlantType,
 		&rowsData.InventoryName,
 		&rowsData.AreaStatusSeeding,
@@ -734,6 +736,7 @@ func (s CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 	cropRead.Container.Type = rowsData.ContainerType
 	cropRead.Container.Cell = rowsData.ContainerCell
 	cropRead.Inventory.UID = inventoryUID
+	cropRead.Inventory.Type = rowsData.InventoryType
 	cropRead.Inventory.PlantType = rowsData.InventoryPlantType
 	cropRead.Inventory.Name = rowsData.InventoryName
 	cropRead.AreaStatus.Seeding = rowsData.AreaStatusSeeding

@@ -221,7 +221,8 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 
 	cropRead.Inventory = storage.Inventory{
 		UID:       inv.UID,
-		PlantType: inv.MaterialSeedPlantTypeCode,
+		PlantType: inv.PlantTypeCode,
+		Type:      inv.TypeCode,
 		Name:      inv.Name,
 	}
 
