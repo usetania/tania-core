@@ -27,13 +27,14 @@ func (s MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
 				ci.Name = val.Name
+				ci.TypeCode = val.Type.Code()
 
 				// WARNING, domain leakage
 				switch v := val.Type.(type) {
 				case assetsdomain.MaterialTypeSeed:
-					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+					ci.PlantTypeCode = v.PlantType.Code
 				case assetsdomain.MaterialTypePlant:
-					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+					ci.PlantTypeCode = v.PlantType.Code
 				}
 			}
 		}
@@ -61,13 +62,15 @@ func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeC
 				if v.PlantType.Code == plantTypeCode && val.Name == name {
 					ci.UID = val.UID
 					ci.Name = val.Name
-					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+					ci.TypeCode = val.Type.Code()
+					ci.PlantTypeCode = v.PlantType.Code
 				}
 			case assetsdomain.MaterialTypePlant:
 				if v.PlantType.Code == plantTypeCode && val.Name == name {
 					ci.UID = val.UID
 					ci.Name = val.Name
-					ci.MaterialSeedPlantTypeCode = v.PlantType.Code
+					ci.TypeCode = val.Type.Code()
+					ci.PlantTypeCode = v.PlantType.Code
 				}
 			}
 		}
