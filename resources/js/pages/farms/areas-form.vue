@@ -99,8 +99,8 @@ export default {
     },
     submit () {
       this.submitArea(this.area)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in area submission'))
     },
     fileSelelected (file) {
       this.area.photo = file

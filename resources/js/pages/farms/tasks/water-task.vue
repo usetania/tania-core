@@ -53,8 +53,8 @@ export default {
       for (var i = 0; i < this.task.crops.length; i++) {
         this.task.obj_uid = this.task.crops[i]
         this.waterCrop(this.task)
-          .then(this.$parent.$emit('close'))
-          .catch(({ data }) => this.message = data)
+          .then(() => this.$parent.$emit('close'))
+          .catch(() => this.$toasted.error('Error in water task submission'))
       }
     },
     typeChanged (type) {

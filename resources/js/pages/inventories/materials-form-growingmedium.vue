@@ -62,8 +62,8 @@ export default {
       this.inventory.expiration_date = moment().format('YYYY-MM-DD')
       this.inventory.type = "growing_medium"
       this.submitMaterial(this.inventory)
-        .then(this.$emit('closeModal'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$emit('closeModal'))
+        .catch(() => this.$toasted.error('Error in material submission'))
     },
     closeModal () {
       this.$emit('closeModal')

@@ -130,7 +130,7 @@ export default {
         .then(data => {
           this.$router.push({ name: 'Home' })
         }).catch(error => {
-          this.message = error
+          this.$toasted.error('Error in area submission')
         })
     },
     fileSelelected (file) {

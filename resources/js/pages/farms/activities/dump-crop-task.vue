@@ -83,8 +83,8 @@ export default {
     create () {
       this.task.obj_uid = this.crop.uid
       this.dumpCrop(this.task)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in dump crop submission'))
     },
     areaChange (area_id) {
       for (var i = 0; i < this.current_areas.length; i++) {

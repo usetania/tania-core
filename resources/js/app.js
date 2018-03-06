@@ -9,6 +9,8 @@ import moment from 'moment-timezone'
 import VueMoment from 'vue-moment'
 import vClickOutside from 'v-click-outside'
 
+import Toasted from 'vue-toasted';
+
 import AppComponent from './components/app.vue'
 import {
   http,
@@ -27,6 +29,11 @@ Vue.use(Component)
 Vue.use(VeeValidate)
 Vue.use(VueMoment, { moment })
 Vue.use(vClickOutside)
+Vue.use(Toasted, { 
+   theme: "bubble", 
+   position: "bottom-center", 
+   duration : 1500
+})
 
 new Vue({
   el: '#app',

@@ -53,8 +53,8 @@ export default {
     submit () {
       console.log(this.reservoir)
       this.submitReservoir(this.reservoir)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in reservoir submission'))
     },
     typeChanged (type) {
       if (type === 'bucket') {

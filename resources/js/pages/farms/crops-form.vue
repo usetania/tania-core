@@ -59,7 +59,7 @@
               span.help-block.text-danger(v-show="errors.has('container_cell')") {{ errors.first('container_cell') }}
         .form-group
           button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
+          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
 </template>
 
 <script>
@@ -128,8 +128,8 @@ export default {
     },
     submit () {
       this.submitCrop(this.crop)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in crop submission'))
     },
     typeChanged (type) {
       if (type === 'TRAY') {

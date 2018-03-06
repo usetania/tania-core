@@ -83,8 +83,8 @@ export default {
     create () {
       this.task.obj_uid = this.crop.uid
       this.harvestCrop(this.task)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in harvest crop submission'))
     },
   },
   props: ['crop'],

@@ -90,14 +90,14 @@ export default {
       this.note.obj_uid = this.$route.params.id
       this.createCropNotes(this.note)
         .then(data => this.crop = data)
-        .catch(({ data }) => this.message = data)
+        .catch(() => this.$toasted.error('Error in note submission'))
     },
     deleteNote(note_uid) {
       this.note.obj_uid = this.$route.params.id
       this.note.uid = note_uid
       this.deleteCropNote(this.note)
         .then(data => this.crop = data)
-        .catch(({ data }) => this.message = data)
+        .catch(() => this.$toasted.error('Error in note deletion'))
     },
     getCropContainer(key, count) {
       return FindContainer(key).label + ((count != 1)? 's':'')

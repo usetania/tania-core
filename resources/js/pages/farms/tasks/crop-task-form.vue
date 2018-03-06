@@ -126,8 +126,8 @@ export default {
       this.task.asset_id = this.crop_id
       this.task.domain = "CROP"
       this.submitTask(this.task)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in task submission'))
     },
     openPicker () {
       this.$refs.openCal.showCalendar()

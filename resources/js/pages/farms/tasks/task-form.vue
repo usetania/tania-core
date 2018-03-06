@@ -101,8 +101,8 @@ export default {
         this.task.domain = this.asset.toUpperCase()
       }
       this.submitTask(this.task)
-        .then(this.$parent.$emit('close'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$parent.$emit('close'))
+        .catch(() => this.$toasted.error('Error in task submission'))
     },
   },
   mounted () {

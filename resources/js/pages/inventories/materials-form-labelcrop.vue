@@ -50,8 +50,8 @@ export default {
       this.inventory.type = "label_and_crop_support"
       this.inventory.quantity_unit = "PIECES"
       this.submitMaterial(this.inventory)
-        .then(this.$emit('closeModal'))
-        .catch(({ data }) => this.message = data)
+        .then(() => this.$emit('closeModal'))
+        .catch(() => this.$toasted.error('Error in material submission'))
     },
     closeModal () {
       this.$emit('closeModal')
