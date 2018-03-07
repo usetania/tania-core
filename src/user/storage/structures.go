@@ -20,3 +20,12 @@ type UserRead struct {
 	CreatedDate time.Time `json:"created_date"`
 	LastUpdated time.Time `json:"last_updated"`
 }
+
+type UserAuth struct {
+	UserUID      uuid.UUID `json:"uid"`
+	ClientID     string    `json:"client_id"`
+	AccessToken  string    `json:"access_token"`
+	TokenExpires int       `json:"token_expires"`
+	CreatedDate  time.Time `json:"created_date"`
+	LastUpdated  time.Time `json:"last_updated"`
+}

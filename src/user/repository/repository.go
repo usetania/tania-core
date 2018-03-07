@@ -21,6 +21,10 @@ type UserReadRepository interface {
 	Save(userRead *storage.UserRead) <-chan error
 }
 
+type UserAuthRepository interface {
+	Save(userAuth *storage.UserAuth) <-chan error
+}
+
 func NewUserFromHistory(events []storage.UserEvent) *domain.User {
 	state := &domain.User{}
 	for _, v := range events {

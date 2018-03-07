@@ -11,6 +11,7 @@ type User struct {
 	UID         uuid.UUID
 	Username    string
 	Password    []byte
+	ClientID    string
 	CreatedDate time.Time
 	LastUpdated time.Time
 

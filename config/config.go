@@ -19,4 +19,5 @@ type Configuration struct {
 	MysqlDbname            *string
 	MysqlUsername          *string
 	MysqlPassword          *string
+	RedirectURI            *string
 }

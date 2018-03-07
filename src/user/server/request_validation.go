@@ -19,6 +19,7 @@ const (
 	INVALID_OPTION = "INVALID_OPTION"
 	NOT_FOUND      = "NOT_FOUND"
 	NOT_MATCH      = "NOT_MATCH"
+	INVALID        = "INVALID"
 )
 
 // RequestValidation sanitizes request inputs and convert the input to its correct data type.
@@ -66,6 +67,8 @@ func Message(errorCode string) string {
 		return "Data not found."
 	case NOT_MATCH:
 		return "Password didn't match with confirmation password"
+	case INVALID:
+		return "Invalid value"
 	default:
 		return "Internal server error"
 	}

@@ -109,6 +109,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(headerNoCache)
+	e.Use(tokenValidation)
 
 	// HTTP routing
 	API := e.Group("api")
@@ -174,6 +175,7 @@ func initConfig() {
 		MysqlDbname:            conf.String("mysql_dbname", "tania", "Mysql DBName"),
 		MysqlUsername:          conf.String("mysql_username", "root", "Mysql username"),
 		MysqlPassword:          conf.String("mysql_password", "root", "Mysql password"),
+		RedirectURI:            conf.String("redirect_uri", "http://localhost:8080/oauth2_implicit_callback", "URI for redirection after authorization server grants access token"),
 	}
 
 	// This config will read the first configuration.
@@ -195,16 +197,21 @@ func initUser(userServer *userserver.UserServer) error {
 	defaultUsername := "tania"
 	defaultPassword := "tania"
 
-	_, err := userServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
+	_, userAuth, err := userServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
 		log.Print("User ", defaultUsername, " has already created")
 		return err
 	}
 
 	log.Print("User created with default username and password")
+	log.Print("Generated user client ID is ", userAuth.ClientID)
+	log.Print("Redirection URI is ", *config.Config.RedirectURI)
+	log.Print("Please save the client ID for future authorization")
 
 	return nil
 }
+
+// MIDDLEWARES
 
 func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -340,4 +347,17 @@ func initSqlite() *sql.DB {
 	log.Print("DDL file executed")
 
 	return db
+}
+
+func tokenValidation(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		authorization := c.Request().Header.Get("Authorization")
+		splitted := strings.Split(authorization, " ")
+
+		if len(splitted) > 0 {
+			log.Print("Access Token ", splitted[1])
+		}
+
+		return next(c)
+	}
 }

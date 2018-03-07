@@ -1,6 +1,6 @@
 {
     "tania_persistance_engine": "sqlite",
-    "demo_mode": false,
+    "demo_mode": true,
     "upload_path_area": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas",
     "upload_path_crop": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/crops",
     "sqlite_path": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/db/sqlite/tania.db",
@@ -8,5 +8,6 @@
     "mysql_port": "3306",
     "mysql_dbname": "tania",
     "mysql_user": "root",
-    "mysql_password": "root"
+    "mysql_password": "root",
+    "redirect_uri": "http://localhost:8080/oauth2_implicit_callback"
 }
