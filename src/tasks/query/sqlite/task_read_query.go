@@ -108,6 +108,13 @@ func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string) <-cha
 			sql += " AND IS_DUE = ? "
 			args = append(args, b)
 		}
+		start, _ := params["due_start"]
+		end, _ := params["due_end"]
+		if start != "" && end != "" {
+			sql += " AND DUE_DATE BETWEEN ? AND ? "
+			args = append(args, start)
+			args = append(args, end)
+		}
 		if value, _ := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
 			args = append(args, value)
