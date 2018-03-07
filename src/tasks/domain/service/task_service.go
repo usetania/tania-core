@@ -8,14 +8,14 @@ import (
 
 // TaskService handles task behaviours that needs external interaction to be worked
 
-type TaskServiceInMemory struct {
+type TaskServiceSqlLite struct {
 	CropQuery      query.CropQuery
 	AreaQuery      query.AreaQuery
 	MaterialQuery  query.MaterialQuery
 	ReservoirQuery query.ReservoirQuery
 }
 
-func (s TaskServiceInMemory) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlLite) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.AreaQuery.FindByID(uid)
 
 	if result.Error != nil {
@@ -42,7 +42,7 @@ func (s TaskServiceInMemory) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
 	}
 }
 
-func (s TaskServiceInMemory) FindCropByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlLite) FindCropByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.CropQuery.FindCropByID(uid)
 
 	if result.Error != nil {
@@ -69,7 +69,7 @@ func (s TaskServiceInMemory) FindCropByID(uid uuid.UUID) domain.ServiceResult {
 	}
 }
 
-func (s TaskServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlLite) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.MaterialQuery.FindMaterialByID(uid)
 
 	if result.Error != nil {
@@ -96,7 +96,7 @@ func (s TaskServiceInMemory) FindMaterialByID(uid uuid.UUID) domain.ServiceResul
 	}
 }
 
-func (s TaskServiceInMemory) FindReservoirByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlLite) FindReservoirByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.ReservoirQuery.FindReservoirByID(uid)
 
 	if result.Error != nil {

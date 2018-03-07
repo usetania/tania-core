@@ -7,6 +7,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/Tanibox/tania-server/src/tasks/repository"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
+	uuid "github.com/satori/go.uuid"
 )
 
 type TaskReadRepositorySqlite struct {
@@ -39,20 +40,25 @@ func (f *TaskReadRepositorySqlite) Save(taskRead *storage.TaskRead) <-chan error
 			cancelledDate = &d
 		}
 
-		var domainData interface{}
+		var domainDataMaterialID *uuid.UUID
+		var domainDataAreaID *uuid.UUID
+		var domainDataCropID *uuid.UUID
 		switch v := taskRead.DomainDetails.(type) {
 		case domain.TaskDomainCrop:
-			domainData = v.MaterialID
+			domainDataMaterialID = v.MaterialID
+			domainDataAreaID = v.AreaID
+			domainDataCropID = v.CropID
 		}
 
 		res, err := f.DB.Exec(`UPDATE TASK_READ SET
 			TITLE = ?, DESCRIPTION = ?, CREATED_DATE = ?, DUE_DATE = ?,
 			COMPLETED_DATE = ?, CANCELLED_DATE = ?, PRIORITY = ?, STATUS = ?,
-			DOMAIN_CODE = ?, DOMAIN_DATA = ?, CATEGORY = ?, IS_DUE = ?, ASSET_ID = ?
+			DOMAIN_CODE = ?, DOMAIN_DATA_MATERIAL_ID = ?, DOMAIN_DATA_AREA_ID = ?, DOMAIN_DATA_CROP_ID = ?,
+			CATEGORY = ?, IS_DUE = ?, ASSET_ID = ?
 			WHERE UID = ?`,
 			taskRead.Title, taskRead.Description, taskRead.CreatedDate.Format(time.RFC3339), dueDate,
 			completedDate, cancelledDate, taskRead.Priority, taskRead.Status,
-			taskRead.Domain, domainData, taskRead.Category, taskRead.IsDue, taskRead.AssetID,
+			taskRead.Domain, domainDataMaterialID, domainDataAreaID, domainDataCropID, taskRead.Category, taskRead.IsDue, taskRead.AssetID,
 			taskRead.UID)
 
 		if err != nil {
@@ -71,11 +77,11 @@ func (f *TaskReadRepositorySqlite) Save(taskRead *storage.TaskRead) <-chan error
 			_, err := f.DB.Exec(`INSERT INTO TASK_READ (
 				UID, TITLE, DESCRIPTION, CREATED_DATE, DUE_DATE,
 				COMPLETED_DATE, CANCELLED_DATE, PRIORITY, STATUS,
-				DOMAIN_CODE, DOMAIN_DATA, CATEGORY, IS_DUE, ASSET_ID)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				DOMAIN_CODE, DOMAIN_DATA_MATERIAL_ID, DOMAIN_DATA_AREA_ID, DOMAIN_DATA_CROP_ID, CATEGORY, IS_DUE, ASSET_ID)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				taskRead.UID, taskRead.Title, taskRead.Description, taskRead.CreatedDate.Format(time.RFC3339), dueDate,
 				completedDate, cancelledDate, taskRead.Priority, taskRead.Status,
-				taskRead.Domain, domainData, taskRead.Category, taskRead.IsDue, taskRead.AssetID)
+				taskRead.Domain, domainDataMaterialID, domainDataAreaID, domainDataCropID, taskRead.Category, taskRead.IsDue, taskRead.AssetID)
 
 			if err != nil {
 				result <- err

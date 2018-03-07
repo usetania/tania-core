@@ -52,7 +52,7 @@ func NewTaskServer(
 	materialReadQuery := querySqlite.NewMaterialQuerySqlite(db)
 	reservoirQuery := querySqlite.NewReservoirQuerySqlite(db)
 
-	taskService := service.TaskServiceInMemory{
+	taskService := service.TaskServiceSqlLite{
 		CropQuery:      cropQuery,
 		AreaQuery:      areaQuery,
 		MaterialQuery:  materialReadQuery,
@@ -81,6 +81,7 @@ func (s *TaskServer) InitSubscriber() {
 	s.EventBus.Subscribe(domain.TaskPriorityChangedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskDueDateChangedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCategoryChangedCode, s.SaveToTaskReadModel)
+	s.EventBus.Subscribe(domain.TaskDetailsChangedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCancelledCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskCompletedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskDueCode, s.SaveToTaskReadModel)
