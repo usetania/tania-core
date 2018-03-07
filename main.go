@@ -352,10 +352,13 @@ func initSqlite() *sql.DB {
 func tokenValidation(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		authorization := c.Request().Header.Get("Authorization")
-		splitted := strings.Split(authorization, " ")
 
-		if len(splitted) > 0 {
-			log.Print("Access Token ", splitted[1])
+		if authorization != "" {
+			splitted := strings.Split(authorization, " ")
+
+			if len(splitted) > 0 {
+				log.Print("Access Token ", splitted[1])
+			}
 		}
 
 		return next(c)
