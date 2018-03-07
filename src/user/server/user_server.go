@@ -85,8 +85,8 @@ func (s *UserServer) Register(c echo.Context) error {
 		return err
 	}
 
-	data := make(map[string]domain.User)
-	data["data"] = *user
+	data := make(map[string]storage.UserRead)
+	data["data"] = MapToUserRead(user)
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -152,7 +152,10 @@ func (s *UserServer) ChangePassword(c echo.Context) error {
 	// Publish //
 	s.publishUncommittedEvents(user)
 
-	return c.JSON(http.StatusOK, user)
+	data := make(map[string]storage.UserRead)
+	data["data"] = MapToUserRead(user)
+
+	return c.JSON(http.StatusOK, data)
 
 }
 
