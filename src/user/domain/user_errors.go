@@ -9,9 +9,10 @@ const (
 	UserErrorUsernameEmptyCode = iota
 	UserErrorInvalidUsernameLengthCode
 	UserErrorPasswordEmptyCode
-	UserErrorWrongPassword
+	UserErrorWrongPasswordCode
+	UserErrorUsernameExistsCode
 	UserErrorPasswordConfirmationNotMatchCode
-	UserChangePasswordErrorWrongOldPassword
+	UserChangePasswordErrorWrongOldPasswordCode
 )
 
 func (e UserError) Error() string {
@@ -22,11 +23,13 @@ func (e UserError) Error() string {
 		return "Username is too short"
 	case UserErrorPasswordEmptyCode:
 		return "Password cannot be empty"
-	case UserErrorWrongPassword:
+	case UserErrorWrongPasswordCode:
 		return "Wrong password"
+	case UserErrorUsernameExistsCode:
+		return "Username already exists"
 	case UserErrorPasswordConfirmationNotMatchCode:
 		return "Password confirmation didn't match"
-	case UserChangePasswordErrorWrongOldPassword:
+	case UserChangePasswordErrorWrongOldPasswordCode:
 		return "Invalid old password"
 	default:
 		return "Unrecognized user error code"

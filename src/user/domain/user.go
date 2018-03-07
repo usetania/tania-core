@@ -1,18 +1,31 @@
 package domain
 
 import (
+	"time"
+
 	uuid "github.com/satori/go.uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	UID      uuid.UUID
-	Username string
-	Password []byte
+	UID         uuid.UUID
+	Username    string
+	Password    []byte
+	CreatedDate time.Time
+	LastUpdated time.Time
 
 	// Events
 	Version            int
 	UncommittedChanges []interface{}
+}
+
+type UserService interface {
+	FindUserByUsername(username string) (UserServiceResult, error)
+}
+
+type UserServiceResult struct {
+	UID      uuid.UUID
+	Username string
 }
 
 func (state *User) TrackChange(event interface{}) {
@@ -26,6 +39,8 @@ func (state *User) Transition(event interface{}) {
 		state.UID = e.UID
 		state.Username = e.Username
 		state.Password = e.Password
+		state.CreatedDate = e.CreatedDate
+		state.LastUpdated = e.LastUpdated
 
 	case PasswordChanged:
 		state.Password = e.NewPassword
@@ -33,7 +48,7 @@ func (state *User) Transition(event interface{}) {
 	}
 }
 
-func CreateUser(username, password, confirmPassword string) (*User, error) {
+func CreateUser(userService UserService, username, password, confirmPassword string) (*User, error) {
 	if username == "" {
 		return nil, UserError{UserErrorUsernameEmptyCode}
 	}
@@ -42,7 +57,16 @@ func CreateUser(username, password, confirmPassword string) (*User, error) {
 		return nil, UserError{UserErrorInvalidUsernameLengthCode}
 	}
 
-	err := validatePassword(password, confirmPassword)
+	userResult, err := userService.FindUserByUsername(username)
+	if err != nil {
+		return nil, err
+	}
+
+	if userResult.UID != (uuid.UUID{}) {
+		return nil, UserError{UserErrorUsernameExistsCode}
+	}
+
+	err = validatePassword(password, confirmPassword)
 	if err != nil {
 		return nil, err
 	}
@@ -63,10 +87,14 @@ func CreateUser(username, password, confirmPassword string) (*User, error) {
 		Password: hash,
 	}
 
+	now := time.Now()
+
 	user.TrackChange(UserCreated{
-		UID:      uid,
-		Username: username,
-		Password: hash,
+		UID:         uid,
+		Username:    username,
+		Password:    hash,
+		CreatedDate: now,
+		LastUpdated: now,
 	})
 
 	return user, nil
@@ -75,7 +103,7 @@ func CreateUser(username, password, confirmPassword string) (*User, error) {
 func (u *User) ChangePassword(oldPassword, newPassword, newConfirmPassword string) error {
 	err := bcrypt.CompareHashAndPassword(u.Password, []byte(oldPassword))
 	if err != nil {
-		return UserError{UserChangePasswordErrorWrongOldPassword}
+		return UserError{UserChangePasswordErrorWrongOldPasswordCode}
 	}
 
 	err = validatePassword(newPassword, newConfirmPassword)
@@ -89,7 +117,9 @@ func (u *User) ChangePassword(oldPassword, newPassword, newConfirmPassword strin
 	}
 
 	u.TrackChange(PasswordChanged{
+		UID:         u.UID,
 		NewPassword: hash,
+		DateChanged: time.Now(),
 	})
 
 	return nil
@@ -98,7 +128,7 @@ func (u *User) ChangePassword(oldPassword, newPassword, newConfirmPassword strin
 func (u *User) IsPasswordValid(password string) (bool, error) {
 	err := bcrypt.CompareHashAndPassword(u.Password, []byte(password))
 	if err != nil {
-		return false, UserError{UserErrorWrongPassword}
+		return false, UserError{UserErrorWrongPasswordCode}
 	}
 
 	return true, nil

@@ -3,24 +3,54 @@ package domain
 import (
 	"testing"
 
+	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
+type UserServiceMock struct {
+	mock.Mock
+}
+
+func (m UserServiceMock) FindUserByUsername(username string) (UserServiceResult, error) {
+	args := m.Called(username)
+	return args.Get(0).(UserServiceResult), nil
+}
 func TestCreateUser(t *testing.T) {
 	// Given
+	userServiceMock := new(UserServiceMock)
+	userServiceMock.On("FindUserByUsername", "username").Return(UserServiceResult{})
 
 	// When
-	user, err := CreateUser("username", "password", "password")
+	user, err := CreateUser(userServiceMock, "username", "password", "password")
 
 	// Then
 	assert.Nil(t, err)
 	assert.Equal(t, "username", user.Username)
 	assert.NotNil(t, user.Password)
+
+	// Given
+	userServiceMock2 := new(UserServiceMock)
+	userUID, _ := uuid.NewV4()
+	userServiceMock2.On("FindUserByUsername", "username").Return(UserServiceResult{
+		UID:      userUID,
+		Username: "username",
+	})
+
+	// When
+	user, err = CreateUser(userServiceMock2, "username", "password", "password")
+
+	// Then
+	assert.NotNil(t, err)
+	assert.Equal(t, UserError{UserErrorUsernameExistsCode}, err)
 }
 
 func TestChangePassword(t *testing.T) {
 	// Given
-	user, err := CreateUser("username", "password", "password")
+	userServiceMock := new(UserServiceMock)
+	userServiceMock.On("FindUserByUsername", "username").Return(UserServiceResult{})
+
+	user, err := CreateUser(userServiceMock, "username", "password", "password")
 
 	// When
 	errPwd := user.ChangePassword("password", "newpassword", "newpassword")

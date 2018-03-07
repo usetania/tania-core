@@ -17,6 +17,7 @@ import (
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
+	userserver "github.com/Tanibox/tania-server/src/user/server"
 	"github.com/asaskevich/EventBus"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
@@ -96,6 +97,14 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	userServer, err := userserver.NewUserServer(db, bus)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
+	// Initialize user
+	err = initUser(userServer)
+
 	// Initialize Echo Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -113,6 +122,9 @@ func main() {
 
 	taskGroup := API.Group("/tasks")
 	taskServer.Mount(taskGroup)
+
+	userGroup := API.Group("/")
+	userServer.Mount(userGroup)
 
 	e.Static("/", "public")
 
@@ -177,6 +189,21 @@ func initConfig() {
 	conf.Parse()
 
 	config.Config = configuration
+}
+
+func initUser(userServer *userserver.UserServer) error {
+	defaultUsername := "tania"
+	defaultPassword := "tania"
+
+	_, err := userServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
+	if err != nil {
+		log.Print("User ", defaultUsername, " already created")
+		return err
+	}
+
+	log.Print("User created with default username and password")
+
+	return nil
 }
 
 func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
@@ -297,25 +324,20 @@ func initSqlite() *sql.DB {
 
 	log.Print("Using SQLite at ", *config.Config.SqlitePath)
 
-	// Check if database exist by checking a table existance
-	result := ""
-	err = db.QueryRow("SELECT name FROM sqlite_master WHERE type='table' AND name='FARM_READ'").Scan(&result)
+	log.Print("Executing DDL file for ", *config.Config.SqlitePath)
+
+	ddl, err := ioutil.ReadFile("db/sqlite/ddl.sql")
 	if err != nil {
-		log.Print("Executing DDL file for ", *config.Config.SqlitePath)
-
-		ddl, err := ioutil.ReadFile("db/sqlite/ddl.sql")
-		if err != nil {
-			panic(err)
-		}
-		sql := string(ddl)
-
-		_, err = db.Exec(sql)
-		if err != nil {
-			panic(err)
-		}
-
-		log.Print("DDL file executed")
+		panic(err)
 	}
+	sql := string(ddl)
+
+	_, err = db.Exec(sql)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Print("DDL file executed")
 
 	return db
 }
