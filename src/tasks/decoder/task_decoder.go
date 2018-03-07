@@ -179,7 +179,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 		taskDomainCrop := domain.TaskDomainCrop{}
 
 		if v2, ok2 := mapped["material_id"]; ok2 {
-			val, ok2 := v.(string)
+			val, ok2 := v2.(string)
 			if !ok2 {
 				return domain.TaskDomainCrop{}, nil
 			}
@@ -189,7 +189,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 				return domain.TaskDomainCrop{}, err
 			}
 
-			taskDomainCrop.MaterialUID = uid
+			taskDomainCrop.MaterialID = &uid
 		}
 		if v2, ok2 := mapped["area_id"]; ok2 {
 			val, ok := v2.(string)
@@ -202,7 +202,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 				return domain.TaskDomainCrop{}, err
 			}
 
-			taskDomainCrop.AreaUID = uid
+			taskDomainCrop.AreaID = &uid
 		}
 		if v2, ok2 := mapped["crop_id"]; ok2 {
 			val, ok := v2.(string)
@@ -215,7 +215,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 				return domain.TaskDomainCrop{}, err
 			}
 
-			taskDomainCrop.CropUID = uid
+			taskDomainCrop.CropID = &uid
 		}
 
 		domainDetails = taskDomainCrop

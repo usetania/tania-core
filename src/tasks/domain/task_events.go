@@ -13,6 +13,8 @@ const (
 	TaskPriorityChangedCode    = "TaskPriorityChanged"
 	TaskDueDateChangedCode     = "TaskDueDateChanged"
 	TaskCategoryChangedCode    = "TaskCategoryChanged"
+	TaskDetailsChangedCode     = "TaskDetailsChanged"
+	TaskAssetIDChangedCode     = "TaskAssetIDChanged"
 	TaskCompletedCode          = "TaskCompleted"
 	TaskCancelledCode          = "TaskCancelled"
 	TaskDueCode                = "TaskDue"

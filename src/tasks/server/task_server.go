@@ -182,7 +182,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 
 	domaincode := c.FormValue("domain")
 
-	domaintask, err := s.CreateTaskDomainByCode(domaincode, asset_id_ptr, c)
+	domaintask, err := s.CreateTaskDomainByCode(domaincode, c)
 
 	if err != nil {
 		return Error(c, err)
@@ -215,7 +215,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) CreateTaskDomainByCode(domaincode string, assetPtr *uuid.UUID, c echo.Context) (domain.TaskDomain, error) {
+func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (domain.TaskDomain, error) {
 	domainvalue := domaincode
 	if domainvalue == "" {
 		return nil, NewRequestValidationError(REQUIRED, "domain")
@@ -227,8 +227,18 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, assetPtr *uuid.UU
 	case domain.TaskDomainCropCode:
 
 		category := c.FormValue("category")
+		cropID := c.FormValue("crop_id")
 		materialID := c.FormValue("material_id")
 		areaID := c.FormValue("area_id")
+
+		cropPtr := (*uuid.UUID)(nil)
+		if len(cropID) != 0 {
+			uid, err := uuid.FromString(cropID)
+			if err != nil {
+				return domain.TaskDomainCrop{}, err
+			}
+			cropPtr = &uid
+		}
 
 		materialPtr := (*uuid.UUID)(nil)
 		if len(materialID) != 0 {
@@ -248,7 +258,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, assetPtr *uuid.UU
 			areaPtr = &uid
 		}
 
-		return domain.CreateTaskDomainCrop(s.TaskService, category, assetPtr, materialPtr, areaPtr)
+		return domain.CreateTaskDomainCrop(s.TaskService, category, cropPtr, materialPtr, areaPtr)
 	case domain.TaskDomainFinanceCode:
 		return domain.CreateTaskDomainFinance()
 	case domain.TaskDomainGeneralCode:
@@ -369,7 +379,7 @@ func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *
 	category := c.FormValue("category")
 	if len(category) != 0 {
 		task.ChangeTaskCategory(s.TaskService, category)
-		details, err := s.CreateTaskDomainByCode(task.Domain, task.AssetID, c)
+		details, err := s.CreateTaskDomainByCode(task.Domain, c)
 
 		if err != nil {
 			return &domain.Task{}, Error(c, err)

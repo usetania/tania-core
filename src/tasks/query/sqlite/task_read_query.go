@@ -211,7 +211,7 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 				return storage.TaskRead{}, err
 			}
 
-			domainDetails = domain.TaskDomainCrop{InventoryUID: &invUID}
+			domainDetails = domain.TaskDomainCrop{MaterialID: &invUID}
 		}
 	case domain.TaskDomainFinanceCode:
 		domainDetails = domain.TaskDomainFinance{}

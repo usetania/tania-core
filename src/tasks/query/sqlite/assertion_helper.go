@@ -59,7 +59,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 					return nil, err
 				}
 
-				domainDetails = domain.TaskDomainCrop{InventoryUID: &uid}
+				domainDetails = domain.TaskDomainCrop{MaterialID: &uid}
 			} else {
 				domainDetails = domain.TaskDomainCrop{}
 			}
