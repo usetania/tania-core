@@ -2,11 +2,6 @@ package sqlite
 
 import (
 	"database/sql"
-	//"errors"
-	"fmt"
-
-	//assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
-	//assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
@@ -31,12 +26,10 @@ func (s MaterialQuerySqlite) FindMaterialByID(uid uuid.UUID) <-chan query.QueryR
 		}{}
 		material := query.TaskMaterialQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME
-			FROM MATERIAL_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name)
+		err := s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA 
+			FROM MATERIAL_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name, &rowsData.Type, &rowsData.TypeData)
 
-		fmt.Println("MATERIALUID", rowsData.UID)
 		materialUID, err := uuid.FromString(rowsData.UID)
-		fmt.Println("MUID", materialUID)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}

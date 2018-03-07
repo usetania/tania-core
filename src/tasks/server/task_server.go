@@ -117,6 +117,7 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 
 	data["data"] = []storage.TaskRead{}
 	for _, v := range tasks {
+		s.AppendTaskDomainDetails(&v)
 		data["data"] = append(data["data"], v)
 	}
 
@@ -149,6 +150,7 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 
 	data["data"] = []storage.TaskRead{}
 	for _, v := range tasks {
+		s.AppendTaskDomainDetails(&v)
 		data["data"] = append(data["data"], v)
 	}
 
@@ -211,7 +213,10 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(task)
 
-	data["data"] = *MapTaskToTaskRead(task)
+	taskRead := MapTaskToTaskRead(task)
+	s.AppendTaskDomainDetails(taskRead)
+
+	data["data"] = *taskRead
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -291,9 +296,67 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = task
+	s.AppendTaskDomainDetails(&task)
 
+	data["task"] = task
 	return c.JSON(http.StatusOK, data)
+}
+
+func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
+
+	if task.Domain == domain.TaskDomainCropCode {
+		material := (*domain.TaskDomainCropMaterial)(nil)
+		area := (*domain.TaskDomainCropArea)(nil)
+		crop := (*domain.TaskDomainCropBatch)(nil)
+
+		materialID := task.DomainDetails.(domain.TaskDomainCrop).MaterialID
+		if materialID != nil {
+			materialResult := s.TaskService.FindMaterialByID(*materialID)
+			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialQueryResult)
+
+			if !ok {
+				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			}
+			material = &domain.TaskDomainCropMaterial{
+				MaterialID:           &materialQueryResult.UID,
+				MaterialName:         materialQueryResult.Name,
+				MaterialType:         materialQueryResult.TypeCode,
+				MaterialDetailedType: materialQueryResult.DetailedTypeCode,
+			}
+		}
+		areaID := task.DomainDetails.(domain.TaskDomainCrop).AreaID
+		if areaID != nil {
+			areaResult := s.TaskService.FindAreaByID(*areaID)
+			areaQueryResult, ok := areaResult.Result.(query.TaskAreaQueryResult)
+
+			if !ok {
+				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			}
+			area = &domain.TaskDomainCropArea{
+				AreaID:   &areaQueryResult.UID,
+				AreaName: areaQueryResult.Name,
+			}
+		}
+		cropID := task.DomainDetails.(domain.TaskDomainCrop).CropID
+		if cropID != nil {
+			cropResult := s.TaskService.FindCropByID(*cropID)
+			cropQueryResult, ok := cropResult.Result.(query.TaskCropQueryResult)
+
+			if !ok {
+				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			}
+			crop = &domain.TaskDomainCropBatch{
+				CropID:      &cropQueryResult.UID,
+				CropBatchID: cropQueryResult.BatchID,
+			}
+		}
+		task.DomainDetails = &domain.TaskDomainDetailedCrop{
+			Material: material,
+			Area:     area,
+			Crop:     crop,
+		}
+	}
+	return nil
 }
 
 func (s *TaskServer) UpdateTask(c echo.Context) error {
@@ -336,8 +399,11 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 
 	// Trigger Events
 	s.publishUncommittedEvents(updatedTask)
+	read := MapTaskToTaskRead(updatedTask)
 
-	data["data"] = *MapTaskToTaskRead(updatedTask)
+	s.AppendTaskDomainDetails(read)
+
+	data["data"] = *read
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -434,7 +500,11 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(updatedTask)
 
-	data["data"] = *MapTaskToTaskRead(updatedTask)
+	read := MapTaskToTaskRead(updatedTask)
+
+	s.AppendTaskDomainDetails(read)
+
+	data["data"] = *read
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -488,8 +558,11 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 
 	// Trigger Events
 	s.publishUncommittedEvents(updatedTask)
+	read := MapTaskToTaskRead(updatedTask)
 
-	data["data"] = *MapTaskToTaskRead(updatedTask)
+	s.AppendTaskDomainDetails(read)
+
+	data["data"] = *read
 
 	return c.JSON(http.StatusOK, data)
 }
@@ -532,7 +605,11 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	// Trigger Events
 	s.publishUncommittedEvents(task)
 
-	data["data"] = *MapTaskToTaskRead(task)
+	read := MapTaskToTaskRead(task)
+
+	s.AppendTaskDomainDetails(read)
+
+	data["data"] = *read
 
 	return c.JSON(http.StatusOK, data)
 }

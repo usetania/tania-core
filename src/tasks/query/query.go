@@ -69,7 +69,6 @@ type TaskAreaQueryResult struct {
 
 type TaskCropQueryResult struct {
 	UID     uuid.UUID `json:"uid"`
-	Name    string    `json:"name"`
 	BatchID string    `json:"batch_id"`
 }
 
