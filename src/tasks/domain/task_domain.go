@@ -96,7 +96,7 @@ func CreateTaskDomainCrop(taskService TaskService, category string, cropID *uuid
 	}
 
 	if areaID != nil {
-		err := validateAssetID(taskService, cropID, TaskDomainAreaCode)
+		err := validateAssetID(taskService, areaID, TaskDomainAreaCode)
 		if err != nil {
 			return TaskDomainCrop{}, err
 		}
@@ -139,6 +139,7 @@ func validateDomainAssetID(taskService TaskService, assetid *uuid.UUID, taskdoma
 
 	switch taskdomain {
 	case TaskDomainAreaCode:
+
 		serviceResult := taskService.FindAreaByID(*assetid)
 
 		if serviceResult.Error != nil {
