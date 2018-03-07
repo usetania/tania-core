@@ -1,7 +1,6 @@
 package domain
 
 import (
-	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
@@ -52,8 +51,7 @@ func TestCreateTask(t *testing.T) {
 
 	materialID, _ := uuid.NewV4()
 	materialName := "A Good One Fertilizer For All"
-	materialType, _ := assetsdomain.CreateMaterialTypeAgrochemical(assetsdomain.ChemicalTypeFertilizer)
-	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, Type: materialType}})
+	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 	areaID, _ := uuid.NewV4()
 	areaName := "MY AREA SEEDING"
@@ -89,7 +87,7 @@ func TestCreateTask(t *testing.T) {
 
 	for _, test := range tests {
 		taskServiceMock.On("FindCropByID", *test.assetid).Return(ServiceResult{Result: query.TaskCropQueryResult{}})
-		taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, Type: materialType}})
+		taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 		_, err := CreateTask(
 			taskServiceMock, test.title, test.description, test.duedate, test.priority, test.domain, test.category, test.assetid)
@@ -98,7 +96,7 @@ func TestCreateTask(t *testing.T) {
 	}
 
 	//nil assetid
-	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, Type: materialType}})
+	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 	_, err := CreateTask(
 		taskServiceMock, tasktitle, taskdescription, due_ptr, "URGENT", taskdomain, taskcategory, nil)
@@ -107,7 +105,7 @@ func TestCreateTask(t *testing.T) {
 
 	//assetid doesn't exist
 	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}, Error: TaskError{TaskErrorInvalidAssetIDCode}})
-	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, Type: materialType}})
+	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 	_, err = CreateTask(
 		taskServiceMock, tasktitle, taskdescription, due_ptr, "NORMAL", taskdomain, taskcategory, &assetID_notexist)
