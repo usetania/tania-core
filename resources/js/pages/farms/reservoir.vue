@@ -24,7 +24,7 @@
               .row.m-b
                 .col-md-6
                   small.text-muted Used In
-                  .h4.text-lt(v-for="area in reservoir.installed_to_areas")
+                  .h4.text-lt(v-for="area in reservoir.installed_to_area")
                     span.areatag {{ area.name }}
               .row.m-b
                 .col-md-6

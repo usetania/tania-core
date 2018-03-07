@@ -27,9 +27,9 @@
               td {{ getType(reservoir.water_source.type).label }}
               td {{ reservoir.water_source.capacity }}
               td
-                span(v-for="(area, index) in reservoir.installed_to_areas")
+                span(v-for="(area, index) in reservoir.installed_to_area")
                   | {{ area.name }}
-                  span(v-if="index+1 < reservoir.installed_to_areas.length") , 
+                  span(v-if="index+1 < reservoir.installed_to_area.length") , 
               td
                 a.pull-right(style="cursor: pointer;" @click="openModal(reservoir)")
                   i.fa.fa-edit
