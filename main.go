@@ -197,7 +197,7 @@ func initUser(userServer *userserver.UserServer) error {
 
 	_, err := userServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
-		log.Print("User ", defaultUsername, " already created")
+		log.Print("User ", defaultUsername, " has already created")
 		return err
 	}
 

@@ -1,6 +1,7 @@
 package decoder
 
 import (
+	"encoding/base64"
 	"reflect"
 	"time"
 
@@ -58,5 +59,21 @@ func TimeHook(layout string) mapstructure.DecodeHookFunc {
 
 		// Convert it by parsing
 		return time.Parse(layout, data.(string))
+	}
+}
+
+// PasswordHook is used because the password []byte data type is encoded to base64 string by json.Marshal
+// so we need to decode it back to base64
+// https://golang.org/pkg/encoding/json/#Marshal
+func PasswordHook() mapstructure.DecodeHookFunc {
+	return func(f reflect.Type, t reflect.Type, data interface{}) (interface{}, error) {
+		if f.Kind() != reflect.String {
+			return data, nil
+		}
+		if t != reflect.TypeOf([]byte{}) {
+			return data, nil
+		}
+
+		return base64.StdEncoding.DecodeString(data.(string))
 	}
 }

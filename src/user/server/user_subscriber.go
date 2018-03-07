@@ -1,6 +1,8 @@
 package server
 
 import (
+	"errors"
+
 	"github.com/Tanibox/tania-server/src/user/domain"
 	"github.com/Tanibox/tania-server/src/user/storage"
 	"github.com/labstack/gommon/log"
@@ -16,6 +18,22 @@ func (s *UserServer) SaveToUserReadModel(event interface{}) error {
 		userRead.Password = e.Password
 		userRead.CreatedDate = e.CreatedDate
 		userRead.LastUpdated = e.LastUpdated
+
+	case domain.PasswordChanged:
+		queryResult := <-s.UserReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			log.Error(queryResult.Error)
+		}
+
+		u, ok := queryResult.Result.(storage.UserRead)
+		if !ok {
+			log.Error(errors.New("Internal server error. Error type assertion"))
+		}
+
+		userRead = &u
+
+		userRead.Password = e.NewPassword
+		userRead.LastUpdated = e.DateChanged
 
 	}
 
