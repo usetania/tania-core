@@ -35,6 +35,8 @@ export const FETCH_MATERIALS = 'FETCH_MATERIALS'
 export const CREATE_MATERIAL = 'CREATE_MATERIAL'
 export const UPDATE_MATERIAL = 'UPDATE_MATERIAL'
 
+export const SET_PAGES = 'SET_PAGES'
+
 export const FETCH_TASKS = 'FETCH_TASKS'
 export const CREATE_TASK = 'CREATE_TASK'
 export const UPDATE_TASK = 'UPDATE_TASK'

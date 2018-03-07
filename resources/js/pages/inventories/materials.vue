@@ -33,6 +33,17 @@
               td
                 a(@click="openModal(material)")
                   i.fa.fa-edit
+        .panel-footer(v-if="pages > 1")
+          .text-center
+            ul.pagination.pagination-sm.m-t-none.m-b-none
+              li(v-bind:class="{ disabled: currentPage == 1 }")
+                a(href="")
+                  i.fa.fa-chevron-left
+              li(v-if="pages < 6" v-for="pageNumber in pages")
+                a(v-bind:class="{ active: currentPage == pageNumber }") {{ pageNumber }}
+              li(v-bind:class="{ disabled: currentPage == pages }")
+                a(href="")
+                  i.fa.fa-chevron-right
 </template>
 
 <script>
@@ -43,7 +54,8 @@ export default {
   name: 'InventoriesMaterial',
   computed: {
     ...mapGetters({
-      materials: 'getAllMaterials'
+      materials: 'getAllMaterials',
+      pages: 'getMaterialsNumberOfPages',
     })
   },
   components: {
@@ -53,7 +65,8 @@ export default {
   data () {
     return {
       data: {},
-      showModal: false
+      currentPage: 1,
+      showModal: false,
     }
   },
   methods: {
@@ -77,6 +90,7 @@ export default {
   },
   mounted () {
     this.fetchMaterials()
+    console.log(this.pages)
   },
 }
 </script>

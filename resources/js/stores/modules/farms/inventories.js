@@ -1,16 +1,19 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
+import { calculateNumberOfPages } from '@/stores/constants'
 import FarmApi from '@/stores/api/farm'
 
 const state = {
   inventories: [],
   materials: [],
+  pages: 0,
 }
 
 const getters = {
   getAllFarmInventories: state => state.inventories,
   getAllMaterials: state => state.materials,
+  getMaterialsNumberOfPages: state => state.pages,
 }
 
 const actions = {
@@ -30,6 +33,7 @@ const actions = {
       FarmApi
         .ApiFetchMaterial(({ data }) => {
           commit(types.FETCH_MATERIALS, data.data)
+          commit(types.SET_PAGES, data.total)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -61,6 +65,7 @@ const actions = {
 const mutations = {
   [types.CREATE_MATERIAL] (state, payload) {
     state.materials.push(payload)
+    state.pages = calculateNumberOfPages(state.materials.length + 1)
   },
   [types.UPDATE_MATERIAL] (state, payload) {
     const materials = state.materials
@@ -71,6 +76,9 @@ const mutations = {
   },
   [types.FETCH_FARM_INVENTORIES] (state, payload) {
     state.inventories = payload
+  },
+  [types.SET_PAGES] (state, pages) {
+    state.pages = calculateNumberOfPages(pages)
   },
 }
 

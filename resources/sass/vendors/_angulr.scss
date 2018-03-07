@@ -413,6 +413,11 @@ a.list-group-item.hover {
   border-color: #dee5e7;
 }
 
+.pagination > li > a.active {
+  background-color: #dee5e7;
+  pointer-events:none;
+}
+
 .pagination > li > a:hover,
 .pagination > li > a:focus {
   background-color: #edf1f2;
