@@ -51,6 +51,15 @@ type HarvestActivity struct{ *storage.HarvestActivity }
 type DumpActivity struct{ *storage.DumpActivity }
 type PhotoActivity struct{ *storage.PhotoActivity }
 type WaterActivity struct{ *storage.WaterActivity }
+type TaskCropActivity struct{ *storage.TaskCropActivity }
+type TaskNutrientActivity struct{ *storage.TaskNutrientActivity }
+type TaskPestControlActivity struct {
+	*storage.TaskPestControlActivity
+}
+type TaskSafetyActivity struct{ *storage.TaskSafetyActivity }
+type TaskSanitationActivity struct {
+	*storage.TaskSanitationActivity
+}
 
 func MapToCropActivity(activity storage.CropActivity) CropActivity {
 	ca := CropActivity(activity)
@@ -68,6 +77,16 @@ func MapToCropActivity(activity storage.CropActivity) CropActivity {
 		ca.ActivityType = PhotoActivity{&v}
 	case storage.WaterActivity:
 		ca.ActivityType = WaterActivity{&v}
+	case storage.TaskCropActivity:
+		ca.ActivityType = TaskCropActivity{&v}
+	case storage.TaskNutrientActivity:
+		ca.ActivityType = TaskNutrientActivity{&v}
+	case storage.TaskPestControlActivity:
+		ca.ActivityType = TaskPestControlActivity{&v}
+	case storage.TaskSanitationActivity:
+		ca.ActivityType = TaskSanitationActivity{&v}
+	case storage.TaskSafetyActivity:
+		ca.ActivityType = TaskSafetyActivity{&v}
 	}
 
 	return ca
@@ -380,6 +399,61 @@ func (a PhotoActivity) MarshalJSON() ([]byte, error) {
 
 func (a WaterActivity) MarshalJSON() ([]byte, error) {
 	type Alias WaterActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string `json:"code"`
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a TaskCropActivity) MarshalJSON() ([]byte, error) {
+	type Alias TaskCropActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string `json:"code"`
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a TaskNutrientActivity) MarshalJSON() ([]byte, error) {
+	type Alias TaskNutrientActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string `json:"code"`
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a TaskPestControlActivity) MarshalJSON() ([]byte, error) {
+	type Alias TaskPestControlActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string `json:"code"`
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a TaskSafetyActivity) MarshalJSON() ([]byte, error) {
+	type Alias TaskSafetyActivity
+	return json.Marshal(struct {
+		*Alias
+		Code string `json:"code"`
+	}{
+		Alias: (*Alias)(&a),
+		Code:  a.Code(),
+	})
+}
+
+func (a TaskSanitationActivity) MarshalJSON() ([]byte, error) {
+	type Alias TaskSanitationActivity
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`

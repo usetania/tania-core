@@ -46,6 +46,10 @@ type FarmReadQuery interface {
 	FindByID(farmUID uuid.UUID) <-chan QueryResult
 }
 
+type TaskReadQuery interface {
+	FindByID(taskUID uuid.UUID) <-chan QueryResult
+}
+
 type QueryResult struct {
 	Result interface{}
 	Error  error
@@ -120,4 +124,16 @@ type CropFarmQueryResult struct {
 type CountTotalBatchQueryResult struct {
 	VarietyName string `json:"variety_name"`
 	TotalBatch  int    `json:"total_batch"`
+}
+
+type CropTaskQueryResult struct {
+	UID         uuid.UUID
+	Title       string
+	Description string
+	Category    string
+	Status      string
+	Domain      string
+	CropUID     uuid.UUID
+	MaterialUID uuid.UUID
+	AreaUID     uuid.UUID
 }

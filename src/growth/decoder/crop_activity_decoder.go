@@ -90,6 +90,57 @@ func (w *CropActivityTypeWrapper) UnmarshalJSON(b []byte) error {
 		}
 
 		w.Data = a
+
+	case storage.TaskCropActivityCode:
+		a := storage.TaskCropActivity{}
+
+		_, err := Decode(f, &mapped, &a)
+		if err != nil {
+			return err
+		}
+
+		w.Data = a
+
+	case storage.TaskNutrientActivityCode:
+		a := storage.TaskNutrientActivity{}
+
+		_, err := Decode(f, &mapped, &a)
+		if err != nil {
+			return err
+		}
+
+		w.Data = a
+
+	case storage.TaskPestControlActivityCode:
+		a := storage.TaskPestControlActivity{}
+
+		_, err := Decode(f, &mapped, &a)
+		if err != nil {
+			return err
+		}
+
+		w.Data = a
+
+	case storage.TaskSafetyActivityCode:
+		a := storage.TaskSafetyActivity{}
+
+		_, err := Decode(f, &mapped, &a)
+		if err != nil {
+			return err
+		}
+
+		w.Data = a
+
+	case storage.TaskSanitationActivityCode:
+		a := storage.TaskSanitationActivity{}
+
+		_, err := Decode(f, &mapped, &a)
+		if err != nil {
+			return err
+		}
+
+		w.Data = a
+
 	}
 
 	return nil

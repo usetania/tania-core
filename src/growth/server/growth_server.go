@@ -37,6 +37,7 @@ type GrowthServer struct {
 	AreaReadQuery     query.AreaReadQuery
 	MaterialReadQuery query.MaterialReadQuery
 	FarmReadQuery     query.FarmReadQuery
+	TaskReadQuery     query.TaskReadQuery
 	EventBus          EventBus.Bus
 	File              File
 }
@@ -62,6 +63,7 @@ func NewGrowthServer(
 	areaReadQuery := querySqlite.NewAreaReadQuerySqlite(db)
 	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)
 	farmReadQuery := querySqlite.NewFarmReadQuerySqlite(db)
+	taskReadQuery := querySqlite.NewTaskReadQuerySqlite(db)
 
 	cropService := service.CropServiceInMemory{
 		MaterialReadQuery: materialReadQuery,
@@ -80,6 +82,7 @@ func NewGrowthServer(
 		AreaReadQuery:     areaReadQuery,
 		MaterialReadQuery: materialReadQuery,
 		FarmReadQuery:     farmReadQuery,
+		TaskReadQuery:     taskReadQuery,
 		File:              LocalFile{},
 		EventBus:          bus,
 	}
@@ -110,6 +113,8 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchNoteRemoved", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchPhotoCreated", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchPhotoCreated", s.SaveToCropActivityReadModel)
+
+	s.EventBus.Subscribe("TaskCompleted", s.SaveToCropActivityReadModel)
 }
 
 // Mount defines the GrowthServer's endpoints with its handlers

@@ -8,7 +8,9 @@ import (
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/storage"
+	taskevents "github.com/Tanibox/tania-server/src/tasks/domain"
 	"github.com/labstack/gommon/log"
+	uuid "github.com/satori/go.uuid"
 )
 
 func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
@@ -738,11 +740,112 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			Height:      e.Height,
 			Description: e.Description,
 		}
+
+	// TODO:
+	// We cannot listen to this events without refer to the original struct.
+	// This is considered as domain boundary leak.
+	case taskevents.TaskCompleted:
+		queryResult := <-s.TaskReadQuery.FindByID(e.UID)
+		if queryResult.Error != nil {
+			log.Error(queryResult.Error)
+		}
+
+		taskQueryResult, ok := queryResult.Result.(query.CropTaskQueryResult)
+		if !ok {
+			log.Error(errors.New("Internal server error. Error type assertion"))
+		}
+
+		if taskQueryResult.Domain == "CROP" {
+			cropRead := storage.CropRead{}
+			if taskQueryResult.CropUID != (uuid.UUID{}) {
+				queryResult := <-s.CropReadQuery.FindByID(taskQueryResult.CropUID)
+				if queryResult.Error != nil {
+					log.Error(queryResult.Error)
+				}
+
+				cropRead, ok = queryResult.Result.(storage.CropRead)
+				if !ok {
+					log.Error(errors.New("Internal server error. Error type assertion"))
+				}
+			}
+
+			areaQueryResult := query.CropAreaQueryResult{}
+			if taskQueryResult.CropUID != (uuid.UUID{}) {
+				queryResult := <-s.AreaReadQuery.FindByID(taskQueryResult.AreaUID)
+				if queryResult.Error != nil {
+					log.Error(queryResult.Error)
+				}
+
+				areaQueryResult, ok = queryResult.Result.(query.CropAreaQueryResult)
+				if !ok {
+					log.Error(errors.New("Internal server error. Error type assertion"))
+				}
+			}
+
+			materialQueryResult := query.CropMaterialQueryResult{}
+			if taskQueryResult.CropUID != (uuid.UUID{}) {
+				queryResult := <-s.MaterialReadQuery.FindByID(taskQueryResult.MaterialUID)
+				if queryResult.Error != nil {
+					log.Error(queryResult.Error)
+				}
+
+				materialQueryResult, ok = queryResult.Result.(query.CropMaterialQueryResult)
+				if !ok {
+					log.Error(errors.New("Internal server error. Error type assertion"))
+				}
+			}
+
+			cropActivity.UID = cropRead.UID
+			cropActivity.BatchID = cropRead.BatchID
+			cropActivity.ContainerType = cropRead.Container.Type
+			cropActivity.CreatedDate = time.Now()
+
+			switch taskQueryResult.Category {
+			case "CROP":
+				cropActivity.ActivityType = storage.TaskCropActivity{
+					TaskUID:     e.UID,
+					Title:       taskQueryResult.Title,
+					Description: taskQueryResult.Description,
+					AreaName:    areaQueryResult.Name,
+				}
+			case "NUTRIENT":
+				cropActivity.ActivityType = storage.TaskNutrientActivity{
+					TaskUID:      e.UID,
+					MaterialType: materialQueryResult.PlantTypeCode,
+					MaterialName: materialQueryResult.Name,
+					AreaName:     areaQueryResult.Name,
+				}
+			case "PESTCONTROL":
+				cropActivity.ActivityType = storage.TaskPestControlActivity{
+					TaskUID:      e.UID,
+					MaterialType: materialQueryResult.PlantTypeCode,
+					MaterialName: materialQueryResult.Name,
+					AreaName:     areaQueryResult.Name,
+				}
+			case "SAFETY":
+				cropActivity.ActivityType = storage.TaskSafetyActivity{
+					TaskUID:     e.UID,
+					Title:       taskQueryResult.Title,
+					Description: taskQueryResult.Description,
+					AreaName:    areaQueryResult.Name,
+				}
+			case "SANITATION":
+				cropActivity.ActivityType = storage.TaskSanitationActivity{
+					TaskUID:     e.UID,
+					Title:       taskQueryResult.Title,
+					Description: taskQueryResult.Description,
+					AreaName:    areaQueryResult.Name,
+				}
+			}
+		}
+
 	}
 
-	err := <-s.CropActivityRepo.Save(cropActivity, isUpdate)
-	if err != nil {
-		log.Error(err)
+	if cropActivity.UID != (uuid.UUID{}) {
+		err := <-s.CropActivityRepo.Save(cropActivity, isUpdate)
+		if err != nil {
+			log.Error(err)
+		}
 	}
 
 	return nil

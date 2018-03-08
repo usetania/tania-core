@@ -120,12 +120,17 @@ type CropPhoto struct {
 }
 
 const (
-	SeedActivityCode    = "SEED"
-	MoveActivityCode    = "MOVE"
-	HarvestActivityCode = "HARVEST"
-	DumpActivityCode    = "DUMP"
-	PhotoActivityCode   = "PHOTO"
-	WaterActivityCode   = "WATER"
+	SeedActivityCode            = "SEED"
+	MoveActivityCode            = "MOVE"
+	HarvestActivityCode         = "HARVEST"
+	DumpActivityCode            = "DUMP"
+	PhotoActivityCode           = "PHOTO"
+	WaterActivityCode           = "WATER"
+	TaskCropActivityCode        = "TASK_CROP"
+	TaskNutrientActivityCode    = "TASK_NUTRIENT"
+	TaskPestControlActivityCode = "TASK_PEST_CONTROL"
+	TaskSafetyActivityCode      = "TASK_SAFETY"
+	TaskSanitationActivityCode  = "TASK_SANITATION"
 )
 
 type CropActivity struct {
@@ -211,4 +216,59 @@ type PhotoActivity struct {
 
 func (a PhotoActivity) Code() string {
 	return PhotoActivityCode
+}
+
+type TaskCropActivity struct {
+	TaskUID     uuid.UUID `json:"task_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	AreaName    string    `json:"area_name"`
+}
+
+func (a TaskCropActivity) Code() string {
+	return TaskCropActivityCode
+}
+
+type TaskNutrientActivity struct {
+	TaskUID      uuid.UUID `json:"task_id"`
+	MaterialType string    `json:"material_type"`
+	MaterialName string    `json:"material_name"`
+	AreaName     string    `json:"area_name"`
+}
+
+func (a TaskNutrientActivity) Code() string {
+	return TaskNutrientActivityCode
+}
+
+type TaskPestControlActivity struct {
+	TaskUID      uuid.UUID `json:"task_id"`
+	MaterialType string    `json:"material_type"`
+	MaterialName string    `json:"material_name"`
+	AreaName     string    `json:"area_name"`
+}
+
+func (a TaskPestControlActivity) Code() string {
+	return TaskPestControlActivityCode
+}
+
+type TaskSafetyActivity struct {
+	TaskUID     uuid.UUID `json:"task_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	AreaName    string    `json:"area_name"`
+}
+
+func (a TaskSafetyActivity) Code() string {
+	return TaskSafetyActivityCode
+}
+
+type TaskSanitationActivity struct {
+	TaskUID     uuid.UUID `json:"task_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	AreaName    string    `json:"area_name"`
+}
+
+func (a TaskSanitationActivity) Code() string {
+	return TaskSanitationActivityCode
 }
