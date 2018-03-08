@@ -19,6 +19,8 @@ echo "Configuring binary for running ..."
 # Setting up configuration
 cp conf.json.example conf.json
 sed -i.bak "s|/Users/user/Code/golang/src/github.com/Tanibox/tania-server|$TRAVIS_BUILD_DIR|g" conf.json
+# Set DEMO_MODE to true to turn off the token validation
+DEMO_MODE=true
 
 echo "Starting server for E2E testing ..."
 
