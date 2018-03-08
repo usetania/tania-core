@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -15,7 +16,7 @@ import (
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
-	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
+	tasksserver "github.com/Tanibox/tania-server/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-server/src/user/server"
 	"github.com/asaskevich/EventBus"
@@ -24,6 +25,7 @@ import (
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
+	uuid "github.com/satori/go.uuid"
 )
 
 func init() {
@@ -68,7 +70,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	taskServer, err := taskserver.NewTaskServer(
+	taskServer, err := tasksserver.NewTaskServer(
 		db,
 		bus,
 		inMem.cropReadStorage,
@@ -102,29 +104,37 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	authServer, err := userserver.NewAuthServer(db, bus)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
 	// Initialize user
-	err = initUser(userServer)
+	err = initUser(authServer)
 
 	// Initialize Echo Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(headerNoCache)
-	e.Use(tokenValidation)
 
 	// HTTP routing
 	API := e.Group("api")
 	API.Use(middleware.CORS())
 
-	routing.LocationsRouter(API.Group("/locations"))
+	// AuthServer is used for endpoint that doesn't need authentication checking
+	authGroup := API.Group("/")
+	authServer.Mount(authGroup)
 
-	farmGroup := API.Group("/farms")
+	routing.LocationsRouter(API.Group("/locations", tokenValidationWithConfig(db)))
+
+	farmGroup := API.Group("/farms", tokenValidationWithConfig(db))
 	farmServer.Mount(farmGroup)
 	growthServer.Mount(farmGroup)
 
-	taskGroup := API.Group("/tasks")
+	taskGroup := API.Group("/tasks", tokenValidationWithConfig(db))
 	taskServer.Mount(taskGroup)
 
-	userGroup := API.Group("/")
+	userGroup := API.Group("/user", tokenValidationWithConfig(db))
 	userServer.Mount(userGroup)
 
 	e.Static("/", "public")
@@ -193,11 +203,11 @@ func initConfig() {
 	config.Config = configuration
 }
 
-func initUser(userServer *userserver.UserServer) error {
+func initUser(authServer *userserver.AuthServer) error {
 	defaultUsername := "tania"
 	defaultPassword := "tania"
 
-	_, userAuth, err := userServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
+	_, userAuth, err := authServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
 		log.Print("User ", defaultUsername, " has already created")
 		return err
@@ -349,18 +359,35 @@ func initSqlite() *sql.DB {
 	return db
 }
 
-func tokenValidation(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		authorization := c.Request().Header.Get("Authorization")
+func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			authorization := c.Request().Header.Get("Authorization")
 
-		if authorization != "" {
-			splitted := strings.Split(authorization, " ")
-
-			if len(splitted) > 0 {
-				log.Print("Access Token ", splitted[1])
+			if authorization == "" {
+				return c.JSON(http.StatusForbidden, map[string]string{"data": "Forbidden"})
 			}
-		}
 
-		return next(c)
+			splitted := strings.Split(authorization, " ")
+			if len(splitted) <= 1 {
+				return c.JSON(http.StatusForbidden, map[string]string{"data": "Forbidden"})
+			}
+
+			uid := ""
+			err := db.QueryRow(`SELECT USER_UID
+				FROM USER_AUTH WHERE ACCESS_TOKEN = ?`, splitted[1]).Scan(&uid)
+			if err != nil {
+				return c.JSON(http.StatusUnauthorized, map[string]string{"data": "Unauthorized"})
+			}
+
+			userUID, err := uuid.FromString(uid)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]error{"data": err})
+			}
+
+			c.Set("USER_UID", userUID)
+
+			return next(c)
+		}
 	}
 }

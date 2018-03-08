@@ -12,13 +12,6 @@ func (s *UserServer) SaveToUserReadModel(event interface{}) error {
 	userRead := &storage.UserRead{}
 
 	switch e := event.(type) {
-	case domain.UserCreated:
-		userRead.UID = e.UID
-		userRead.Username = e.Username
-		userRead.Password = e.Password
-		userRead.CreatedDate = e.CreatedDate
-		userRead.LastUpdated = e.LastUpdated
-
 	case domain.PasswordChanged:
 		queryResult := <-s.UserReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
