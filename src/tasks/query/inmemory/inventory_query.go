@@ -1,16 +1,17 @@
 package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/assets/storage"
+	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
+	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
 
 type MaterialQueryInMemory struct {
-	Storage *storage.MaterialReadStorage
+	Storage *assetsstorage.MaterialReadStorage
 }
 
-func NewMaterialQueryInMemory(s *storage.MaterialReadStorage) query.MaterialQuery {
+func NewMaterialQueryInMemory(s *assetsstorage.MaterialReadStorage) query.MaterialQuery {
 	return MaterialQueryInMemory{Storage: s}
 }
 
@@ -27,8 +28,16 @@ func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan q
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
 				ci.Name = val.Name
-				ci.TypeCode = val.TypeCode
-				ci.DetailedTypeCode = val.TypeData
+				ci.TypeCode = val.Type.Code()
+
+				switch v := val.Type.(type) {
+				case assetsdomain.MaterialTypeSeed:
+					ci.DetailedTypeCode = v.PlantType.Code
+				case assetsdomain.MaterialTypePlant:
+					ci.DetailedTypeCode = v.PlantType.Code
+				case assetsdomain.MaterialTypeAgrochemical:
+					ci.DetailedTypeCode = v.ChemicalType.Code
+				}
 			}
 		}
 		result <- query.QueryResult{Result: ci}
