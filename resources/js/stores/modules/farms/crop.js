@@ -1,7 +1,7 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
-import { calculateNumberOfPages } from '@/stores/constants'
+import { calculateNumberOfPages, pageLength } from '@/stores/constants'
 import FarmApi from '@/stores/api/farm'
 
 const state = {
@@ -165,7 +165,10 @@ const actions = {
 
 const mutations = {
   [types.CREATE_CROP] (state, payload) {
-    state.crops.push(payload)
+    state.crops.unshift(payload)
+    if (state.crops.length > pageLength) {
+      state.crops.pop()
+    }
     state.pages = calculateNumberOfPages(state.crops.length + 1)
   },
   [types.UPDATE_CROP] (state, payload) {
@@ -192,7 +195,6 @@ const mutations = {
   },
   [types.SET_PAGES] (state, pages) {
     state.pages = calculateNumberOfPages(pages)
-    console.log('pages = ' + state.pages)
   },
 }
 

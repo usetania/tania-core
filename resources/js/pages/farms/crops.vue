@@ -55,7 +55,7 @@ export default {
     return {
       data: {},
       showModal: false,
-      status: "BATCH"
+      status: "BATCH",
     }
   },
   methods: {
@@ -73,22 +73,21 @@ export default {
       }
     },
     getCrops () {
+      this.fetchCrops({ pageId : this.getCurrentPage() })
+    },
+    getCurrentPage () {
       let pageId = 1
       if (typeof this.$route.query.page != "undefined") {
         pageId = parseInt(this.$route.query.page)
       }
-      this.fetchCrops({ pageId : pageId })
+      return pageId
     },
     statusSelected (status) {
       this.status = status
       if (status == 'BATCH') {
         this.getCrops()
       } else {
-        this.fetchArchivedCrops()
-          .then(({ data }) =>  {
-            this.crops = data
-          })
-          .catch(error => console.log(error))
+        this.fetchArchivedCrops({ pageId : this.getCurrentPage() })
       }
     },
     isActive (status) {

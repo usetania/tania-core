@@ -1,7 +1,7 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
-import { calculateNumberOfPages } from '@/stores/constants'
+import { calculateNumberOfPages, pageLength } from '@/stores/constants'
 import FarmApi from '@/stores/api/farm'
 
 const state = {
@@ -64,7 +64,10 @@ const actions = {
 
 const mutations = {
   [types.CREATE_MATERIAL] (state, payload) {
-    state.materials.push(payload)
+    state.materials.unshift(payload)
+    if (state.materials.length > pageLength) {
+      state.materials.pop()
+    }
     state.pages = calculateNumberOfPages(state.materials.length + 1)
   },
   [types.UPDATE_MATERIAL] (state, payload) {
