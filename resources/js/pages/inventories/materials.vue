@@ -33,21 +33,12 @@
               td
                 a(@click="openModal(material)")
                   i.fa.fa-edit
-        .panel-footer(v-if="pages > 1")
-          .text-center
-            ul.pagination.pagination-sm.m-t-none.m-b-none
-              li(v-bind:class="{ disabled: currentPage == 1 }")
-                a(href="")
-                  i.fa.fa-chevron-left
-              li(v-if="pages < 6" v-for="pageNumber in pages")
-                a(v-bind:class="{ active: currentPage == pageNumber }") {{ pageNumber }}
-              li(v-bind:class="{ disabled: currentPage == pages }")
-                a(href="")
-                  i.fa.fa-chevron-right
+        Pagination(:pages="pages")
 </template>
 
 <script>
 import Modal from '@/components/modal.vue'
+import Pagination from '@/components/pagination.vue'
 import { mapActions, mapGetters } from 'vuex'
 import { FindInventoryType, FindQuantityUnit } from '@/stores/helpers/inventories/inventory'
 export default {
@@ -59,13 +50,13 @@ export default {
     })
   },
   components: {
-    Modal,
     InventoriesMaterialForm: () => import('./materials-form.vue'),
+    Modal,
+    Pagination,
   },
   data () {
     return {
       data: {},
-      currentPage: 1,
       showModal: false,
     }
   },
@@ -90,7 +81,6 @@ export default {
   },
   mounted () {
     this.fetchMaterials()
-    console.log(this.pages)
   },
 }
 </script>
