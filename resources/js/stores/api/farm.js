@@ -94,8 +94,8 @@ export default {
   ApiDeleteCropNotes: (cropid, noteid, payload, cbSuccess, cbError) => {
     http.delete('farms/crops/' + cropid + '/notes/' + noteid, payload, cbSuccess, cbError)
   },
-  ApiFetchMaterial: (cbSuccess, cbError) => {
-    http.get('farms/inventories/materials', cbSuccess, cbError)
+  ApiFetchMaterial: (pageid, cbSuccess, cbError) => {
+    http.get('farms/inventories/materials?page=' + pageid, cbSuccess, cbError)
   },
   ApiCreateMaterial: (payload, cbSuccess, cbError) => {
     http.post('farms/inventories/materials/' + payload.type, payload, cbSuccess, cbError)

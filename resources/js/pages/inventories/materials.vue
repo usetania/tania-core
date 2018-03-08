@@ -33,7 +33,7 @@
               td
                 a(@click="openModal(material)")
                   i.fa.fa-edit
-        Pagination(:pages="pages")
+        Pagination(:pages="pages" @reload="getMaterials")
 </template>
 
 <script>
@@ -64,6 +64,13 @@ export default {
     ...mapActions([
       'fetchMaterials'
     ]),
+    getMaterials() {
+      let pageId = 1
+      if (typeof this.$route.query.page != "undefined") {
+        pageId = parseInt(this.$route.query.page)
+      }
+      this.fetchMaterials({ pageId : pageId })
+    },
     getType(key) {
       return FindInventoryType(key)
     },
@@ -77,10 +84,10 @@ export default {
       } else {
         this.data = {}
       }
-    }
+    },
   },
   mounted () {
-    this.fetchMaterials()
+    this.getMaterials()
   },
 }
 </script>

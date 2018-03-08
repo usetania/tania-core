@@ -3,20 +3,20 @@
     .panel-footer(v-if="pages > 1")
       .text-center
         ul.pagination.pagination-sm.m-t-none.m-b-none
-          li(v-bind:class="{ disabled: currentPage == 1 }")
+          li(v-bind:class="{ disabled: currentPage == 1 }" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: (currentPage - 1) }}")
               i.fa.fa-chevron-left
-          li(v-if="pages <= tabs" v-for="pageNumber in pages")
+          li(v-if="pages <= tabs" v-for="pageNumber in pages" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: pageNumber }}" v-bind:class="{ active: currentPage == pageNumber }") {{ pageNumber }}
-          li(v-if="pages > tabs && currentPage > mid && (currentPage + span) <= pages" v-for="pageNumber in tabs")
+          li(v-if="pages > tabs && currentPage > mid && (currentPage + span) <= pages" v-for="pageNumber in tabs" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: (currentPage - mid + pageNumber) }}" v-bind:class="{ active: currentPage == (currentPage - mid + pageNumber) }") {{ currentPage - mid + pageNumber }}
-          li(v-if="pages > tabs && currentPage > mid && (currentPage + span) > pages && currentPage < pages " v-for="pageNumber in tabs")
+          li(v-if="pages > tabs && currentPage > mid && (currentPage + span) > pages && currentPage < pages " v-for="pageNumber in tabs" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: (currentPage - (mid + (pages - currentPage)) + pageNumber)  }}" v-bind:class="{ active: currentPage == (currentPage - (mid + (pages - currentPage)) + pageNumber) }") {{ currentPage - (mid + (pages - currentPage)) + pageNumber }}
-          li(v-if="pages > tabs && currentPage > mid && currentPage == pages" v-for="pageNumber in tabs")
+          li(v-if="pages > tabs && currentPage > mid && currentPage == pages" v-for="pageNumber in tabs" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: (currentPage - (tabs - pageNumber)) }}" v-bind:class="{ active: currentPage == (currentPage - (tabs - pageNumber)) }") {{ (currentPage - (tabs - pageNumber)) }}
-          li(v-if="pages > tabs && currentPage <= mid" v-for="pageNumber in tabs")
+          li(v-if="pages > tabs && currentPage <= mid" v-for="pageNumber in tabs" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: pageNumber }}" v-bind:class="{ active: currentPage == pageNumber }") {{ pageNumber }}
-          li(v-bind:class="{ disabled: currentPage == pages }")
+          li(v-bind:class="{ disabled: currentPage == pages }" v-on:click="reload")
             router-link(:to="{ path: path, query: { page: (currentPage + 1) }}")
               i.fa.fa-chevron-right
 </template>
@@ -31,6 +31,12 @@ export default {
       mid: 3,
       span: 2,
       path: '',
+    }
+  },
+  methods: {
+    reload () {
+      this.$emit('reload')
+      this.currentPage = parseInt(this.$route.query.page)
     }
   },
   mounted () {

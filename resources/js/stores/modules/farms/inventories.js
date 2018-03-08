@@ -27,11 +27,11 @@ const actions = {
         }, error => reject(error.response))
     })
   },
-  fetchMaterials ({ commit, state }) {
+  fetchMaterials ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
       FarmApi
-        .ApiFetchMaterial(({ data }) => {
+        .ApiFetchMaterial(payload.pageId, ({ data }) => {
           commit(types.FETCH_MATERIALS, data.data)
           commit(types.SET_PAGES, data.total)
           resolve(data)
