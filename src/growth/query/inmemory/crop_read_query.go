@@ -58,7 +58,7 @@ func (s CropReadQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryR
 	return result
 }
 
-func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -106,7 +106,7 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, page, limit
 	return result
 }
 
-func (s CropReadQueryInMemory) CountAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQueryInMemory) CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {

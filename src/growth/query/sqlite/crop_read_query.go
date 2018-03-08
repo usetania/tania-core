@@ -179,19 +179,29 @@ func (s CropReadQuerySqlite) FindByBatchID(batchID string) <-chan query.QueryRes
 	return result
 }
 
-func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
+func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
 
 		cropReads := []storage.CropRead{}
+		params := []interface{}{}
 
 		offset := paginationhelper.CalculatePageToOffset(page, limit)
 
-		rows, err := s.DB.Query(`SELECT UID FROM CROP_READ
-			WHERE FARM_UID = ? ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`,
-			farmUID, limit, offset)
+		sql := `SELECT UID FROM CROP_READ WHERE FARM_UID = ?`
+		params = append(params, farmUID)
+
+		if status != "" {
+			sql += ` AND STATUS = ?`
+			params = append(params, status)
+		}
+
+		sql += `ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`
+		params = append(params, limit, offset)
+
+		rows, err := s.DB.Query(sql, params...)
 
 		if err != nil {
 			result <- query.QueryResult{Error: err}
@@ -267,13 +277,22 @@ func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, page, limit i
 	return result
 }
 
-func (s CropReadQuerySqlite) CountAllCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
+func (s CropReadQuerySqlite) CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		total := 0
+		params := []interface{}{}
 
-		err := s.DB.QueryRow(`SELECT COUNT(UID) FROM CROP_READ WHERE FARM_UID = ?`, farmUID).Scan(&total)
+		sql := `SELECT COUNT(UID) FROM CROP_READ WHERE FARM_UID = ?`
+		params = append(params, farmUID)
+
+		if status != "" {
+			sql += `  AND STATUS = ?`
+			params = append(params, status)
+		}
+
+		err := s.DB.QueryRow(sql, params...).Scan(&total)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}

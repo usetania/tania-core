@@ -805,6 +805,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	// Params //
 	farmID := c.Param("id")
 
+	status := c.QueryParam("status")
 	page := c.QueryParam("page")
 	limit := c.QueryParam("limit")
 
@@ -841,7 +842,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	}
 
 	// Process //
-	resultQuery := <-s.CropReadQuery.FindAllCropsByFarm(farm.UID, pageInt, limitInt)
+	resultQuery := <-s.CropReadQuery.FindAllCropsByFarm(farm.UID, status, pageInt, limitInt)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
@@ -851,7 +852,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
 	}
 
-	resultQuery = <-s.CropReadQuery.CountAllCropsByFarm(farm.UID)
+	resultQuery = <-s.CropReadQuery.CountAllCropsByFarm(farm.UID, status)
 	if resultQuery.Error != nil {
 		return Error(c, resultQuery.Error)
 	}
