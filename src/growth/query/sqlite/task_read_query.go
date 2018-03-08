@@ -22,9 +22,9 @@ type taskReadResult struct {
 	Category    string
 	Status      string
 	Domain      string
-	CropID      string
-	AreaID      string
-	MaterialID  string
+	CropID      sql.NullString
+	AreaID      sql.NullString
+	MaterialID  sql.NullString
 }
 
 func (s TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
@@ -60,17 +60,29 @@ func (s TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
-		cropUID, err := uuid.FromString(rowsData.CropID)
-		if err != nil {
-			result <- query.QueryResult{Error: err}
+
+		cropUID := uuid.UUID{}
+		if rowsData.CropID.Valid {
+			cropUID, err = uuid.FromString(rowsData.CropID.String)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 		}
-		areaUID, err := uuid.FromString(rowsData.AreaID)
-		if err != nil {
-			result <- query.QueryResult{Error: err}
+
+		areaUID := uuid.UUID{}
+		if rowsData.AreaID.Valid {
+			areaUID, err = uuid.FromString(rowsData.AreaID.String)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 		}
-		materialUID, err := uuid.FromString(rowsData.MaterialID)
-		if err != nil {
-			result <- query.QueryResult{Error: err}
+
+		materialUID := uuid.UUID{}
+		if rowsData.MaterialID.Valid {
+			materialUID, err = uuid.FromString(rowsData.MaterialID.String)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 		}
 
 		taskQueryResult.UID = taskUID
