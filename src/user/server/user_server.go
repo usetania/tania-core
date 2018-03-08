@@ -70,7 +70,7 @@ func (s *UserServer) InitSubscriber() {
 
 // Mount defines the UserServer's endpoints with its handlers
 func (s *UserServer) Mount(g *echo.Group) {
-	g.POST(":id/change_password", s.ChangePassword)
+	g.POST("/:id/change_password", s.ChangePassword)
 }
 
 func (s *UserServer) Authorize(c echo.Context) error {

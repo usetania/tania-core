@@ -117,6 +117,11 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(headerNoCache)
 
+	APIMiddlewares := []echo.MiddlewareFunc{}
+	if !*config.Config.DemoMode {
+		APIMiddlewares = append(APIMiddlewares, tokenValidationWithConfig(db))
+	}
+
 	// HTTP routing
 	API := e.Group("api")
 	API.Use(middleware.CORS())
@@ -125,16 +130,16 @@ func main() {
 	authGroup := API.Group("/")
 	authServer.Mount(authGroup)
 
-	routing.LocationsRouter(API.Group("/locations", tokenValidationWithConfig(db)))
+	routing.LocationsRouter(API.Group("/locations", APIMiddlewares...))
 
-	farmGroup := API.Group("/farms", tokenValidationWithConfig(db))
+	farmGroup := API.Group("/farms", APIMiddlewares...)
 	farmServer.Mount(farmGroup)
 	growthServer.Mount(farmGroup)
 
-	taskGroup := API.Group("/tasks", tokenValidationWithConfig(db))
+	taskGroup := API.Group("/tasks", APIMiddlewares...)
 	taskServer.Mount(taskGroup)
 
-	userGroup := API.Group("/user", tokenValidationWithConfig(db))
+	userGroup := API.Group("/user", APIMiddlewares...)
 	userServer.Mount(userGroup)
 
 	e.Static("/", "public")
