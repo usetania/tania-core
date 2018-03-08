@@ -29,26 +29,30 @@
             i.fa.fa-plus
             | Add a New Batch
         FarmCropsListing(:crops="crops" :domain="'CROPS'" :batch="isActive('BATCH')" @editCrop="editCrop")
+        Pagination(:pages="pages" @reload="getCrops")
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Modal from '@/components/modal'
+import Pagination from '@/components/pagination.vue'
 export default {
   name: "FarmCrops",
   components: {
     FarmCropForm: () => import('./crops-form.vue'),
     FarmCropsListing: () => import('./crops-listing.vue'),
-    Modal
+    Modal,
+    Pagination,
   },
   computed: {
     ...mapGetters({
-      cropInformation: 'getInformation'
+      cropInformation: 'getInformation',
+      crops: 'getAllCrops',
+      pages: 'getCropsNumberOfPages',
     })
   },
   data () {
     return {
-      crops: {},
       data: {},
       showModal: false,
       status: "BATCH"
@@ -69,11 +73,11 @@ export default {
       }
     },
     getCrops () {
-      this.fetchCrops()
-        .then(({ data }) =>  {
-          this.crops = data
-        })
-        .catch(error => console.log(error))
+      let pageId = 1
+      if (typeof this.$route.query.page != "undefined") {
+        pageId = parseInt(this.$route.query.page)
+      }
+      this.fetchCrops({ pageId : pageId })
     },
     statusSelected (status) {
       this.status = status

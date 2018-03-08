@@ -1,16 +1,19 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
+import { calculateNumberOfPages } from '@/stores/constants'
 import FarmApi from '@/stores/api/farm'
 
 const state = {
   crops: [],
   cropnotes: [],
   cropactivities: [],
+  pages: 0,
 }
 
 const getters = {
   getAllCrops: state => state.crops,
+  getCropsNumberOfPages: state => state.pages,
 }
 
 const actions = {
@@ -39,8 +42,9 @@ const actions = {
 
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi.ApiFetchCrop(farm.uid, ({ data }) => {
+      FarmApi.ApiFetchCrop(farm.uid, payload.pageId, ({ data }) => {
         commit(types.FETCH_CROP, data.data)
+        commit(types.SET_PAGES, data.total_rows)
         resolve(data)
       }, error => reject(error.response))
     })
@@ -50,8 +54,9 @@ const actions = {
 
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi.ApiFetchArchivedCrop(farm.uid, ({ data }) => {
+      FarmApi.ApiFetchArchivedCrop(farm.uid, payload.pageId, ({ data }) => {
         commit(types.FETCH_CROP, data.data)
+        commit(types.SET_PAGES, data.total_rows)
         resolve(data)
       }, error => reject(error.response))
     })
@@ -161,6 +166,7 @@ const actions = {
 const mutations = {
   [types.CREATE_CROP] (state, payload) {
     state.crops.push(payload)
+    state.pages = calculateNumberOfPages(state.crops.length + 1)
   },
   [types.UPDATE_CROP] (state, payload) {
     const crops = state.crops
@@ -183,6 +189,10 @@ const mutations = {
   },
   [types.CREATE_CROP_ACTIVITIES] (state, payload) {
     state.cropactivities.push(payload)
+  },
+  [types.SET_PAGES] (state, pages) {
+    state.pages = calculateNumberOfPages(pages)
+    console.log('pages = ' + state.pages)
   },
 }
 

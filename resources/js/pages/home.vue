@@ -49,6 +49,7 @@
                 tr(v-for="crop in crops")
                   td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
                   td {{ crop.container.quantity }}
+            Pagination(:pages="cropPages" @reload="getCrops")
       .row
         // TASK LIST
         .col-sm-12
@@ -84,9 +85,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import TaskLabel from './farms/tasks/task-label'
+import Pagination from '@/components/pagination.vue'
 export default {
   name: 'Home',
   components: {
+    Pagination,
     TaskLabel
   },
   computed : {
@@ -94,11 +97,12 @@ export default {
       areas: 'getAllAreas',
       crops: 'getAllCrops',
       tasks: 'getAllTasks',
+      cropPages: 'getCropsNumberOfPages',
     })
   },
   mounted () {
     this.fetchAreas()
-    this.fetchCrops()
+    this.getCrops()
     this.fetchTasks()
   },
   methods: {
@@ -106,7 +110,14 @@ export default {
       'fetchAreas',
       'fetchCrops',
       'fetchTasks',
-    ])
+    ]),
+    getCrops () {
+      let pageId = 1
+      if (typeof this.$route.query.page != "undefined") {
+        pageId = parseInt(this.$route.query.page)
+      }
+      this.fetchCrops({ pageId : pageId })
+    },
   }
 }
 </script>
