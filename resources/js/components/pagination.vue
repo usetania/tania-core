@@ -49,7 +49,10 @@ export default {
         this.$router.replace(this.$route.path)
       }
     }
+    this.$watch('current', current => {
+      this.currentPage = this.current
+    }, {})
   },
-  props: ['pages'],
+  props: ['pages', 'current'],
 }
 </script>

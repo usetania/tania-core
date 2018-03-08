@@ -29,7 +29,7 @@
             i.fa.fa-plus
             | Add a New Batch
         FarmCropsListing(:crops="crops" :domain="'CROPS'" :batch="isActive('BATCH')" @editCrop="editCrop")
-        Pagination(:pages="pages" @reload="getCrops")
+        Pagination(:pages="pages" :current="currentPage" @reload="getCrops")
 </template>
 
 <script>
@@ -53,6 +53,7 @@ export default {
   },
   data () {
     return {
+      currentPage: 1,
       data: {},
       showModal: false,
       status: "BATCH",
@@ -73,22 +74,24 @@ export default {
       }
     },
     getCrops () {
-      this.fetchCrops({ pageId : this.getCurrentPage() })
+      if (this.status == 'BATCH') {
+        this.fetchCrops({ pageId : this.getCurrentPage() })
+      } else {
+        this.fetchArchivedCrops({ pageId : this.getCurrentPage() })
+      }
     },
     getCurrentPage () {
       let pageId = 1
       if (typeof this.$route.query.page != "undefined") {
         pageId = parseInt(this.$route.query.page)
       }
+      this.currentPage = pageId
       return pageId
     },
     statusSelected (status) {
       this.status = status
-      if (status == 'BATCH') {
-        this.getCrops()
-      } else {
-        this.fetchArchivedCrops({ pageId : this.getCurrentPage() })
-      }
+      this.$router.replace(this.$route.path)
+      this.getCrops()
     },
     isActive (status) {
       return this.status == status

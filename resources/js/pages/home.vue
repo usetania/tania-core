@@ -19,7 +19,7 @@
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-leaf
-                    router-link(:to="{ name: 'FarmCrops' }") {{ crops.length }} Varieties
+                    router-link(:to="{ name: 'FarmCrops' }") {{ cropInformation.total_plant_variety }} Varieties
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-clipboard
@@ -96,14 +96,10 @@ export default {
     ...mapGetters({
       areas: 'getAllAreas',
       crops: 'getAllCrops',
-      tasks: 'getAllTasks',
+      cropInformation: 'getInformation',
       cropPages: 'getCropsNumberOfPages',
+      tasks: 'getAllTasks',
     })
-  },
-  mounted () {
-    this.fetchAreas()
-    this.getCrops()
-    this.fetchTasks()
   },
   methods: {
     ...mapActions([
@@ -118,7 +114,13 @@ export default {
       }
       this.fetchCrops({ pageId : pageId })
     },
-  }
+  },
+  mounted () {
+    this.fetchAreas()
+    this.getCrops()
+    this.fetchTasks()
+    this.getInformation()
+  },
 }
 </script>
 
