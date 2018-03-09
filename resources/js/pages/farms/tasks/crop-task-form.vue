@@ -50,14 +50,14 @@
         .form-group(v-if="isfertilizer")
           label(for="fertilizer") 
             | Select fertilizer you are going to use
-          select.form-control#fertilizer(:class="{'input': true, 'text-danger': errors.has('fertilizer') }" v-model="task.fertilizer" name="fertilizer")
+          select.form-control#fertilizer(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('fertilizer') }" v-model="task.fertilizer" name="fertilizer")
             option(value="") Please select fertilizer
             option(v-for="fertilizer in fertilizers" :value="fertilizer.uid") {{ fertilizer.name }}
           span.help-block.text-danger(v-show="errors.has('fertilizer')") {{ errors.first('fertilizer') }}
         .form-group(v-if="ispesticide")
           label(for="pesticide") 
             | Select pesticide you are going to use
-          select.form-control#pesticide(:class="{'input': true, 'text-danger': errors.has('pesticide') }" v-model="task.pesticide" name="pesticide")
+          select.form-control#pesticide(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('pesticide') }" v-model="task.pesticide" name="pesticide")
             option(value="") Please select pesticide
             option(v-for="pesticide in pesticides" :value="pesticide.uid") {{ pesticide.name }}
           span.help-block.text-danger(v-show="errors.has('pesticide')") {{ errors.first('pesticide') }}
@@ -92,6 +92,8 @@ export default {
   computed : {
     ...mapGetters({
       areas: 'getAllAreas',
+      pesticides: 'getAllPesticides',
+      fertilizers: 'getAllFertilizers',
     })
   },
   data () {
@@ -100,8 +102,6 @@ export default {
       crop_id: '',
       isfertilizer: false,
       ispesticide: false,
-      fertilizers: [],
-      pesticides: [],
       task: Object.assign({}, StubTask),
       options: {
         taskCategories: Array.from(TaskDomainCategories),
@@ -111,6 +111,7 @@ export default {
   methods: {
     ...mapActions([
       'fetchAreas',
+      'fetchAgrochemicalMaterials',
       'getCropByUid',
       'openPicker',
       'submitTask',
@@ -137,7 +138,7 @@ export default {
       this.ispesticide = false
       if (type == "CROP") {
         this.isfertilizer = true
-      } else if (type == "PEST_CONTROL") {
+      } else if (type == "PESTCONTROL") {
         this.ispesticide = true
       }
     }
@@ -160,6 +161,8 @@ export default {
       this.batch_id = this.crop.batch_id
       this.crop_id = this.crop.uid
     }
+    this.fetchAgrochemicalMaterials({ type: "FERTILIZER" })
+    this.fetchAgrochemicalMaterials({ type: "PESTICIDE" })
   },
   props: ['crop', 'data'],
 }

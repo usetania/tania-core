@@ -7,6 +7,8 @@ import FarmApi from '@/stores/api/farm'
 const state = {
   inventories: [],
   materials: [],
+  fertilizers: [],
+  pesticides: [],
   pages: 0,
 }
 
@@ -14,6 +16,8 @@ const getters = {
   getAllFarmInventories: state => state.inventories,
   getAllMaterials: state => state.materials,
   getMaterialsNumberOfPages: state => state.pages,
+  getAllPesticides: state => state.pesticides,
+  getAllFertilizers: state => state.fertilizers,
 }
 
 const actions = {
@@ -34,6 +38,20 @@ const actions = {
         .ApiFetchMaterial(payload.pageId, ({ data }) => {
           commit(types.FETCH_MATERIALS, data.data)
           commit(types.SET_PAGES, data.total)
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
+  fetchAgrochemicalMaterials ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise((resolve, reject) => {
+      FarmApi
+        .ApiFetchAgrochemicalMaterial(payload.type, ({ data }) => {
+          if (payload.type == 'FERTILIZER') {
+            commit(types.FETCH_FERTILIZERS, data.data)
+          } else if (payload.type == 'PESTICIDE') {
+            commit(types.FETCH_PESTICIDES, data.data)
+          }
           resolve(data)
         }, error => reject(error.response))
     })
@@ -82,6 +100,12 @@ const mutations = {
   },
   [types.SET_PAGES] (state, pages) {
     state.pages = calculateNumberOfPages(pages)
+  },
+  [types.FETCH_FERTILIZERS] (state, payload) {
+    state.fertilizers = payload
+  },
+  [types.FETCH_PESTICIDES] (state, payload) {
+    state.pesticides = payload
   },
 }
 
