@@ -68,6 +68,12 @@ func (sn SortedReservoirNotes) Less(i, j int) bool { return sn[i].CreatedDate.Af
 type ReservoirBucket struct{ domain.Bucket }
 type ReservoirTap struct{ domain.Tap }
 
+type MaterialSimple struct {
+	UID  uuid.UUID    `json:"uid"`
+	Name string       `json:"name"`
+	Type MaterialType `json:"type"`
+}
+
 type Material struct {
 	UID            uuid.UUID        `json:"uid"`
 	Name           string           `json:"name"`
@@ -580,6 +586,60 @@ func MapToMaterialFromRead(material storage.MaterialRead) Material {
 	}
 
 	m.CreatedDate = material.CreatedDate
+
+	return m
+}
+
+func MapToMaterialSimpleFromRead(materials []storage.MaterialRead) []MaterialSimple {
+	m := []MaterialSimple{}
+
+	for _, val := range materials {
+		mSimple := MaterialSimple{
+			UID:  val.UID,
+			Name: val.Name,
+		}
+
+		switch v := val.Type.(type) {
+		case domain.MaterialTypeSeed:
+			mSimple.Type = MaterialType{
+				Code: v.Code(),
+				MaterialTypeDetail: MaterialTypeSeed{
+					PlantType: v.PlantType,
+				},
+			}
+		case domain.MaterialTypePlant:
+			mSimple.Type = MaterialType{
+				Code: v.Code(),
+				MaterialTypeDetail: MaterialTypePlant{
+					PlantType: v.PlantType,
+				},
+			}
+		case domain.MaterialTypeAgrochemical:
+			mSimple.Type = MaterialType{
+				Code: v.Code(),
+				MaterialTypeDetail: MaterialTypeAgrochemical{
+					ChemicalType: v.ChemicalType,
+				},
+			}
+		case domain.MaterialTypeGrowingMedium:
+			mSimple.Type = MaterialType{Code: v.Code()}
+		case domain.MaterialTypeLabelAndCropSupport:
+			mSimple.Type = MaterialType{Code: v.Code()}
+		case domain.MaterialTypeSeedingContainer:
+			mSimple.Type = MaterialType{
+				Code: v.Code(),
+				MaterialTypeDetail: MaterialTypeSeedingContainer{
+					ContainerType: v.ContainerType,
+				},
+			}
+		case domain.MaterialTypePostHarvestSupply:
+			mSimple.Type = MaterialType{Code: v.Code()}
+		case domain.MaterialTypeOther:
+			mSimple.Type = MaterialType{Code: v.Code()}
+		}
+
+		m = append(m, mSimple)
+	}
 
 	return m
 }

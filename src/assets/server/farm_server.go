@@ -159,6 +159,7 @@ func (s *FarmServer) InitSubscriber() {
 func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 	g.GET("/inventories/materials", s.GetMaterials)
+	g.GET("/inventories/materials/simple", s.GetMaterialsSimple)
 	g.GET("/inventories/plant_types", s.GetInventoryPlantTypes)
 	g.GET("/inventories/materials/available_plant_type", s.GetAvailableMaterialPlantType)
 	g.POST("/inventories/materials/:type", s.SaveMaterial)
@@ -1247,6 +1248,26 @@ func (s *FarmServer) GetMaterials(c echo.Context) error {
 	data["data"] = materials
 	data["total"] = total
 	data["page"] = pageInt
+
+	return c.JSON(http.StatusOK, data)
+}
+
+func (s *FarmServer) GetMaterialsSimple(c echo.Context) error {
+	materialType := c.QueryParam("type")
+	materialTypeDetail := c.QueryParam("type_detail")
+
+	queryResult := <-s.MaterialReadQuery.FindAll(materialType, materialTypeDetail, 0, 0)
+	if queryResult.Error != nil {
+		return Error(c, queryResult.Error)
+	}
+
+	results, ok := queryResult.Result.([]storage.MaterialRead)
+	if !ok {
+		return Error(c, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error"))
+	}
+
+	data := make(map[string][]MaterialSimple)
+	data["data"] = MapToMaterialSimpleFromRead(results)
 
 	return c.JSON(http.StatusOK, data)
 }

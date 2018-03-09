@@ -69,10 +69,13 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 			}
 		}
 
-		offset := paginationhelper.CalculatePageToOffset(page, limit)
+		sql += " ORDER BY CREATED_DATE DESC"
 
-		sql += " ORDER BY CREATED_DATE DESC LIMIT ? OFFSET ?"
-		params = append(params, limit, offset)
+		if page != 0 && limit != 0 {
+			sql += " LIMIT ? OFFSET ?"
+			offset := paginationhelper.CalculatePageToOffset(page, limit)
+			params = append(params, limit, offset)
+		}
 
 		rows, err := q.DB.Query(sql, params...)
 		if err != nil {
