@@ -1213,21 +1213,9 @@ func (s *FarmServer) GetMaterials(c echo.Context) error {
 	page := c.QueryParam("page")
 	limit := c.QueryParam("limit")
 
-	pageInt := paginationhelper.DefaultPage
-	limitInt := paginationhelper.DefaultLimit
-	var err error
-
-	if page != "" {
-		pageInt, err = strconv.Atoi(page)
-		if err != nil {
-			return Error(c, err)
-		}
-	}
-	if limit != "" {
-		limitInt, err = strconv.Atoi(limit)
-		if err != nil {
-			return Error(c, err)
-		}
+	pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
+	if err != nil {
+		return Error(c, err)
 	}
 
 	queryResult := <-s.MaterialReadQuery.FindAll(materialType, materialTypeDetail, pageInt, limitInt)

@@ -1,5 +1,9 @@
 package paginationhelper
 
+import (
+	"strconv"
+)
+
 const (
 	DefaultPage  int = 1
 	DefaultLimit int = 10
@@ -30,4 +34,24 @@ func CalculatePageToOffset(page, limit int) int {
 	}
 
 	return (page - 1) * limit
+}
+
+func ParsePagination(page, limit string) (pageInt, limitInt int, err error) {
+	pageInt = DefaultPage
+	limitInt = DefaultLimit
+
+	if page != "" {
+		pageInt, err = strconv.Atoi(page)
+		if err != nil {
+			return DefaultPage, DefaultLimit, err
+		}
+	}
+	if limit != "" {
+		limitInt, err = strconv.Atoi(limit)
+		if err != nil {
+			return DefaultPage, DefaultLimit, err
+		}
+	}
+
+	return pageInt, limitInt, nil
 }
