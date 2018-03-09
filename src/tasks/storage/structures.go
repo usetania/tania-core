@@ -30,3 +30,32 @@ type TaskRead struct {
 	IsDue         bool              `json:"is_due"`
 	AssetID       *uuid.UUID        `json:"asset_id"`
 }
+
+// Implements TaskDomain interface in domain
+// But contains more detailed information of material, area and crop
+type TaskDomainDetailedCrop struct {
+	Material *TaskDomainCropMaterial `json:"material"`
+	Area     *TaskDomainCropArea     `json:"area"`
+	Crop     *TaskDomainCropBatch    `json:"crop"`
+}
+
+type TaskDomainCropArea struct {
+	AreaID   *uuid.UUID `json:"area_id"`
+	AreaName string     `json:"area_name"`
+}
+
+type TaskDomainCropBatch struct {
+	CropID      *uuid.UUID `json:"crop_id"`
+	CropBatchID string     `json:"crop_batch_id"`
+}
+
+type TaskDomainCropMaterial struct {
+	MaterialID           *uuid.UUID `json:"material_id"`
+	MaterialName         string     `json:"material_name"`
+	MaterialType         string     `json:"material_type"`
+	MaterialDetailedType string     `json:"material_detailed_type"`
+}
+
+func (d TaskDomainDetailedCrop) Code() string {
+	return domain.TaskDomainCropCode
+}

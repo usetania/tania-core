@@ -305,9 +305,9 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 
 	if task.Domain == domain.TaskDomainCropCode {
-		material := (*domain.TaskDomainCropMaterial)(nil)
-		area := (*domain.TaskDomainCropArea)(nil)
-		crop := (*domain.TaskDomainCropBatch)(nil)
+		material := (*storage.TaskDomainCropMaterial)(nil)
+		area := (*storage.TaskDomainCropArea)(nil)
+		crop := (*storage.TaskDomainCropBatch)(nil)
 
 		materialID := task.DomainDetails.(domain.TaskDomainCrop).MaterialID
 		if materialID != nil {
@@ -317,7 +317,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
-			material = &domain.TaskDomainCropMaterial{
+			material = &storage.TaskDomainCropMaterial{
 				MaterialID:           &materialQueryResult.UID,
 				MaterialName:         materialQueryResult.Name,
 				MaterialType:         materialQueryResult.TypeCode,
@@ -332,7 +332,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
-			area = &domain.TaskDomainCropArea{
+			area = &storage.TaskDomainCropArea{
 				AreaID:   &areaQueryResult.UID,
 				AreaName: areaQueryResult.Name,
 			}
@@ -345,12 +345,12 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
-			crop = &domain.TaskDomainCropBatch{
+			crop = &storage.TaskDomainCropBatch{
 				CropID:      &cropQueryResult.UID,
 				CropBatchID: cropQueryResult.BatchID,
 			}
 		}
-		task.DomainDetails = &domain.TaskDomainDetailedCrop{
+		task.DomainDetails = &storage.TaskDomainDetailedCrop{
 			Material: material,
 			Area:     area,
 			Crop:     crop,
