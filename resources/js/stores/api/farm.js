@@ -62,8 +62,8 @@ export default {
   ApiFetchAreaCrop: (areaid, cbSuccess, cbError) => {
     http.get('farms/areas/' + areaid + '/crops' , cbSuccess, cbError)
   },
-  ApiFetchCrop: (farmid, pageid, cbSuccess, cbError) => {
-    http.get('farms/' + farmid + '/crops?page=' + pageid, cbSuccess, cbError)
+  ApiFetchCrop: (farmid, pageid, status, cbSuccess, cbError) => {
+    http.get('farms/' + farmid + '/crops?page=' + pageid + '&status=' + status, cbSuccess, cbError)
   },
   ApiFetchArchivedCrop: (farmid, pageid, cbSuccess, cbError) => {
     http.get('farms/' + farmid + '/crops/archives?page=' + pageid, cbSuccess, cbError)

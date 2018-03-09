@@ -42,7 +42,7 @@ const actions = {
 
     NProgress.start()
     return new Promise((resolve, reject) => {
-      FarmApi.ApiFetchCrop(farm.uid, payload.pageId, ({ data }) => {
+      FarmApi.ApiFetchCrop(farm.uid, payload.pageId, payload.status, ({ data }) => {
         commit(types.FETCH_CROP, data.data)
         commit(types.SET_PAGES, data.total_rows)
         resolve(data)

@@ -61,7 +61,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchArchivedCrops',
       'fetchCrops',
       'getInformation',
     ]),
@@ -75,9 +74,9 @@ export default {
     },
     getCrops () {
       if (this.status == 'BATCH') {
-        this.fetchCrops({ pageId : this.getCurrentPage() })
+        this.fetchCrops({ pageId : this.getCurrentPage(), status : 'ACTIVE' })
       } else {
-        this.fetchArchivedCrops({ pageId : this.getCurrentPage() })
+        this.fetchCrops({ pageId : this.getCurrentPage(), status : 'ARCHIVED' })
       }
     },
     getCurrentPage () {

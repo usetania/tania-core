@@ -112,7 +112,7 @@ export default {
       if (typeof this.$route.query.page != "undefined") {
         pageId = parseInt(this.$route.query.page)
       }
-      this.fetchCrops({ pageId : pageId })
+      this.fetchCrops({ pageId : pageId, status : 'ACTIVE' })
     },
   },
   mounted () {
