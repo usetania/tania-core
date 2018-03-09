@@ -198,7 +198,7 @@ func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, status string
 			params = append(params, status)
 		}
 
-		sql += `ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`
+		sql += ` ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`
 		params = append(params, limit, offset)
 
 		rows, err := s.DB.Query(sql, params...)
@@ -229,22 +229,6 @@ func (s CropReadQuerySqlite) FindAllCropsByFarm(farmUID uuid.UUID, status string
 			err = s.populateCropMovedArea(cropUID, &cropRead)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
-			}
-
-			// Check all the current quantity
-			// It should not be zero,
-			// because if all zero then it will show up in the Archieves instead
-			if cropRead.InitialArea.CurrentQuantity == 0 {
-				isEmpty := true
-				for _, v := range cropRead.MovedArea {
-					if v.CurrentQuantity != 0 {
-						isEmpty = false
-					}
-				}
-
-				if isEmpty {
-					continue
-				}
 			}
 
 			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
