@@ -152,6 +152,7 @@ export default {
       this.task.category = this.data.category
       this.task.title = this.data.title
       this.task.description = this.data.description
+      this.task.area_id = this.data.domain_details.area.area_id
       this.crop_id = this.data.asset_id
       this.getCropByUid(this.data.asset_id)
         .then(({ data }) =>  {
