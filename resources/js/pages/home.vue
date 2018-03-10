@@ -106,6 +106,7 @@ export default {
       'fetchAreas',
       'fetchCrops',
       'fetchTasks',
+      'getInformation',
     ]),
     getCrops () {
       let pageId = 1
