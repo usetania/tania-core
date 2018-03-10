@@ -98,7 +98,7 @@ export default {
     http.get('farms/inventories/materials?page=' + pageid, cbSuccess, cbError)
   },
   ApiFetchAgrochemicalMaterial: (type, cbSuccess, cbError) => {
-    http.get('farms/inventories/materials?type=AGROCHEMICAL&type_detail=' + type, cbSuccess, cbError)
+    http.get('farms/inventories/materials/simple?type=AGROCHEMICAL&type_detail=' + type, cbSuccess, cbError)
   },
   ApiCreateMaterial: (payload, cbSuccess, cbError) => {
     http.post('farms/inventories/materials/' + payload.type, payload, cbSuccess, cbError)
