@@ -14,7 +14,7 @@
             .panel-heading.description
               .h3.text-lt.name
                 router-link(:to="{ name: 'FarmArea', params: { id: area.uid } }") {{ area.name }}
-                a.pull-right(style="cursor: pointer;" @click="openModal(area)")
+                a.pull-right(v-if="area.plant_quantity == 0" style="cursor: pointer;" @click="openModal(area)")
                   i.fa.fa-edit
               small.text-muted {{ getType(area.type).label }}
             .panel-body
