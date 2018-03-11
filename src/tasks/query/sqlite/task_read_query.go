@@ -38,13 +38,21 @@ type taskReadQueryResult struct {
 	AssetID              sql.NullString
 }
 
-func (r TaskReadQuerySqlite) FindAll() <-chan query.QueryResult {
+func (r TaskReadQuerySqlite) FindAll(limit *int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		tasks := []storage.TaskRead{}
 
-		rows, err := r.DB.Query(`SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`)
+		sql := `SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`
+		var args []interface{}
+
+		if limit != nil {
+			sql += " LIMIT ? "
+			args = append(args, limit)
+		}
+
+		rows, err := r.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}

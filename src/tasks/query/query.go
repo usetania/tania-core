@@ -38,7 +38,7 @@ type TaskEventQuery interface {
 }
 
 type TaskReadQuery interface {
-	FindAll() <-chan QueryResult
+	FindAll(limit *int) <-chan QueryResult
 	FindByID(taskUID uuid.UUID) <-chan QueryResult
 	FindTasksWithFilter(params map[string]string) <-chan QueryResult
 }

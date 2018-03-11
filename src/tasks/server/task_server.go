@@ -18,6 +18,7 @@ import (
 	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
+	"strconv"
 )
 
 // TaskServer ties the routes and handlers with injected dependencies
@@ -105,7 +106,16 @@ func (s *TaskServer) Mount(g *echo.Group) {
 func (s TaskServer) FindAllTasks(c echo.Context) error {
 	data := make(map[string][]storage.TaskRead)
 
-	result := <-s.TaskReadQuery.FindAll()
+	limit := (*int)(nil)
+	if value := c.QueryParam("limit"); value != "" {
+		val, err := strconv.Atoi(value)
+		if err != nil {
+			return Error(c, NewRequestValidationError(NUMERIC, "limit"))
+		}
+		limit = &val
+	}
+
+	result := <-s.TaskReadQuery.FindAll(limit)
 	if result.Error != nil {
 		return result.Error
 	}
