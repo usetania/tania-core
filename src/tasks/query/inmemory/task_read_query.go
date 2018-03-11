@@ -4,6 +4,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -16,7 +17,7 @@ func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskReadQuery {
 	return &TaskReadQueryInMemory{Storage: s}
 }
 
-func (r TaskReadQueryInMemory) FindAll() <-chan query.QueryResult {
+func (r TaskReadQueryInMemory) FindAll(limit *int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -24,11 +25,16 @@ func (r TaskReadQueryInMemory) FindAll() <-chan query.QueryResult {
 		defer r.Storage.Lock.RUnlock()
 
 		tasks := []storage.TaskRead{}
+		sorted_tasks := make(tasks, 0, len(r.Storage.TaskReadMap))
 		for _, val := range r.Storage.TaskReadMap {
-			tasks = append(tasks, val)
+			sorted_tasks = append(sorted_tasks, val)
 		}
+		sort.Sort(sorted_tasks)
 
-		result <- query.QueryResult{Result: tasks}
+		if limit != nil {
+			sorted_tasks = sorted_tasks[:limit]
+		}
+		result <- query.QueryResult{Result: sorted_tasks}
 
 		close(result)
 	}()
