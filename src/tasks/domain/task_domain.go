@@ -29,7 +29,6 @@ func (d TaskDomainArea) Code() string {
 type TaskDomainCrop struct {
 	MaterialID *uuid.UUID `json:"material_id"`
 	AreaID     *uuid.UUID `json:"area_id"`
-	CropID     *uuid.UUID `json:"crop_id"`
 }
 
 func (d TaskDomainCrop) Code() string {
@@ -74,18 +73,11 @@ func CreateTaskDomainArea() (TaskDomainArea, error) {
 }
 
 // CreateTaskDomainCrop
-func CreateTaskDomainCrop(taskService TaskService, category string, cropID *uuid.UUID, materialID *uuid.UUID, areaID *uuid.UUID) (TaskDomainCrop, error) {
+func CreateTaskDomainCrop(taskService TaskService, category string, materialID *uuid.UUID, areaID *uuid.UUID) (TaskDomainCrop, error) {
 
 	err := validateTaskCategory(category)
 	if err != nil {
 		return TaskDomainCrop{}, err
-	}
-
-	if cropID != nil {
-		err := validateAssetID(taskService, cropID, TaskDomainCropCode)
-		if err != nil {
-			return TaskDomainCrop{}, err
-		}
 	}
 
 	if materialID != nil {
@@ -105,7 +97,6 @@ func CreateTaskDomainCrop(taskService TaskService, category string, cropID *uuid
 	return TaskDomainCrop{
 		MaterialID: materialID,
 		AreaID:     areaID,
-		CropID:     cropID,
 	}, nil
 }
 

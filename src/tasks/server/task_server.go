@@ -285,18 +285,8 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 	case domain.TaskDomainCropCode:
 
 		category := c.FormValue("category")
-		cropID := c.FormValue("crop_id")
 		materialID := c.FormValue("material_id")
 		areaID := c.FormValue("area_id")
-
-		cropPtr := (*uuid.UUID)(nil)
-		if len(cropID) != 0 {
-			uid, err := uuid.FromString(cropID)
-			if err != nil {
-				return domain.TaskDomainCrop{}, err
-			}
-			cropPtr = &uid
-		}
 
 		materialPtr := (*uuid.UUID)(nil)
 		if len(materialID) != 0 {
@@ -316,7 +306,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 			areaPtr = &uid
 		}
 
-		return domain.CreateTaskDomainCrop(s.TaskService, category, cropPtr, materialPtr, areaPtr)
+		return domain.CreateTaskDomainCrop(s.TaskService, category, materialPtr, areaPtr)
 	case domain.TaskDomainFinanceCode:
 		return domain.CreateTaskDomainFinance()
 	case domain.TaskDomainGeneralCode:
@@ -392,7 +382,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 				AreaName: areaQueryResult.Name,
 			}
 		}
-		cropID := task.DomainDetails.(domain.TaskDomainCrop).CropID
+		cropID := task.AssetID
 		if cropID != nil {
 			cropResult := s.TaskService.FindCropByID(*cropID)
 			cropQueryResult, ok := cropResult.Result.(query.TaskCropQueryResult)

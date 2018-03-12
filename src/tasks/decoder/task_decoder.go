@@ -204,19 +204,6 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 
 			taskDomainCrop.AreaID = &uid
 		}
-		if v2, ok2 := mapped["crop_id"]; ok2 {
-			val, ok := v2.(string)
-			if !ok {
-				return domain.TaskDomainCrop{}, nil
-			}
-
-			uid, err := uuid.FromString(val)
-			if err != nil {
-				return domain.TaskDomainCrop{}, err
-			}
-
-			taskDomainCrop.CropID = &uid
-		}
 
 		domainDetails = taskDomainCrop
 	case domain.TaskDomainFinanceCode:
