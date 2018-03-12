@@ -9,7 +9,7 @@ import (
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
-	"github.com/Tanibox/tania-server/src/assets/server"
+	assetsserver "github.com/Tanibox/tania-server/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
@@ -19,6 +19,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
 )
 
@@ -29,43 +30,35 @@ func init() {
 func main() {
 	e := echo.New()
 
-	// Initialize all In-memory storage, so it can be used in all server
-	farmReadStorage := assetsstorage.CreateFarmReadStorage()
+	// Initialize DB.
+	log.Print("Using " + *config.Config.TaniaPersistanceEngine + " persistance engine")
 
-	areaEventStorage := assetsstorage.CreateAreaEventStorage()
-	areaReadStorage := assetsstorage.CreateAreaReadStorage()
+	// InMemory DB will always be initialized.
+	inMem := initInMemory()
 
-	reservoirEventStorage := assetsstorage.CreateReservoirEventStorage()
-	reservoirReadStorage := assetsstorage.CreateReservoirReadStorage()
-
-	materialEventStorage := assetsstorage.CreateMaterialEventStorage()
-	materialReadStorage := assetsstorage.CreateMaterialReadStorage()
-
-	cropEventStorage := growthstorage.CreateCropEventStorage()
-	cropReadStorage := growthstorage.CreateCropReadStorage()
-	cropActivityStorage := growthstorage.CreateCropActivityStorage()
-
-	taskEventStorage := taskstorage.CreateTaskEventStorage()
-	taskReadStorage := taskstorage.CreateTaskReadStorage()
-
-	// // Initialize SQLite3
-	// db := initSqlite()
-
-	// Initialize MySQL
-	db := initMysql()
+	var db *sql.DB
+	switch *config.Config.TaniaPersistanceEngine {
+	case config.DB_SQLITE:
+		db = initSqlite()
+	case config.DB_MYSQL:
+		db = initMysql()
+	}
 
 	// Initialize Event Bus
 	bus := EventBus.New()
 
-	farmServer, err := server.NewFarmServer(
+	// Initialize Server
+	farmServer, err := assetsserver.NewFarmServer(
 		db,
-		areaEventStorage,
-		areaReadStorage,
-		reservoirEventStorage,
-		reservoirReadStorage,
-		materialEventStorage,
-		materialReadStorage,
-		cropReadStorage,
+		inMem.farmEventStorage,
+		inMem.farmReadStorage,
+		inMem.areaEventStorage,
+		inMem.areaReadStorage,
+		inMem.reservoirEventStorage,
+		inMem.reservoirReadStorage,
+		inMem.materialEventStorage,
+		inMem.materialReadStorage,
+		inMem.cropReadStorage,
 		bus,
 	)
 	if err != nil {
@@ -75,12 +68,13 @@ func main() {
 	taskServer, err := taskserver.NewTaskServer(
 		db,
 		bus,
-		cropReadStorage,
-		areaReadStorage,
-		materialReadStorage,
-		reservoirReadStorage,
-		taskEventStorage,
-		taskReadStorage)
+		inMem.cropReadStorage,
+		inMem.areaReadStorage,
+		inMem.materialReadStorage,
+		inMem.reservoirReadStorage,
+		inMem.taskEventStorage,
+		inMem.taskReadStorage,
+	)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -88,17 +82,18 @@ func main() {
 	growthServer, err := growthserver.NewGrowthServer(
 		db,
 		bus,
-		cropEventStorage,
-		cropReadStorage,
-		cropActivityStorage,
-		areaReadStorage,
-		materialReadStorage,
-		farmReadStorage,
+		inMem.cropEventStorage,
+		inMem.cropReadStorage,
+		inMem.cropActivityStorage,
+		inMem.areaReadStorage,
+		inMem.materialReadStorage,
+		inMem.farmReadStorage,
 	)
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
 
+	// Initialize Echo Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(headerNoCache)
@@ -117,7 +112,116 @@ func main() {
 	taskServer.Mount(taskGroup)
 
 	e.Static("/", "public")
+
+	// Start Server
 	e.Logger.Fatal(e.Start(":8080"))
+}
+
+/*
+	Example setting and usage of configure package:
+
+	// main.initConfig()
+	configuration := config.Configuration{
+		// this will be filled from environment variables
+		DBPassword: conf.String("TANIA_DB_PASSWORD", "123456", "Description"),
+
+		// this will be filled from flags (ie ./tania-server --port=9000)
+		Port: conf.String("port", "3000", "Description"),
+
+		// this will be filled from conf.json
+		UploadPath: conf.String("UploadPath", "/home/tania/uploads", "Description"),
+	}
+
+	// config.Configuration struct
+	type Configuration struct {
+		DBPassword 		*string
+		Port 			*string
+		UploadPath 		*string
+	}
+
+	// Usage. config.Config can be called globally
+	fmt.Println(*config.Config.DBPassword)
+	fmt.Println(*config.Config.Port)
+	fmt.Println(*config.Config.UploadPath)
+
+*/
+func initConfig() {
+	conf := configure.New()
+
+	configuration := config.Configuration{
+		UploadPathArea:         conf.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo"),
+		UploadPathCrop:         conf.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo"),
+		DemoMode:               conf.Bool("demo_mode", true, "Switch for the demo mode"),
+		TaniaPersistanceEngine: conf.String("tania_persistance_engine", "inmemory", "The persistance engine of Tania. Options are inmemory, sqlite, inmemory"),
+		SqlitePath:             conf.String("sqlite_path", "tania.db", "Path of sqlite file db"),
+		MysqlHost:              conf.String("mysql_host", "127.0.0.1", "Mysql Host"),
+		MysqlPort:              conf.String("mysql_port", "3306", "Mysql Port"),
+		MysqlDbname:            conf.String("mysql_dbname", "tania", "Mysql DBName"),
+		MysqlUsername:          conf.String("mysql_username", "root", "Mysql username"),
+		MysqlPassword:          conf.String("mysql_password", "root", "Mysql password"),
+	}
+
+	// This config will read the first configuration.
+	// If it doesn't find the key, then it go to the next configuration.
+	conf.Use(configure.NewEnvironment())
+	conf.Use(configure.NewFlag())
+
+	if _, err := os.Stat("conf.json"); err == nil {
+		log.Print("Using 'conf.json' configuration")
+		conf.Use(configure.NewJSONFromFile("conf.json"))
+	}
+
+	conf.Parse()
+
+	config.Config = configuration
+}
+
+func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+		c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
+		c.Response().Header().Set("Expires", "0")                                         // Proxies.
+		return next(c)
+	}
+}
+
+type InMemory struct {
+	farmEventStorage      *assetsstorage.FarmEventStorage
+	farmReadStorage       *assetsstorage.FarmReadStorage
+	areaEventStorage      *assetsstorage.AreaEventStorage
+	areaReadStorage       *assetsstorage.AreaReadStorage
+	reservoirEventStorage *assetsstorage.ReservoirEventStorage
+	reservoirReadStorage  *assetsstorage.ReservoirReadStorage
+	materialEventStorage  *assetsstorage.MaterialEventStorage
+	materialReadStorage   *assetsstorage.MaterialReadStorage
+	cropEventStorage      *growthstorage.CropEventStorage
+	cropReadStorage       *growthstorage.CropReadStorage
+	cropActivityStorage   *growthstorage.CropActivityStorage
+	taskEventStorage      *taskstorage.TaskEventStorage
+	taskReadStorage       *taskstorage.TaskReadStorage
+}
+
+func initInMemory() *InMemory {
+	return &InMemory{
+		farmEventStorage: assetsstorage.CreateFarmEventStorage(),
+		farmReadStorage:  assetsstorage.CreateFarmReadStorage(),
+
+		areaEventStorage: assetsstorage.CreateAreaEventStorage(),
+		areaReadStorage:  assetsstorage.CreateAreaReadStorage(),
+
+		reservoirEventStorage: assetsstorage.CreateReservoirEventStorage(),
+		reservoirReadStorage:  assetsstorage.CreateReservoirReadStorage(),
+
+		materialEventStorage: assetsstorage.CreateMaterialEventStorage(),
+		materialReadStorage:  assetsstorage.CreateMaterialReadStorage(),
+
+		cropEventStorage:    growthstorage.CreateCropEventStorage(),
+		cropReadStorage:     growthstorage.CreateCropReadStorage(),
+		cropActivityStorage: growthstorage.CreateCropActivityStorage(),
+
+		taskEventStorage: taskstorage.CreateTaskEventStorage(),
+		taskReadStorage:  taskstorage.CreateTaskReadStorage(),
+	}
 }
 
 func initMysql() *sql.DB {
@@ -134,7 +238,7 @@ func initMysql() *sql.DB {
 		panic(err)
 	}
 
-	log.Print("Using database MySQL")
+	log.Print("Using MySQL at ", host, ":", port, "/", dbname)
 
 	ddl, err := ioutil.ReadFile("db/mysql/ddl.sql")
 	if err != nil {
@@ -176,7 +280,7 @@ func initSqlite() *sql.DB {
 		panic(err)
 	}
 
-	log.Print("Using database ", *config.Config.SqlitePath)
+	log.Print("Using SQLite at ", *config.Config.SqlitePath)
 
 	// Check if database exist by checking a table existance
 	result := ""
@@ -199,71 +303,4 @@ func initSqlite() *sql.DB {
 	}
 
 	return db
-}
-
-/*
-	Example setting and usage of configure package:
-
-	// main.initConfig()
-	configuration := config.Configuration{
-		// this will be filled from environment variables
-		DBPassword: conf.String("TANIA_DB_PASSWORD", "123456", "Description"),
-
-		// this will be filled from flags (ie ./tania-server --port=9000)
-		Port: conf.String("port", "3000", "Description"),
-
-		// this will be filled from conf.json
-		UploadPath: conf.String("UploadPath", "/home/tania/uploads", "Description"),
-	}
-
-	// config.Configuration struct
-	type Configuration struct {
-		DBPassword 		*string
-		Port 			*string
-		UploadPath 		*string
-	}
-
-	// Usage. config.Config can be called globally
-	fmt.Println(*config.Config.DBPassword)
-	fmt.Println(*config.Config.Port)
-	fmt.Println(*config.Config.UploadPath)
-
-*/
-func initConfig() {
-	conf := configure.New()
-
-	configuration := config.Configuration{
-		UploadPathArea: conf.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo"),
-		UploadPathCrop: conf.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo"),
-		DemoMode:       conf.Bool("demo_mode", true, "Switch for the demo mode"),
-		SqlitePath:     conf.String("sqlite_path", "tania.db", "Path of sqlite file db"),
-		MysqlHost:      conf.String("mysql_host", "127.0.0.1", "Mysql Host"),
-		MysqlPort:      conf.String("mysql_port", "3306", "Mysql Port"),
-		MysqlDbname:    conf.String("mysql_dbname", "tania", "Mysql DBName"),
-		MysqlUsername:  conf.String("mysql_username", "root", "Mysql username"),
-		MysqlPassword:  conf.String("mysql_password", "root", "Mysql password"),
-	}
-
-	// This config will read the first configuration.
-	// If it doesn't find the key, then it go to the next configuration.
-	conf.Use(configure.NewEnvironment())
-	conf.Use(configure.NewFlag())
-
-	if _, err := os.Stat("conf.json"); err == nil {
-		log.Print("Using 'conf.json' configuration")
-		conf.Use(configure.NewJSONFromFile("conf.json"))
-	}
-
-	conf.Parse()
-
-	config.Config = configuration
-}
-
-func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
-		c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
-		c.Response().Header().Set("Expires", "0")                                         // Proxies.
-		return next(c)
-	}
 }

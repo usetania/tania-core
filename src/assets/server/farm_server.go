@@ -11,8 +11,10 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain"
 	"github.com/Tanibox/tania-server/src/assets/domain/service"
 	"github.com/Tanibox/tania-server/src/assets/query"
+	queryInMem "github.com/Tanibox/tania-server/src/assets/query/inmemory"
 	querySqlite "github.com/Tanibox/tania-server/src/assets/query/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/repository"
+	repoInMem "github.com/Tanibox/tania-server/src/assets/repository/inmemory"
 	repoSqlite "github.com/Tanibox/tania-server/src/assets/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
@@ -53,6 +55,8 @@ type FarmServer struct {
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
 func NewFarmServer(
 	db *sql.DB,
+	farmEventStorage *storage.FarmEventStorage,
+	farmReadStorage *storage.FarmReadStorage,
 	areaEventStorage *storage.AreaEventStorage,
 	areaReadStorage *storage.AreaReadStorage,
 	reservoirEventStorage *storage.ReservoirEventStorage,
@@ -62,62 +66,112 @@ func NewFarmServer(
 	cropReadStorage *growthstorage.CropReadStorage,
 	eventBus EventBus.Bus,
 ) (*FarmServer, error) {
-	farmEventRepo := repoSqlite.NewFarmEventRepositorySqlite(db)
-	farmEventQuery := querySqlite.NewFarmEventQuerySqlite(db)
-	farmReadRepo := repoSqlite.NewFarmReadRepositorySqlite(db)
-	farmReadQuery := querySqlite.NewFarmReadQuerySqlite(db)
-
-	areaEventRepo := repoSqlite.NewAreaEventRepositorySqlite(db)
-	areaEventQuery := querySqlite.NewAreaEventQuerySqlite(db)
-	areaReadRepo := repoSqlite.NewAreaReadRepositorySqlite(db)
-	areaReadQuery := querySqlite.NewAreaReadQuerySqlite(db)
-
-	reservoirEventRepo := repoSqlite.NewReservoirEventRepositorySqlite(db)
-	reservoirEventQuery := querySqlite.NewReservoirEventQuerySqlite(db)
-	reservoirReadRepo := repoSqlite.NewReservoirReadRepositorySqlite(db)
-	reservoirReadQuery := querySqlite.NewReservoirReadQuerySqlite(db)
-
-	materialEventRepo := repoSqlite.NewMaterialEventRepositorySqlite(db)
-	materialEventQuery := querySqlite.NewMaterialEventQuerySqlite(db)
-	materialReadRepo := repoSqlite.NewMaterialReadRepositorySqlite(db)
-	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)
-
-	cropReadQuery := querySqlite.NewCropReadQuerySqlite(db)
-
-	areaService := service.AreaServiceInMemory{
-		FarmReadQuery:      farmReadQuery,
-		ReservoirReadQuery: reservoirReadQuery,
-		CropReadQuery:      cropReadQuery,
+	farmServer := &FarmServer{
+		File:     LocalFile{},
+		EventBus: eventBus,
 	}
-	reservoirService := service.ReservoirServiceInMemory{FarmReadQuery: farmReadQuery}
 
-	farmServer := FarmServer{
-		FarmEventRepo:       farmEventRepo,
-		FarmEventQuery:      farmEventQuery,
-		FarmReadRepo:        farmReadRepo,
-		FarmReadQuery:       farmReadQuery,
-		ReservoirEventRepo:  reservoirEventRepo,
-		ReservoirEventQuery: reservoirEventQuery,
-		ReservoirReadRepo:   reservoirReadRepo,
-		ReservoirReadQuery:  reservoirReadQuery,
-		ReservoirService:    reservoirService,
-		AreaEventRepo:       areaEventRepo,
-		AreaReadRepo:        areaReadRepo,
-		AreaEventQuery:      areaEventQuery,
-		AreaReadQuery:       areaReadQuery,
-		AreaService:         areaService,
-		MaterialEventRepo:   materialEventRepo,
-		MaterialEventQuery:  materialEventQuery,
-		MaterialReadRepo:    materialReadRepo,
-		MaterialReadQuery:   materialReadQuery,
-		CropReadQuery:       cropReadQuery,
-		File:                LocalFile{},
-		EventBus:            eventBus,
+	switch *config.Config.TaniaPersistanceEngine {
+	case config.DB_INMEMORY:
+		farmServer.FarmEventRepo = repoInMem.NewFarmEventRepositoryInMemory(farmEventStorage)
+		farmServer.FarmEventQuery = queryInMem.NewFarmEventQueryInMemory(farmEventStorage)
+		farmServer.FarmReadRepo = repoInMem.NewFarmReadRepositoryInMemory(farmReadStorage)
+		farmServer.FarmReadQuery = queryInMem.NewFarmReadQueryInMemory(farmReadStorage)
+
+		farmServer.AreaEventRepo = repoInMem.NewAreaEventRepositoryInMemory(areaEventStorage)
+		farmServer.AreaEventQuery = queryInMem.NewAreaEventQueryInMemory(areaEventStorage)
+		farmServer.AreaReadRepo = repoInMem.NewAreaReadRepositoryInMemory(areaReadStorage)
+		farmServer.AreaReadQuery = queryInMem.NewAreaReadQueryInMemory(areaReadStorage)
+
+		farmServer.ReservoirEventRepo = repoInMem.NewReservoirEventRepositoryInMemory(reservoirEventStorage)
+		farmServer.ReservoirEventQuery = queryInMem.NewReservoirEventQueryInMemory(reservoirEventStorage)
+		farmServer.ReservoirReadRepo = repoInMem.NewReservoirReadRepositoryInMemory(reservoirReadStorage)
+		farmServer.ReservoirReadQuery = queryInMem.NewReservoirReadQueryInMemory(reservoirReadStorage)
+
+		farmServer.MaterialEventRepo = repoInMem.NewMaterialEventRepositoryInMemory(materialEventStorage)
+		farmServer.MaterialEventQuery = queryInMem.NewMaterialEventQueryInMemory(materialEventStorage)
+		farmServer.MaterialReadRepo = repoInMem.NewMaterialReadRepositoryInMemory(materialReadStorage)
+		farmServer.MaterialReadQuery = queryInMem.NewMaterialReadQueryInMemory(materialReadStorage)
+
+		farmServer.CropReadQuery = queryInMem.NewCropReadQueryInMemory(cropReadStorage)
+
+		farmServer.AreaService = service.AreaServiceInMemory{
+			FarmReadQuery:      farmServer.FarmReadQuery,
+			ReservoirReadQuery: farmServer.ReservoirReadQuery,
+			CropReadQuery:      farmServer.CropReadQuery,
+		}
+		farmServer.ReservoirService = service.ReservoirServiceInMemory{
+			FarmReadQuery: farmServer.FarmReadQuery,
+		}
+
+	case config.DB_SQLITE:
+		farmServer.FarmEventRepo = repoSqlite.NewFarmEventRepositorySqlite(db)
+		farmServer.FarmEventQuery = querySqlite.NewFarmEventQuerySqlite(db)
+		farmServer.FarmReadRepo = repoSqlite.NewFarmReadRepositorySqlite(db)
+		farmServer.FarmReadQuery = querySqlite.NewFarmReadQuerySqlite(db)
+
+		farmServer.AreaEventRepo = repoSqlite.NewAreaEventRepositorySqlite(db)
+		farmServer.AreaEventQuery = querySqlite.NewAreaEventQuerySqlite(db)
+		farmServer.AreaReadRepo = repoSqlite.NewAreaReadRepositorySqlite(db)
+		farmServer.AreaReadQuery = querySqlite.NewAreaReadQuerySqlite(db)
+
+		farmServer.ReservoirEventRepo = repoSqlite.NewReservoirEventRepositorySqlite(db)
+		farmServer.ReservoirEventQuery = querySqlite.NewReservoirEventQuerySqlite(db)
+		farmServer.ReservoirReadRepo = repoSqlite.NewReservoirReadRepositorySqlite(db)
+		farmServer.ReservoirReadQuery = querySqlite.NewReservoirReadQuerySqlite(db)
+
+		farmServer.MaterialEventRepo = repoSqlite.NewMaterialEventRepositorySqlite(db)
+		farmServer.MaterialEventQuery = querySqlite.NewMaterialEventQuerySqlite(db)
+		farmServer.MaterialReadRepo = repoSqlite.NewMaterialReadRepositorySqlite(db)
+		farmServer.MaterialReadQuery = querySqlite.NewMaterialReadQuerySqlite(db)
+
+		farmServer.CropReadQuery = querySqlite.NewCropReadQuerySqlite(db)
+
+		farmServer.AreaService = service.AreaServiceInMemory{
+			FarmReadQuery:      farmServer.FarmReadQuery,
+			ReservoirReadQuery: farmServer.ReservoirReadQuery,
+			CropReadQuery:      farmServer.CropReadQuery,
+		}
+		farmServer.ReservoirService = service.ReservoirServiceInMemory{
+			FarmReadQuery: farmServer.FarmReadQuery,
+		}
+
+	case config.DB_MYSQL:
+		farmServer.FarmEventRepo = repoSqlite.NewFarmEventRepositorySqlite(db)
+		farmServer.FarmEventQuery = querySqlite.NewFarmEventQuerySqlite(db)
+		farmServer.FarmReadRepo = repoSqlite.NewFarmReadRepositorySqlite(db)
+		farmServer.FarmReadQuery = querySqlite.NewFarmReadQuerySqlite(db)
+
+		farmServer.AreaEventRepo = repoSqlite.NewAreaEventRepositorySqlite(db)
+		farmServer.AreaEventQuery = querySqlite.NewAreaEventQuerySqlite(db)
+		farmServer.AreaReadRepo = repoSqlite.NewAreaReadRepositorySqlite(db)
+		farmServer.AreaReadQuery = querySqlite.NewAreaReadQuerySqlite(db)
+
+		farmServer.ReservoirEventRepo = repoSqlite.NewReservoirEventRepositorySqlite(db)
+		farmServer.ReservoirEventQuery = querySqlite.NewReservoirEventQuerySqlite(db)
+		farmServer.ReservoirReadRepo = repoSqlite.NewReservoirReadRepositorySqlite(db)
+		farmServer.ReservoirReadQuery = querySqlite.NewReservoirReadQuerySqlite(db)
+
+		farmServer.MaterialEventRepo = repoSqlite.NewMaterialEventRepositorySqlite(db)
+		farmServer.MaterialEventQuery = querySqlite.NewMaterialEventQuerySqlite(db)
+		farmServer.MaterialReadRepo = repoSqlite.NewMaterialReadRepositorySqlite(db)
+		farmServer.MaterialReadQuery = querySqlite.NewMaterialReadQuerySqlite(db)
+
+		farmServer.CropReadQuery = querySqlite.NewCropReadQuerySqlite(db)
+
+		farmServer.AreaService = service.AreaServiceInMemory{
+			FarmReadQuery:      farmServer.FarmReadQuery,
+			ReservoirReadQuery: farmServer.ReservoirReadQuery,
+			CropReadQuery:      farmServer.CropReadQuery,
+		}
+		farmServer.ReservoirService = service.ReservoirServiceInMemory{
+			FarmReadQuery: farmServer.FarmReadQuery,
+		}
 	}
 
 	farmServer.InitSubscriber()
 
-	return &farmServer, nil
+	return farmServer, nil
 }
 
 // InitSubscriber defines the mapping of which event this domain listen with their handler
