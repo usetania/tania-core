@@ -1,0 +1,4449 @@
+{
+	"info": {
+		"name": "Tania",
+		"_postman_id": "4249e317-a1ec-8300-cac2-f02ac7068544",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Materials",
+			"description": "",
+			"item": [
+				{
+					"name": "Get Plant Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/plant_types",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"plant_types"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Available Inventories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/available_plant_type",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"available_plant_type"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/types",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"types"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm Inventories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Material By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm Inventories Material Simple",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/simple",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"simple"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Other",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2bd190e-32e8-4395-bbcb-499ccb557266",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Outdoor Bright Lamp",
+									"type": "text",
+									"description": "required. string."
+								},
+								{
+									"key": "price_per_unit",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "currency_code",
+									"value": "EUR",
+									"description": "required. options: EUR",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "quantity_unit",
+									"value": "PIECES",
+									"description": "required. options: PIECES",
+									"type": "text"
+								},
+								{
+									"key": "expiration_date",
+									"value": "",
+									"description": "optional. YYYY-MM-DD",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"description": "optional. string",
+									"type": "text"
+								},
+								{
+									"key": "is_expense",
+									"value": "false",
+									"description": "optional. boolean",
+									"type": "text"
+								},
+								{
+									"key": "produced_by",
+									"value": "",
+									"description": "optional. string",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/other",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"other"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Post Harvest Supply",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "57acf4ff-8c34-4c0a-aef0-7c9aee64b369",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "A Good Plastic For Harvested Crop",
+									"type": "text",
+									"description": "required. string."
+								},
+								{
+									"key": "price_per_unit",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "currency_code",
+									"value": "EUR",
+									"description": "required. options: EUR",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "quantity_unit",
+									"value": "PIECES",
+									"description": "required. options: PIECES",
+									"type": "text"
+								},
+								{
+									"key": "expiration_date",
+									"value": "",
+									"description": "optional. YYYY-MM-DD",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"description": "optional. string",
+									"type": "text"
+								},
+								{
+									"key": "is_expense",
+									"value": "false",
+									"description": "optional. boolean",
+									"type": "text"
+								},
+								{
+									"key": "produced_by",
+									"value": "",
+									"description": "optional. string",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/post_harvest_supply",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"post_harvest_supply"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Seeding Container",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b924d05b-7849-4c2f-8f85-bf2cb90e7dee",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Super Tray Plant Seeding",
+									"type": "text",
+									"description": "required. string."
+								},
+								{
+									"key": "container_type",
+									"value": "TRAY",
+									"description": "required. Options: TRAY, POT",
+									"type": "text"
+								},
+								{
+									"key": "price_per_unit",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "currency_code",
+									"value": "EUR",
+									"description": "required. options: EUR",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "quantity_unit",
+									"value": "PIECES",
+									"description": "required. options: PIECES",
+									"type": "text"
+								},
+								{
+									"key": "expiration_date",
+									"value": "2018-01-25",
+									"description": "optional. YYYY-MM-DD",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "Great!",
+									"description": "optional. string",
+									"type": "text"
+								},
+								{
+									"key": "is_expense",
+									"value": "true",
+									"description": "optional. boolean",
+									"type": "text"
+								},
+								{
+									"key": "produced_by",
+									"value": "IKEA",
+									"description": "optional. string",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/seeding_container",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"seeding_container"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Label and Crop Support",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6c0ca7a6-692e-42c9-aec4-97ad247c5c98",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Soft Label For Crops",
+									"type": "text",
+									"description": "required. string."
+								},
+								{
+									"key": "price_per_unit",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "currency_code",
+									"value": "EUR",
+									"description": "required. options: EUR",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "10",
+									"description": "required. float.",
+									"type": "text"
+								},
+								{
+									"key": "quantity_unit",
+									"value": "PIECES",
+									"description": "required. options: PIECES",
+									"type": "text"
+								},
+								{
+									"key": "expiration_date",
+									"value": "",
+									"description": "optional. YYYY-MM-DD",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "",
+									"description": "optional. string",
+									"type": "text"
+								},
+								{
+									"key": "is_expense",
+									"value": "false",
+									"description": "optional. boolean",
+									"type": "text"
+								},
+								{
+									"key": "produced_by",
+									"value": "",
+									"description": "optional. string",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/label_and_crop_support",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"label_and_crop_support"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Growing Medium",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "06b58563-836e-4737-b3f6-d594c994f481",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "required. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Good Soil For All"
+								},
+								{
+									"description": "required. float.",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: EUR",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "required. float.",
+									"key": "quantity",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: BAGS, CUBIC_METRE",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "BAGS"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/growing_medium",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"growing_medium"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Agrochemical",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "44a4af89-8832-4b83-9b39-c347b14ee132",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "required. string.",
+									"key": "name",
+									"type": "text",
+									"value": "A Good One Fertilizer For All"
+								},
+								{
+									"description": "required. options: DISINFECTANT, FERTILIZER, HORMONE, MANURE, PESTICIDE.",
+									"key": "chemical_type",
+									"type": "text",
+									"value": "FERTILIZER"
+								},
+								{
+									"description": "required. float.",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: EUR.",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "required. float.",
+									"key": "quantity",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: PACKETS, BOTTLES, BAGS.",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PACKETS"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-01-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/agrochemical",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"agrochemical"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Plant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								],
+								"id": "9cbbadb9-74bd-4d60-86b5-30283a2895e4",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "required. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Tomato Super One"
+								},
+								{
+									"description": "required. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.",
+									"key": "plant_type",
+									"type": "text",
+									"value": "FRUIT"
+								},
+								{
+									"description": "required. float.",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: EUR",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "required. float.",
+									"key": "quantity",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: UNITS, PACKETS",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PACKETS"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-01-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": "My notes"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": "IKEA"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/plant",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"plant"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Farm Material Seed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ebca6852-ae9f-4223-a0a7-a9b31736265f",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);   ",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "required. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Brocolli Super Green 3"
+								},
+								{
+									"description": "required. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.",
+									"key": "plant_type",
+									"type": "text",
+									"value": "VEGETABLE"
+								},
+								{
+									"description": "required. float.",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: EUR",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "required. float.",
+									"key": "quantity",
+									"type": "text",
+									"value": "10"
+								},
+								{
+									"description": "required. options: SEEDS, PACKETS, GRAM, KILOGRAM",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PACKETS"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-01-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. boolean",
+									"key": "is_expense",
+									"type": "text",
+									"value": "false"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/seed",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"seed"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Plant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    postman.setNextRequest(\"Create Area's Crop Batch\")",
+									"}"
+								],
+								"id": "e075d3c6-7ced-4ec4-82e8-551db06669ac",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Blue Herb"
+								},
+								{
+									"description": "optional. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.",
+									"key": "plant_type",
+									"type": "text",
+									"value": "HERB"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR.\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: UNITS, PACKETS.\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "UNITS"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-01-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": "edited notes"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": "Local Farmer"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/plant/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"plant",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Seed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "564df7cf-2470-4be1-b1f5-e32da12bf91a",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Brocolli Super Green Edited"
+								},
+								{
+									"description": "optional. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.",
+									"key": "plant_type",
+									"type": "text",
+									"value": "FRUIT"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "15"
+								},
+								{
+									"description": "optional. options: EUR\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty\n",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: SEEDS, PACKETS, GRAM, KILOGRAM.\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "SEEDS"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-02-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": "My edited notes"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": "Local Farmer"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/seed/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"seed",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Agrochemical",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"AGROCHEM_ID\", data.data.uid);",
+									"}"
+								],
+								"id": "d67255a2-b399-4c1d-882d-f7d83f954032",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "A Good One Disinfectant For All"
+								},
+								{
+									"description": "optional. options: DISINFECTANT, FERTILIZER, HORMONE, MANURE, PESTICIDE.",
+									"key": "chemical_type",
+									"type": "text",
+									"value": "DISINFECTANT"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR.\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: PACKETS, BOTTLES, BAGS.\nrequired if `quantity` is not empty\n",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "BOTTLES"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-01-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/agrochemical/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"agrochemical",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Growing Medium",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"id": "4d66caf7-b901-45bb-93f5-d51224bcff49",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Good Soil For All"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: BAGS, CUBIC_METRE.\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "CUBIC_METRE"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/growing_medium/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"growing_medium",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Label and Crop Support",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"id": "48d0633f-d369-4371-a3e8-c6d79d586948",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Hard Label For Crops"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR.\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: PIECES.\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PIECES"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. boolean",
+									"key": "is_expense",
+									"type": "text",
+									"value": "false"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/label_and_crop_support/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"label_and_crop_support",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Seeding Container",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b924d05b-7849-4c2f-8f85-bf2cb90e7dee",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Medium Tray Plant Seeding"
+								},
+								{
+									"description": "optional. Options: TRAY, POT",
+									"key": "container_type",
+									"type": "text",
+									"value": "POT"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR.\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: PIECES.\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PIECES"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": "2018-01-25"
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": "Great!"
+								},
+								{
+									"description": "optional. boolean",
+									"key": "is_expense",
+									"type": "text",
+									"value": "true"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": "IKEA"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/seeding_container/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"seeding_container",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Post Harvest Supply",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"id": "52b75596-3567-4d3b-9b48-be2076dbe738",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "An Ordinary Plastic For Harvested Crop"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR.\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: PIECES\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PIECES"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. boolean",
+									"key": "is_expense",
+									"type": "text",
+									"value": "false"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/post_harvest_supply/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"post_harvest_supply",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm Material Other",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c2bd190e-32e8-4395-bbcb-499ccb557266",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"MATERIAL_ID\", data.data.uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "optional. string.",
+									"key": "name",
+									"type": "text",
+									"value": "Indoor Bright Lamp"
+								},
+								{
+									"description": "optional. float.\nrequired if `currency_code` is not empty",
+									"key": "price_per_unit",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: EUR.\nrequired if `price_per_unit` is not empty",
+									"key": "currency_code",
+									"type": "text",
+									"value": "EUR"
+								},
+								{
+									"description": "optional. float.\nrequired if `quantity_unit` is not empty",
+									"key": "quantity",
+									"type": "text",
+									"value": "20"
+								},
+								{
+									"description": "optional. options: PIECES.\nrequired if `quantity` is not empty",
+									"key": "quantity_unit",
+									"type": "text",
+									"value": "PIECES"
+								},
+								{
+									"description": "optional. YYYY-MM-DD",
+									"key": "expiration_date",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. string",
+									"key": "notes",
+									"type": "text",
+									"value": ""
+								},
+								{
+									"description": "optional. boolean",
+									"key": "is_expense",
+									"type": "text",
+									"value": "false"
+								},
+								{
+									"description": "optional. string",
+									"key": "produced_by",
+									"type": "text",
+									"value": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/inventories/materials/other/{{MATERIAL_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"inventories",
+								"materials",
+								"other",
+								"{{MATERIAL_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Farm",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Farm",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"FARM_ID\", data.data.uid);   ",
+									"}"
+								],
+								"id": "1932c410-6c41-459e-8624-05f7025dfe3a",
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"id": "e209025f-8988-4097-893a-34bf382171e7",
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char",
+									"key": "name",
+									"type": "text",
+									"value": "My Farm 2"
+								},
+								{
+									"description": "Required",
+									"key": "latitude",
+									"type": "text",
+									"value": "10.00"
+								},
+								{
+									"description": "Required",
+									"key": "longitude",
+									"type": "text",
+									"value": "11.00"
+								},
+								{
+									"description": "Required. options: organic, hydroponic",
+									"key": "farm_type",
+									"type": "text",
+									"value": "organic"
+								},
+								{
+									"description": "Required: options example: ID. This should be got from backend.",
+									"key": "country_code",
+									"type": "text",
+									"value": "ID"
+								},
+								{
+									"description": "Required: options example: JK. This should be got from backend.",
+									"key": "city_code",
+									"type": "text",
+									"value": "JK"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Farm",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "My Farm Updated",
+									"type": "text",
+									"description": "optional. string"
+								},
+								{
+									"key": "latitude",
+									"value": "12.10",
+									"type": "text",
+									"description": "optional. string.\nrequired if longitude is not empty"
+								},
+								{
+									"key": "longitude",
+									"value": "13.20",
+									"type": "text",
+									"description": "optional. string.\nrequired if latitude is not empty"
+								},
+								{
+									"key": "farm_type",
+									"value": "hydroponic",
+									"type": "text",
+									"description": "optional. Options: organic, hydroponic, aquaponic, mushroom, livestock, fisheries, permaculture"
+								},
+								{
+									"key": "country_code",
+									"value": "AU",
+									"type": "text",
+									"description": "optional: options example: ID. This should be got from backend.\nrequired if city_code is not empty."
+								},
+								{
+									"key": "city_code",
+									"value": "QLD",
+									"type": "text",
+									"description": "optional: options example: JK. This should be got from backend.\nrequired if country_code is not empty"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Farms",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "1c570736-c2d7-4522-8772-f226d32949aa",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "82f8c89a-7360-46bd-8948-c3df92a3b992",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms"
+							]
+						},
+						"description": "Get all available farms"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservoir",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Farm's Reservoir",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0d51f804-8123-4cca-99db-2d69ea6e3ba6",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"RESERVOIR_ID\", data.data.uid);   ",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "MyReservoir1",
+									"type": "text",
+									"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char"
+								},
+								{
+									"key": "type",
+									"value": "TAP",
+									"type": "text",
+									"description": "Requred. Options: BUCKET, TAP.\nIf BUCKET then `capacity` is required\nif TAP then `capacity` is not required"
+								},
+								{
+									"key": "capacity",
+									"value": "100",
+									"type": "text",
+									"description": "Required. \nIf bucket then `capacity` is required.\nif tap then `capacity` is not required."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/reservoirs",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"reservoirs"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservoir",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "My Res Updated",
+									"type": "text",
+									"description": "optional. string"
+								},
+								{
+									"key": "type",
+									"value": "BUCKET",
+									"description": "optional. Options: BUCKET, TAP.\nrequired if capacity is not empty",
+									"type": "text"
+								},
+								{
+									"key": "capacity",
+									"value": "30",
+									"description": "optional. numeric.\nrequired if type == BUCKET",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/reservoirs/{{RESERVOIR_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"reservoirs",
+								"{{RESERVOIR_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Reservoirs",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ded1531b-0f60-4b97-9e84-8ff380f42487",
+								"type": "text/javascript",
+								"exec": [
+									"postman.setNextRequest(null)"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/reservoirs",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"reservoirs"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Reservoirs By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/reservoirs/{{RESERVOIR_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"reservoirs",
+								"{{RESERVOIR_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reservoir's Notes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "fef2b74b-5bf1-4a40-8d8d-31bff57692fd",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"RESERVOIR_NOTE_ID\", data.data.notes[data.data.notes.length-1].uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "content",
+									"value": "This should be my first notes and i want this to be somewhat lengthful. I think this is lengthly enough.",
+									"description": "required. string.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/reservoirs/{{RESERVOIR_ID}}/notes",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"reservoirs",
+								"{{RESERVOIR_ID}}",
+								"notes"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Reservoir's Notes",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/reservoirs/{{RESERVOIR_ID}}/notes/{{RESERVOIR_NOTE_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"reservoirs",
+								"{{RESERVOIR_ID}}",
+								"notes",
+								"{{RESERVOIR_NOTE_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Area",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Farm's Area",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "98587349-0854-451b-b8ee-602fce10941a",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"AREA_ID\", data.data.uid);   ",
+									"    ",
+									"    areaCount = parseInt(pm.environment.get(\"AREA_COUNT\"))+1",
+									"    ",
+									"    pm.environment.set(\"AREA_COUNT\", areaCount)",
+									"    ",
+									"    if (areaCount == 2) {",
+									"        postman.setNextRequest(\"Create Farm Material Seed\")",
+									"    } else {",
+									"        pm.environment.set(\"DST_AREA_ID\", data.data.uid)",
+									"        postman.setNextRequest(\"Create Farm's Area\")",
+									"    }",
+									"}"
+								]
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "5d20450f-1883-4630-8122-389bf63259bc",
+								"type": "text/javascript",
+								"exec": [
+									"areaCount = parseInt(pm.environment.get(\"AREA_COUNT\"))",
+									"",
+									"if (areaCount == 0) {",
+									"    pm.environment.set(\"AREA_TYPE\", \"GROWING\")",
+									"    pm.environment.set(\"AREA_NAME\", \"MY AREA GROWING\")",
+									"} else if (areaCount == 1) {",
+									"    pm.environment.set(\"AREA_TYPE\", \"SEEDING\")",
+									"    pm.environment.set(\"AREA_NAME\", \"MY AREA SEEDING\")",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "{{AREA_NAME}}",
+									"description": "Required. Alphanumeric, hypen, space, underscore. Min 5 char, max 100 char",
+									"type": "text"
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"description": "Required, number, size cannot be <= 0",
+									"type": "text"
+								},
+								{
+									"key": "size_unit",
+									"value": "m2",
+									"description": "Required, alpha. options: Ha, m2",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "{{AREA_TYPE}}",
+									"description": "Required, alpha. options: SEEDING, GROWING",
+									"type": "text"
+								},
+								{
+									"key": "location",
+									"value": "OUTDOOR",
+									"description": "Required, alpha. options: INDOOR, OUTDOOR",
+									"type": "text"
+								},
+								{
+									"key": "reservoir_id",
+									"value": "{{RESERVOIR_ID}}",
+									"description": "Required, number",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"value": "",
+									"description": "Optional",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"areas"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Area",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "My Area Updated",
+									"type": "text",
+									"description": "optional. string."
+								},
+								{
+									"key": "size",
+									"value": "23",
+									"type": "text",
+									"description": "optional. numeric.\nrequired if size_unit is not empty"
+								},
+								{
+									"key": "size_unit",
+									"value": "Ha",
+									"type": "text",
+									"description": "optional. Options: m2, Ha.\nrequired if size is not empty"
+								},
+								{
+									"key": "type",
+									"value": "GROWING",
+									"type": "text",
+									"description": "optional. Options: SEEDING, GROWING"
+								},
+								{
+									"key": "location",
+									"value": "INDOOR",
+									"type": "text",
+									"description": "optional. Options: INDOOR, OUTDOOR"
+								},
+								{
+									"key": "reservoir_id",
+									"value": "{{RESERVOIR_ID}}",
+									"type": "text",
+									"description": "optional"
+								},
+								{
+									"key": "photo",
+									"value": "",
+									"description": "optional",
+									"type": "file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"areas",
+								"{{AREA_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Areas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"areas"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm Area File",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/{{AREA_ID}}/photos",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"areas",
+								"{{AREA_ID}}",
+								"photos"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Areas By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/{{AREA_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"areas",
+								"{{AREA_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Area's Notes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "431ee28c-2902-43a7-95e0-79c4657905f2",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"AREA_NOTE_ID\", data.data.notes[data.data.notes.length-1].uid);   ",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "content",
+									"value": "This should be my first notes and i want this to be somewhat lengthful. I think this is lengthly enough.",
+									"description": "required. string.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/notes",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"areas",
+								"{{AREA_ID}}",
+								"notes"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Area's Notes",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/notes/{{AREA_NOTE_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"areas",
+								"{{AREA_ID}}",
+								"notes",
+								"{{AREA_NOTE_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Count Total Farm's Areas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/areas/total",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"areas",
+								"total"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Crops",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Area's Crop Batch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f0e01112-16be-48be-9534-4ea885663591",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"CROP_ID\", data.data.uid);   ",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "crop_type",
+									"value": "SEEDING",
+									"type": "text",
+									"description": "required. string. options: SEEDING, GROWING"
+								},
+								{
+									"key": "plant_type",
+									"value": "VEGETABLE",
+									"type": "text",
+									"description": "required. string. options: VEGETABLE, FRUIT, HERB, FLOWER, TREE"
+								},
+								{
+									"key": "name",
+									"value": "Brocolli Super Green 3",
+									"type": "text",
+									"description": "required. string. This should be gotten from `Get Farms's Available Inventories`"
+								},
+								{
+									"key": "container_quantity",
+									"value": "10",
+									"type": "text",
+									"description": "required. number."
+								},
+								{
+									"key": "container_type",
+									"value": "TRAY",
+									"type": "text",
+									"description": "required. options: POT, TRAY"
+								},
+								{
+									"key": "container_cell",
+									"value": "15",
+									"type": "text",
+									"description": "optiona. if container_type == tray then this is required."
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/crops",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"areas",
+								"{{AREA_ID}}",
+								"crops"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Crop Batch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "crop_type",
+									"value": "GROWING",
+									"description": "optional. Options: SEEDING, GROWING",
+									"type": "text"
+								},
+								{
+									"key": "plant_type",
+									"value": "FRUIT",
+									"description": "optional. Options: VEGETABLE, FRUIT, HERB, FLOWER, TREE.\nrequired if `name` is not empty",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Tomato Super One",
+									"description": "optional. This should be gotten from `Get Farms's Available Inventories`.\nrequired if plant_type is not empty",
+									"type": "text"
+								},
+								{
+									"key": "container_quantity",
+									"value": "22",
+									"description": "optional. numeric.\nrequired if container_type is not empty",
+									"type": "text"
+								},
+								{
+									"key": "container_type",
+									"value": "TRAY",
+									"description": "optional. Options: POT, TRAY.\nrequired if container_quantity is not empty",
+									"type": "text"
+								},
+								{
+									"key": "container_cell",
+									"value": "30",
+									"description": "optional. numeric.\nrequired if container_type is TRAY.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Crops",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/crops",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"crops"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Crops By Area",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/areas/{{AREA_ID}}/crops",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"areas",
+								"{{AREA_ID}}",
+								"crops"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Crops Archives",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/crops/archives",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"crops",
+								"archives"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Crops By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Crop's Photo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "photo",
+									"value": "",
+									"description": "Required",
+									"type": "file"
+								},
+								{
+									"key": "description",
+									"value": "Mantab djiwa",
+									"description": "Required. String.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/photos",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"photos"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Crop's Photo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/photos/{{CROP_PHOTO_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"photos",
+								"{{CROP_PHOTO_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Create Crop's Notes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4490da8f-0f3e-44d5-a88b-2296daffdb41",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"CROP_NOTE_ID\", data.data.notes[data.data.notes.length-1].uid);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "content",
+									"value": "This should be my first notes and i want this to be somewhat lengthful. I think this is lengthly enough.",
+									"description": "required. string",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/notes",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"notes"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Crop's Notes",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/notes/{{CROP_NOTE_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"notes",
+								"{{CROP_NOTE_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Move Area",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "source_area_id",
+									"value": "{{AREA_ID}}",
+									"description": "Required. The UID of crop's area",
+									"type": "text"
+								},
+								{
+									"key": "destination_area_id",
+									"value": "{{DST_AREA_ID}}",
+									"description": "Required. The UID of the area destination.",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "1",
+									"description": "Required. int. How much you want to move.",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/move",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"move"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Harvest Crop",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "source_area_id",
+									"value": "{{DST_AREA_ID}}",
+									"description": "Required. The UID of crop's area",
+									"type": "text"
+								},
+								{
+									"key": "harvest_type",
+									"value": "ALL",
+									"description": "Required. Options: ALL, PARTIAL.\nPARTIAL options won't reduce the quantity of the plant. It just calculate the produced quantity.",
+									"type": "text"
+								},
+								{
+									"key": "produced_quantity",
+									"value": "2",
+									"description": "Required. float",
+									"type": "text"
+								},
+								{
+									"key": "produced_unit",
+									"value": "Kg",
+									"description": "Required: Options: Kg, Gr",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "This is great season",
+									"description": "Optiona. String",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/harvest",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"harvest"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Dump Crop",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "source_area_id",
+									"value": "{{AREA_ID}}",
+									"description": "Required. The UID of crop's area",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "1",
+									"description": "Required. int.",
+									"type": "text"
+								},
+								{
+									"key": "notes",
+									"value": "Need to throw this plant it decays",
+									"description": "Optional. String",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/dump",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"dump"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Water Crop",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "source_area_id",
+									"value": "{{DST_AREA_ID}}",
+									"description": "Required. The UID of an area",
+									"type": "text"
+								},
+								{
+									"key": "watering_date",
+									"value": "2018-01-15 10:20",
+									"description": "Required. yyyy-mm-dd HH:MM",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/water",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"water"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Crop Activities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/crops/{{CROP_ID}}/activities",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"crops",
+								"{{CROP_ID}}",
+								"activities"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Crops Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/crops/information",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"crops",
+								"information"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Farm's Total Crop Batch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/farms/{{FARM_ID}}/crops/total_batch",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"farms",
+								"{{FARM_ID}}",
+								"crops",
+								"total_batch"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Task",
+			"description": "",
+			"item": [
+				{
+					"name": "Create Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b0e5944f-c665-4af0-8e22-9c5846fea938",
+								"type": "text/javascript",
+								"exec": [
+									"var data = JSON.parse(responseBody)",
+									"if (data.data) {",
+									"    pm.environment.set(\"TASK_ID\", data.data.uid);",
+									"    pm.environment.set(\"ASSET_ID\", data.data.asset_id);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Clean up area lalalalala",
+									"description": "required string",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Sweep up leaves",
+									"type": "text",
+									"description": "optional string"
+								},
+								{
+									"key": "due_date",
+									"value": "2019-01-23T17:37:39.697328206+01:00",
+									"type": "text",
+									"description": "optional time must be equal to or later than current time"
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"type": "text",
+									"description": "required string. Options: NORMAL, URGENT"
+								},
+								{
+									"key": "asset_id",
+									"value": "{{CROP_ID}}",
+									"type": "text",
+									"description": "optional asset id: required if domain is not GENERAL"
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"type": "text",
+									"description": "required string. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR"
+								},
+								{
+									"key": "category",
+									"value": "NUTRIENT",
+									"description": "required string. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION",
+									"type": "text"
+								},
+								{
+									"key": "material_id",
+									"value": "{{MATERIAL_ID}}",
+									"description": "only  for CROP domain",
+									"type": "text"
+								},
+								{
+									"key": "area_id",
+									"value": "{{AREA_ID}}",
+									"description": "only  for CROP domain",
+									"type": "text"
+								},
+								{
+									"key": "crop_id",
+									"value": "{{CROP_ID}}",
+									"description": "only  for CROP domain",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/tasks",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaa58f0b-7ae3-4108-9fe0-a36d91db7712",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Clean up the other area",
+									"description": "optional string",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "Sweep up leaves",
+									"type": "text",
+									"description": "optional string",
+									"disabled": true
+								},
+								{
+									"key": "due_date",
+									"value": "2021-01-23T17:37:39.697328206+01:00",
+									"type": "text",
+									"description": "optional time must be equal to or later than current time"
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"type": "text",
+									"description": "optional string. Options: NORMAL, URGENT",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "{{CROP_ID}}",
+									"type": "text",
+									"description": "optional asset id: required if domain is not GENERAL",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"type": "text",
+									"description": "optional string, required if changing category/inventory_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "SANITATION",
+									"description": "optional string, required if changing material_id, area_id or crop_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "material_id",
+									"value": "{{AGROCHEM_ID}}",
+									"description": "material_id, area_id & crop_id should go together, or else the missing values will be set as nil. ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "area_id",
+									"value": "{{AREA_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "crop_id",
+									"value": "{{CROP_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/{{TASK_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"{{TASK_ID}}"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Set Task As Due",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaa58f0b-7ae3-4108-9fe0-a36d91db7712",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Clean up the other area",
+									"description": "optional string",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "Sweep up leaves",
+									"type": "text",
+									"description": "optional string",
+									"disabled": true
+								},
+								{
+									"key": "due_date",
+									"value": "2021-01-23T17:37:39.697328206+01:00",
+									"type": "text",
+									"description": "optional time must be equal to or later than current time"
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"type": "text",
+									"description": "optional string. Options: NORMAL, URGENT",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "{{CROP_ID}}",
+									"type": "text",
+									"description": "optional asset id: required if domain is not GENERAL",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"type": "text",
+									"description": "optional string, required if changing category/inventory_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "SANITATION",
+									"description": "optional string, required if changing material_id, area_id or crop_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "material_id",
+									"value": "{{AGROCHEM_ID}}",
+									"description": "material_id, area_id & crop_id should go together, or else the missing values will be set as nil. ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "area_id",
+									"value": "{{AREA_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "crop_id",
+									"value": "{{CROP_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/{{TASK_ID}}/due",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"{{TASK_ID}}",
+								"due"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Set Task As Complete",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaa58f0b-7ae3-4108-9fe0-a36d91db7712",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Clean up the other area",
+									"description": "optional string",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "Sweep up leaves",
+									"type": "text",
+									"description": "optional string",
+									"disabled": true
+								},
+								{
+									"key": "due_date",
+									"value": "2021-01-23T17:37:39.697328206+01:00",
+									"type": "text",
+									"description": "optional time must be equal to or later than current time"
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"type": "text",
+									"description": "optional string. Options: NORMAL, URGENT",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "{{CROP_ID}}",
+									"type": "text",
+									"description": "optional asset id: required if domain is not GENERAL",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"type": "text",
+									"description": "optional string, required if changing category/inventory_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "SANITATION",
+									"description": "optional string, required if changing material_id, area_id or crop_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "material_id",
+									"value": "{{AGROCHEM_ID}}",
+									"description": "material_id, area_id & crop_id should go together, or else the missing values will be set as nil. ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "area_id",
+									"value": "{{AREA_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "crop_id",
+									"value": "{{CROP_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/{{TASK_ID}}/complete",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"{{TASK_ID}}",
+								"complete"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Set Task As Cancelled",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaa58f0b-7ae3-4108-9fe0-a36d91db7712",
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Clean up the other area",
+									"description": "optional string",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "Sweep up leaves",
+									"type": "text",
+									"description": "optional string",
+									"disabled": true
+								},
+								{
+									"key": "due_date",
+									"value": "2021-01-23T17:37:39.697328206+01:00",
+									"type": "text",
+									"description": "optional time must be equal to or later than current time"
+								},
+								{
+									"key": "priority",
+									"value": "URGENT",
+									"type": "text",
+									"description": "optional string. Options: NORMAL, URGENT",
+									"disabled": true
+								},
+								{
+									"key": "asset_id",
+									"value": "{{CROP_ID}}",
+									"type": "text",
+									"description": "optional asset id: required if domain is not GENERAL",
+									"disabled": true
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"type": "text",
+									"description": "optional string, required if changing category/inventory_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "SANITATION",
+									"description": "optional string, required if changing material_id, area_id or crop_id. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "material_id",
+									"value": "{{AGROCHEM_ID}}",
+									"description": "material_id, area_id & crop_id should go together, or else the missing values will be set as nil. ",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "area_id",
+									"value": "{{AREA_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "crop_id",
+									"value": "{{CROP_ID}}",
+									"description": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/{{TASK_ID}}/cancel",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"{{TASK_ID}}",
+								"cancel"
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks?limit=5",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "5",
+									"equals": true,
+									"description": "optional integer value"
+								}
+							]
+						},
+						"description": null
+					},
+					"response": []
+				},
+				{
+					"name": "Get Filtered Tasks",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/search?due_start=2019-01-01T17:37:39.697328206%2B01:00&due_end=2019-02-03T17:37:39.697328206%2B01:00&category=NUTRIENT&status=COMPLETED&is_due=false&asset_id={{ASSET_ID}}&domain=CROP",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"search"
+							],
+							"query": [
+								{
+									"key": "due_start",
+									"value": "2019-01-01T17:37:39.697328206%2B01:00",
+									"equals": true,
+									"description": "optional date. %2B is '+'. both due_start & due_end should be present"
+								},
+								{
+									"key": "due_end",
+									"value": "2019-02-03T17:37:39.697328206%2B01:00",
+									"equals": true
+								},
+								{
+									"key": "category",
+									"value": "NUTRIENT",
+									"equals": true,
+									"description": "optional string. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, NUTRIENT, PESTCONTROL, RESERVOIR, SAFETY, SANITATION"
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"equals": true,
+									"description": "CREATED, CANCELLED or COMPLETED"
+								},
+								{
+									"key": "is_due",
+									"value": "false",
+									"equals": true,
+									"description": "true or false"
+								},
+								{
+									"key": "asset_id",
+									"value": "{{ASSET_ID}}",
+									"equals": true,
+									"description": "uid of asset"
+								},
+								{
+									"key": "domain",
+									"value": "CROP",
+									"equals": true,
+									"description": "required string. Options: AREA, CROP, FINANCE, GENERAL, INVENTORY, RESERVOIR"
+								}
+							]
+						},
+						"description": null
+					},
+					"response": [
+						{
+							"id": "8c3f6409-6e6a-4513-8a81-d548fdbe628f",
+							"name": "Get Tasks under Asset",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{API_HOST}}/tasks/search?domain=CROP&asset_id={{AREA_ID}}",
+									"host": [
+										"{{API_HOST}}"
+									],
+									"path": [
+										"tasks",
+										"search"
+									],
+									"query": [
+										{
+											"key": "is_due",
+											"value": "false",
+											"equals": true,
+											"description": "boolean: true or false",
+											"disabled": true
+										},
+										{
+											"key": "priority",
+											"value": "URGENT",
+											"equals": true,
+											"description": "string: URGENT or NORMAL",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "COMPLETED",
+											"equals": true,
+											"description": "string: CREATED, CANCELLED or COMPLETED",
+											"disabled": true
+										},
+										{
+											"key": "domain",
+											"value": "CROP",
+											"equals": true,
+											"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR"
+										},
+										{
+											"key": "asset_id",
+											"value": "{{AREA_ID}}",
+											"equals": true,
+											"description": "asset uid (must match domain)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"_postman_previewtype": "text",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Length",
+									"value": "489",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Vary",
+									"value": "Origin",
+									"name": "Vary",
+									"description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+								}
+							],
+							"cookie": [],
+							"responseTime": 78,
+							"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+						},
+						{
+							"id": "3071a23d-de27-4e43-bde1-cb168cac1101",
+							"name": "Get Tasks that are \"due\"",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{API_HOST}}/tasks/search?is_due=false",
+									"host": [
+										"{{API_HOST}}"
+									],
+									"path": [
+										"tasks",
+										"search"
+									],
+									"query": [
+										{
+											"key": "is_due",
+											"value": "false",
+											"equals": true,
+											"description": "boolean: true or false"
+										},
+										{
+											"key": "priority",
+											"value": "URGENT",
+											"equals": true,
+											"description": "string: URGENT or NORMAL",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "COMPLETED",
+											"equals": true,
+											"description": "string: CREATED, CANCELLED or COMPLETED",
+											"disabled": true
+										},
+										{
+											"key": "domain",
+											"value": "CROP",
+											"equals": true,
+											"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR",
+											"disabled": true
+										},
+										{
+											"key": "asset_id",
+											"value": "{{AREA_ID}}",
+											"equals": true,
+											"description": "asset uid (must match domain)",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"_postman_previewtype": "text",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Length",
+									"value": "489",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Vary",
+									"value": "Origin",
+									"name": "Vary",
+									"description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+								}
+							],
+							"cookie": [],
+							"responseTime": 78,
+							"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+						},
+						{
+							"id": "bd3aa3ad-3825-4887-8ded-586e30cd87d3",
+							"name": "Get Tasks that are \"URGENT\"",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{API_HOST}}/tasks/search?priority=URGENT",
+									"host": [
+										"{{API_HOST}}"
+									],
+									"path": [
+										"tasks",
+										"search"
+									],
+									"query": [
+										{
+											"key": "is_due",
+											"value": "false",
+											"equals": true,
+											"description": "boolean: true or false",
+											"disabled": true
+										},
+										{
+											"key": "priority",
+											"value": "URGENT",
+											"equals": true,
+											"description": "string: URGENT or NORMAL"
+										},
+										{
+											"key": "status",
+											"value": "COMPLETED",
+											"equals": true,
+											"description": "string: CREATED, CANCELLED or COMPLETED",
+											"disabled": true
+										},
+										{
+											"key": "domain",
+											"value": "CROP",
+											"equals": true,
+											"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR",
+											"disabled": true
+										},
+										{
+											"key": "asset_id",
+											"value": "{{AREA_ID}}",
+											"equals": true,
+											"description": "asset uid (must match domain)",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"_postman_previewtype": "text",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*",
+									"name": "Access-Control-Allow-Origin",
+									"description": "Specifies a URI that may access the resource. For requests without credentials, the server may specify '*' as a wildcard, thereby allowing any origin to access the resource."
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, must-revalidate",
+									"name": "Cache-Control",
+									"description": "Tells all caching mechanisms from server to client whether they may cache this object. It is measured in seconds"
+								},
+								{
+									"key": "Content-Length",
+									"value": "489",
+									"name": "Content-Length",
+									"description": "The length of the response body in octets (8-bit bytes)"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=UTF-8",
+									"name": "Content-Type",
+									"description": "The mime type of this content"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+									"name": "Date",
+									"description": "The date and time that the message was sent"
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": "Gives the date/time after which the response is considered stale"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": "Implementation-specific headers that may have various effects anywhere along the request-response chain."
+								},
+								{
+									"key": "Vary",
+									"value": "Origin",
+									"name": "Vary",
+									"description": "Tells downstream proxies how to match future request headers to decide whether the cached response can be used rather than requesting a fresh one from the origin server."
+								}
+							],
+							"cookie": [],
+							"responseTime": 78,
+							"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+						},
+						{
+							"id": "3939e579-39c5-406b-9750-52a0c278e0ea",
+							"name": "Get Tasks under \"CROP\"",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {},
+								"url": {
+									"raw": "{{API_HOST}}/tasks/search?domain=CROP",
+									"host": [
+										"{{API_HOST}}"
+									],
+									"path": [
+										"tasks",
+										"search"
+									],
+									"query": [
+										{
+											"key": "is_due",
+											"value": "false",
+											"equals": true,
+											"description": "boolean: true or false",
+											"disabled": true
+										},
+										{
+											"key": "priority",
+											"value": "URGENT",
+											"equals": true,
+											"description": "string: URGENT or NORMAL",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "COMPLETED",
+											"equals": true,
+											"description": "string: CREATED, CANCELLED or COMPLETED",
+											"disabled": true
+										},
+										{
+											"key": "domain",
+											"value": "CROP",
+											"equals": true,
+											"description": "string: AREA, CROP, FINANCE, INVENTORY, GENERAL or RESERVOIR"
+										},
+										{
+											"key": "asset_id",
+											"value": "{{AREA_ID}}",
+											"equals": true,
+											"description": "asset uid (must match domain)",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*",
+									"name": "Access-Control-Allow-Origin",
+									"description": ""
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, must-revalidate",
+									"name": "Cache-Control",
+									"description": ""
+								},
+								{
+									"key": "Content-Length",
+									"value": "489",
+									"name": "Content-Length",
+									"description": ""
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=UTF-8",
+									"name": "Content-Type",
+									"description": ""
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 07 Feb 2018 16:37:51 GMT",
+									"name": "Date",
+									"description": ""
+								},
+								{
+									"key": "Expires",
+									"value": "0",
+									"name": "Expires",
+									"description": ""
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache",
+									"name": "Pragma",
+									"description": ""
+								},
+								{
+									"key": "Vary",
+									"value": "Origin",
+									"name": "Vary",
+									"description": ""
+								}
+							],
+							"cookie": [],
+							"responseTime": "78",
+							"body": "{\"data\":[{\"title\":\"Clean up area\",\"uid\":\"13e20ede-8286-4df6-960c-aebc882789fc\",\"description\":\"Sweep up leaves\",\"created_date\":\"2018-02-07T17:36:14.981806957+01:00\",\"due_date\":\"2019-01-23T17:37:39.697328206+01:00\",\"completed_date\":\"2018-02-07T17:37:31.561390499+01:00\",\"priority\":\"URGENT\",\"status\":\"COMPLETED\",\"domain\":\"CROP\",\"domain_details\":{\"InventoryUID\":\"cccce158-1b21-4e97-8bf1-c2e710605ea1\"},\"category\":\"SANITATION\",\"is_due\":false,\"asset_id\":\"8c181943-b994-4f95-b767-516089bd3a0b\"}]}"
+						}
+					]
+				},
+				{
+					"name": "Get Task By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{API_HOST}}/tasks/{{TASK_ID}}",
+							"host": [
+								"{{API_HOST}}"
+							],
+							"path": [
+								"tasks",
+								"{{TASK_ID}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Change Password",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "{{API_HOST}}/user/{{USER_ID}}/change_password",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"user",
+						"{{USER_ID}}",
+						"change_password"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Authorize",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "tania",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "tania",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "5b5267ae-67cc-4dac-8b12-103cf4b9f2b6",
+							"type": "text"
+						},
+						{
+							"key": "response_type",
+							"value": "token",
+							"type": "text"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "http://localhost:8000/callback.html",
+							"type": "text"
+						},
+						{
+							"key": "state",
+							"value": "random-string",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/authorize",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"authorize"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		},
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "herunyan",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "confirm_password",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API_HOST}}/register",
+					"host": [
+						"{{API_HOST}}"
+					],
+					"path": [
+						"register"
+					]
+				},
+				"description": null
+			},
+			"response": []
+		}
+	]
+}
