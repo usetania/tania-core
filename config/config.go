@@ -7,4 +7,9 @@ type Configuration struct {
 	UploadPathArea *string
 	UploadPathCrop *string
 	SqlitePath     *string
+	MysqlHost      *string
+	MysqlPort      *string
+	MysqlDbname    *string
+	MysqlUsername  *string
+	MysqlPassword  *string
 }

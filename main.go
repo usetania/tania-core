@@ -19,7 +19,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
 )
 
@@ -122,7 +121,15 @@ func main() {
 }
 
 func initMysql() *sql.DB {
-	db, err := sql.Open("mysql", "root:root@(127.0.0.1:3306)/tania?parseTime=true")
+	host := *config.Config.MysqlHost
+	port := *config.Config.MysqlPort
+	dbname := *config.Config.MysqlDbname
+	user := *config.Config.MysqlUsername
+	pwd := *config.Config.MysqlPassword
+
+	dsn := user + ":" + pwd + "@(" + host + ":" + port + ")/" + dbname + "?parseTime=true"
+
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		panic(err)
 	}
@@ -226,10 +233,15 @@ func initConfig() {
 	conf := configure.New()
 
 	configuration := config.Configuration{
-		UploadPathArea: conf.String("UploadPathArea", "tania-uploads/area", "Upload path for the Area photo"),
-		UploadPathCrop: conf.String("UploadPathCrop", "tania-uploads/crop", "Upload path for the Crop photo"),
-		DemoMode:       conf.Bool("DemoMode", true, "Switch for the demo mode"),
-		SqlitePath:     conf.String("SqlitePath", "tania.db", "Path of sqlite file db"),
+		UploadPathArea: conf.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo"),
+		UploadPathCrop: conf.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo"),
+		DemoMode:       conf.Bool("demo_mode", true, "Switch for the demo mode"),
+		SqlitePath:     conf.String("sqlite_path", "tania.db", "Path of sqlite file db"),
+		MysqlHost:      conf.String("mysql_host", "127.0.0.1", "Mysql Host"),
+		MysqlPort:      conf.String("mysql_port", "3306", "Mysql Port"),
+		MysqlDbname:    conf.String("mysql_dbname", "tania", "Mysql DBName"),
+		MysqlUsername:  conf.String("mysql_username", "root", "Mysql username"),
+		MysqlPassword:  conf.String("mysql_password", "root", "Mysql password"),
 	}
 
 	// This config will read the first configuration.
