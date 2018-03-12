@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
@@ -15,6 +16,7 @@ import (
 	taskserver "github.com/Tanibox/tania-server/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/asaskevich/EventBus"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	_ "github.com/mattn/go-sqlite3"
@@ -47,8 +49,11 @@ func main() {
 	taskEventStorage := taskstorage.CreateTaskEventStorage()
 	taskReadStorage := taskstorage.CreateTaskReadStorage()
 
-	// Initialize SQLite3
-	db := initSqlite()
+	// // Initialize SQLite3
+	// db := initSqlite()
+
+	// Initialize MySQL
+	db := initMysql()
 
 	// Initialize Event Bus
 	bus := EventBus.New()
@@ -114,6 +119,44 @@ func main() {
 
 	e.Static("/", "public")
 	e.Logger.Fatal(e.Start(":8080"))
+}
+
+func initMysql() *sql.DB {
+	db, err := sql.Open("mysql", "root:root@(127.0.0.1:3306)/tania?parseTime=true")
+	if err != nil {
+		panic(err)
+	}
+
+	log.Print("Using database MySQL")
+
+	ddl, err := ioutil.ReadFile("db/mysql/ddl.sql")
+	if err != nil {
+		panic(err)
+	}
+	sqls := string(ddl)
+
+	splitted := strings.Split(sqls, ";")
+
+	tx, err := db.Begin()
+
+	for _, v := range splitted {
+		trimmed := strings.TrimSpace(v)
+
+		if len(trimmed) > 0 {
+			_, err = tx.Exec(v)
+
+			if err != nil {
+				tx.Rollback()
+				return db
+			}
+		}
+	}
+
+	tx.Commit()
+
+	log.Print("DDL file executed")
+
+	return db
 }
 
 func initSqlite() *sql.DB {
