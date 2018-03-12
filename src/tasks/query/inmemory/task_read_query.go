@@ -30,7 +30,7 @@ func (r TaskReadQueryInMemory) FindAll(limit *int) <-chan query.QueryResult {
 		}
 
 		if limit != nil {
-			tasks = tasks[:limit]
+			tasks = tasks[:*limit]
 		}
 
 		result <- query.QueryResult{Result: tasks}
