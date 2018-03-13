@@ -293,7 +293,7 @@ func (s AreaReadQueryMysql) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan q
 		rowsData := areaReadResult{}
 		notesRowsData := areaNotesReadResult{}
 
-		err := s.DB.QueryRow("SELECT * FROM AREA_READ WHERE UID = ? AND FARM_UID", areaUID.Bytes(), farmUID.Bytes()).Scan(
+		err := s.DB.QueryRow("SELECT * FROM AREA_READ WHERE UID = ? AND FARM_UID = ?", areaUID.Bytes(), farmUID.Bytes()).Scan(
 			&rowsData.UID,
 			&rowsData.Name,
 			&rowsData.SizeUnit,
@@ -335,7 +335,7 @@ func (s AreaReadQueryMysql) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan q
 			result <- query.QueryResult{Error: err}
 		}
 
-		rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", areaUID)
+		rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", areaUID.Bytes())
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}

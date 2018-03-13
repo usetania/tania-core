@@ -25,7 +25,7 @@ func (f *FarmEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResul
 	go func() {
 		events := []storage.FarmEvent{}
 
-		rows, err := f.DB.Query("SELECT * FROM FARM_EVENT WHERE FARM_UID = ? ORDER BY VERSION ASC", uid)
+		rows, err := f.DB.Query("SELECT * FROM FARM_EVENT WHERE FARM_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
