@@ -25,16 +25,16 @@ func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResul
 	go func() {
 		events := []storage.AreaEvent{}
 
-		rows, err := f.DB.Query("SELECT * FROM AREA_EVENT WHERE AREA_UID = ? ORDER BY VERSION ASC", uid)
+		rows, err := f.DB.Query("SELECT * FROM AREA_EVENT WHERE AREA_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
 		rowsData := struct {
 			ID          int
-			AreaUID     string
+			AreaUID     []byte
 			Version     int
-			CreatedDate string
+			CreatedDate time.Time
 			Event       []byte
 		}{}
 
@@ -47,12 +47,7 @@ func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResul
 				result <- query.QueryResult{Error: err}
 			}
 
-			areaUID, err := uuid.FromString(rowsData.AreaUID)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
-
-			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
+			areaUID, err := uuid.FromBytes(rowsData.AreaUID)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -60,7 +55,7 @@ func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResul
 			events = append(events, storage.AreaEvent{
 				AreaUID:     areaUID,
 				Version:     rowsData.Version,
-				CreatedDate: createdDate,
+				CreatedDate: rowsData.CreatedDate,
 				Event:       wrapper.EventData,
 			})
 		}
