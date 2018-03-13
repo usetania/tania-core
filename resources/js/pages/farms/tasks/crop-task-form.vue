@@ -125,6 +125,7 @@ export default {
     },
     submit () {
       this.task.asset_id = this.crop_id
+      this.task.crop_id = this.crop_id
       this.task.domain = "CROP"
       this.submitTask(this.task)
         .then(() => this.$parent.$emit('close'))
@@ -136,7 +137,7 @@ export default {
     typeChanged (type) {
       this.isfertilizer = false
       this.ispesticide = false
-      if (type == "CROP") {
+      if (type == "NUTRIENT") {
         this.isfertilizer = true
       } else if (type == "PESTCONTROL") {
         this.ispesticide = true
