@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -22,8 +21,6 @@ func (f *MaterialReadRepositoryMysql) Save(materialRead *storage.MaterialRead) <
 	result := make(chan error)
 
 	go func() {
-		fmt.Printf("%+v\n", materialRead)
-
 		count := 0
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM MATERIAL_READ WHERE UID = ?`, materialRead.UID.Bytes()).Scan(&count)
 		if err != nil {

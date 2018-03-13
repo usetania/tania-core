@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	"github.com/Tanibox/tania-server/src/assets/storage"
@@ -21,7 +20,7 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 
 	go func() {
 		count := 0
-		err := f.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE UID = ?`, areaRead.UID).Scan(&count)
+		err := f.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE UID = ?`, areaRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
 		}
@@ -34,8 +33,8 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 				WHERE UID = ?`,
 				areaRead.Name, areaRead.Size.Unit.Symbol, areaRead.Size.Value, areaRead.Type,
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
-				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate.Format(time.RFC3339),
-				areaRead.Farm.UID, areaRead.Farm.Name, areaRead.Reservoir.UID, areaRead.Reservoir.Name, areaRead.UID)
+				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate,
+				areaRead.Farm.UID.Bytes(), areaRead.Farm.Name, areaRead.Reservoir.UID.Bytes(), areaRead.Reservoir.Name, areaRead.UID.Bytes())
 
 			if err != nil {
 				result <- err
@@ -44,14 +43,14 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 			if len(areaRead.Notes) > 0 {
 				// Just delete them all then insert them all again.
 				// We can refactor it later.
-				_, err := f.DB.Exec(`DELETE FROM AREA_READ_NOTES WHERE AREA_UID = ?`, areaRead.UID)
+				_, err := f.DB.Exec(`DELETE FROM AREA_READ_NOTES WHERE AREA_UID = ?`, areaRead.UID.Bytes())
 				if err != nil {
 					result <- err
 				}
 
 				for _, v := range areaRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO AREA_READ_NOTES (UID, AREA_UID, CONTENT, CREATED_DATE)
-							VALUES (?, ?, ?, ?)`, v.UID, areaRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
+							VALUES (?, ?, ?, ?)`, v.UID.Bytes(), areaRead.UID.Bytes(), v.Content, v.CreatedDate)
 
 					if err != nil {
 						result <- err
@@ -63,10 +62,10 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 				(UID, NAME, SIZE_UNIT, SIZE, TYPE, LOCATION, PHOTO_FILENAME, PHOTO_MIMETYPE,
 				PHOTO_SIZE, PHOTO_WIDTH, PHOTO_HEIGHT, CREATED_DATE, FARM_UID, FARM_NAME, RESERVOIR_UID, RESERVOIR_NAME)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-				areaRead.UID, areaRead.Name, areaRead.Size.Unit.Symbol, areaRead.Size.Value, areaRead.Type,
+				areaRead.UID.Bytes(), areaRead.Name, areaRead.Size.Unit.Symbol, areaRead.Size.Value, areaRead.Type,
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
-				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate.Format(time.RFC3339),
-				areaRead.Farm.UID, areaRead.Farm.Name, areaRead.Reservoir.UID, areaRead.Reservoir.Name)
+				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate,
+				areaRead.Farm.UID.Bytes(), areaRead.Farm.Name, areaRead.Reservoir.UID.Bytes(), areaRead.Reservoir.Name)
 
 			if err != nil {
 				result <- err

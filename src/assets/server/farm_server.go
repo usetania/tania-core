@@ -97,11 +97,13 @@ func NewFarmServer(
 
 		farmServer.CropReadQuery = queryInMem.NewCropReadQueryInMemory(cropReadStorage)
 
+		// TODO: AreaServiceInMemory should be renamed. It doesn't need InMemory name
 		farmServer.AreaService = service.AreaServiceInMemory{
 			FarmReadQuery:      farmServer.FarmReadQuery,
 			ReservoirReadQuery: farmServer.ReservoirReadQuery,
 			CropReadQuery:      farmServer.CropReadQuery,
 		}
+		// TODO: ReservoirServiceInMemory should be renamed. It doesn't need InMemory name
 		farmServer.ReservoirService = service.ReservoirServiceInMemory{
 			FarmReadQuery: farmServer.FarmReadQuery,
 		}
@@ -129,11 +131,13 @@ func NewFarmServer(
 
 		farmServer.CropReadQuery = querySqlite.NewCropReadQuerySqlite(db)
 
+		// TODO: AreaServiceInMemory should be renamed. It doesn't need InMemory name
 		farmServer.AreaService = service.AreaServiceInMemory{
 			FarmReadQuery:      farmServer.FarmReadQuery,
 			ReservoirReadQuery: farmServer.ReservoirReadQuery,
 			CropReadQuery:      farmServer.CropReadQuery,
 		}
+		// TODO: ReservoirServiceInMemory should be renamed. It doesn't need InMemory name
 		farmServer.ReservoirService = service.ReservoirServiceInMemory{
 			FarmReadQuery: farmServer.FarmReadQuery,
 		}
@@ -161,11 +165,13 @@ func NewFarmServer(
 
 		farmServer.CropReadQuery = queryMysql.NewCropReadQueryMysql(db)
 
+		// TODO: AreaServiceInMemory should be renamed. It doesn't need InMemory name
 		farmServer.AreaService = service.AreaServiceInMemory{
 			FarmReadQuery:      farmServer.FarmReadQuery,
 			ReservoirReadQuery: farmServer.ReservoirReadQuery,
 			CropReadQuery:      farmServer.CropReadQuery,
 		}
+		// TODO: ReservoirServiceInMemory should be renamed. It doesn't need InMemory name
 		farmServer.ReservoirService = service.ReservoirServiceInMemory{
 			FarmReadQuery: farmServer.FarmReadQuery,
 		}
