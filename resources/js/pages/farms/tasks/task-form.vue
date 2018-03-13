@@ -31,6 +31,7 @@
                   input#priority(type="radio" name="priority" value="NORMAL" v-model="task.priority" v-validate="'required'")
                   i
                   | No
+              span.help-block.text-danger(v-show="errors.has('priority')") {{ errors.first('priority') }}
         .form-group
           label(for="category") 
             | Task Category
@@ -40,6 +41,7 @@
             option(v-if="asset_name == 'RESERVOIR'" value="RESERVOIR") Reservoir
             option(v-if="asset_name == 'GENERAL'" value="GENERAL") General
             option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
+            option(v-if="asset_name == 'GENERAL'" value="INVENTORY") Inventory
           span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group
           label(for="title") Title
