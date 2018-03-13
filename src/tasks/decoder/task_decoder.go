@@ -174,7 +174,24 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 	var domainDetails domain.TaskDomain
 	switch domainCode {
 	case domain.TaskDomainAreaCode:
-		domainDetails = domain.TaskDomainArea{}
+		taskDomainArea := domain.TaskDomainArea{}
+
+		if v2, ok2 := mapped["material_id"]; ok2 {
+			val, ok2 := v2.(string)
+			if !ok2 {
+				return domain.TaskDomainArea{}, nil
+			}
+
+			uid, err := uuid.FromString(val)
+			if err != nil {
+				return domain.TaskDomainArea{}, err
+			}
+
+			taskDomainArea.MaterialID = &uid
+		}
+
+		domainDetails = taskDomainArea
+
 	case domain.TaskDomainCropCode:
 		taskDomainCrop := domain.TaskDomainCrop{}
 
@@ -213,7 +230,23 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 	case domain.TaskDomainInventoryCode:
 		domainDetails = domain.TaskDomainInventory{}
 	case domain.TaskDomainReservoirCode:
-		domainDetails = domain.TaskDomainReservoir{}
+		taskDomainReservoir := domain.TaskDomainReservoir{}
+
+		if v2, ok2 := mapped["material_id"]; ok2 {
+			val, ok2 := v2.(string)
+			if !ok2 {
+				return domain.TaskDomainReservoir{}, nil
+			}
+
+			uid, err := uuid.FromString(val)
+			if err != nil {
+				return domain.TaskDomainReservoir{}, err
+			}
+
+			taskDomainReservoir.MaterialID = &uid
+		}
+
+		domainDetails = taskDomainReservoir
 	}
 
 	return domainDetails, nil

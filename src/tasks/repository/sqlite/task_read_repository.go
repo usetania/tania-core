@@ -42,9 +42,13 @@ func (f *TaskReadRepositorySqlite) Save(taskRead *storage.TaskRead) <-chan error
 		var domainDataMaterialID *uuid.UUID
 		var domainDataAreaID *uuid.UUID
 		switch v := taskRead.DomainDetails.(type) {
+		case domain.TaskDomainArea:
+			domainDataMaterialID = v.MaterialID
 		case domain.TaskDomainCrop:
 			domainDataMaterialID = v.MaterialID
 			domainDataAreaID = v.AreaID
+		case domain.TaskDomainReservoir:
+			domainDataMaterialID = v.MaterialID
 		}
 
 		res, err := f.DB.Exec(`UPDATE TASK_READ SET

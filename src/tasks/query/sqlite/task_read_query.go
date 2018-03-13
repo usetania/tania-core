@@ -224,7 +224,18 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	var domainDetails domain.TaskDomain
 	switch rowsData.DomainCode {
 	case domain.TaskDomainAreaCode:
-		domainDetails = domain.TaskDomainArea{}
+		materialID := (*uuid.UUID)(nil)
+		if rowsData.DomainDataMaterialID.Valid && rowsData.DomainDataMaterialID.String != "" {
+			uid, err := uuid.FromString(rowsData.DomainDataMaterialID.String)
+			if err != nil {
+				return storage.TaskRead{}, err
+			}
+			materialID = &uid
+		}
+		domainDetails = domain.TaskDomainArea{
+			MaterialID: materialID,
+		}
+
 	case domain.TaskDomainCropCode:
 		materialID := (*uuid.UUID)(nil)
 		areaID := (*uuid.UUID)(nil)
@@ -253,7 +264,18 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	case domain.TaskDomainInventoryCode:
 		domainDetails = domain.TaskDomainInventory{}
 	case domain.TaskDomainReservoirCode:
-		domainDetails = domain.TaskDomainReservoir{}
+
+		materialID := (*uuid.UUID)(nil)
+		if rowsData.DomainDataMaterialID.Valid && rowsData.DomainDataMaterialID.String != "" {
+			uid, err := uuid.FromString(rowsData.DomainDataMaterialID.String)
+			if err != nil {
+				return storage.TaskRead{}, err
+			}
+			materialID = &uid
+		}
+		domainDetails = domain.TaskDomainReservoir{
+			MaterialID: materialID,
+		}
 	}
 
 	var assetUID *uuid.UUID

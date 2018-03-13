@@ -59,3 +59,25 @@ type TaskDomainCropMaterial struct {
 func (d TaskDomainDetailedCrop) Code() string {
 	return domain.TaskDomainCropCode
 }
+
+type TaskDomainDetailedArea struct {
+	MaterialID           *uuid.UUID `json:"material_id"`
+	MaterialName         string     `json:"material_name"`
+	MaterialType         string     `json:"material_type"`
+	MaterialDetailedType string     `json:"material_detailed_type"`
+}
+
+func (d TaskDomainDetailedArea) Code() string {
+	return domain.TaskDomainCropCode
+}
+
+type TaskDomainDetailedReservoir struct {
+	MaterialID           *uuid.UUID `json:"material_id"`
+	MaterialName         string     `json:"material_name"`
+	MaterialType         string     `json:"material_type"`
+	MaterialDetailedType string     `json:"material_detailed_type"`
+}
+
+func (d TaskDomainDetailedReservoir) Code() string {
+	return domain.TaskDomainCropCode
+}

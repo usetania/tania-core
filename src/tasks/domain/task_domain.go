@@ -19,6 +19,7 @@ type TaskDomain interface {
 
 // AREA
 type TaskDomainArea struct {
+	MaterialID *uuid.UUID `json:"material_id"`
 }
 
 func (d TaskDomainArea) Code() string {
@@ -61,6 +62,7 @@ func (d TaskDomainInventory) Code() string {
 
 // RESERVOIR
 type TaskDomainReservoir struct {
+	MaterialID *uuid.UUID `json:"material_id"`
 }
 
 func (d TaskDomainReservoir) Code() string {
@@ -68,8 +70,23 @@ func (d TaskDomainReservoir) Code() string {
 }
 
 // CreateTaskDomainArea
-func CreateTaskDomainArea() (TaskDomainArea, error) {
-	return TaskDomainArea{}, nil
+func CreateTaskDomainArea(taskService TaskService, category string, materialID *uuid.UUID) (TaskDomainArea, error) {
+
+	err := validateTaskCategory(category)
+	if err != nil {
+		return TaskDomainArea{}, err
+	}
+
+	if materialID != nil {
+		err := validateAssetID(taskService, materialID, TaskDomainInventoryCode)
+		if err != nil {
+			return TaskDomainArea{}, err
+		}
+	}
+
+	return TaskDomainArea{
+		MaterialID: materialID,
+	}, nil
 }
 
 // CreateTaskDomainCrop
@@ -116,8 +133,23 @@ func CreateTaskDomainInventory() (TaskDomainInventory, error) {
 }
 
 // CreateTaskDomainReservoir
-func CreateTaskDomainReservoir() (TaskDomainReservoir, error) {
-	return TaskDomainReservoir{}, nil
+func CreateTaskDomainReservoir(taskService TaskService, category string, materialID *uuid.UUID) (TaskDomainReservoir, error) {
+
+	err := validateTaskCategory(category)
+	if err != nil {
+		return TaskDomainReservoir{}, err
+	}
+
+	if materialID != nil {
+		err := validateAssetID(taskService, materialID, TaskDomainInventoryCode)
+		if err != nil {
+			return TaskDomainReservoir{}, err
+		}
+	}
+
+	return TaskDomainReservoir{
+		MaterialID: materialID,
+	}, nil
 }
 
 // validateAssetID

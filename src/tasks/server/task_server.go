@@ -281,7 +281,20 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 	switch domainvalue {
 	case domain.TaskDomainAreaCode:
-		return domain.CreateTaskDomainArea()
+
+		category := c.FormValue("category")
+		materialID := c.FormValue("material_id")
+
+		materialPtr := (*uuid.UUID)(nil)
+		if len(materialID) != 0 {
+			uid, err := uuid.FromString(materialID)
+			if err != nil {
+				return domain.TaskDomainArea{}, err
+			}
+			materialPtr = &uid
+		}
+
+		return domain.CreateTaskDomainArea(s.TaskService, category, materialPtr)
 	case domain.TaskDomainCropCode:
 
 		category := c.FormValue("category")
@@ -314,7 +327,19 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 	case domain.TaskDomainInventoryCode:
 		return domain.CreateTaskDomainInventory()
 	case domain.TaskDomainReservoirCode:
-		return domain.CreateTaskDomainReservoir()
+
+		category := c.FormValue("category")
+		materialID := c.FormValue("material_id")
+
+		materialPtr := (*uuid.UUID)(nil)
+		if len(materialID) != 0 {
+			uid, err := uuid.FromString(materialID)
+			if err != nil {
+				return domain.TaskDomainReservoir{}, err
+			}
+			materialPtr = &uid
+		}
+		return domain.CreateTaskDomainReservoir(s.TaskService, category, materialPtr)
 	default:
 		return nil, NewRequestValidationError(INVALID_OPTION, "domain")
 	}
@@ -349,7 +374,25 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 
 func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 
-	if task.Domain == domain.TaskDomainCropCode {
+	switch task.Domain {
+	case domain.TaskDomainAreaCode:
+		materialID := task.DomainDetails.(domain.TaskDomainArea).MaterialID
+		if materialID != nil {
+			materialResult := s.TaskService.FindMaterialByID(*materialID)
+			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialQueryResult)
+
+			if !ok {
+				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			}
+			task.DomainDetails = &storage.TaskDomainDetailedArea{
+				MaterialID:           &materialQueryResult.UID,
+				MaterialName:         materialQueryResult.Name,
+				MaterialType:         materialQueryResult.TypeCode,
+				MaterialDetailedType: materialQueryResult.DetailedTypeCode,
+			}
+		}
+
+	case domain.TaskDomainCropCode:
 		material := (*storage.TaskDomainCropMaterial)(nil)
 		area := (*storage.TaskDomainCropArea)(nil)
 		crop := (*storage.TaskDomainCropBatch)(nil)
@@ -400,6 +443,24 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			Area:     area,
 			Crop:     crop,
 		}
+	case domain.TaskDomainReservoirCode:
+
+		materialID := task.DomainDetails.(domain.TaskDomainReservoir).MaterialID
+		if materialID != nil {
+			materialResult := s.TaskService.FindMaterialByID(*materialID)
+			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialQueryResult)
+
+			if !ok {
+				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+			}
+			task.DomainDetails = &storage.TaskDomainDetailedReservoir{
+				MaterialID:           &materialQueryResult.UID,
+				MaterialName:         materialQueryResult.Name,
+				MaterialType:         materialQueryResult.TypeCode,
+				MaterialDetailedType: materialQueryResult.DetailedTypeCode,
+			}
+		}
+
 	}
 	return nil
 }
