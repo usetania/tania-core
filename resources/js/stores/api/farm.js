@@ -125,7 +125,7 @@ export default {
     http.get('tasks/search?domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
   },
   ApiFindTasksByCategoryAndPriorityAndStatus: (category, priority, status, cbSuccess, cbError) => {
-    http.get('tasks/search?category='+ category +'&priority=' + priority +'&status=' + status, cbSuccess, cbError)
+    http.get('tasks/search?category='+ category +'&priority=' + priority + status, cbSuccess, cbError)
   },
   ApiSetTaskDue: (taskid, cbSuccess, cbError) => {
     http.put('tasks/' + taskid + '/due', {}, cbSuccess, cbError)

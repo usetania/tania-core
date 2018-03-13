@@ -118,7 +118,7 @@ export default {
             this.tasks = AddClicked(data)
           })
           .catch(error => console.log(error))
-      } else if (this.category != '' || this.priority != '') {
+      } else if (this.category != '' || this.priority != '' || this.status != '') {
         let status = (this.status == 'INCOMPLETE') ? '' : this.status
         this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: status })
           .then(({ data }) => {
@@ -147,7 +147,7 @@ export default {
     },
     setTaskStatus (task_id, status) {
       this.setTaskCompleted(task_id)
-        .then(this.getTasks())
+        .then(() => { this.getTasks() })
         .catch(({ data }) => this.message = data)
     },
   },

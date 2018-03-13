@@ -2,6 +2,7 @@ import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
 import FarmApi from '@/stores/api/farm'
+import moment from 'moment-timezone'
 
 const state = {
   tasks: [],
@@ -34,8 +35,27 @@ const actions = {
   getTasksByCategoryAndPriorityAndStatus ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
+      let query = '&'
+      if (payload.status == 'COMPLETED') {
+        query += 'status=COMPLETED'
+      } else if (payload.status == 'THISWEEK') {
+        let due_start = moment().startOf('week').format('YYYY-MM-DD')
+        let due_end = moment().endOf('week').format('YYYY-MM-DD')
+        query += 'due_start=' + due_start +'&due_end=' + due_end 
+      }  else if (payload.status == 'THISMONTH') {
+        let due_start = moment().startOf('month').format('YYYY-MM-DD')
+        let due_end = moment().endOf('month').format('YYYY-MM-DD')
+        query += 'due_start=' + due_start +'&due_end=' + due_end
+      } else if (payload.status == 'OVERDUE') {
+        query += 'is_due=true'
+      } else if (payload.status == 'TODAY') {
+        let due = moment().format('YYYY-MM-DD')
+        query += 'due_date=' + due
+      } else {
+        query += 'status=CREATED'
+      }
       FarmApi
-        .ApiFindTasksByCategoryAndPriorityAndStatus(payload.category, payload.priority, payload.status, ({ data }) => {
+        .ApiFindTasksByCategoryAndPriorityAndStatus(payload.category, payload.priority, query, ({ data }) => {
           resolve(data)
         }, error => reject(error.response))
     })
