@@ -9,7 +9,11 @@ import (
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/domain/service"
+	queryInMem "github.com/Tanibox/tania-server/src/growth/query/inmemory"
+	queryMysql "github.com/Tanibox/tania-server/src/growth/query/mysql"
 	querySqlite "github.com/Tanibox/tania-server/src/growth/query/sqlite"
+	repoInMem "github.com/Tanibox/tania-server/src/growth/repository/inmemory"
+	repoMysql "github.com/Tanibox/tania-server/src/growth/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-server/src/growth/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
@@ -19,7 +23,8 @@ import (
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/repository"
-	"github.com/Tanibox/tania-server/src/growth/storage"
+	storage "github.com/Tanibox/tania-server/src/growth/storage"
+	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
@@ -52,39 +57,72 @@ func NewGrowthServer(
 	areaReadStorage *assetsstorage.AreaReadStorage,
 	materialReadStorage *assetsstorage.MaterialReadStorage,
 	farmReadStorage *assetsstorage.FarmReadStorage,
+	taskReadStorage *taskstorage.TaskReadStorage,
 ) (*GrowthServer, error) {
-	cropEventRepo := repoSqlite.NewCropEventRepositorySqlite(db)
-	cropEventQuery := querySqlite.NewCropEventQuerySqlite(db)
-	cropReadRepo := repoSqlite.NewCropReadRepositorySqlite(db)
-	cropReadQuery := querySqlite.NewCropReadQuerySqlite(db)
-	cropActivityRepo := repoSqlite.NewCropActivityRepositorySqlite(db)
-	cropActivityQuery := querySqlite.NewCropActivityQuerySqlite(db)
-
-	areaReadQuery := querySqlite.NewAreaReadQuerySqlite(db)
-	materialReadQuery := querySqlite.NewMaterialReadQuerySqlite(db)
-	farmReadQuery := querySqlite.NewFarmReadQuerySqlite(db)
-	taskReadQuery := querySqlite.NewTaskReadQuerySqlite(db)
-
-	cropService := service.CropServiceInMemory{
-		MaterialReadQuery: materialReadQuery,
-		CropReadQuery:     cropReadQuery,
-		AreaReadQuery:     areaReadQuery,
+	growthServer := &GrowthServer{
+		File:     LocalFile{},
+		EventBus: bus,
 	}
 
-	growthServer := &GrowthServer{
-		CropEventRepo:     cropEventRepo,
-		CropEventQuery:    cropEventQuery,
-		CropReadRepo:      cropReadRepo,
-		CropReadQuery:     cropReadQuery,
-		CropActivityRepo:  cropActivityRepo,
-		CropActivityQuery: cropActivityQuery,
-		CropService:       cropService,
-		AreaReadQuery:     areaReadQuery,
-		MaterialReadQuery: materialReadQuery,
-		FarmReadQuery:     farmReadQuery,
-		TaskReadQuery:     taskReadQuery,
-		File:              LocalFile{},
-		EventBus:          bus,
+	switch *config.Config.TaniaPersistanceEngine {
+	case config.DB_INMEMORY:
+		growthServer.CropEventRepo = repoInMem.NewCropEventRepositoryInMemory(cropEventStorage)
+		growthServer.CropEventQuery = queryInMem.NewCropEventQueryInMemory(cropEventStorage)
+		growthServer.CropReadRepo = repoInMem.NewCropReadRepositoryInMemory(cropReadStorage)
+		growthServer.CropReadQuery = queryInMem.NewCropReadQueryInMemory(cropReadStorage)
+		growthServer.CropActivityRepo = repoInMem.NewCropActivityRepositoryInMemory(cropActivityStorage)
+		growthServer.CropActivityQuery = queryInMem.NewCropActivityQueryInMemory(cropActivityStorage)
+
+		growthServer.AreaReadQuery = queryInMem.NewAreaReadQueryInMemory(areaReadStorage)
+		growthServer.MaterialReadQuery = queryInMem.NewMaterialReadQueryInMemory(materialReadStorage)
+		growthServer.FarmReadQuery = queryInMem.NewFarmReadQueryInMemory(farmReadStorage)
+		growthServer.TaskReadQuery = queryInMem.NewTaskReadQueryInMemory(taskReadStorage)
+
+		// TODO: CropServiceInMemory should be renamed. It doesn't need InMemory name
+		growthServer.CropService = service.CropServiceInMemory{
+			MaterialReadQuery: growthServer.MaterialReadQuery,
+			CropReadQuery:     growthServer.CropReadQuery,
+			AreaReadQuery:     growthServer.AreaReadQuery,
+		}
+	case config.DB_SQLITE:
+		growthServer.CropEventRepo = repoSqlite.NewCropEventRepositorySqlite(db)
+		growthServer.CropEventQuery = querySqlite.NewCropEventQuerySqlite(db)
+		growthServer.CropReadRepo = repoSqlite.NewCropReadRepositorySqlite(db)
+		growthServer.CropReadQuery = querySqlite.NewCropReadQuerySqlite(db)
+		growthServer.CropActivityRepo = repoSqlite.NewCropActivityRepositorySqlite(db)
+		growthServer.CropActivityQuery = querySqlite.NewCropActivityQuerySqlite(db)
+
+		growthServer.AreaReadQuery = querySqlite.NewAreaReadQuerySqlite(db)
+		growthServer.MaterialReadQuery = querySqlite.NewMaterialReadQuerySqlite(db)
+		growthServer.FarmReadQuery = querySqlite.NewFarmReadQuerySqlite(db)
+		growthServer.TaskReadQuery = querySqlite.NewTaskReadQuerySqlite(db)
+
+		// TODO: CropServiceInMemory should be renamed. It doesn't need InMemory name
+		growthServer.CropService = service.CropServiceInMemory{
+			MaterialReadQuery: growthServer.MaterialReadQuery,
+			CropReadQuery:     growthServer.CropReadQuery,
+			AreaReadQuery:     growthServer.AreaReadQuery,
+		}
+
+	case config.DB_MYSQL:
+		growthServer.CropEventRepo = repoMysql.NewCropEventRepositoryMysql(db)
+		growthServer.CropEventQuery = queryMysql.NewCropEventQueryMysql(db)
+		growthServer.CropReadRepo = repoMysql.NewCropReadRepositoryMysql(db)
+		growthServer.CropReadQuery = queryMysql.NewCropReadQueryMysql(db)
+		growthServer.CropActivityRepo = repoMysql.NewCropActivityRepositoryMysql(db)
+		growthServer.CropActivityQuery = queryMysql.NewCropActivityQueryMysql(db)
+
+		growthServer.AreaReadQuery = queryMysql.NewAreaReadQueryMysql(db)
+		growthServer.MaterialReadQuery = queryMysql.NewMaterialReadQueryMysql(db)
+		growthServer.FarmReadQuery = queryMysql.NewFarmReadQueryMysql(db)
+		growthServer.TaskReadQuery = queryMysql.NewTaskReadQueryMysql(db)
+
+		// TODO: CropServiceInMemory should be renamed. It doesn't need InMemory name
+		growthServer.CropService = service.CropServiceInMemory{
+			MaterialReadQuery: growthServer.MaterialReadQuery,
+			CropReadQuery:     growthServer.CropReadQuery,
+			AreaReadQuery:     growthServer.AreaReadQuery,
+		}
 	}
 
 	growthServer.InitSubscriber()

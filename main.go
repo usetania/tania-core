@@ -90,6 +90,7 @@ func main() {
 		inMem.areaReadStorage,
 		inMem.materialReadStorage,
 		inMem.farmReadStorage,
+		inMem.taskReadStorage,
 	)
 	if err != nil {
 		e.Logger.Fatal(err)
