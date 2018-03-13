@@ -1,5 +1,5 @@
 {
-    "tania_persistance_engine": "inmemory",
+    "tania_persistance_engine": "sqlite",
     "demo_mode": false,
     "upload_path_area": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas",
     "upload_path_crop": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/crops",

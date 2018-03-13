@@ -155,7 +155,7 @@ func initConfig() {
 		UploadPathArea:         conf.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo"),
 		UploadPathCrop:         conf.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo"),
 		DemoMode:               conf.Bool("demo_mode", true, "Switch for the demo mode"),
-		TaniaPersistanceEngine: conf.String("tania_persistance_engine", "inmemory", "The persistance engine of Tania. Options are inmemory, sqlite, inmemory"),
+		TaniaPersistanceEngine: conf.String("tania_persistance_engine", "sqlite", "The persistance engine of Tania. Options are inmemory, sqlite, inmemory"),
 		SqlitePath:             conf.String("sqlite_path", "tania.db", "Path of sqlite file db"),
 		MysqlHost:              conf.String("mysql_host", "127.0.0.1", "Mysql Host"),
 		MysqlPort:              conf.String("mysql_port", "3306", "Mysql Port"),
