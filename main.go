@@ -234,7 +234,7 @@ func initMysql() *sql.DB {
 	user := *config.Config.MysqlUsername
 	pwd := *config.Config.MysqlPassword
 
-	dsn := user + ":" + pwd + "@(" + host + ":" + port + ")/" + dbname + "?parseTime=true"
+	dsn := user + ":" + pwd + "@(" + host + ":" + port + ")/" + dbname + "?parseTime=true&clientFoundRows=true"
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
