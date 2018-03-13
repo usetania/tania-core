@@ -52,7 +52,7 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 				cropRead.AreaStatus.Growing,
 				cropRead.AreaStatus.Dumped,
 				cropRead.FarmUID.Bytes(),
-				cropRead.InitialArea.AreaUID,
+				cropRead.InitialArea.AreaUID.Bytes(),
 				cropRead.InitialArea.Name,
 				cropRead.InitialArea.InitialQuantity,
 				cropRead.InitialArea.CurrentQuantity,
