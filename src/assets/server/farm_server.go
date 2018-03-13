@@ -12,9 +12,11 @@ import (
 	"github.com/Tanibox/tania-server/src/assets/domain/service"
 	"github.com/Tanibox/tania-server/src/assets/query"
 	queryInMem "github.com/Tanibox/tania-server/src/assets/query/inmemory"
+	queryMysql "github.com/Tanibox/tania-server/src/assets/query/mysql"
 	querySqlite "github.com/Tanibox/tania-server/src/assets/query/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/repository"
 	repoInMem "github.com/Tanibox/tania-server/src/assets/repository/inmemory"
+	repoMysql "github.com/Tanibox/tania-server/src/assets/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-server/src/assets/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/storage"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
@@ -137,27 +139,27 @@ func NewFarmServer(
 		}
 
 	case config.DB_MYSQL:
-		farmServer.FarmEventRepo = repoSqlite.NewFarmEventRepositorySqlite(db)
-		farmServer.FarmEventQuery = querySqlite.NewFarmEventQuerySqlite(db)
-		farmServer.FarmReadRepo = repoSqlite.NewFarmReadRepositorySqlite(db)
-		farmServer.FarmReadQuery = querySqlite.NewFarmReadQuerySqlite(db)
+		farmServer.FarmEventRepo = repoMysql.NewFarmEventRepositoryMysql(db)
+		farmServer.FarmEventQuery = queryMysql.NewFarmEventQueryMysql(db)
+		farmServer.FarmReadRepo = repoMysql.NewFarmReadRepositoryMysql(db)
+		farmServer.FarmReadQuery = queryMysql.NewFarmReadQueryMysql(db)
 
-		farmServer.AreaEventRepo = repoSqlite.NewAreaEventRepositorySqlite(db)
-		farmServer.AreaEventQuery = querySqlite.NewAreaEventQuerySqlite(db)
-		farmServer.AreaReadRepo = repoSqlite.NewAreaReadRepositorySqlite(db)
-		farmServer.AreaReadQuery = querySqlite.NewAreaReadQuerySqlite(db)
+		farmServer.AreaEventRepo = repoMysql.NewAreaEventRepositoryMysql(db)
+		farmServer.AreaEventQuery = queryMysql.NewAreaEventQueryMysql(db)
+		farmServer.AreaReadRepo = repoMysql.NewAreaReadRepositoryMysql(db)
+		farmServer.AreaReadQuery = queryMysql.NewAreaReadQueryMysql(db)
 
-		farmServer.ReservoirEventRepo = repoSqlite.NewReservoirEventRepositorySqlite(db)
-		farmServer.ReservoirEventQuery = querySqlite.NewReservoirEventQuerySqlite(db)
-		farmServer.ReservoirReadRepo = repoSqlite.NewReservoirReadRepositorySqlite(db)
-		farmServer.ReservoirReadQuery = querySqlite.NewReservoirReadQuerySqlite(db)
+		farmServer.ReservoirEventRepo = repoMysql.NewReservoirEventRepositoryMysql(db)
+		farmServer.ReservoirEventQuery = queryMysql.NewReservoirEventQueryMysql(db)
+		farmServer.ReservoirReadRepo = repoMysql.NewReservoirReadRepositoryMysql(db)
+		farmServer.ReservoirReadQuery = queryMysql.NewReservoirReadQueryMysql(db)
 
-		farmServer.MaterialEventRepo = repoSqlite.NewMaterialEventRepositorySqlite(db)
-		farmServer.MaterialEventQuery = querySqlite.NewMaterialEventQuerySqlite(db)
-		farmServer.MaterialReadRepo = repoSqlite.NewMaterialReadRepositorySqlite(db)
-		farmServer.MaterialReadQuery = querySqlite.NewMaterialReadQuerySqlite(db)
+		farmServer.MaterialEventRepo = repoMysql.NewMaterialEventRepositoryMysql(db)
+		farmServer.MaterialEventQuery = queryMysql.NewMaterialEventQueryMysql(db)
+		farmServer.MaterialReadRepo = repoMysql.NewMaterialReadRepositoryMysql(db)
+		farmServer.MaterialReadQuery = queryMysql.NewMaterialReadQueryMysql(db)
 
-		farmServer.CropReadQuery = querySqlite.NewCropReadQuerySqlite(db)
+		farmServer.CropReadQuery = queryMysql.NewCropReadQueryMysql(db)
 
 		farmServer.AreaService = service.AreaServiceInMemory{
 			FarmReadQuery:      farmServer.FarmReadQuery,
