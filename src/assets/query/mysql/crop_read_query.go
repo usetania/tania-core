@@ -18,21 +18,21 @@ func NewCropReadQueryMysql(db *sql.DB) query.CropReadQuery {
 }
 
 type cropReadResult struct {
-	UID                        string
+	UID                        []byte
 	BatchID                    string
 	Status                     string
 	Type                       string
 	ContainerQuantity          int
 	ContainerType              string
 	ContainerCell              int
-	InventoryUID               string
+	InventoryUID               []byte
 	InventoryPlantType         string
 	InventoryName              string
 	AreaStatusSeeding          int
 	AreaStatusGrowing          int
 	AreaStatusDumped           int
-	FarmUID                    string
-	InitialAreaUID             string
+	FarmUID                    []byte
+	InitialAreaUID             []byte
 	InitialAreaName            string
 	InitialAreaInitialQuantity int
 	InitialAreaCurrentQuantity int
@@ -40,14 +40,14 @@ type cropReadResult struct {
 	InitialAreaLastFertilized  sql.NullString
 	InitialAreaLastPesticided  sql.NullString
 	InitialAreaLastPruned      sql.NullString
-	InitialAreaCreatedDate     string
-	InitialAreaLastUpdated     string
+	InitialAreaCreatedDate     time.Time
+	InitialAreaLastUpdated     time.Time
 }
 
 type cropReadMovedAreaResult struct {
 	ID              int
-	CropUID         string
-	AreaUID         string
+	CropUID         []byte
+	AreaUID         []byte
 	Name            string
 	InitialQuantity int
 	CurrentQuantity int
@@ -55,8 +55,8 @@ type cropReadMovedAreaResult struct {
 	LastFertilized  sql.NullString
 	LastPesticided  sql.NullString
 	LastPruned      sql.NullString
-	CreatedDate     string
-	LastUpdated     string
+	CreatedDate     time.Time
+	LastUpdated     time.Time
 }
 
 func (q CropReadQueryMysql) CountCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
@@ -66,7 +66,7 @@ func (q CropReadQueryMysql) CountCropsByArea(areaUID uuid.UUID) <-chan query.Que
 		var totalCropBatchInitial sql.NullInt64
 		var totalPlantInitial sql.NullInt64
 		err := q.DB.QueryRow(`SELECT COUNT(UID), SUM(INITIAL_AREA_CURRENT_QUANTITY)
-			FROM CROP_READ WHERE INITIAL_AREA_UID = ?`, areaUID).Scan(&totalCropBatchInitial, &totalPlantInitial)
+			FROM CROP_READ WHERE INITIAL_AREA_UID = ?`, areaUID.Bytes()).Scan(&totalCropBatchInitial, &totalPlantInitial)
 
 		if err != nil {
 			result <- query.QueryResult{Error: err}
@@ -75,7 +75,7 @@ func (q CropReadQueryMysql) CountCropsByArea(areaUID uuid.UUID) <-chan query.Que
 		var totalCropBatchMoved sql.NullInt64
 		var totalPlantMoved sql.NullInt64
 		err = q.DB.QueryRow(`SELECT COUNT(CROP_UID), SUM(CURRENT_QUANTITY)
-			FROM CROP_READ_MOVED_AREA WHERE AREA_UID = ?`, areaUID).Scan(&totalCropBatchMoved, &totalPlantMoved)
+			FROM CROP_READ_MOVED_AREA WHERE AREA_UID = ?`, areaUID.Bytes()).Scan(&totalCropBatchMoved, &totalPlantMoved)
 
 		if err != nil {
 			result <- query.QueryResult{Error: err}
@@ -99,7 +99,7 @@ func (q CropReadQueryMysql) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Qu
 		crops := []query.AreaCropQueryResult{}
 
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
-		rows, err := q.DB.Query("SELECT UID FROM CROP_READ WHERE INITIAL_AREA_UID = ?", areaUID)
+		rows, err := q.DB.Query("SELECT UID FROM CROP_READ WHERE INITIAL_AREA_UID = ?", areaUID.Bytes())
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -107,13 +107,13 @@ func (q CropReadQueryMysql) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Qu
 		for rows.Next() {
 			cropRead := storage.CropRead{}
 
-			uid := ""
+			uid := []byte{}
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
 
-			cropUID, err := uuid.FromString(uid)
+			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -147,18 +147,18 @@ func (q CropReadQueryMysql) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Qu
 
 		rows, err = q.DB.Query(`SELECT UID FROM CROP_READ
 			LEFT JOIN CROP_READ_MOVED_AREA ON CROP_READ.UID = CROP_READ_MOVED_AREA.CROP_UID
-			WHERE CROP_READ_MOVED_AREA.AREA_UID = ?`, areaUID)
+			WHERE CROP_READ_MOVED_AREA.AREA_UID = ?`, areaUID.Bytes())
 
 		for rows.Next() {
 			cropRead := storage.CropRead{}
 
-			uid := ""
+			uid := []byte{}
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
 
-			cropUID, err := uuid.FromString(uid)
+			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -214,7 +214,7 @@ func (q CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 		INITIAL_AREA_INITIAL_QUANTITY, INITIAL_AREA_CURRENT_QUANTITY,
 		INITIAL_AREA_LAST_WATERED, INITIAL_AREA_LAST_FERTILIZED, INITIAL_AREA_LAST_PESTICIDED,
 		INITIAL_AREA_LAST_PRUNED, INITIAL_AREA_CREATED_DATE, INITIAL_AREA_LAST_UPDATED
-		FROM CROP_READ WHERE UID = ?`, cropUID).Scan(
+		FROM CROP_READ WHERE UID = ?`, cropUID.Bytes()).Scan(
 		&rowsData.UID,
 		&rowsData.BatchID,
 		&rowsData.Status,
@@ -249,17 +249,17 @@ func (q CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 		return err
 	}
 
-	farmUID, err := uuid.FromString(rowsData.FarmUID)
+	farmUID, err := uuid.FromBytes(rowsData.FarmUID)
 	if err != nil {
 		return err
 	}
 
-	inventoryUID, err := uuid.FromString(rowsData.InventoryUID)
+	inventoryUID, err := uuid.FromBytes(rowsData.InventoryUID)
 	if err != nil {
 		return err
 	}
 
-	initialAreaUID, err := uuid.FromString(rowsData.InitialAreaUID)
+	initialAreaUID, err := uuid.FromBytes(rowsData.InitialAreaUID)
 	if err != nil {
 		return err
 	}
@@ -304,16 +304,6 @@ func (q CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 		initialAreaLastPruned = &date
 	}
 
-	initialAreaCreatedDate, err := time.Parse(time.RFC3339, rowsData.InitialAreaCreatedDate)
-	if err != nil {
-		return err
-	}
-
-	initialAreaLastUpdated, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastUpdated)
-	if err != nil {
-		return err
-	}
-
 	cropRead.UID = cropUID
 	cropRead.BatchID = rowsData.BatchID
 	cropRead.Status = rowsData.Status
@@ -336,8 +326,8 @@ func (q CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 	cropRead.InitialArea.LastFertilized = initialAreaLastFertilized
 	cropRead.InitialArea.LastPesticided = initialAreaLastPesticided
 	cropRead.InitialArea.LastPruned = initialAreaLastPruned
-	cropRead.InitialArea.CreatedDate = initialAreaCreatedDate
-	cropRead.InitialArea.LastUpdated = initialAreaLastUpdated
+	cropRead.InitialArea.CreatedDate = rowsData.InitialAreaCreatedDate
+	cropRead.InitialArea.LastUpdated = rowsData.InitialAreaLastUpdated
 
 	return nil
 }
@@ -345,7 +335,7 @@ func (q CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 func (q CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *storage.CropRead) error {
 	movedRowsData := cropReadMovedAreaResult{}
 
-	rows, err := q.DB.Query("SELECT * FROM CROP_READ_MOVED_AREA WHERE CROP_UID = ?", uid)
+	rows, err := q.DB.Query("SELECT * FROM CROP_READ_MOVED_AREA WHERE CROP_UID = ?", uid.Bytes())
 	if err != nil {
 		return err
 	}
@@ -411,17 +401,7 @@ func (q CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 			lpr = &date
 		}
 
-		areaUID, err := uuid.FromString(movedRowsData.AreaUID)
-		if err != nil {
-			return err
-		}
-
-		createdDate, err := time.Parse(time.RFC3339, movedRowsData.CreatedDate)
-		if err != nil {
-			return err
-		}
-
-		lastUpdated, err := time.Parse(time.RFC3339, movedRowsData.LastUpdated)
+		areaUID, err := uuid.FromBytes(movedRowsData.AreaUID)
 		if err != nil {
 			return err
 		}
@@ -435,8 +415,8 @@ func (q CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 			LastFertilized:  lf,
 			LastPesticided:  lp,
 			LastPruned:      lpr,
-			CreatedDate:     createdDate,
-			LastUpdated:     lastUpdated,
+			CreatedDate:     movedRowsData.CreatedDate,
+			LastUpdated:     movedRowsData.LastUpdated,
 		})
 	}
 

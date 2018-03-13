@@ -374,6 +374,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 					Quantity:       e.UpdatedTrash.Quantity,
 					SourceAreaUID:  srcArea.UID,
 					SourceAreaName: srcArea.Name,
+					CreatedDate:    v.CreatedDate,
 					LastUpdated:    e.DumpDate,
 				}
 

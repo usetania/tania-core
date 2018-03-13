@@ -683,7 +683,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 
 	var initialAreaLastWatered *time.Time
 	if rowsData.InitialAreaLastWatered.Valid && rowsData.InitialAreaLastWatered.String != "" {
-		date, err := time.Parse("2006-01-02 15:04:05", rowsData.InitialAreaLastWatered.String)
+		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastWatered.String)
 		if err != nil {
 			return err
 		}
@@ -693,7 +693,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 
 	var initialAreaLastFertilized *time.Time
 	if rowsData.InitialAreaLastFertilized.Valid && rowsData.InitialAreaLastFertilized.String != "" {
-		date, err := time.Parse("2006-01-02 15:04:05", rowsData.InitialAreaLastFertilized.String)
+		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastFertilized.String)
 		if err != nil {
 			return err
 		}
@@ -703,7 +703,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 
 	var initialAreaLastPesticided *time.Time
 	if rowsData.InitialAreaLastPesticided.Valid && rowsData.InitialAreaLastPesticided.String != "" {
-		date, err := time.Parse("2006-01-02 15:04:05", rowsData.InitialAreaLastPesticided.String)
+		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastPesticided.String)
 		if err != nil {
 			return err
 		}
@@ -713,7 +713,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 
 	var initialAreaLastPruned *time.Time
 	if rowsData.InitialAreaLastPruned.Valid && rowsData.InitialAreaLastPruned.String != "" {
-		date, err := time.Parse("2006-01-02 15:04:05", rowsData.InitialAreaLastPruned.String)
+		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastPruned.String)
 		if err != nil {
 			return err
 		}
@@ -827,7 +827,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 
 		var lw *time.Time
 		if movedRowsData.LastWatered.Valid && movedRowsData.LastWatered.String != "" {
-			date, err := time.Parse("2006-01-02 15:04:05", movedRowsData.LastWatered.String)
+			date, err := time.Parse(time.RFC3339, movedRowsData.LastWatered.String)
 			if err != nil {
 				return err
 			}
@@ -837,7 +837,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 
 		var lf *time.Time
 		if movedRowsData.LastFertilized.Valid && movedRowsData.LastFertilized.String != "" {
-			date, err := time.Parse("2006-01-02 15:04:05", movedRowsData.LastFertilized.String)
+			date, err := time.Parse(time.RFC3339, movedRowsData.LastFertilized.String)
 			if err != nil {
 				return err
 			}
@@ -847,7 +847,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 
 		var lp *time.Time
 		if movedRowsData.LastPesticided.Valid && movedRowsData.LastPesticided.String != "" {
-			date, err := time.Parse("2006-01-02 15:04:05", movedRowsData.LastPesticided.String)
+			date, err := time.Parse(time.RFC3339, movedRowsData.LastPesticided.String)
 			if err != nil {
 				return err
 			}
@@ -857,7 +857,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 
 		var lpr *time.Time
 		if movedRowsData.LastPruned.Valid && movedRowsData.LastPruned.String != "" {
-			date, err := time.Parse("2006-01-02 15:04:05", movedRowsData.LastPruned.String)
+			date, err := time.Parse(time.RFC3339, movedRowsData.LastPruned.String)
 			if err != nil {
 				return err
 			}
