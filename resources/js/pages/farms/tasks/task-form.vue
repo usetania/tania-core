@@ -17,7 +17,7 @@
                 span.input-group-btn
                   button.btn.btn-primary(type="button" v-on:click="openPicker")
                     i.glyphicon.glyphicon-calendar
-                span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
+              span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
           .col-xs-6
             .form-group
               label(for="priority") Is this task urgent?

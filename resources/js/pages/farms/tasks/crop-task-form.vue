@@ -14,7 +14,7 @@
                 span.input-group-btn
                   button.btn.btn-primary(type="button" v-on:click="openPicker")
                     i.glyphicon.glyphicon-calendar
-                span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
+              span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
           .col-xs-6
             .form-group
               label(for="priority") Is this task urgent?
@@ -28,6 +28,7 @@
                   input#priority(type="radio" name="priority" value="NORMAL" v-model="task.priority" v-validate="'required'")
                   i
                   | No
+              span.help-block.text-danger(v-show="errors.has('priority')") {{ errors.first('priority') }}
         .row
           .col-xs-6
             .form-group
