@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 
+	"github.com/go-sql-driver/mysql"
+
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/routing"
 	assetsserver "github.com/Tanibox/tania-server/src/assets/server"
@@ -246,24 +248,36 @@ func initMysql() *sql.DB {
 	}
 	sqls := string(ddl)
 
+	// We need to split the DDL query by `;` and execute it one by one.
+	// Because sql.DB.Exec() from mysql driver cannot executes multiple query at once
+	// and it will give weird syntax error messages.
 	splitted := strings.Split(sqls, ";")
-
-	tx, err := db.Begin()
 
 	for _, v := range splitted {
 		trimmed := strings.TrimSpace(v)
 
 		if len(trimmed) > 0 {
-			_, err = tx.Exec(v)
+			_, err = db.Exec(v)
 
 			if err != nil {
-				tx.Rollback()
-				return db
+				me, ok := err.(*mysql.MySQLError)
+				if !ok {
+					panic("Error executing DDL query")
+				}
+
+				// http://dev.mysql.com/doc/refman/5.7/en/error-messages-server.html
+				// We will skip error duplicate key name in database (code: 1061),
+				// because CREATE INDEX doesn't have IF NOT EXISTS clause,
+				// otherwise we will stop the loop and print the error
+				if me.Number == 1061 {
+
+				} else {
+					log.Print(err)
+					return db
+				}
 			}
 		}
 	}
-
-	tx.Commit()
 
 	log.Print("DDL file executed")
 
