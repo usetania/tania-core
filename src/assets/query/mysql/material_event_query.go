@@ -25,16 +25,16 @@ func (f *MaterialEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryR
 	go func() {
 		events := []storage.MaterialEvent{}
 
-		rows, err := f.DB.Query("SELECT * FROM MATERIAL_EVENT WHERE MATERIAL_UID = ? ORDER BY VERSION ASC", uid)
+		rows, err := f.DB.Query("SELECT * FROM MATERIAL_EVENT WHERE MATERIAL_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
 		rowsData := struct {
 			ID          int
-			MaterialUID string
+			MaterialUID []byte
 			Version     int
-			CreatedDate string
+			CreatedDate time.Time
 			Event       []byte
 		}{}
 
@@ -47,12 +47,7 @@ func (f *MaterialEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryR
 				result <- query.QueryResult{Error: err}
 			}
 
-			materialUID, err := uuid.FromString(rowsData.MaterialUID)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
-			}
-
-			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
+			materialUID, err := uuid.FromBytes(rowsData.MaterialUID)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -60,7 +55,7 @@ func (f *MaterialEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryR
 			events = append(events, storage.MaterialEvent{
 				MaterialUID: materialUID,
 				Version:     rowsData.Version,
-				CreatedDate: createdDate,
+				CreatedDate: rowsData.CreatedDate,
 				Event:       wrapper.EventData,
 			})
 		}

@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -21,8 +22,10 @@ func (f *MaterialReadRepositoryMysql) Save(materialRead *storage.MaterialRead) <
 	result := make(chan error)
 
 	go func() {
+		fmt.Printf("%+v\n", materialRead)
+
 		count := 0
-		err := f.DB.QueryRow(`SELECT COUNT(*) FROM MATERIAL_READ WHERE UID = ?`, materialRead.UID).Scan(&count)
+		err := f.DB.QueryRow(`SELECT COUNT(*) FROM MATERIAL_READ WHERE UID = ?`, materialRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
 		}
@@ -39,9 +42,9 @@ func (f *MaterialReadRepositoryMysql) Save(materialRead *storage.MaterialRead) <
 			typeData = t.ContainerType.Code
 		}
 
-		expirationDate := ""
+		var expirationDate *time.Time
 		if materialRead.ExpirationDate != nil {
-			expirationDate = materialRead.ExpirationDate.Format(time.RFC3339)
+			expirationDate = materialRead.ExpirationDate
 		}
 
 		if count > 0 {
@@ -60,8 +63,8 @@ func (f *MaterialReadRepositoryMysql) Save(materialRead *storage.MaterialRead) <
 				expirationDate,
 				materialRead.Notes,
 				materialRead.ProducedBy,
-				materialRead.CreatedDate.Format(time.RFC3339),
-				materialRead.UID)
+				materialRead.CreatedDate,
+				materialRead.UID.Bytes())
 
 			if err != nil {
 				result <- err
@@ -72,7 +75,7 @@ func (f *MaterialReadRepositoryMysql) Save(materialRead *storage.MaterialRead) <
 				(UID, NAME, PRICE_PER_UNIT, CURRENCY_CODE, TYPE, TYPE_DATA, QUANTITY,
 				QUANTITY_UNIT, EXPIRATION_DATE, NOTES, PRODUCED_BY, CREATED_DATE)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-				materialRead.UID,
+				materialRead.UID.Bytes(),
 				materialRead.Name,
 				materialRead.PricePerUnit.Amount,
 				materialRead.PricePerUnit.CurrencyCode,
@@ -83,7 +86,7 @@ func (f *MaterialReadRepositoryMysql) Save(materialRead *storage.MaterialRead) <
 				expirationDate,
 				materialRead.Notes,
 				materialRead.ProducedBy,
-				materialRead.CreatedDate.Format(time.RFC3339))
+				materialRead.CreatedDate)
 
 			if err != nil {
 				result <- err

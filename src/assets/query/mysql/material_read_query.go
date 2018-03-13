@@ -22,7 +22,7 @@ func NewMaterialReadQueryMysql(db *sql.DB) query.MaterialReadQuery {
 }
 
 type materialReadResult struct {
-	UID            string
+	UID            []byte
 	Name           string
 	PricePerUnit   string
 	CurrencyCode   string
@@ -33,7 +33,7 @@ type materialReadResult struct {
 	ExpirationDate sql.NullString
 	Notes          sql.NullString
 	ProducedBy     sql.NullString
-	CreatedDate    string
+	CreatedDate    time.Time
 }
 
 func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.QueryResult {
@@ -102,24 +102,19 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 				result <- query.QueryResult{Error: err}
 			}
 
-			materialUID, err := uuid.FromString(rowsData.UID)
+			materialUID, err := uuid.FromBytes(rowsData.UID)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
 
 			var mExpDate *time.Time
 			if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
-				date, err := time.Parse(time.RFC3339, rowsData.ExpirationDate.String)
+				date, err := time.Parse("2006-01-02 15:04:05", rowsData.ExpirationDate.String)
 				if err != nil {
 					result <- query.QueryResult{Error: err}
 				}
 
 				mExpDate = &date
-			}
-
-			mCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
-			if err != nil {
-				result <- query.QueryResult{Error: err}
 			}
 
 			pricePerUnit, err := domain.CreatePricePerUnit(rowsData.PricePerUnit, rowsData.CurrencyCode)
@@ -188,7 +183,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 				ExpirationDate: mExpDate,
 				Notes:          notes,
 				ProducedBy:     producedBy,
-				CreatedDate:    mCreatedDate,
+				CreatedDate:    rowsData.CreatedDate,
 			})
 		}
 
@@ -250,7 +245,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		materialRead := storage.MaterialRead{}
 		rowsData := materialReadResult{}
 
-		err := q.DB.QueryRow(`SELECT * FROM MATERIAL_READ WHERE UID = ?`, materialUID).Scan(
+		err := q.DB.QueryRow(`SELECT * FROM MATERIAL_READ WHERE UID = ?`, materialUID.Bytes()).Scan(
 			&rowsData.UID,
 			&rowsData.Name,
 			&rowsData.PricePerUnit,
@@ -273,24 +268,19 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 			result <- query.QueryResult{Result: materialRead}
 		}
 
-		materialUID, err := uuid.FromString(rowsData.UID)
+		materialUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
 		var mExpDate *time.Time
 		if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
-			date, err := time.Parse(time.RFC3339, rowsData.ExpirationDate.String)
+			date, err := time.Parse("2006-01-02 15:04:05", rowsData.ExpirationDate.String)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
 
 			mExpDate = &date
-		}
-
-		mCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
-		if err != nil {
-			result <- query.QueryResult{Error: err}
 		}
 
 		pricePerUnit, err := domain.CreatePricePerUnit(rowsData.PricePerUnit, rowsData.CurrencyCode)
@@ -359,7 +349,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 			ExpirationDate: mExpDate,
 			Notes:          notes,
 			ProducedBy:     producedBy,
-			CreatedDate:    mCreatedDate,
+			CreatedDate:    rowsData.CreatedDate,
 		}
 
 		result <- query.QueryResult{Result: materialRead}

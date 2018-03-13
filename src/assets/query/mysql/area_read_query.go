@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/Tanibox/tania-server/src/assets/domain"
@@ -417,8 +416,7 @@ func (s AreaReadQueryMysql) FindAreasByReservoirID(reservoirUID uuid.UUID) <-cha
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
-		fmt.Println("ERR", err)
-		fmt.Println("ROWS", rows)
+
 		for rows.Next() {
 			rowsData := areaReadResult{}
 			rows.Scan(
