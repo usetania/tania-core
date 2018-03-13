@@ -45,7 +45,7 @@
           span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group
           label(for="title") Title
-          input.form-control#title(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('title') }" v-model="task.title" name="title")
+          input.form-control#title(type="text" v-validate="'required|max:100'" :class="{'input': true, 'text-danger': errors.has('title') }" v-model="task.title" name="title")
           span.help-block.text-danger(v-show="errors.has('title')") {{ errors.first('title') }}
         .form-group
           label(for="description") Description

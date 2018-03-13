@@ -1,5 +1,5 @@
 <template lang="pug">
-  .task-list(v-if="loading === false")
+  .task-list
     table.table.m-b-none(v-if="domain == 'AREA' || domain == 'RESERVOIR'")
       thead
         tr
@@ -89,14 +89,13 @@ export default {
     MoreDetail,
     TaskLabel
   },
+  computed: {
+    ...mapGetters({
+      tasks: 'getTasks'
+    })
+  },
   created () {
     this.getTasks() 
-  },
-  data () {
-    return {
-      loading: true,
-      tasks: [],
-    }
   },
   methods: {
     ...mapActions([
@@ -113,26 +112,11 @@ export default {
     getTasks () {
       if (this.domain) {
         this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id })
-          .then(({ data }) => {
-            this.loading = false
-            this.tasks = AddClicked(data)
-          })
-          .catch(error => console.log(error))
       } else if (this.category != '' || this.priority != '' || this.status != '') {
         let status = (this.status == 'INCOMPLETE') ? '' : this.status
         this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: status })
-          .then(({ data }) => {
-            this.loading = false
-            this.tasks = AddClicked(data)
-          })
-          .catch(error => console.log(error))
       } else {
         this.fetchTasks()
-          .then(({ data }) => {
-            this.loading = false
-            this.tasks = AddClicked(data)
-          })
-          .catch(error => console.log(error))
       }
     },
     isCompleted (status) {

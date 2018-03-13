@@ -1,6 +1,7 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
+import { AddClicked } from '@/stores/helpers/farms/crop'
 import FarmApi from '@/stores/api/farm'
 import moment from 'moment-timezone'
 
@@ -9,7 +10,7 @@ const state = {
 }
 
 const getters = {
-  getAllTasks: state => state.tasks,
+  getTasks: state => state.tasks,
 }
 
 const actions = {
@@ -28,6 +29,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       FarmApi
         .ApiFindTasksByDomainAndAssetId(payload.domain, payload.assetId, ({ data }) => {
+          commit(types.FETCH_TASKS, data.data)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -56,6 +58,7 @@ const actions = {
       }
       FarmApi
         .ApiFindTasksByCategoryAndPriorityAndStatus(payload.category, payload.priority, query, ({ data }) => {
+          commit(types.FETCH_TASKS, data.data)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -107,9 +110,10 @@ const mutations = {
   [types.UPDATE_TASK] (state, payload) {
     const tasks = state.tasks
     state.tasks = tasks.map(task => (task.uid === payload.uid) ? payload : task)
+    state.tasks = AddClicked(state.tasks)
   },
   [types.FETCH_TASKS] (state, payload) {
-    state.tasks = payload
+    state.tasks = AddClicked(payload)
   },
 }
 

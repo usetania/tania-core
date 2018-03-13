@@ -89,12 +89,6 @@ export default {
     TaskForm,
     TasksList,
   },
-  computed: {
-    ...mapGetters({
-    })
-  },
-  created () {
-  },
   data () {
     return {
       data: {},
