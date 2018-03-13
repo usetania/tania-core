@@ -5,14 +5,19 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Tanibox/tania-server/config"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	cropstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
 	"github.com/Tanibox/tania-server/src/tasks/query"
+	queryInMem "github.com/Tanibox/tania-server/src/tasks/query/inmemory"
+	queryMysql "github.com/Tanibox/tania-server/src/tasks/query/mysql"
 	querySqlite "github.com/Tanibox/tania-server/src/tasks/query/sqlite"
 	"github.com/Tanibox/tania-server/src/tasks/repository"
+	repoInMem "github.com/Tanibox/tania-server/src/tasks/repository/inmemory"
+	repoMysql "github.com/Tanibox/tania-server/src/tasks/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-server/src/tasks/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	"github.com/asaskevich/EventBus"
@@ -42,31 +47,68 @@ func NewTaskServer(
 	taskEventStorage *storage.TaskEventStorage,
 	taskReadStorage *storage.TaskReadStorage) (*TaskServer, error) {
 
-	taskEventRepo := repoSqlite.NewTaskEventRepositorySqlite(db)
-	taskReadRepo := repoSqlite.NewTaskReadRepositorySqlite(db)
-
-	taskEventQuery := querySqlite.NewTaskEventQuerySqlite(db)
-	taskReadQuery := querySqlite.NewTaskReadQuerySqlite(db)
-
-	cropQuery := querySqlite.NewCropQuerySqlite(db)
-	areaQuery := querySqlite.NewAreaQuerySqlite(db)
-	materialReadQuery := querySqlite.NewMaterialQuerySqlite(db)
-	reservoirQuery := querySqlite.NewReservoirQuerySqlite(db)
-
-	taskService := service.TaskServiceSqlLite{
-		CropQuery:      cropQuery,
-		AreaQuery:      areaQuery,
-		MaterialQuery:  materialReadQuery,
-		ReservoirQuery: reservoirQuery,
+	taskServer := &TaskServer{
+		EventBus: bus,
 	}
 
-	taskServer := &TaskServer{
-		TaskEventRepo:  taskEventRepo,
-		TaskReadRepo:   taskReadRepo,
-		TaskEventQuery: taskEventQuery,
-		TaskReadQuery:  taskReadQuery,
-		TaskService:    taskService,
-		EventBus:       bus,
+	switch *config.Config.TaniaPersistanceEngine {
+	case config.DB_INMEMORY:
+		taskServer.TaskEventRepo = repoInMem.NewTaskEventRepositoryInMemory(taskEventStorage)
+		taskServer.TaskReadRepo = repoInMem.NewTaskReadRepositoryInMemory(taskReadStorage)
+
+		taskServer.TaskEventQuery = queryInMem.NewTaskEventQueryInMemory(taskEventStorage)
+		taskServer.TaskReadQuery = queryInMem.NewTaskReadQueryInMemory(taskReadStorage)
+
+		cropQuery := queryInMem.NewCropQueryInMemory(cropStorage)
+		areaQuery := queryInMem.NewAreaQueryInMemory(areaStorage)
+		materialReadQuery := queryInMem.NewMaterialQueryInMemory(materialStorage)
+		reservoirQuery := queryInMem.NewReservoirQueryInMemory(reservoirStorage)
+
+		taskServer.TaskService = service.TaskServiceSqlLite{
+			CropQuery:      cropQuery,
+			AreaQuery:      areaQuery,
+			MaterialQuery:  materialReadQuery,
+			ReservoirQuery: reservoirQuery,
+		}
+
+	case config.DB_SQLITE:
+		taskServer.TaskEventRepo = repoSqlite.NewTaskEventRepositorySqlite(db)
+		taskServer.TaskReadRepo = repoSqlite.NewTaskReadRepositorySqlite(db)
+
+		taskServer.TaskEventQuery = querySqlite.NewTaskEventQuerySqlite(db)
+		taskServer.TaskReadQuery = querySqlite.NewTaskReadQuerySqlite(db)
+
+		cropQuery := querySqlite.NewCropQuerySqlite(db)
+		areaQuery := querySqlite.NewAreaQuerySqlite(db)
+		materialReadQuery := querySqlite.NewMaterialQuerySqlite(db)
+		reservoirQuery := querySqlite.NewReservoirQuerySqlite(db)
+
+		taskServer.TaskService = service.TaskServiceSqlLite{
+			CropQuery:      cropQuery,
+			AreaQuery:      areaQuery,
+			MaterialQuery:  materialReadQuery,
+			ReservoirQuery: reservoirQuery,
+		}
+
+	case config.DB_MYSQL:
+		taskServer.TaskEventRepo = repoMysql.NewTaskEventRepositoryMysql(db)
+		taskServer.TaskReadRepo = repoMysql.NewTaskReadRepositoryMysql(db)
+
+		taskServer.TaskEventQuery = queryMysql.NewTaskEventQueryMysql(db)
+		taskServer.TaskReadQuery = queryMysql.NewTaskReadQueryMysql(db)
+
+		cropQuery := queryMysql.NewCropQueryMysql(db)
+		areaQuery := queryMysql.NewAreaQueryMysql(db)
+		materialReadQuery := queryMysql.NewMaterialQueryMysql(db)
+		reservoirQuery := queryMysql.NewReservoirQueryMysql(db)
+
+		taskServer.TaskService = service.TaskServiceSqlLite{
+			CropQuery:      cropQuery,
+			AreaQuery:      areaQuery,
+			MaterialQuery:  materialReadQuery,
+			ReservoirQuery: reservoirQuery,
+		}
+
 	}
 
 	taskServer.InitSubscriber()
@@ -296,6 +338,9 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	}
 
 	result := <-s.TaskReadQuery.FindByID(uid)
+	if result.Error != nil {
+		return Error(c, result.Error)
+	}
 
 	task, ok := result.Result.(storage.TaskRead)
 
