@@ -25,7 +25,7 @@
         td(v-if="domain == 'CROPS'")  {{ crop.area_status.seeding }} Seeding, {{ crop.area_status.growing }} Growing, {{ crop.area_status.dumped }} Dumped
         td(v-if="domain == 'AREA' && crop.last_watered") {{ crop.last_watered | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
         td(v-if="domain == 'AREA' && !crop.last_watered") -
-        td(v-if="domain == 'CROPS' && batch")
+        td(v-if="domain == 'CROPS' && batch && crop.initial_area.initial_quantity == crop.initial_area.current_quantity")
           a.pull-right(style="cursor: pointer;" @click="editCropModal(crop)")
             i.fa.fa-edit
 </template>

@@ -42,7 +42,7 @@
               span.input-group-btn
                 button.btn.btn-primary(type="button" v-on:click="openPicker")
                   i.fa.fa-calendar
-              span.help-block.text-danger(v-show="errors.has('expiration_date')") {{ errors.first('expiration_date') }}
+            span.help-block.text-danger(v-show="errors.has('expiration_date')") {{ errors.first('expiration_date') }}
       .form-group
         label.control-label(for="notes") Additional Notes
         textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")

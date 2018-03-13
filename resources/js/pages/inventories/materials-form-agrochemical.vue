@@ -38,7 +38,7 @@
               span.input-group-btn
                 button.btn.btn-primary(type="button" v-on:click="openPicker")
                   i.fa.fa-calendar
-              span.help-block.text-danger(v-show="errors.has('expiration_date')") {{ errors.first('expiration_date') }}
+            span.help-block.text-danger(v-show="errors.has('expiration_date')") {{ errors.first('expiration_date') }}
           .col-xs-6
             label.control-label Produced by
             input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
