@@ -313,7 +313,7 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 		rowsData := areaReadResult{}
 		notesRowsData := areaNotesReadResult{}
 
-		err := s.DB.QueryRow("SELECT * FROM AREA_READ WHERE UID = ? AND FARM_UID", areaUID, farmUID).Scan(
+		err := s.DB.QueryRow("SELECT * FROM AREA_READ WHERE UID = ? AND FARM_UID = ?", areaUID, farmUID).Scan(
 			&rowsData.UID,
 			&rowsData.Name,
 			&rowsData.SizeUnit,
