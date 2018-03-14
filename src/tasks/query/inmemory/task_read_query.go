@@ -16,7 +16,7 @@ func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskReadQuery {
 	return &TaskReadQueryInMemory{Storage: s}
 }
 
-func (r TaskReadQueryInMemory) FindAll(limit *int) <-chan query.QueryResult {
+func (r TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -29,8 +29,8 @@ func (r TaskReadQueryInMemory) FindAll(limit *int) <-chan query.QueryResult {
 			tasks = append(tasks, val)
 		}
 
-		if limit != nil {
-			tasks = tasks[:*limit]
+		if limit != 0 {
+			tasks = tasks[:limit]
 		}
 
 		result <- query.QueryResult{Result: tasks}

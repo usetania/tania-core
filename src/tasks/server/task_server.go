@@ -23,7 +23,7 @@ import (
 	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
-	"strconv"
+  "github.com/Tanibox/tania-server/src/helper/paginationhelper"
 )
 
 // TaskServer ties the routes and handlers with injected dependencies
@@ -148,16 +148,16 @@ func (s *TaskServer) Mount(g *echo.Group) {
 func (s TaskServer) FindAllTasks(c echo.Context) error {
   data := make(map[string]interface{})
 
-	limit := (*int)(nil)
-	if value := c.QueryParam("limit"); value != "" {
-		val, err := strconv.Atoi(value)
-		if err != nil {
-			return Error(c, NewRequestValidationError(NUMERIC, "limit"))
-		}
-		limit = &val
-	}
 
-	result := <-s.TaskReadQuery.FindAll(limit)
+  page := c.QueryParam("page")
+  limit := c.QueryParam("limit")
+
+  pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
+  if err != nil {
+    return Error(c, err)
+  }
+
+  result := <-s.TaskReadQuery.FindAll(pageInt, limitInt)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -177,6 +177,7 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
   data["data"] = taskList
   // Return number of tasks
   data["total_rows"] = len(tasks)
+  data["page"] = pageInt
 
 	return c.JSON(http.StatusOK, data)
 }

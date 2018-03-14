@@ -9,6 +9,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
+  "github.com/Tanibox/tania-server/src/helper/paginationhelper"
 )
 
 type TaskReadQuerySqlite struct {
@@ -37,7 +38,7 @@ type taskReadQueryResult struct {
 	AssetID              sql.NullString
 }
 
-func (r TaskReadQuerySqlite) FindAll(limit *int) <-chan query.QueryResult {
+func (r TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -46,12 +47,14 @@ func (r TaskReadQuerySqlite) FindAll(limit *int) <-chan query.QueryResult {
 		sql := `SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`
 		var args []interface{}
 
-		if limit != nil {
-			sql += " LIMIT ? "
-			args = append(args, limit)
-		}
 
-		rows, err := r.DB.Query(sql, args...)
+    if page != 0 && limit != 0 {
+      sql += " LIMIT ? OFFSET ?"
+      offset := paginationhelper.CalculatePageToOffset(page, limit)
+      args = append(args, limit, offset)
+    }
+
+    rows, err := r.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
