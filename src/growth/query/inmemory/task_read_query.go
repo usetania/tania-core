@@ -40,7 +40,6 @@ func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 						result <- query.QueryResult{Error: errors.New("Error type assertion")}
 					}
 
-					task.CropUID = *tdc.CropID
 					task.AreaUID = *tdc.AreaID
 					task.MaterialUID = *tdc.MaterialID
 				}

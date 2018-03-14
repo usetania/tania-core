@@ -22,7 +22,6 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 	go func() {
 		var domainDataMaterialID []byte
 		var domainDataAreaID []byte
-		var domainDataCropID []byte
 		switch v := taskRead.DomainDetails.(type) {
 		case domain.TaskDomainCrop:
 			if v.MaterialID != nil {
@@ -31,20 +30,17 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 			if v.AreaID != nil {
 				domainDataAreaID = v.AreaID.Bytes()
 			}
-			if v.CropID != nil {
-				domainDataCropID = v.CropID.Bytes()
-			}
 		}
 
 		res, err := f.DB.Exec(`UPDATE TASK_READ SET
 			TITLE = ?, DESCRIPTION = ?, CREATED_DATE = ?, DUE_DATE = ?,
 			COMPLETED_DATE = ?, CANCELLED_DATE = ?, PRIORITY = ?, STATUS = ?,
-			DOMAIN_CODE = ?, DOMAIN_DATA_MATERIAL_ID = ?, DOMAIN_DATA_AREA_ID = ?, DOMAIN_DATA_CROP_ID = ?,
+			DOMAIN_CODE = ?, DOMAIN_DATA_MATERIAL_ID = ?, DOMAIN_DATA_AREA_ID = ?,
 			CATEGORY = ?, IS_DUE = ?, ASSET_ID = ?
 			WHERE UID = ?`,
 			taskRead.Title, taskRead.Description, taskRead.CreatedDate, taskRead.DueDate,
 			taskRead.CompletedDate, taskRead.CancelledDate, taskRead.Priority, taskRead.Status,
-			taskRead.Domain, domainDataMaterialID, domainDataAreaID, domainDataCropID,
+			taskRead.Domain, domainDataMaterialID, domainDataAreaID,
 			taskRead.Category, taskRead.IsDue, taskRead.AssetID.Bytes(),
 			taskRead.UID.Bytes())
 
@@ -64,11 +60,11 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 			_, err := f.DB.Exec(`INSERT INTO TASK_READ (
 				UID, TITLE, DESCRIPTION, CREATED_DATE, DUE_DATE,
 				COMPLETED_DATE, CANCELLED_DATE, PRIORITY, STATUS,
-				DOMAIN_CODE, DOMAIN_DATA_MATERIAL_ID, DOMAIN_DATA_AREA_ID, DOMAIN_DATA_CROP_ID, CATEGORY, IS_DUE, ASSET_ID)
+				DOMAIN_CODE, DOMAIN_DATA_MATERIAL_ID, DOMAIN_DATA_AREA_ID, CATEGORY, IS_DUE, ASSET_ID)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				taskRead.UID.Bytes(), taskRead.Title, taskRead.Description, taskRead.CreatedDate, taskRead.DueDate,
 				taskRead.CompletedDate, taskRead.CancelledDate, taskRead.Priority, taskRead.Status,
-				taskRead.Domain, domainDataMaterialID, domainDataAreaID, domainDataCropID,
+				taskRead.Domain, domainDataMaterialID, domainDataAreaID,
 				taskRead.Category, taskRead.IsDue, taskRead.AssetID.Bytes())
 
 			if err != nil {

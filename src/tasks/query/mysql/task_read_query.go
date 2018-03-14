@@ -9,6 +9,7 @@ import (
 	"github.com/Tanibox/tania-server/src/tasks/query"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
+  "github.com/Tanibox/tania-server/src/helper/paginationhelper"
 )
 
 type TaskReadQueryMysql struct {
@@ -32,13 +33,12 @@ type taskReadQueryResult struct {
 	DomainCode           string
 	DomainDataMaterialID uuid.NullUUID
 	DomainDataAreaID     uuid.NullUUID
-	DomainDataCropID     uuid.NullUUID
 	Category             string
 	IsDue                int
 	AssetID              uuid.NullUUID
 }
 
-func (r TaskReadQueryMysql) FindAll(limit *int) <-chan query.QueryResult {
+func (r TaskReadQueryMysql) FindAll(page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -47,12 +47,13 @@ func (r TaskReadQueryMysql) FindAll(limit *int) <-chan query.QueryResult {
 		sql := `SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`
 		var args []interface{}
 
-		if limit != nil {
-			sql += " LIMIT ? "
-			args = append(args, limit)
-		}
+    if page != 0 && limit != 0 {
+      sql += " LIMIT ? OFFSET ?"
+      offset := paginationhelper.CalculatePageToOffset(page, limit)
+      args = append(args, limit, offset)
+    }
 
-		rows, err := r.DB.Query(sql, args...)
+    rows, err := r.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -174,8 +175,7 @@ func (s TaskReadQueryMysql) populateQueryResult(rows *sql.Rows) (storage.TaskRea
 		&rowsData.UID, &rowsData.Title, &rowsData.Description, &rowsData.CreatedDate,
 		&rowsData.DueDate, &rowsData.CompletedDate, &rowsData.CancelledDate,
 		&rowsData.Priority, &rowsData.Status, &rowsData.DomainCode, &rowsData.DomainDataMaterialID,
-		&rowsData.DomainDataAreaID, &rowsData.DomainDataCropID,
-		&rowsData.Category, &rowsData.IsDue, &rowsData.AssetID,
+		&rowsData.DomainDataAreaID, &rowsData.Category, &rowsData.IsDue, &rowsData.AssetID,
 	)
 
 	if err != nil {
@@ -194,7 +194,6 @@ func (s TaskReadQueryMysql) populateQueryResult(rows *sql.Rows) (storage.TaskRea
 	case domain.TaskDomainCropCode:
 		var materialID *uuid.UUID
 		var areaID *uuid.UUID
-		var cropID *uuid.UUID
 
 		if rowsData.DomainDataMaterialID.Valid {
 			materialID = &rowsData.DomainDataMaterialID.UUID
@@ -202,14 +201,10 @@ func (s TaskReadQueryMysql) populateQueryResult(rows *sql.Rows) (storage.TaskRea
 		if rowsData.DomainDataAreaID.Valid {
 			areaID = &rowsData.DomainDataAreaID.UUID
 		}
-		if rowsData.DomainDataCropID.Valid {
-			cropID = &rowsData.DomainDataCropID.UUID
-		}
 
 		domainDetails = domain.TaskDomainCrop{
 			MaterialID: materialID,
 			AreaID:     areaID,
-			CropID:     cropID,
 		}
 
 	case domain.TaskDomainFinanceCode:
