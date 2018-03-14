@@ -31,6 +31,7 @@ type DetailArea struct {
 	storage.AreaRead
 	TotalCropBatch int `json:"total_crop_batch"`
 	TotalVariety   int `json:"total_variety"`
+	PlantQuantity  int `json:"plant_quantity"`
 }
 
 type DetailReservoir struct {
@@ -315,6 +316,7 @@ func MapToDetailAreaFromStorage(s *FarmServer, areaRead storage.AreaRead) (Detai
 	}
 
 	detailArea.TotalCropBatch = cropCount.TotalCropBatch
+	detailArea.PlantQuantity = cropCount.PlantQuantity
 
 	queryResult = <-s.CropReadQuery.FindAllCropByArea(areaRead.UID)
 	if queryResult.Error != nil {
@@ -395,6 +397,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 	}
 
 	areaRead.TotalCropBatch = cropCount.TotalCropBatch
+	areaRead.PlantQuantity = cropCount.PlantQuantity
 
 	queryResult = <-s.CropReadQuery.FindAllCropByArea(area.UID)
 	if queryResult.Error != nil {
