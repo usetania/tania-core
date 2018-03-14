@@ -146,7 +146,7 @@ func (s *TaskServer) Mount(g *echo.Group) {
 }
 
 func (s TaskServer) FindAllTasks(c echo.Context) error {
-	data := make(map[string][]storage.TaskRead)
+  data := make(map[string]interface{})
 
 	limit := (*int)(nil)
 	if value := c.QueryParam("limit"); value != "" {
@@ -167,17 +167,22 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = []storage.TaskRead{}
-	for _, v := range tasks {
-		s.AppendTaskDomainDetails(&v)
-		data["data"] = append(data["data"], v)
-	}
+  taskList := []storage.TaskRead{}
+  for _, v := range tasks {
+    s.AppendTaskDomainDetails(&v)
+    taskList = append(taskList, v)
+  }
+
+  // Return list of tasks
+  data["data"] = taskList
+  // Return number of tasks
+  data["total_rows"] = len(tasks)
 
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s TaskServer) FindFilteredTasks(c echo.Context) error {
-	data := make(map[string][]storage.TaskRead)
+  data := make(map[string]interface{})
 
 	queryparams := make(map[string]string)
 	queryparams["is_due"] = c.QueryParam("is_due")
@@ -200,12 +205,16 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	data["data"] = []storage.TaskRead{}
+	taskList := []storage.TaskRead{}
 	for _, v := range tasks {
 		s.AppendTaskDomainDetails(&v)
-		data["data"] = append(data["data"], v)
+    taskList = append(taskList, v)
 	}
 
+	// Return list of tasks
+	data["data"] = taskList
+	// Return number of tasks
+	data["total_rows"] = len(tasks)
 	return c.JSON(http.StatusOK, data)
 }
 
