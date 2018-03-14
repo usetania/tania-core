@@ -195,7 +195,15 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	queryparams["due_start"] = c.QueryParam("due_start")
 	queryparams["due_end"] = c.QueryParam("due_end")
 
-	result := <-s.TaskReadQuery.FindTasksWithFilter(queryparams)
+  page := c.QueryParam("page")
+  limit := c.QueryParam("limit")
+
+  pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
+  if err != nil {
+    return Error(c, err)
+  }
+
+  result := <-s.TaskReadQuery.FindTasksWithFilter(queryparams, pageInt, limitInt)
 
 	if result.Error != nil {
 		return result.Error
@@ -216,6 +224,7 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	data["data"] = taskList
 	// Return number of tasks
 	data["total_rows"] = len(tasks)
+	data["page"] = pageInt
 	return c.JSON(http.StatusOK, data)
 }
 

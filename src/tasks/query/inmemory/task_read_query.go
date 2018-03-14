@@ -57,7 +57,7 @@ func (r TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 	return result
 }
 
-func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string) <-chan query.QueryResult {
+func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {

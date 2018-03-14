@@ -103,7 +103,7 @@ func (r TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	return result
 }
 
-func (s TaskReadQueryMysql) FindTasksWithFilter(params map[string]string) <-chan query.QueryResult {
+func (s TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -146,7 +146,13 @@ func (s TaskReadQueryMysql) FindTasksWithFilter(params map[string]string) <-chan
 			args = append(args, assetID)
 		}
 
-		rows, err := s.DB.Query(sql, args...)
+    if page != 0 && limit != 0 {
+      sql += " LIMIT ? OFFSET ?"
+      offset := paginationhelper.CalculatePageToOffset(page, limit)
+      args = append(args, limit, offset)
+    }
+
+    rows, err := s.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
