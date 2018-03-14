@@ -25,7 +25,7 @@ const router = new VueRouter({
     { path: '/crops', name: 'FarmCrops', meta: {requiresAuth: true }, component: () => import('./pages/farms/crops.vue') },
     { path: '/crop/:id', name: 'FarmCrop', meta: {requiresAuth: true }, component: () => import('./pages/farms/crop.vue') },
     { path: '/crop/notes/:id', name: 'FarmCropNotes', meta: {requiresAuth: true }, component: () => import('./pages/farms/crop-notes.vue') },
-    { path: '/task', name: 'Task', meta: { requiresAuth: true }, component: () => import('./pages/tasks/task') },
+    { path: '/tasks', name: 'Task', meta: { requiresAuth: true }, component: () => import('./pages/tasks/task') },
 
     // Inventories
     { path: '/materials', name: 'InventoriesMaterials', meta: { requiresAuth: true }, component: () => import('./pages/inventories/materials.vue') },
