@@ -98,7 +98,7 @@ export default {
       crops: 'getAllCrops',
       cropInformation: 'getInformation',
       cropPages: 'getCropsNumberOfPages',
-      tasks: 'getAllTasks',
+      tasks: 'getTasks',
     })
   },
   methods: {
