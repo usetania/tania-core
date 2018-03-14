@@ -57,7 +57,7 @@ func TestCreateTask(t *testing.T) {
 	areaName := "MY AREA SEEDING"
 	taskServiceMock.On("FindAreaByID", areaID).Return(ServiceResult{Result: query.TaskAreaQueryResult{UID: areaID, Name: areaName}})
 
-	taskdomain, _ := CreateTaskDomainCrop(taskServiceMock, taskcategory, &cropID, &materialID, &areaID)
+	taskdomain, _ := CreateTaskDomainCrop(taskServiceMock, taskcategory, &materialID, &areaID)
 
 	var tests = []struct {
 		title              string
