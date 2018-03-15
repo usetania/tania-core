@@ -29,9 +29,9 @@ func (s *UserAuthRepositorySqlite) Save(userAuth *storage.UserAuth) <-chan error
 
 		if total > 0 {
 			_, err := s.DB.Exec(`UPDATE USER_AUTH
-				SET CLIENT_ID = ?, ACCESS_TOKEN = ?, TOKEN_EXPIRES = ?, CREATED_DATE = ?, LAST_UPDATED = ?
+				SET ACCESS_TOKEN = ?, TOKEN_EXPIRES = ?, CREATED_DATE = ?, LAST_UPDATED = ?
 				WHERE USER_UID = ?`,
-				userAuth.ClientID, userAuth.AccessToken, userAuth.TokenExpires,
+				userAuth.AccessToken, userAuth.TokenExpires,
 				userAuth.CreatedDate.Format(time.RFC3339), userAuth.LastUpdated.Format(time.RFC3339),
 				userAuth.UserUID)
 
@@ -40,9 +40,9 @@ func (s *UserAuthRepositorySqlite) Save(userAuth *storage.UserAuth) <-chan error
 			}
 		} else {
 			_, err := s.DB.Exec(`INSERT INTO USER_AUTH
-				(USER_UID, CLIENT_ID, ACCESS_TOKEN, TOKEN_EXPIRES, CREATED_DATE, LAST_UPDATED)
-				VALUES (?,?,?,?,?,?)`,
-				userAuth.UserUID, userAuth.ClientID, userAuth.AccessToken, userAuth.TokenExpires,
+				(USER_UID, ACCESS_TOKEN, TOKEN_EXPIRES, CREATED_DATE, LAST_UPDATED)
+				VALUES (?,?,?,?,?)`,
+				userAuth.UserUID, userAuth.AccessToken, userAuth.TokenExpires,
 				userAuth.CreatedDate.Format(time.RFC3339), userAuth.LastUpdated.Format(time.RFC3339))
 
 			if err != nil {

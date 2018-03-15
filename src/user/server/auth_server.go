@@ -77,6 +77,7 @@ func (s *AuthServer) Mount(g *echo.Group) {
 func (s *AuthServer) Authorize(c echo.Context) error {
 	responseType := "token"
 	redirectURI := *config.Config.RedirectURI
+	clientID := *config.Config.ClientID
 
 	reqUsername := c.FormValue("username")
 	reqPassword := c.FormValue("password")
@@ -95,10 +96,6 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 		return Error(c, errors.New("Error type assertion"))
 	}
 
-	if userRead.UID == (uuid.UUID{}) {
-		return Error(c, errors.New("Invalid username or password"))
-	}
-
 	queryResult = <-s.UserAuthQuery.FindByUserID(userRead.UID)
 	if queryResult.Error != nil {
 		return Error(c, queryResult.Error)
@@ -109,7 +106,11 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 		return Error(c, errors.New("Error type assertion"))
 	}
 
-	if reqClientID != userAuth.ClientID {
+	if userRead.UID == (uuid.UUID{}) {
+		return Error(c, errors.New("Invalid username or password"))
+	}
+
+	if reqClientID != clientID {
 		return Error(c, NewRequestValidationError(INVALID, "client_id"))
 	}
 
@@ -181,15 +182,8 @@ func (s *AuthServer) RegisterNewUser(username, password, confirmPassword string)
 		return nil, nil, err
 	}
 
-	// Generate client ID
-	clientID, err := uuid.NewV4()
-	if err != nil {
-		return nil, nil, err
-	}
-
 	userAuth := storage.UserAuth{
 		UserUID:     user.UID,
-		ClientID:    clientID.String(),
 		CreatedDate: user.CreatedDate,
 		LastUpdated: user.LastUpdated,
 	}

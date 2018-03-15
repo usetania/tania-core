@@ -9,5 +9,6 @@
     "mysql_dbname": "tania",
     "mysql_user": "root",
     "mysql_password": "root",
-    "redirect_uri": "http://localhost:8080/oauth2_implicit_callback"
+    "redirect_uri": "http://localhost:8080/oauth2_implicit_callback",
+    "client_id": "f0ece679-3f53-463e-b624-73e83049d6ac"
 }

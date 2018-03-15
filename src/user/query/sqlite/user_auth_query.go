@@ -19,7 +19,6 @@ func NewUserAuthQuerySqlite(db *sql.DB) query.UserAuthQuery {
 
 type userAuthResult struct {
 	UserUID      string
-	ClientID     string
 	AccessToken  string
 	TokenExpires int
 	CreatedDate  string
@@ -33,9 +32,9 @@ func (s UserAuthQuerySqlite) FindByUserID(uid uuid.UUID) <-chan query.QueryResul
 		userAuth := storage.UserAuth{}
 		rowsData := userAuthResult{}
 
-		err := s.DB.QueryRow("SELECT * FROM USER_AUTH WHERE USER_UID = ?", uid).Scan(
+		err := s.DB.QueryRow(`SELECT USER_UID, ACCESS_TOKEN, TOKEN_EXPIRES, CREATED_DATE, LAST_UPDATED
+			FROM USER_AUTH WHERE USER_UID = ?`, uid).Scan(
 			&rowsData.UserUID,
-			&rowsData.ClientID,
 			&rowsData.AccessToken,
 			&rowsData.TokenExpires,
 			&rowsData.CreatedDate,
@@ -67,7 +66,6 @@ func (s UserAuthQuerySqlite) FindByUserID(uid uuid.UUID) <-chan query.QueryResul
 
 		userAuth = storage.UserAuth{
 			UserUID:      userUID,
-			ClientID:     rowsData.ClientID,
 			AccessToken:  rowsData.AccessToken,
 			TokenExpires: rowsData.TokenExpires,
 			CreatedDate:  createdDate,

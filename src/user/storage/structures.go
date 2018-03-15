@@ -23,7 +23,6 @@ type UserRead struct {
 
 type UserAuth struct {
 	UserUID      uuid.UUID `json:"uid"`
-	ClientID     string    `json:"client_id"`
 	AccessToken  string    `json:"access_token"`
 	TokenExpires int       `json:"token_expires"`
 	CreatedDate  time.Time `json:"created_date"`

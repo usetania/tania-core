@@ -191,6 +191,7 @@ func initConfig() {
 		MysqlUsername:          conf.String("mysql_username", "root", "Mysql username"),
 		MysqlPassword:          conf.String("mysql_password", "root", "Mysql password"),
 		RedirectURI:            conf.String("redirect_uri", "http://localhost:8080/oauth2_implicit_callback", "URI for redirection after authorization server grants access token"),
+		ClientID:               conf.String("client_id", "f0ece679-3f53-463e-b624-73e83049d6ac", "OAuth2 Implicit Grant Client ID for frontend"),
 	}
 
 	// This config will read the first configuration.
@@ -212,16 +213,13 @@ func initUser(authServer *userserver.AuthServer) error {
 	defaultUsername := "tania"
 	defaultPassword := "tania"
 
-	_, userAuth, err := authServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
+	_, _, err := authServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
 		log.Print("User ", defaultUsername, " has already created")
 		return err
 	}
 
 	log.Print("User created with default username and password")
-	log.Print("Generated user client ID is ", userAuth.ClientID)
-	log.Print("Redirection URI is ", *config.Config.RedirectURI)
-	log.Print("Please save the client ID for future authorization")
 
 	return nil
 }

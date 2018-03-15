@@ -4,9 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strconv"
 
-	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/Tanibox/tania-server/src/user/domain"
 	"github.com/Tanibox/tania-server/src/user/domain/service"
@@ -71,80 +69,6 @@ func (s *UserServer) InitSubscriber() {
 // Mount defines the UserServer's endpoints with its handlers
 func (s *UserServer) Mount(g *echo.Group) {
 	g.POST("/:id/change_password", s.ChangePassword)
-}
-
-func (s *UserServer) Authorize(c echo.Context) error {
-	responseType := "token"
-	redirectURI := *config.Config.RedirectURI
-
-	reqUsername := c.FormValue("username")
-	reqPassword := c.FormValue("password")
-	reqClientID := c.FormValue("client_id")
-	reqResponseType := c.FormValue("response_type")
-	reqRedirectURI := c.FormValue("redirect_uri")
-	reqState := c.FormValue("state")
-
-	queryResult := <-s.UserReadQuery.FindByUsernameAndPassword(reqUsername, reqPassword)
-	if queryResult.Error != nil {
-		return Error(c, queryResult.Error)
-	}
-
-	userRead, ok := queryResult.Result.(storage.UserRead)
-	if !ok {
-		return Error(c, errors.New("Error type assertion"))
-	}
-
-	if userRead.UID == (uuid.UUID{}) {
-		return Error(c, errors.New("Invalid username or password"))
-	}
-
-	queryResult = <-s.UserAuthQuery.FindByUserID(userRead.UID)
-	if queryResult.Error != nil {
-		return Error(c, queryResult.Error)
-	}
-
-	userAuth, ok := queryResult.Result.(storage.UserAuth)
-	if !ok {
-		return Error(c, errors.New("Error type assertion"))
-	}
-
-	if reqClientID != userAuth.ClientID {
-		return Error(c, NewRequestValidationError(INVALID, "client_id"))
-	}
-
-	if reqRedirectURI != redirectURI {
-		return Error(c, NewRequestValidationError(INVALID, "redirect_uri"))
-	}
-
-	if reqResponseType != responseType {
-		return Error(c, NewRequestValidationError(INVALID, "response_type"))
-	}
-
-	// Generate access token here
-	// We use uuid method temporarily until we find better method
-	uidAccessToken, err := uuid.NewV4()
-	if err != nil {
-		return Error(c, err)
-	}
-
-	accessToken := uidAccessToken.String()
-
-	// We don't expire token because it's complicating things
-	// Also Google recommend it. https://developers.google.com/actions/identity/oauth2-implicit-flow
-	expiresIn := 0
-
-	userAuth.AccessToken = accessToken
-	userAuth.TokenExpires = expiresIn
-
-	err = <-s.UserAuthRepo.Save(&userAuth)
-	if err != nil {
-		return Error(c, err)
-	}
-
-	c.Response().Header().Set(echo.HeaderAuthorization, "Bearer "+accessToken)
-	redirectURI += "#" + "access_token=" + accessToken + "&state=" + reqState + "&expires_in=" + strconv.Itoa(expiresIn)
-
-	return c.Redirect(302, redirectURI)
 }
 
 func (s *UserServer) ChangePassword(c echo.Context) error {
