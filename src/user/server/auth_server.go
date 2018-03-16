@@ -143,8 +143,10 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	c.Response().Header().Set(echo.HeaderAuthorization, "Bearer "+accessToken)
 	redirectURI += "#" + "access_token=" + accessToken + "&state=" + reqState + "&expires_in=" + strconv.Itoa(expiresIn)
+
+	c.Response().Header().Set(echo.HeaderAuthorization, "Bearer "+accessToken)
+	c.Response().Header().Set(echo.HeaderAccessControlExposeHeaders, "Location")
 
 	return c.Redirect(302, redirectURI)
 }
