@@ -1,6 +1,7 @@
 import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
+import API from '@/stores/api/farm'
 import stub from '@/stores/stubs/user'
 
 const state = {
@@ -20,14 +21,17 @@ const actions = {
   userLogin ({ commit, state }, payload) {
     NProgress.start()
     return new Promise(( resolve, reject ) => {
-      commit(types.USER_LOGIN, {
-        uid: 1001,
-        username: payload.username,
-        email: 'hello@tanibox.com',
-        intro: payload.username === 'user' ? false: true
-      })
-      // implement login http request
-      resolve()
+      API
+        .ApiLogin(payload, ({ data }) => {
+          console.log(data)
+          commit(types.USER_LOGIN, {
+            uid: 1001,
+            username: payload.username,
+            email: 'hello@tanibox.com',
+            intro: payload.username === 'user' ? false: true
+          })
+          resolve(data)
+        }, error => reject(error.response))
     })
   },
   userCompletedIntro({ commit, state }) {

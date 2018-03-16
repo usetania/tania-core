@@ -1,6 +1,9 @@
 import { http } from '@/services'
 
 export default {
+  ApiLogin: (payload, cbSuccess, cbError) => {
+    http.post('authorize', payload, cbSuccess, cbError)
+  },
   ApiFetchFarm: (cbSuccess, cbError) => {
     http.get('farms', cbSuccess, cbError)
   },
