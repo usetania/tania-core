@@ -38,7 +38,7 @@
                 .row
                   .col-xs-6
                     label#label-country(for="country") Country
-                    select.form-control#country(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('country') }" v-model="farm.country" name="country" @change="countryChanged($event.target.value)")
+                    select.form-control#country(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('country') }" v-model="farm.country" name="country")
                       option(value="") Please select country
                       option(v-for="country in countries" :value="country.name") {{ country.name }}
                     span.help-block.text-danger(v-show="errors.has('country')") {{ errors.first('country') }}
@@ -108,10 +108,6 @@ export default {
       this.farm.latitude = location.latitude
       this.farm.longitude = location.longitude
     },
-
-    countryChanged (countryCode) {
-      this.fetchCitiesByCountryCode(countryCode)
-    }
   }
 }
 
