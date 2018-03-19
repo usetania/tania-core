@@ -69,9 +69,9 @@ export default {
       this.userLogin({
         username: this.username,
         password: this.password,
-        client_id: 'b0794ab0-524f-4a58-9c08-3288f8277c79',
+        client_id: 'f0ece679-3f53-463e-b624-73e83049d6ac',
         response_type: 'token',
-        redirect_uri: 'http://localhost:8080/#/',
+        redirect_uri: 'http://localhost:8080/',
         state: 'random-string',
       }).then(this.redirector).catch(error => {})
     },

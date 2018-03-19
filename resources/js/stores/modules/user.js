@@ -23,7 +23,6 @@ const actions = {
     return new Promise(( resolve, reject ) => {
       API
         .ApiLogin(payload, ({ data }) => {
-          console.log(data)
           commit(types.USER_LOGIN, {
             uid: 1001,
             username: payload.username,
