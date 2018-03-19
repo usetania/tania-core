@@ -23,8 +23,8 @@ type farmReadResult struct {
 	Latitude    string
 	Longitude   string
 	Type        string
-	CountryCode string
-	CityCode    string
+	Country     string
+	City        string
 	IsActive    int
 	CreatedDate string
 }
@@ -42,8 +42,8 @@ func (s FarmReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			&rowsData.Latitude,
 			&rowsData.Longitude,
 			&rowsData.Type,
-			&rowsData.CountryCode,
-			&rowsData.CityCode,
+			&rowsData.Country,
+			&rowsData.City,
 			&rowsData.IsActive,
 			&rowsData.CreatedDate,
 		)
@@ -72,8 +72,8 @@ func (s FarmReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			Latitude:    rowsData.Latitude,
 			Longitude:   rowsData.Longitude,
 			Type:        rowsData.Type,
-			CountryCode: rowsData.CountryCode,
-			CityCode:    rowsData.CityCode,
+			Country:     rowsData.Country,
+			City:        rowsData.City,
 			IsActive:    rowsData.IsActive != 0,
 			CreatedDate: createdDate,
 		}
@@ -104,8 +104,8 @@ func (s FarmReadQuerySqlite) FindAll() <-chan query.QueryResult {
 				&rowsData.Latitude,
 				&rowsData.Longitude,
 				&rowsData.Type,
-				&rowsData.CountryCode,
-				&rowsData.CityCode,
+				&rowsData.Country,
+				&rowsData.City,
 				&rowsData.IsActive,
 				&rowsData.CreatedDate,
 			)
@@ -130,8 +130,8 @@ func (s FarmReadQuerySqlite) FindAll() <-chan query.QueryResult {
 				Latitude:    rowsData.Latitude,
 				Longitude:   rowsData.Longitude,
 				Type:        rowsData.Type,
-				CountryCode: rowsData.CountryCode,
-				CityCode:    rowsData.CityCode,
+				Country:     rowsData.Country,
+				City:        rowsData.City,
 				IsActive:    rowsData.IsActive != 0,
 				CreatedDate: createdDate,
 			})

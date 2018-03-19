@@ -20,8 +20,8 @@ type FarmRead struct {
 	Latitude    string    `json:"latitude"`
 	Longitude   string    `json:"longitude"`
 	Type        string    `json:"type"`
-	CountryCode string    `json:"country_code"`
-	CityCode    string    `json:"city_code"`
+	Country     string    `json:"country"`
+	City        string    `json:"city"`
 	IsActive    bool      `json:"is_active"`
 	CreatedDate time.Time `json:"created_date"`
 }

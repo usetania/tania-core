@@ -4,7 +4,6 @@ import (
 	"regexp"
 
 	"github.com/Tanibox/tania-server/src/helper/validationhelper"
-	"github.com/Tanibox/tania-server/src/location"
 )
 
 func validateFarmName(name string) error {
@@ -53,20 +52,17 @@ func validateFarmType(code string) error {
 	return nil
 }
 
-func validateCountryCode(code string) error {
-	_, err := location.FindCountryByCountryCode(code)
-
-	if err != nil {
-		return FarmError{FarmErrorInvalidCountryCode}
+func validateCountry(country string) error {
+	if country == "" {
+		return FarmError{FarmErrorInvalidCountry}
 	}
 	return nil
 }
 
-func validateCityCode(countryCode string, cityCode string) error {
-	_, err := location.FindCityByCityCode(countryCode, cityCode)
-
-	if err != nil {
-		return FarmError{FarmErrorInvalidCityCode}
+func validateCity(city string) error {
+	if city == "" {
+		return FarmError{FarmErrorInvalidCity}
 	}
+
 	return nil
 }

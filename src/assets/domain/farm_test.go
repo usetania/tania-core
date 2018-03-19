@@ -10,7 +10,7 @@ func TestCreateFarm(t *testing.T) {
 	// Given
 
 	// When
-	farm, err := CreateFarm("My Farm 1", FarmTypeOrganic, "10.00", "11.00", "ID", "JK")
+	farm, err := CreateFarm("My Farm 1", FarmTypeOrganic, "10.00", "11.00", "Indonesia", "Jakarta")
 
 	// Then
 	assert.Nil(t, err)
@@ -31,11 +31,11 @@ func TestInvalidCreateFarm(t *testing.T) {
 		cityCode           string
 		expectedCreateFarm error
 	}{
-		{"My Farm Family", "-90.000", "-180.000", "organic", "ID", "JK", nil},
+		{"My Farm Family", "-90.000", "-180.000", "organic", "Indonesia", "Jakarta", nil},
 		{"", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}},
-		{"My Farm Family", "-90.000", "-180.000", "wrongtype", "ID", "JK", FarmError{FarmErrorInvalidFarmTypeCode}},
-		{"My Farm Family", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountryCode}},
-		{"My Farm Family", "-90.000", "-180.000", "organic", "ID", "Jakarta", FarmError{FarmErrorInvalidCityCode}},
+		{"My Farm Family", "-90.000", "-180.000", "wrongtype", "Indonesia", "Jakarta", FarmError{FarmErrorInvalidFarmTypeCode}},
+		{"My Farm Family", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountry}},
+		{"My Farm Family", "-90.000", "-180.000", "organic", "Indonesia", "", FarmError{FarmErrorInvalidCity}},
 	}
 
 	for _, test := range tests {
@@ -76,22 +76,22 @@ func TestChangeGeolocation(t *testing.T) {
 
 func TestChangeRegion(t *testing.T) {
 	// Given
-	farm, farmErr := CreateFarm("my farm", "organic", "90.000", "100.000", "ID", "JK")
-	countryCode := "AU"
-	cityCode := "QLD"
+	farm, farmErr := CreateFarm("my farm", "organic", "90.000", "100.000", "Indonesia", "Jakarta")
+	country := "Australia"
+	city := "Sydney"
 
 	// When
-	regErr := farm.ChangeRegion(countryCode, cityCode)
+	regErr := farm.ChangeRegion(country, city)
 
 	// Then
 	assert.Nil(t, farmErr)
 	assert.Nil(t, regErr)
 
-	assert.Equal(t, countryCode, farm.CountryCode)
-	assert.Equal(t, cityCode, farm.CityCode)
+	assert.Equal(t, country, farm.Country)
+	assert.Equal(t, city, farm.City)
 
 	event, ok := farm.UncommittedChanges[1].(FarmRegionChanged)
 	assert.True(t, ok)
 	assert.Equal(t, farm.UID, event.FarmUID)
-	assert.Equal(t, farm.CountryCode, event.CountryCode)
+	assert.Equal(t, farm.Country, event.Country)
 }

@@ -18,8 +18,8 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 		farmRead.Type = e.Type
 		farmRead.Latitude = e.Latitude
 		farmRead.Longitude = e.Longitude
-		farmRead.CountryCode = e.CountryCode
-		farmRead.CityCode = e.CityCode
+		farmRead.Country = e.Country
+		farmRead.City = e.City
 		farmRead.IsActive = e.IsActive
 		farmRead.CreatedDate = e.CreatedDate
 
@@ -82,8 +82,8 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 
 		farmRead = &farm
 
-		farm.CountryCode = e.CountryCode
-		farm.CityCode = e.CityCode
+		farm.Country = e.Country
+		farm.City = e.City
 	}
 
 	err := <-s.FarmReadRepo.Save(farmRead)

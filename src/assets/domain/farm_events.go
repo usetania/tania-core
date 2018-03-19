@@ -12,8 +12,8 @@ type FarmCreated struct {
 	Type        string
 	Latitude    string
 	Longitude   string
-	CountryCode string
-	CityCode    string
+	Country     string
+	City        string
 	IsActive    bool
 	CreatedDate time.Time
 }
@@ -35,7 +35,7 @@ type FarmGeolocationChanged struct {
 }
 
 type FarmRegionChanged struct {
-	FarmUID     uuid.UUID
-	CountryCode string
-	CityCode    string
+	FarmUID uuid.UUID
+	Country string
+	City    string
 }

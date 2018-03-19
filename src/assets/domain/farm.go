@@ -14,14 +14,23 @@ type Farm struct {
 	Latitude    string    `json:"latitude"`
 	Longitude   string    `json:"longitude"`
 	Type        string    `json:"type"`
-	CountryCode string    `json:"country_code"`
-	CityCode    string    `json:"city_code"`
+	Country     string    `json:"country"`
+	City        string    `json:"city"`
 	IsActive    bool      `json:"is_active"`
 	CreatedDate time.Time `json:"created_date"`
 
 	// Events
 	Version            int
 	UncommittedChanges []interface{}
+}
+
+type FarmService interface {
+	GetCountryNameByCode() string
+}
+
+type FarmCountry struct {
+	Code string `json:"country_code"`
+	Name string `json:"country_name"`
 }
 
 func (state *Farm) TrackChange(event interface{}) {
@@ -37,8 +46,8 @@ func (state *Farm) Transition(event interface{}) {
 		state.Type = e.Type
 		state.Latitude = e.Latitude
 		state.Longitude = e.Longitude
-		state.CountryCode = e.CountryCode
-		state.CityCode = e.CityCode
+		state.Country = e.Country
+		state.City = e.City
 		state.IsActive = e.IsActive
 		state.CreatedDate = e.CreatedDate
 
@@ -53,14 +62,14 @@ func (state *Farm) Transition(event interface{}) {
 		state.Longitude = e.Longitude
 
 	case FarmRegionChanged:
-		state.CountryCode = e.CountryCode
-		state.CityCode = e.CityCode
+		state.Country = e.Country
+		state.City = e.City
 
 	}
 }
 
 // CreateFarm registers a new farm to Tania
-func CreateFarm(name, farmType, latitude, longitude, countryCode, cityCode string) (*Farm, error) {
+func CreateFarm(name, farmType, latitude, longitude, country, city string) (*Farm, error) {
 	err := validateFarmName(name)
 	if err != nil {
 		return nil, err
@@ -76,12 +85,12 @@ func CreateFarm(name, farmType, latitude, longitude, countryCode, cityCode strin
 		return nil, err
 	}
 
-	err = validateCountryCode(countryCode)
+	err = validateCountry(country)
 	if err != nil {
 		return nil, err
 	}
 
-	err = validateCityCode(countryCode, cityCode)
+	err = validateCity(city)
 	if err != nil {
 		return nil, err
 	}
@@ -99,8 +108,8 @@ func CreateFarm(name, farmType, latitude, longitude, countryCode, cityCode strin
 		Type:        farmType,
 		Latitude:    latitude,
 		Longitude:   longitude,
-		CountryCode: countryCode,
-		CityCode:    cityCode,
+		Country:     country,
+		City:        city,
 		IsActive:    true,
 		CreatedDate: time.Now(),
 	})
@@ -153,21 +162,21 @@ func (f *Farm) ChangeGeoLocation(latitude, longitude string) error {
 }
 
 // ChangeRegion changes country and city of a farm
-func (f *Farm) ChangeRegion(countryCode, cityCode string) error {
-	err := validateCountryCode(countryCode)
+func (f *Farm) ChangeRegion(country, city string) error {
+	err := validateCountry(country)
 	if err != nil {
 		return err
 	}
 
-	err = validateCityCode(countryCode, cityCode)
+	err = validateCity(city)
 	if err != nil {
 		return err
 	}
 
 	f.TrackChange(FarmRegionChanged{
-		FarmUID:     f.UID,
-		CountryCode: countryCode,
-		CityCode:    cityCode,
+		FarmUID: f.UID,
+		Country: country,
+		City:    city,
 	})
 
 	return nil

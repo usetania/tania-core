@@ -79,22 +79,21 @@ func TestValidateFarmType(t *testing.T) {
 	}
 }
 
-func TestValidateCountryCode(t *testing.T) {
+func TestValidateRegion(t *testing.T) {
 	t.Parallel()
 
 	var tests = []struct {
-		param    string
+		country  string
 		expected error
 	}{
-		{"ID", nil},
-		{"J", FarmError{FarmErrorInvalidCountryCode}},
-		{"", FarmError{FarmErrorInvalidCountryCode}},
+		{"Indonesia", nil},
+		{"", FarmError{FarmErrorInvalidCountry}},
 	}
 
 	for _, test := range tests {
-		actual := validateCountryCode(test.param)
+		actual := validateCountry(test.country)
 		if actual != test.expected {
-			t.Errorf("Expected (%q) to be %v, got %v", test.param, test.expected, actual)
+			t.Errorf("Expected (%q) to be %v, got %v", test.country, test.expected, actual)
 		}
 	}
 }
@@ -103,19 +102,17 @@ func TestValidateCityCode(t *testing.T) {
 	t.Parallel()
 
 	var tests = []struct {
-		countryCode string
-		cityCode    string
-		expected    error
+		city     string
+		expected error
 	}{
-		{"ID", "JK", nil},
-		{"ID", "HKG", FarmError{FarmErrorInvalidCityCode}},
-		{"ID", "", FarmError{FarmErrorInvalidCityCode}},
+		{"Jakarta", nil},
+		{"", FarmError{FarmErrorInvalidCity}},
 	}
 
 	for _, test := range tests {
-		actual := validateCityCode(test.countryCode, test.cityCode)
+		actual := validateCity(test.city)
 		if actual != test.expected {
-			t.Errorf("Expected (%q, %q) to be %v, got %v", test.countryCode, test.cityCode, test.expected, actual)
+			t.Errorf("Expected (%q) to be %v, got %v", test.city, test.expected, actual)
 		}
 	}
 }

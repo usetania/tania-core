@@ -28,11 +28,11 @@ func (f *FarmReadRepositorySqlite) Save(farmRead *storage.FarmRead) <-chan error
 
 		if count > 0 {
 			_, err := f.DB.Exec(`UPDATE FARM_READ SET
-				NAME = ?, LATITUDE = ?, LONGITUDE = ?, TYPE = ?, COUNTRY_CODE = ?, CITY_CODE = ?,
+				NAME = ?, LATITUDE = ?, LONGITUDE = ?, TYPE = ?, COUNTRY = ?, CITY = ?,
 				IS_ACTIVE = ?, CREATED_DATE = ?
 				WHERE UID = ?`,
 				farmRead.Name, farmRead.Latitude, farmRead.Longitude, farmRead.Type,
-				farmRead.CountryCode, farmRead.CityCode, farmRead.IsActive, farmRead.CreatedDate.Format(time.RFC3339),
+				farmRead.Country, farmRead.City, farmRead.IsActive, farmRead.CreatedDate.Format(time.RFC3339),
 				farmRead.UID)
 
 			if err != nil {
@@ -40,10 +40,10 @@ func (f *FarmReadRepositorySqlite) Save(farmRead *storage.FarmRead) <-chan error
 			}
 		} else {
 			_, err := f.DB.Exec(`INSERT INTO FARM_READ
-				(UID, NAME, LATITUDE, LONGITUDE, TYPE, COUNTRY_CODE, CITY_CODE, IS_ACTIVE, CREATED_DATE)
+				(UID, NAME, LATITUDE, LONGITUDE, TYPE, COUNTRY, CITY, IS_ACTIVE, CREATED_DATE)
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				farmRead.UID, farmRead.Name, farmRead.Latitude, farmRead.Longitude, farmRead.Type,
-				farmRead.CountryCode, farmRead.CityCode, farmRead.IsActive, farmRead.CreatedDate.Format(time.RFC3339))
+				farmRead.Country, farmRead.City, farmRead.IsActive, farmRead.CreatedDate.Format(time.RFC3339))
 
 			if err != nil {
 				result <- err

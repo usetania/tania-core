@@ -21,8 +21,8 @@ const (
 
 	FarmErrorInvalidLatitudeValueCode
 	FarmErrorInvalidLongitudeValueCode
-	FarmErrorInvalidCountryCode
-	FarmErrorInvalidCityCode
+	FarmErrorInvalidCountry
+	FarmErrorInvalidCity
 )
 
 func (e FarmError) Error() string {
@@ -49,10 +49,10 @@ func (e FarmError) Error() string {
 		return "Latitude value is invalid"
 	case FarmErrorInvalidLongitudeValueCode:
 		return "Longitude value is invalid"
-	case FarmErrorInvalidCountryCode:
-		return "Country code value is invalid."
-	case FarmErrorInvalidCityCode:
-		return "City code value is invalid."
+	case FarmErrorInvalidCountry:
+		return "Invalid country"
+	case FarmErrorInvalidCity:
+		return "Invalid city"
 	default:
 		return "Unrecognized location error code"
 	}

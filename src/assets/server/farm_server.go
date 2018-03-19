@@ -284,8 +284,8 @@ func (s *FarmServer) SaveFarm(c echo.Context) error {
 		c.FormValue("farm_type"),
 		c.FormValue("latitude"),
 		c.FormValue("longitude"),
-		c.FormValue("country_code"),
-		c.FormValue("city_code"),
+		c.FormValue("country"),
+		c.FormValue("city"),
 	)
 	if err != nil {
 		return Error(c, err)
@@ -314,8 +314,8 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 	farmType := c.FormValue("farm_type")
 	latitude := c.FormValue("latitude")
 	longitude := c.FormValue("longitude")
-	countryCode := c.FormValue("country_code")
-	cityCode := c.FormValue("city_code")
+	country := c.FormValue("country")
+	city := c.FormValue("city")
 
 	// Validate //
 	queryResult := <-s.FarmReadQuery.FindByID(farmUID)
@@ -340,12 +340,12 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 		return Error(c, NewRequestValidationError(REQUIRED, "latitude"))
 	}
 
-	if countryCode != "" && cityCode == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "city_code"))
+	if country != "" && city == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "city"))
 	}
 
-	if cityCode != "" && countryCode == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "country_code"))
+	if city != "" && country == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "country"))
 	}
 
 	// Process //
@@ -382,8 +382,8 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 		}
 	}
 
-	if countryCode != "" && cityCode != "" {
-		err = farm.ChangeRegion(countryCode, cityCode)
+	if country != "" && city != "" {
+		err = farm.ChangeRegion(country, city)
 		if err != nil {
 			return Error(c, err)
 		}
