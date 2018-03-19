@@ -1,8 +1,8 @@
-import { login_as_user } from '../factory/auth'
+import { login } from '../factory/auth'
 
 describe('Logout specs', () => {
   it ('should have logout link', () => {
-    login_as_user()
+    login()
     cy.get('#signout').should('contain', 'Sign Out')
     cy.get('#signout').click()
     cy.location().should( location => {
@@ -11,7 +11,7 @@ describe('Logout specs', () => {
   })
 
   it ('should not visit the dashboard page if the user already logout', () => {
-    login_as_user()
+    login()
     cy.get('#signout').should('contain', 'Sign Out')
     cy.get('#signout').click()
 
@@ -27,7 +27,7 @@ describe('Logout specs', () => {
   })
 
   it ('should not have localstorage with vuex key in the browser', () => {
-    login_as_user()
+    login()
     cy.get('#signout').should('contain', 'Sign Out')
     cy.get('#signout').click()
 
