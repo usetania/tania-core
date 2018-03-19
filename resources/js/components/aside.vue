@@ -28,7 +28,7 @@
                 i.fa.fa-clipboard
                 span Tasks
             aside-item-component
-              a.auto(@click.prevent="")
+              a#inventories.auto(@click.prevent="")
                 span.pull-right.text-muted
                   i.fa.fa-fw.fa-angle-right.text
                   i.fa.fa.fw.fa-angle-down.text-active
