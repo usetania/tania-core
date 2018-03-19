@@ -43,7 +43,6 @@ export default {
   },
 
   mounted () {
-    console.log(this.user.uid)
     // redirect if the user already auntenticated
     if (this.user.uid !== '') {
       this.$router.push({ name: 'Home' })
