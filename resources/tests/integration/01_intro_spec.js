@@ -4,7 +4,7 @@ import { filled_farm, filled_reservoir, filled_area } from '../factory/farm'
 describe('Intro specs', () => {
 
   describe('Intro farm page', () => {
-    it('should display farm intro pages from non existing user', () => {
+    it('should display farm intro pages from new user', () => {
 
       login()
       cy.location().should( location => {

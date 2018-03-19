@@ -3,7 +3,7 @@
     .wrapper-md
       modal(v-if="showModal" @close="showModal = false")
         InventoriesMaterialForm(:data="data")
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="openModal()")
+      a#materialsform.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="openModal()")
         i.fa.fa-plus
         |Add Material
       h1.m-t.font-thin.h3.text-black Materials
