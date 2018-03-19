@@ -5,7 +5,7 @@ export default {
   latitude: '',
   longitude: '',
   farm_type: '',
-  country_code: '',
-  city_code: '',
+  country: '',
+  city: '',
   reservoirs: []
 }

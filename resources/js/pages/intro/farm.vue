@@ -38,15 +38,13 @@
                 .row
                   .col-xs-6
                     label#label-country(for="country") Country
-                    select.form-control#country(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('country') }" v-model="farm.country_code" name="country" @change="countryChanged($event.target.value)")
+                    select.form-control#country(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('country') }" v-model="farm.country" name="country" @change="countryChanged($event.target.value)")
                       option(value="") Please select country
-                      option(v-for="country in countries" :value="country.ID") {{ country.Name }}
+                      option(v-for="country in countries" :value="country.name") {{ country.name }}
                     span.help-block.text-danger(v-show="errors.has('country')") {{ errors.first('country') }}
                   .col-xs-6
-                    label#label-city City
-                    select.form-control#city(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('city') }" v-model="farm.city_code" name="city")
-                      option(value="") Please select city
-                      option(v-for="city in cities" :value="city.ID") {{ city.Name }}
+                    label#label-city(for="city") City
+                    input.form-control#city(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('city') }" v-model="farm.city" name="city")
                     span.help-block.text-danger(v-show="errors.has('city')") {{ errors.first('city') }}
               .form-group.text-center.m-t
                 button.btn.btn-addon.btn-primary(type="submit")

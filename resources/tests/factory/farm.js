@@ -13,8 +13,8 @@ export function filled_farm() {
   cy.get('select#type').select('organic')
   cy.get('input#latitude').type('-6.2499848').should('have.value', '-6.2499848')
   cy.get('input#longitude').type('106.68292059999999').should('have.value', '106.68292059999999')
-  cy.get('select#country').select('ID')
-  cy.get('select#city').select('JK')
+  cy.get('select#country').select('Indonesia')
+  cy.get('input#city').type('Jakarta')
   cy.get('button.btn[type=submit]').click()
 }
 
