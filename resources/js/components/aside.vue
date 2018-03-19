@@ -17,11 +17,14 @@
                 span Production
               slot(name="item")
                 ul.nav.nav-sub.dk
-                  li <router-link :to="{ name: 'FarmAreas'}"><span>Areas</span></router-link>
-                  li <router-link :to="{ name: 'FarmCrops'}"><span>Crops</span></router-link>
-                  li <router-link :to="{ name: 'FarmReservoirs'}"><span>Reservoir</span></router-link>
+                  li: router-link#areas(:to="{name: 'FarmAreas'}")
+                    span Areas
+                  li: router-link#crops(:to="{name: 'FarmCrops'}")
+                    span Crops
+                  li: router-link#reservoirs(:to="{name: 'FarmReservoirs'}")
+                    span Reservoirs
             aside-item-component
-              router-link(:to="{name: 'Task'}")
+              router-link#tasks(:to="{name: 'Task'}")
                 i.fa.fa-clipboard
                 span Tasks
             aside-item-component
@@ -33,11 +36,12 @@
                 span Inventories
               slot(name="item")
                 ul.nav.nav-sub.dk
-                  li <router-link :to="{ name: 'InventoriesMaterials'}"><span>Material</span></router-link>
+                  li: router-link#materials(:to="{name: 'InventoriesMaterials'}")
+                    span Materials
             li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
-              a: router-link(:to="{ name: 'Account' }")
+              router-link#account(:to="{ name: 'Account' }")
                 i.fa.fa-user
                 span Account
             li.line.dk
