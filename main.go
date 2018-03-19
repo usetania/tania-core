@@ -11,11 +11,11 @@ import (
 	"github.com/go-sql-driver/mysql"
 
 	"github.com/Tanibox/tania-server/config"
-	"github.com/Tanibox/tania-server/routing"
 	assetsserver "github.com/Tanibox/tania-server/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	growthserver "github.com/Tanibox/tania-server/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
+	locationserver "github.com/Tanibox/tania-server/src/location/server"
 	tasksserver "github.com/Tanibox/tania-server/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-server/src/user/server"
@@ -109,6 +109,11 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
+	locationServer, err := locationserver.NewLocationServer()
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
+
 	// Initialize user
 	err = initUser(authServer)
 
@@ -130,7 +135,8 @@ func main() {
 	authGroup := API.Group("/")
 	authServer.Mount(authGroup)
 
-	routing.LocationsRouter(API.Group("/locations", APIMiddlewares...))
+	locationGroup := API.Group("/locations", APIMiddlewares...)
+	locationServer.Mount(locationGroup)
 
 	farmGroup := API.Group("/farms", APIMiddlewares...)
 	farmServer.Mount(farmGroup)
