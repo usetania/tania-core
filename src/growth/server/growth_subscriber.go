@@ -758,20 +758,19 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 
 		if taskQueryResult.Domain == "CROP" {
 			cropRead := storage.CropRead{}
-			if taskQueryResult.CropUID != (uuid.UUID{}) {
-				queryResult := <-s.CropReadQuery.FindByID(taskQueryResult.CropUID)
-				if queryResult.Error != nil {
-					log.Error(queryResult.Error)
-				}
 
-				cropRead, ok = queryResult.Result.(storage.CropRead)
-				if !ok {
-					log.Error(errors.New("Internal server error. Error type assertion"))
-				}
+			queryResult := <-s.CropReadQuery.FindByID(taskQueryResult.AssetUID)
+			if queryResult.Error != nil {
+				log.Error(queryResult.Error)
+			}
+
+			cropRead, ok = queryResult.Result.(storage.CropRead)
+			if !ok {
+				log.Error(errors.New("Internal server error. Error type assertion"))
 			}
 
 			areaQueryResult := query.CropAreaQueryResult{}
-			if taskQueryResult.CropUID != (uuid.UUID{}) {
+			if taskQueryResult.AreaUID != (uuid.UUID{}) {
 				queryResult := <-s.AreaReadQuery.FindByID(taskQueryResult.AreaUID)
 				if queryResult.Error != nil {
 					log.Error(queryResult.Error)
@@ -784,7 +783,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			}
 
 			materialQueryResult := query.CropMaterialQueryResult{}
-			if taskQueryResult.CropUID != (uuid.UUID{}) {
+			if taskQueryResult.MaterialUID != (uuid.UUID{}) {
 				queryResult := <-s.MaterialReadQuery.FindByID(taskQueryResult.MaterialUID)
 				if queryResult.Error != nil {
 					log.Error(queryResult.Error)

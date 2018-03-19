@@ -22,7 +22,7 @@ type taskReadResult struct {
 	Category    string
 	Status      string
 	Domain      string
-	CropID      []byte
+	AssetID     []byte
 	AreaID      []byte
 	MaterialID  []byte
 }
@@ -35,7 +35,7 @@ func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		rowsData := taskReadResult{}
 
 		err := s.DB.QueryRow(`SELECT UID, TITLE, DESCRIPTION, CATEGORY, STATUS, DOMAIN_CODE,
-			DOMAIN_DATA_CROP_ID, DOMAIN_DATA_AREA_ID, DOMAIN_DATA_MATERIAL_ID
+			ASSET_ID, DOMAIN_DATA_AREA_ID, DOMAIN_DATA_MATERIAL_ID
 			FROM TASK_READ WHERE UID = ?`, uid.Bytes()).Scan(
 			&rowsData.UID,
 			&rowsData.Title,
@@ -43,7 +43,7 @@ func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			&rowsData.Category,
 			&rowsData.Status,
 			&rowsData.Domain,
-			&rowsData.CropID,
+			&rowsData.AssetID,
 			&rowsData.AreaID,
 			&rowsData.MaterialID,
 		)
@@ -61,7 +61,7 @@ func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			result <- query.QueryResult{Error: err}
 		}
 
-		cropUID, err := uuid.FromBytes(rowsData.CropID)
+		assetUID, err := uuid.FromBytes(rowsData.AssetID)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -82,7 +82,7 @@ func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		taskQueryResult.Status = rowsData.Status
 		taskQueryResult.Category = rowsData.Category
 		taskQueryResult.Domain = rowsData.Domain
-		taskQueryResult.CropUID = cropUID
+		taskQueryResult.AssetUID = assetUID
 		taskQueryResult.AreaUID = areaUID
 		taskQueryResult.MaterialUID = materialUID
 

@@ -133,7 +133,7 @@ type CropTaskQueryResult struct {
 	Category    string
 	Status      string
 	Domain      string
-	CropUID     uuid.UUID
+	AssetUID    uuid.UUID
 	MaterialUID uuid.UUID
 	AreaUID     uuid.UUID
 }
