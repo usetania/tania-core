@@ -1,24 +1,30 @@
-import * as MaterialTask from '../factory/task'
+import * as Material from '../factory/material'
 
 describe('Inventories', () => {
     it ('should show the materials page', () => {
-      MaterialTask.open_material_page()
+      Material.open_material_page()
     })
 
     it ('should show the materials page and open the materials form modal', () => {
-      MaterialTask.open_material_page()
-      MaterialTask.open_material_form()
+      Material.open_material_page()
+      Material.open_material_form()
     })
 
     it ('should create a seed material', () => {
-      MaterialTask.open_material_page()
-      MaterialTask.open_material_form()
-      MaterialTask.filled_material_seed()
+      Material.open_material_page()
+      Material.open_material_form()
+      Material.filled_material_seed()
     })
 
+    // it ('should create a growing medium material', () => {
+    //   Material.open_material_page()
+    //   Material.open_material_form()
+    //   Material.filled_material_growing_medium()
+    // })
+
     it ('should create an agrochemical material', () => {
-      MaterialTask.open_material_page()
-      MaterialTask.open_material_form()
-      MaterialTask.filled_material_agrochemical()
+      Material.open_material_page()
+      Material.open_material_form()
+      Material.filled_material_agrochemical()
     })
 })

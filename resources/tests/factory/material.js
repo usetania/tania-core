@@ -49,6 +49,34 @@ export function filled_material_seed() {
   cy.get('button.btn[type=submit]').click()
 }
 
+export function filled_material_growing_medium() {
+  cy.get('select#material_type').select('growing_medium')
+  // Label
+  cy.get('label#label-material-type').should('contain', 'Choose type of material')
+  cy.get('label#label-name').should('contain', 'Name')
+  cy.get('label#label-produced-by').should('contain', 'Produced by')
+  cy.get('label#label-quantity').should('contain', 'Quantity')
+  cy.get('label#label-quantity-unit').should('contain', 'Unit')
+  cy.get('label#label-price-per-unit').should('contain', 'Price per Unit')
+  cy.get('label#label-notes').should('contain', 'Additional Notes')
+
+  cy.get('button.btn[type=submit]').click()
+  cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The produced by field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The quantity field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The price field is required.')
+
+  // Typing the form
+  cy.get('input#name').type('Growing Medium'+moment().format())
+  cy.get('input#produced_by').type('Growers')
+  cy.get('input#quantity').type('1000')
+  cy.get('select#quantity_unit').select('BAGS')
+  cy.get('input#price_per_unit').type('1')
+  cy.get('textarea#notes').type('Growers Notes')
+
+  cy.get('button.btn[type=submit]').click()
+}
+
 export function filled_material_agrochemical() {
   cy.get('select#material_type').select('agrochemical')
   // Label
