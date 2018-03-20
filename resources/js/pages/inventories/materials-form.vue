@@ -8,7 +8,7 @@
       form
         .line.line-dashed.b-b.line-lg
         .form-group
-          label.control-label Choose type of material
+          label#label-material-type Choose type of material
           select.form-control#material_type(@change="typeChanged($event.target.value)" v-model="materialType")
             option(v-for="inventory in options.inventoryTypes" v-bind:value="inventory.key") {{ inventory.label }}
         InventoriesMaterialFormAgrochemical(v-if="showAgrochemical" @closeModal="closeModal" :data="data")
