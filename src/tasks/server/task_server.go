@@ -10,6 +10,7 @@ import (
 	"github.com/Tanibox/tania-server/src/eventbus"
 	cropstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
 	"github.com/Tanibox/tania-server/src/tasks/query"
@@ -742,7 +743,8 @@ func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	default:
 	}

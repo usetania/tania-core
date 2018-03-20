@@ -19,6 +19,7 @@ import (
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
@@ -1240,7 +1241,8 @@ func (s *GrowthServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Crop:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	}
 

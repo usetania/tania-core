@@ -8,6 +8,7 @@ import (
 
 	"github.com/Tanibox/tania-server/config"
 	"github.com/Tanibox/tania-server/src/eventbus"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/Tanibox/tania-server/src/user/domain"
 	"github.com/Tanibox/tania-server/src/user/domain/service"
 	"github.com/Tanibox/tania-server/src/user/query"
@@ -200,7 +201,8 @@ func (s *AuthServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.User:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	}
 

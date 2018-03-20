@@ -1,12 +1,11 @@
 package eventbus
 
 import (
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/asaskevich/EventBus"
 )
 
 type TaniaEventBus interface {
-	Publish(event interface{})
+	Publish(eventName string, event interface{})
 	Subscribe(eventName string, handlerFunc interface{})
 }
 
@@ -18,9 +17,8 @@ func NewSimpleEventBus(bus EventBus.Bus) *SimpleEventBus {
 	return &SimpleEventBus{bus: bus}
 }
 
-func (e *SimpleEventBus) Publish(event interface{}) {
-	name := structhelper.GetName(event)
-	e.bus.Publish(name, event)
+func (e *SimpleEventBus) Publish(eventName string, event interface{}) {
+	e.bus.Publish(eventName, event)
 }
 
 func (e *SimpleEventBus) Subscribe(eventName string, handler interface{}) {

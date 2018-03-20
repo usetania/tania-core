@@ -24,6 +24,7 @@ import (
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
+	"github.com/Tanibox/tania-server/src/helper/structhelper"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -1687,19 +1688,23 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Farm:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	case *domain.Reservoir:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	case *domain.Area:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	case *domain.Material:
 		for _, v := range e.UncommittedChanges {
-			s.EventBus.Publish(v)
+			name := structhelper.GetName(v)
+			s.EventBus.Publish(name, v)
 		}
 	}
 
