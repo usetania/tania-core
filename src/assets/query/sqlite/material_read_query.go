@@ -41,7 +41,6 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 
 	go func() {
 		materialReads := []storage.MaterialRead{}
-		rowsData := materialReadResult{}
 		var params []interface{}
 
 		sql := "SELECT * FROM MATERIAL_READ WHERE 1 = 1"
@@ -83,6 +82,8 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 		}
 
 		for rows.Next() {
+			rowsData := materialReadResult{}
+
 			err = rows.Scan(
 				&rowsData.UID,
 				&rowsData.Name,
