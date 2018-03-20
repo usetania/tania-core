@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/Tanibox/tania-server/config"
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
+	"github.com/Tanibox/tania-server/src/eventbus"
 	"github.com/Tanibox/tania-server/src/user/domain"
 	"github.com/Tanibox/tania-server/src/user/domain/service"
 	"github.com/Tanibox/tania-server/src/user/query"
@@ -15,7 +15,6 @@ import (
 	"github.com/Tanibox/tania-server/src/user/repository"
 	repoSqlite "github.com/Tanibox/tania-server/src/user/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/user/storage"
-	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -29,13 +28,13 @@ type AuthServer struct {
 	UserAuthRepo   repository.UserAuthRepository
 	UserAuthQuery  query.UserAuthQuery
 	UserService    domain.UserService
-	EventBus       EventBus.Bus
+	EventBus       eventbus.TaniaEventBus
 }
 
 // NewAuthServer initializes AuthServer's dependencies and create new AuthServer struct
 func NewAuthServer(
 	db *sql.DB,
-	eventBus EventBus.Bus,
+	eventBus eventbus.TaniaEventBus,
 ) (*AuthServer, error) {
 	userEventRepo := repoSqlite.NewUserEventRepositorySqlite(db)
 	userReadRepo := repoSqlite.NewUserReadRepositorySqlite(db)
@@ -201,8 +200,7 @@ func (s *AuthServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.User:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	}
 

@@ -7,8 +7,9 @@ import (
 
 	"github.com/Tanibox/tania-server/config"
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/eventbus"
 	cropstorage "github.com/Tanibox/tania-server/src/growth/storage"
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
+	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/tasks/domain"
 	service "github.com/Tanibox/tania-server/src/tasks/domain/service"
 	"github.com/Tanibox/tania-server/src/tasks/query"
@@ -20,10 +21,8 @@ import (
 	repoMysql "github.com/Tanibox/tania-server/src/tasks/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-server/src/tasks/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/tasks/storage"
-	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
-  "github.com/Tanibox/tania-server/src/helper/paginationhelper"
 )
 
 // TaskServer ties the routes and handlers with injected dependencies
@@ -33,13 +32,13 @@ type TaskServer struct {
 	TaskEventQuery query.TaskEventQuery
 	TaskReadQuery  query.TaskReadQuery
 	TaskService    domain.TaskService
-	EventBus       EventBus.Bus
+	EventBus       eventbus.TaniaEventBus
 }
 
 // NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
 func NewTaskServer(
 	db *sql.DB,
-	bus EventBus.Bus,
+	bus eventbus.TaniaEventBus,
 	cropStorage *cropstorage.CropReadStorage,
 	areaStorage *assetsstorage.AreaReadStorage,
 	materialStorage *assetsstorage.MaterialReadStorage,
@@ -146,18 +145,17 @@ func (s *TaskServer) Mount(g *echo.Group) {
 }
 
 func (s TaskServer) FindAllTasks(c echo.Context) error {
-  data := make(map[string]interface{})
+	data := make(map[string]interface{})
 
+	page := c.QueryParam("page")
+	limit := c.QueryParam("limit")
 
-  page := c.QueryParam("page")
-  limit := c.QueryParam("limit")
+	pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
+	if err != nil {
+		return Error(c, err)
+	}
 
-  pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
-  if err != nil {
-    return Error(c, err)
-  }
-
-  result := <-s.TaskReadQuery.FindAll(pageInt, limitInt)
+	result := <-s.TaskReadQuery.FindAll(pageInt, limitInt)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -167,23 +165,23 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-  taskList := []storage.TaskRead{}
-  for _, v := range tasks {
-    s.AppendTaskDomainDetails(&v)
-    taskList = append(taskList, v)
-  }
+	taskList := []storage.TaskRead{}
+	for _, v := range tasks {
+		s.AppendTaskDomainDetails(&v)
+		taskList = append(taskList, v)
+	}
 
-  // Return list of tasks
-  data["data"] = taskList
-  // Return number of tasks
-  data["total_rows"] = len(tasks)
-  data["page"] = pageInt
+	// Return list of tasks
+	data["data"] = taskList
+	// Return number of tasks
+	data["total_rows"] = len(tasks)
+	data["page"] = pageInt
 
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s TaskServer) FindFilteredTasks(c echo.Context) error {
-  data := make(map[string]interface{})
+	data := make(map[string]interface{})
 
 	queryparams := make(map[string]string)
 	queryparams["is_due"] = c.QueryParam("is_due")
@@ -195,15 +193,15 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	queryparams["due_start"] = c.QueryParam("due_start")
 	queryparams["due_end"] = c.QueryParam("due_end")
 
-  page := c.QueryParam("page")
-  limit := c.QueryParam("limit")
+	page := c.QueryParam("page")
+	limit := c.QueryParam("limit")
 
-  pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
-  if err != nil {
-    return Error(c, err)
-  }
+	pageInt, limitInt, err := paginationhelper.ParsePagination(page, limit)
+	if err != nil {
+		return Error(c, err)
+	}
 
-  result := <-s.TaskReadQuery.FindTasksWithFilter(queryparams, pageInt, limitInt)
+	result := <-s.TaskReadQuery.FindTasksWithFilter(queryparams, pageInt, limitInt)
 
 	if result.Error != nil {
 		return result.Error
@@ -217,7 +215,7 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	taskList := []storage.TaskRead{}
 	for _, v := range tasks {
 		s.AppendTaskDomainDetails(&v)
-    taskList = append(taskList, v)
+		taskList = append(taskList, v)
 	}
 
 	// Return list of tasks
@@ -744,8 +742,7 @@ func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	default:
 	}

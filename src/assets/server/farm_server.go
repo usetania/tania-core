@@ -19,12 +19,11 @@ import (
 	repoMysql "github.com/Tanibox/tania-server/src/assets/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-server/src/assets/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-server/src/eventbus"
 	growthstorage "github.com/Tanibox/tania-server/src/growth/storage"
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
-	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -51,7 +50,7 @@ type FarmServer struct {
 	MaterialReadQuery   query.MaterialReadQuery
 	CropReadQuery       query.CropReadQuery
 	File                File
-	EventBus            EventBus.Bus
+	EventBus            eventbus.TaniaEventBus
 }
 
 // NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
@@ -66,7 +65,7 @@ func NewFarmServer(
 	materialEventStorage *storage.MaterialEventStorage,
 	materialReadStorage *storage.MaterialReadStorage,
 	cropReadStorage *growthstorage.CropReadStorage,
-	eventBus EventBus.Bus,
+	eventBus eventbus.TaniaEventBus,
 ) (*FarmServer, error) {
 	farmServer := &FarmServer{
 		File:     LocalFile{},
@@ -1688,23 +1687,19 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Farm:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	case *domain.Reservoir:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	case *domain.Area:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	case *domain.Material:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	}
 

@@ -8,6 +8,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/Tanibox/tania-server/src/eventbus"
+	"github.com/asaskevich/EventBus"
+
 	"github.com/go-sql-driver/mysql"
 
 	"github.com/Tanibox/tania-server/config"
@@ -19,7 +22,6 @@ import (
 	tasksserver "github.com/Tanibox/tania-server/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-server/src/user/server"
-	"github.com/asaskevich/EventBus"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -50,7 +52,7 @@ func main() {
 	}
 
 	// Initialize Event Bus
-	bus := EventBus.New()
+	bus := eventbus.NewSimpleEventBus(EventBus.New())
 
 	// Initialize Server
 	farmServer, err := assetsserver.NewFarmServer(

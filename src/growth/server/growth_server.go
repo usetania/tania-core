@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-server/config"
+	"github.com/Tanibox/tania-server/src/eventbus"
 	"github.com/Tanibox/tania-server/src/growth/domain"
 	"github.com/Tanibox/tania-server/src/growth/domain/service"
 	queryInMem "github.com/Tanibox/tania-server/src/growth/query/inmemory"
@@ -18,14 +19,12 @@ import (
 	"github.com/Tanibox/tania-server/src/helper/imagehelper"
 	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-server/src/helper/stringhelper"
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
 
 	assetsstorage "github.com/Tanibox/tania-server/src/assets/storage"
 	"github.com/Tanibox/tania-server/src/growth/query"
 	"github.com/Tanibox/tania-server/src/growth/repository"
 	storage "github.com/Tanibox/tania-server/src/growth/storage"
 	taskstorage "github.com/Tanibox/tania-server/src/tasks/storage"
-	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -43,14 +42,14 @@ type GrowthServer struct {
 	MaterialReadQuery query.MaterialReadQuery
 	FarmReadQuery     query.FarmReadQuery
 	TaskReadQuery     query.TaskReadQuery
-	EventBus          EventBus.Bus
+	EventBus          eventbus.TaniaEventBus
 	File              File
 }
 
 // NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
 func NewGrowthServer(
 	db *sql.DB,
-	bus EventBus.Bus,
+	bus eventbus.TaniaEventBus,
 	cropEventStorage *storage.CropEventStorage,
 	cropReadStorage *storage.CropReadStorage,
 	cropActivityStorage *storage.CropActivityStorage,
@@ -1241,8 +1240,7 @@ func (s *GrowthServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.Crop:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	}
 

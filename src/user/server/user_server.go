@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
+	"github.com/Tanibox/tania-server/src/eventbus"
 	"github.com/Tanibox/tania-server/src/user/domain"
 	"github.com/Tanibox/tania-server/src/user/domain/service"
 	"github.com/Tanibox/tania-server/src/user/query"
@@ -13,7 +13,6 @@ import (
 	"github.com/Tanibox/tania-server/src/user/repository"
 	repoSqlite "github.com/Tanibox/tania-server/src/user/repository/sqlite"
 	"github.com/Tanibox/tania-server/src/user/storage"
-	"github.com/asaskevich/EventBus"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )
@@ -27,13 +26,13 @@ type UserServer struct {
 	UserAuthRepo   repository.UserAuthRepository
 	UserAuthQuery  query.UserAuthQuery
 	UserService    domain.UserService
-	EventBus       EventBus.Bus
+	EventBus       eventbus.TaniaEventBus
 }
 
 // NewUserServer initializes UserServer's dependencies and create new UserServer struct
 func NewUserServer(
 	db *sql.DB,
-	eventBus EventBus.Bus,
+	eventBus eventbus.TaniaEventBus,
 ) (*UserServer, error) {
 	userEventRepo := repoSqlite.NewUserEventRepositorySqlite(db)
 	userReadRepo := repoSqlite.NewUserReadRepositorySqlite(db)
@@ -143,8 +142,7 @@ func (s *UserServer) publishUncommittedEvents(entity interface{}) error {
 	switch e := entity.(type) {
 	case *domain.User:
 		for _, v := range e.UncommittedChanges {
-			name := structhelper.GetName(v)
-			s.EventBus.Publish(name, v)
+			s.EventBus.Publish(v)
 		}
 	}
 
