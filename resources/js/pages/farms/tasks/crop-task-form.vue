@@ -51,14 +51,14 @@
         .form-group(v-if="isfertilizer")
           label(for="fertilizer") 
             | Select fertilizer you are going to use
-          select.form-control#fertilizer(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('fertilizer') }" v-model="task.fertilizer" name="fertilizer")
+          select.form-control#fertilizer(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('fertilizer') }" v-model="task.material_id" name="fertilizer")
             option(value="") Please select fertilizer
             option(v-for="fertilizer in fertilizers" :value="fertilizer.uid") {{ fertilizer.name }}
           span.help-block.text-danger(v-show="errors.has('fertilizer')") {{ errors.first('fertilizer') }}
         .form-group(v-if="ispesticide")
           label(for="pesticide") 
             | Select pesticide you are going to use
-          select.form-control#pesticide(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('pesticide') }" v-model="task.pesticide" name="pesticide")
+          select.form-control#pesticide(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('pesticide') }" v-model="task.material_id" name="pesticide")
             option(value="") Please select pesticide
             option(v-for="pesticide in pesticides" :value="pesticide.uid") {{ pesticide.name }}
           span.help-block.text-danger(v-show="errors.has('pesticide')") {{ errors.first('pesticide') }}
