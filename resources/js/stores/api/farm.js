@@ -4,6 +4,9 @@ export default {
   ApiLogin: (payload, cbSuccess, cbError) => {
     http.post('authorize', payload, cbSuccess, cbError)
   },
+  ApiChangePassword: (payload, cbSuccess, cbError) => {
+    http.post('change_password', payload, cbSuccess, cbError)
+  },
   ApiFetchFarm: (cbSuccess, cbError) => {
     http.get('farms', cbSuccess, cbError)
   },

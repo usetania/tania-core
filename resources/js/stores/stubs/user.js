@@ -1,6 +1,9 @@
 export default {
   uid: '',
-  name: '',
+  username: '',
   email: '',
-  intro: true
+  intro: true,
+  password: '',
+  old_password: '',
+  password_confirmation: ''
 }

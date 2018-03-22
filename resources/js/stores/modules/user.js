@@ -24,11 +24,20 @@ const actions = {
       API
         .ApiLogin(payload, ({ data }) => {
           commit(types.USER_LOGIN, {
-            uid: 1001,
+            uid: data.uid,
             username: payload.username,
             email: 'hello@tanibox.com',
             intro: payload.username === 'user' ? false: true
           })
+          resolve(data)
+        }, error => reject(error.response))
+    })
+  },
+  userChangePassword ({ commit, state }, payload) {
+    NProgress.start()
+    return new Promise(( resolve, reject ) => {
+      API
+        .ApiChangePassword(payload, ({ data }) => {
           resolve(data)
         }, error => reject(error.response))
     })
@@ -38,8 +47,6 @@ const actions = {
   },
   userSignOut({commit, state}, payload) {
     return new Promise((resolve, reject) => {
-      // @TODO sent http request to the server to revoke the
-      // authentication access
       commit(types.USER_LOGOUT)
       resolve()
     })
