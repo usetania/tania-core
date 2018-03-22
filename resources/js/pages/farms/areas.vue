@@ -3,7 +3,7 @@
     modal(v-if="showModal" @close="showModal = false")
       farmAreaForm(:data="data")
     .wrapper-md
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
+      a#areasform.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
         | Add Area
       h1.m-n.font-thin.h3.text-black Areas
@@ -28,7 +28,6 @@
                 .col-xs-4
                   small.text-muted.block Plant Quantity
                   span.text-md {{ area.plant_quantity }}
-
 </template>
 
 <script>

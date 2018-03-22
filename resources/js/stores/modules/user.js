@@ -24,7 +24,7 @@ const actions = {
       API
         .ApiLogin(payload, ({ data }) => {
           commit(types.USER_LOGIN, {
-            uid: data.uid,
+            uid: 1,
             username: payload.username,
             email: 'hello@tanibox.com',
             intro: payload.username === 'user' ? false: true
