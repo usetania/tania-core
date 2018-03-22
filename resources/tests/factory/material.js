@@ -35,7 +35,7 @@ export function filled_material_seed() {
   cy.get('span.help-block.text-danger').should('contain', 'The expiration date field is required.')
 
   // Typing the form
-  cy.get('input#name').type('Onion'+moment().format())
+  cy.get('input#name').type('Onion'+moment().valueOf())
   cy.get('select#plant_type').select('VEGETABLE')
   cy.get('input#produced_by').type('Onion Producer')
   cy.get('input#quantity').type('1000')
@@ -67,7 +67,7 @@ export function filled_material_growing_medium() {
   cy.get('span.help-block.text-danger').should('contain', 'The price field is required.')
 
   // Typing the form
-  cy.get('input#name').type('Growing Medium'+moment().format())
+  cy.get('input#name').type('Growing Medium'+moment().valueOf())
   cy.get('input#produced_by').type('Growers')
   cy.get('input#quantity').type('1000')
   cy.get('select#quantity_unit').select('BAGS')
@@ -98,7 +98,7 @@ export function filled_material_agrochemical() {
   cy.get('span.help-block.text-danger').should('contain', 'The expiration date field is required.')
 
   // Typing the form
-  cy.get('input#name').type('Nitrogen Fertilizer'+moment().format())
+  cy.get('input#name').type('Nitrogen Fertilizer'+moment().valueOf())
   cy.get('select#chemical_type').select('FERTILIZER')
   cy.get('input#produced_by').type('Nitrogen Producer')
   cy.get('input#quantity').type('1000')
@@ -127,7 +127,7 @@ export function filled_material_label_crop_support() {
   cy.get('span.help-block.text-danger').should('contain', 'The price field is required.')
 
   // Typing the form
-  cy.get('input#name').type('Label and Crop Support'+moment().format())
+  cy.get('input#name').type('Label and Crop Support'+moment().valueOf())
   cy.get('input#quantity').type('1000')
   cy.get('input#price_per_unit').type('1')
   cy.get('textarea#notes').type('Label and Crop Support Notes')
@@ -152,7 +152,7 @@ export function filled_material_other() {
   cy.get('span.help-block.text-danger').should('contain', 'The price field is required.')
 
   // Typing the form
-  cy.get('input#name').type('Other '+moment().format())
+  cy.get('input#name').type('Other '+moment().valueOf())
   cy.get('input#quantity').type('1000')
   cy.get('input#price_per_unit').type('1')
   cy.get('textarea#notes').type('Other Notes')

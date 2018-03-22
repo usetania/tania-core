@@ -19,6 +19,13 @@ describe('Areas', () => {
       cy.get('button').contains('CANCEL').first().click()
     })
 
+    it ('should show the areas form and show errors for empty form submission', () => {
+      cy.clearLocalStorage()
+      Area.open_area_page()
+      Area.open_area_form()
+      Area.check_empty_form()
+    })
+
     it ('should create a seeding area', () => {
       cy.clearLocalStorage()
       Area.open_area_page()
