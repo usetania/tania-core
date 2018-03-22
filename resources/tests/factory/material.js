@@ -60,7 +60,7 @@ export function filled_material_growing_medium() {
   cy.get('label#label-price-per-unit').should('contain', 'Price per Unit')
   cy.get('label#label-notes').should('contain', 'Additional Notes')
 
-  cy.get('button.btn[type=submit]').click()
+  cy.contains('Save').click()
   cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
   cy.get('span.help-block.text-danger').should('contain', 'The produced by field is required.')
   cy.get('span.help-block.text-danger').should('contain', 'The quantity field is required.')
@@ -108,6 +108,54 @@ export function filled_material_agrochemical() {
   cy.get('span.next').first().click()
   cy.get('span').contains(15).first().click()
   cy.get('textarea#notes').type('FERTILIZER Notes')
+
+  cy.get('button.btn[type=submit]').click()
+}
+
+export function filled_material_label_crop_support() {
+  cy.get('select#material_type').select('label_and_crop_support')
+  // Label
+  cy.get('label#label-material-type').should('contain', 'Choose type of material')
+  cy.get('label#label-name').should('contain', 'Name')
+  cy.get('label#label-quantity').should('contain', 'Quantity')
+  cy.get('label#label-price-per-unit').should('contain', 'Price per Unit')
+  cy.get('label#label-notes').should('contain', 'Additional Notes')
+
+  cy.contains('Save').click()
+  cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The quantity field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The price field is required.')
+
+  // Typing the form
+  cy.get('input#name').type('Label and Crop Support'+moment().format())
+  cy.get('input#quantity').type('1000')
+  cy.get('input#price_per_unit').type('1')
+  cy.get('textarea#notes').type('Label and Crop Support Notes')
+
+  cy.get('button.btn[type=submit]').click()
+}
+
+export function filled_material_other() {
+  cy.get('select#material_type').select('other')
+  // Label
+  cy.get('label#label-material-type').should('contain', 'Choose type of material')
+  cy.get('label#label-name').should('contain', 'Name')
+  cy.get('label#label-produced-by').should('contain', 'Produced by')
+  cy.get('label#label-quantity').should('contain', 'Quantity')
+  cy.get('label#label-price-per-unit').should('contain', 'Price per Unit')
+  cy.get('label#label-notes').should('contain', 'Additional Notes')
+
+  cy.contains('Save').click()
+  cy.get('span.help-block.text-danger').should('contain', 'The name field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The produced by field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The quantity field is required.')
+  cy.get('span.help-block.text-danger').should('contain', 'The price field is required.')
+
+  // Typing the form
+  cy.get('input#name').type('Other '+moment().format())
+  cy.get('input#quantity').type('1000')
+  cy.get('input#price_per_unit').type('1')
+  cy.get('textarea#notes').type('Other Notes')
 
   cy.get('button.btn[type=submit]').click()
 }

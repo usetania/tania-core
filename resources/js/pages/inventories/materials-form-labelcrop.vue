@@ -2,25 +2,25 @@
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
-        label(for="name") Name
+        label#label-name Name
         input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
         span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
       .form-group
         .row
           .col-xs-6
-            label(for="price_per_unit") Price per Unit
+            label#label-price-per-unit Price per Unit
             .input-group.m-b
               span.input-group-addon &euro;
-              input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price_per_unit') }" v-model="inventory.price_per_unit" name="price_per_unit")
-            span.help-block.text-danger(v-show="errors.has('price_per_unit')") {{ errors.first('price_per_unit') }}
+              input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price') }" v-model="inventory.price_per_unit" name="price")
+            span.help-block.text-danger(v-show="errors.has('price')") {{ errors.first('price') }}
           .col-xs-6
-            label.control-label(for="quantity") Quantity
+            label#label-quantity Quantity
             .input-group.m-b
               input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
               span.input-group-addon Pieces
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
       .form-group
-        label.control-label(for="notes") Additional Notes
+        label#label-notes Additional Notes
         textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
         span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group

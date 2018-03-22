@@ -11,3 +11,11 @@ export function login() {
   cy.get('input#password').type('tania')
   cy.get('button.btn').click()
 }
+
+export function logout() {
+  cy.get('#signout').should('contain', 'Sign Out')
+  cy.get('#signout').click()
+  cy.location().should( location => {
+    expect(location.hash).to.eq('#/auth/login')
+  })
+}
