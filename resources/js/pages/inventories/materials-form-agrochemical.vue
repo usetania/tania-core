@@ -104,7 +104,7 @@ export default {
     if (typeof this.data.uid != "undefined") {
       this.inventory.uid = this.data.uid
       this.inventory.name = this.data.name
-      this.inventory.chemical_type = this.data.type.type_detail.chemical_type.Code
+      this.inventory.chemical_type = this.data.type.type_detail.chemical_type.code
       this.inventory.produced_by = this.data.produced_by
       this.inventory.quantity = this.data.quantity.value
       this.inventory.quantity_unit = this.data.quantity.unit
