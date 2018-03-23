@@ -72,7 +72,8 @@ export default {
         response_type: 'token',
         redirect_uri: 'http://localhost:8080/',
         state: 'random-string',
-      }).then(this.redirector).catch(error => {})
+      }).then(this.redirector)
+      .catch(() => this.$toasted.error('Incorrect Username and/or password'))
     },
     redirector (response) {
       Promise.all([

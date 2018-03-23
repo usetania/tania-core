@@ -1,8 +1,12 @@
 import { http } from '@/services'
 
 export default {
-  ApiLogin: (payload, cbSuccess, cbError) => {
-    http.post('authorize', payload, cbSuccess, cbError)
+  ApiLogin: function (payload) {
+    return http.login('authorize', payload).then(function(response){
+      return response
+    }).catch(function() {
+      throw new Error()
+    })
   },
   ApiChangePassword: (payload, cbSuccess, cbError) => {
     http.post('change_password', payload, cbSuccess, cbError)

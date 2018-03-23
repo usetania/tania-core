@@ -4,6 +4,11 @@ import qs from 'qs';
 
 import { ls } from '@/services'
 
+const state = {
+  token: '',
+  expires_in: 0
+}
+
 export const http = {
   request (method, url, data, successCb = null, errorCb = null, headers = {}) {
     axios.request({
@@ -24,6 +29,22 @@ export const http = {
     return this.request('post', url, data, successCb, errorCb, headers)
   },
 
+  login (url, data, successCb = null, errorCb = null, headers = {}) {
+    return axios.post(url, qs.stringify(data), { headers: Object.assign({}, {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }, headers) }).then(function(response) {
+      var url = new URL(response.request.responseURL)
+      var token = url.searchParams.get("access_token")
+      var expires_in = url.searchParams.get("expires_in")
+      state.token = token
+      state.expires_in = expires_in
+      successCb = response.data
+      return response.data
+    }).catch(function () {
+      throw new Error()
+    })
+  },
+
   put (url, data, successCb = null, errorCb = null) {
     return this.request('put', url, data, successCb, errorCb)
   },
@@ -42,7 +63,7 @@ export const http = {
     // Intercept the request to make sure the token is injected into the header.
     axios.interceptors.request.use(config => {
       // we intercept axios request and add authorizatio header before perform send a request to the server
-      // config.headers.Authorization = `Bearer ${ls.get('jwt-token')}`
+      config.headers.Authorization = 'Bearer '+ state.token
       return config
     })
 

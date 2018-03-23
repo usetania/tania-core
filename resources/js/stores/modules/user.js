@@ -22,7 +22,7 @@ const actions = {
     NProgress.start()
     return new Promise(( resolve, reject ) => {
       API
-        .ApiLogin(payload, ({ data }) => {
+        .ApiLogin(payload).then(function(data) {
           commit(types.USER_LOGIN, {
             uid: 1,
             username: payload.username,
@@ -30,7 +30,9 @@ const actions = {
             intro: payload.username === 'user' ? false: true
           })
           resolve(data)
-        }, error => reject(error.response))
+        }).catch(function() {
+          reject('Incorrect Username and/or password')
+        })
     })
   },
   userChangePassword ({ commit, state }, payload) {
