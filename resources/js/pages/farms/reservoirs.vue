@@ -3,7 +3,7 @@
     modal(v-if="showModal" @close="showModal = false")
       FarmReservoirForm(:data="data")
     .wrapper-md
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="openModal()")
+      a#reservoirsform.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
         | Add Reservoir
       h1.m-n.font-thin.h3.text-black Water Reservoir
