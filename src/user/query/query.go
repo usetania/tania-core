@@ -3,7 +3,7 @@ package query
 import uuid "github.com/satori/go.uuid"
 
 type UserEventQuery interface {
-	FindAllByID(farmUID uuid.UUID) <-chan QueryResult
+	FindAllByID(userUID uuid.UUID) <-chan QueryResult
 }
 
 type UserReadQuery interface {

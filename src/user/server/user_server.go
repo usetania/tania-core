@@ -68,21 +68,16 @@ func (s *UserServer) InitSubscriber() {
 
 // Mount defines the UserServer's endpoints with its handlers
 func (s *UserServer) Mount(g *echo.Group) {
-	g.POST("/:id/change_password", s.ChangePassword)
+	g.POST("/change_password", s.ChangePassword)
 }
 
 func (s *UserServer) ChangePassword(c echo.Context) error {
-	id := c.Param("id")
 	oldPassword := c.FormValue("old_password")
 	newPassword := c.FormValue("new_password")
 	confirmNewPassword := c.FormValue("confirm_new_password")
 
-	userUID, err := uuid.FromString(id)
-	if err != nil {
-		return err
-	}
-
-	queryResult := <-s.UserReadQuery.FindByID(userUID)
+	// We only use one default user, which is `tania`, so it's okay to hardcoded it here
+	queryResult := <-s.UserReadQuery.FindByUsername("tania")
 	if queryResult.Error != nil {
 		return queryResult.Error
 	}

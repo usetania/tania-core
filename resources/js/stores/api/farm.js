@@ -9,7 +9,7 @@ export default {
     })
   },
   ApiChangePassword: (payload, cbSuccess, cbError) => {
-    http.post('change_password', payload, cbSuccess, cbError)
+    http.post('user/change_password', payload, cbSuccess, cbError)
   },
   ApiFetchFarm: (cbSuccess, cbError) => {
     http.get('farms', cbSuccess, cbError)

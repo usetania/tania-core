@@ -376,12 +376,12 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 			authorization := c.Request().Header.Get("Authorization")
 
 			if authorization == "" {
-				return c.JSON(http.StatusForbidden, map[string]string{"data": "Forbidden"})
+				return c.JSON(http.StatusUnauthorized, map[string]string{"data": "Unauthorized"})
 			}
 
 			splitted := strings.Split(authorization, " ")
 			if len(splitted) <= 1 {
-				return c.JSON(http.StatusForbidden, map[string]string{"data": "Forbidden"})
+				return c.JSON(http.StatusUnauthorized, map[string]string{"data": "Unauthorized"})
 			}
 
 			uid := ""
