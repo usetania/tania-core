@@ -61,36 +61,20 @@
                     | See all Tasks
                     i.fa.fa-angle-double-right
                 span.h4.text-lt Tasks
-            table.table.m-b-none
-              thead
-                tr
-                  th Description
-                  th Category
-                  th Status
-              tbody
-                tr(v-if="tasks.length == 0")
-                  td(colspan="3") No Task Created
-                tr(v-for="task in tasks")
-                  td
-                    a(href="#")
-                      div {{ task.title }}
-                      small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                      .text-danger(v-if="task.is_due == true") Overdue!
-                  td
-                    TaskLabel(:type="'CATEGORY'" :task="task")
-                  td
-                    TaskLabel(:type="'PRIORITY'" :task="task")
+            TasksList(:domain="'HOME'")
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import TaskLabel from './farms/tasks/task-label'
+import TasksList from './farms/tasks/task-list'
 import Pagination from '@/components/pagination.vue'
 export default {
   name: 'Home',
   components: {
     Pagination,
-    TaskLabel
+    TaskLabel,
+    TasksList
   },
   computed : {
     ...mapGetters({
@@ -115,11 +99,14 @@ export default {
       }
       this.fetchCrops({ pageId : pageId, status : 'ACTIVE' })
     },
+    getTasks () {
+      this.fetchTasks({ pageId : 1 })
+    },
   },
   mounted () {
     this.fetchAreas()
     this.getCrops()
-    this.fetchTasks()
+    this.getTasks()
     this.getInformation()
   },
 }

@@ -1,6 +1,6 @@
 <template lang="pug">
   .task-list
-    table.table.m-b-none(v-if="domain == 'AREA' || domain == 'RESERVOIR'")
+    table.table.m-b-none(v-if="domain == 'AREA' || domain == 'RESERVOIR' || domain == 'HOME'")
       thead
         tr
           th 
