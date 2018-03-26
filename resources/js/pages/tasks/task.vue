@@ -18,7 +18,7 @@
                           .col-sm-8
                             .h3.text-lt Tasks
                           .col-sm-4.text-right
-                            a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
+                            a#tasksform.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
                               i.fas.fa-plus
                               | Add Task
                       .panel-body.bg-white-only

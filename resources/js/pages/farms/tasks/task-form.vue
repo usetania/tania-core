@@ -11,16 +11,16 @@
         .row
           .col-xs-6
             .form-group
-              label(for="due_date") Due Date
+              label#label-due-date Due Date
               .input-group
-                datepicker#due_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('due_date') }" v-model="task.due_date" name="due_date" input-class="form-control" ref="openCal")
+                datepicker#due_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('due date') }" v-model="task.due_date" name="due date" input-class="form-control" ref="openCal")
                 span.input-group-btn
                   button.btn.btn-primary(type="button" v-on:click="openPicker")
                     i.glyphicon.glyphicon-calendar
-              span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
+              span.help-block.text-danger(v-show="errors.has('due date')") {{ errors.first('due date') }}
           .col-xs-6
             .form-group
-              label(for="priority") Is this task urgent?
+              label#label-priority Is this task urgent?
               .radio
                 label.i-checks.i-checks-sm
                   input#priority(type="radio" name="priority" value="URGENT" checked="checked" v-model="task.priority" v-validate="'required'")
@@ -33,7 +33,7 @@
                   | No
               span.help-block.text-danger(v-show="errors.has('priority')") {{ errors.first('priority') }}
         .form-group
-          label(for="category") 
+          label#label-category(for="category") 
             | Task Category
           select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
             option(value="") Please select category
@@ -44,11 +44,11 @@
             option(v-if="asset_name == 'GENERAL'" value="INVENTORY") Inventory
           span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group
-          label(for="title") Title
+          label#label-title(for="title") Title
           input.form-control#title(type="text" v-validate="'required|max:100'" :class="{'input': true, 'text-danger': errors.has('title') }" v-model="task.title" name="title")
           span.help-block.text-danger(v-show="errors.has('title')") {{ errors.first('title') }}
         .form-group
-          label(for="description") Description
+          label#label-description(for="description") Description
           textarea.form-control#description(type="text" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
