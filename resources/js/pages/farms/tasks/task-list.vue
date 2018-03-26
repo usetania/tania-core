@@ -75,6 +75,7 @@
           .col-sm-1.text-right
             a.h3(v-if="!isCompleted(task.status)" style="cursor: pointer;" @click="openModal(task)")
               i.fas.fa-edit
+      Pagination(:pages="pages" @reload="getTasks")
 </template>
 
 <script>
@@ -83,15 +84,18 @@ import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
 import MoreDetail from '@/components/more-detail'
 import TaskLabel from './task-label'
+import Pagination from '@/components/pagination.vue'
 export default {
   name: 'TasksList',
   components: {
     MoreDetail,
+    Pagination,
     TaskLabel
   },
   computed: {
     ...mapGetters({
-      tasks: 'getTasks'
+      tasks: 'getTasks',
+      pages: 'getTasksNumberOfPages',
     })
   },
   created () {
@@ -110,13 +114,17 @@ export default {
       'setTaskStatus',
     ]),
     getTasks () {
+      let pageId = 1
+      if (typeof this.$route.query.page != "undefined") {
+        pageId = parseInt(this.$route.query.page)
+      }
       if (this.domain) {
-        this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id })
+        this.getTasksByDomainAndAssetId({ domain: this.domain, assetId: this.asset_id, pageId : pageId })
       } else if (this.category != '' || this.priority != '' || this.status != '') {
         let status = (this.status == 'INCOMPLETE') ? '' : this.status
-        this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: status })
+        this.getTasksByCategoryAndPriorityAndStatus({ category: this.category, priority: this.priority, status: status, pageId : pageId })
       } else {
-        this.fetchTasks()
+        this.fetchTasks({ pageId : pageId })
       }
     },
     isCompleted (status) {

@@ -2,24 +2,28 @@ import NProgress from 'nprogress'
 
 import * as types from '@/stores/mutation-types'
 import { AddClicked } from '@/stores/helpers/farms/crop'
+import { calculateNumberOfPages, pageLength } from '@/stores/constants'
 import FarmApi from '@/stores/api/farm'
 import moment from 'moment-timezone'
 
 const state = {
   tasks: [],
+  pages: 0,
 }
 
 const getters = {
   getTasks: state => state.tasks,
+  getTasksNumberOfPages: state => state.pages,
 }
 
 const actions = {
-  fetchTasks ({ commit, state }) {
+  fetchTasks ({ commit, state }, payload) {
     NProgress.start()
     return new Promise((resolve, reject) => {
       FarmApi
-        .ApiFetchTask(({ data }) => {
+        .ApiFetchTask(payload.pageId, ({ data }) => {
           commit(types.FETCH_TASKS, data.data)
+          commit(types.SET_PAGES, data.total_rows)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -28,8 +32,9 @@ const actions = {
     NProgress.start()
     return new Promise((resolve, reject) => {
       FarmApi
-        .ApiFindTasksByDomainAndAssetId(payload.domain, payload.assetId, ({ data }) => {
+        .ApiFindTasksByDomainAndAssetId(payload.pageId, payload.domain, payload.assetId, ({ data }) => {
           commit(types.FETCH_TASKS, data.data)
+          commit(types.SET_PAGES, data.total_rows)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -57,8 +62,9 @@ const actions = {
         query += 'status=CREATED'
       }
       FarmApi
-        .ApiFindTasksByCategoryAndPriorityAndStatus(payload.category, payload.priority, query, ({ data }) => {
+        .ApiFindTasksByCategoryAndPriorityAndStatus(payload.pageId, payload.category, payload.priority, query, ({ data }) => {
           commit(types.FETCH_TASKS, data.data)
+          commit(types.SET_PAGES, data.total_rows)
           resolve(data)
         }, error => reject(error.response))
     })
@@ -105,7 +111,11 @@ const actions = {
 
 const mutations = {
   [types.CREATE_TASK] (state, payload) {
-    state.tasks.push(payload)
+    state.tasks.unshift(payload)
+    if (state.tasks.length > pageLength) {
+      state.tasks.pop()
+    }
+    state.pages = calculateNumberOfPages(state.tasks.length + 1)
   },
   [types.UPDATE_TASK] (state, payload) {
     const tasks = state.tasks
@@ -114,6 +124,9 @@ const mutations = {
   },
   [types.FETCH_TASKS] (state, payload) {
     state.tasks = AddClicked(payload)
+  },
+  [types.SET_PAGES] (state, pages) {
+    state.pages = calculateNumberOfPages(pages)
   },
 }
 

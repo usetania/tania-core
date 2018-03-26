@@ -122,8 +122,8 @@ export default {
   ApiUpdateTask: (taskid, payload, cbSuccess, cbError) => {
     http.put('tasks/' + taskid, payload, cbSuccess, cbError)
   },
-  ApiFetchTask: (cbSuccess, cbError) => {
-    http.get('tasks', cbSuccess, cbError)
+  ApiFetchTask: (pageid, cbSuccess, cbError) => {
+    http.get('tasks?page=' + pageid, cbSuccess, cbError)
   },
   ApiFetchActivity: (cropid, cbSuccess, cbError) => {
     http.get('farms/crops/'+ cropid +'/activities', cbSuccess, cbError)
@@ -131,11 +131,11 @@ export default {
   ApiFetchCropInformation: (farmid, cbSuccess, cbError) => {
     http.get('farms/'+ farmid +'/crops/information', cbSuccess, cbError)
   },
-  ApiFindTasksByDomainAndAssetId: (domain, assetid, cbSuccess, cbError) => {
-    http.get('tasks/search?domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
+  ApiFindTasksByDomainAndAssetId: (pageid, domain, assetid, cbSuccess, cbError) => {
+    http.get('tasks/search?page=' + pageid + '&domain='+ domain +'&asset_id=' + assetid, cbSuccess, cbError)
   },
-  ApiFindTasksByCategoryAndPriorityAndStatus: (category, priority, status, cbSuccess, cbError) => {
-    http.get('tasks/search?category='+ category +'&priority=' + priority + status, cbSuccess, cbError)
+  ApiFindTasksByCategoryAndPriorityAndStatus: (pageid, category, priority, status, cbSuccess, cbError) => {
+    http.get('tasks/search?page=' + pageid + '&category='+ category +'&priority=' + priority + status, cbSuccess, cbError)
   },
   ApiSetTaskDue: (taskid, cbSuccess, cbError) => {
     http.put('tasks/' + taskid + '/due', {}, cbSuccess, cbError)
