@@ -52,8 +52,13 @@ export default {
         old_password : this.user.old_password,
         new_password : this.user.password,
         confirm_new_password : this.user.password_confirmation,
-      }).then(() => this.$toasted.show('Password update successful'))
-        .catch(() => this.$toasted.error('Error in user password update'))
+        }).then(() => { 
+          this.$toasted.show('Password update successful')
+          this.user.old_password = ''
+          this.user.password = ''
+          this.user.password_confirmation = ''
+          this.$nextTick(() => this.$validator.reset())
+        }).catch(() => this.$toasted.error('Error in user password update'))
     },
     validateBeforeSubmit () {
       this.$validator.validateAll().then(result => {
