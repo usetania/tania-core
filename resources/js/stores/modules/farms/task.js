@@ -9,10 +9,12 @@ import moment from 'moment-timezone'
 const state = {
   tasks: [],
   pages: 0,
+  total: 0,
 }
 
 const getters = {
   getTasks: state => state.tasks,
+  getNumberOfTasks: state => state.total,
   getTasksNumberOfPages: state => state.pages,
 }
 
@@ -125,8 +127,9 @@ const mutations = {
   [types.FETCH_TASKS] (state, payload) {
     state.tasks = AddClicked(payload)
   },
-  [types.SET_PAGES] (state, pages) {
-    state.pages = calculateNumberOfPages(pages)
+  [types.SET_PAGES] (state, payload) {
+    state.total = payload
+    state.pages = calculateNumberOfPages(payload)
   },
 }
 

@@ -8,12 +8,12 @@ const state = {
   crops: [],
   cropnotes: [],
   cropactivities: [],
-  pages: 0,
+  cropPages: 0,
 }
 
 const getters = {
   getAllCrops: state => state.crops,
-  getCropsNumberOfPages: state => state.pages,
+  getCropsNumberOfPages: state => state.cropPages,
 }
 
 const actions = {
@@ -169,7 +169,7 @@ const mutations = {
     if (state.crops.length > pageLength) {
       state.crops.pop()
     }
-    state.pages = calculateNumberOfPages(state.crops.length + 1)
+    state.cropPages = calculateNumberOfPages(state.crops.length + 1)
   },
   [types.UPDATE_CROP] (state, payload) {
     const crops = state.crops
@@ -193,8 +193,8 @@ const mutations = {
   [types.CREATE_CROP_ACTIVITIES] (state, payload) {
     state.cropactivities.push(payload)
   },
-  [types.SET_PAGES] (state, pages) {
-    state.pages = calculateNumberOfPages(pages)
+  [types.SET_PAGES] (state, payload) {
+    state.cropPages = calculateNumberOfPages(payload)
   },
 }
 

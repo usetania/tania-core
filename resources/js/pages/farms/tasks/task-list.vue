@@ -26,7 +26,7 @@
                 span.text-success(v-if="isToday(task.due_date)") Today
           td
             TaskLabel(:type="'CATEGORY'" :task="task")
-          td(v-if="domain != 'AREA' && domain != 'RESERVOIR'")
+          td(v-if="domain != 'AREA' && domain != 'RESERVOIR' && domain != 'HOME'")
             a.h3(style="cursor: pointer;" @click="openModal(task)")
               i.fas.fa-edit
     div(v-else)

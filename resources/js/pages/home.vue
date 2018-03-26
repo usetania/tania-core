@@ -23,7 +23,7 @@
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-clipboard
-                    router-link(:to="{ name: 'Task' }") {{ tasks.length }} Tasks
+                    router-link(:to="{ name: 'Task' }") {{ tasksLength }} Tasks
             .panel-footer.bg-light.lter.wrapper.no-border
               small.text-muted
                 | You are using Tania 1.5 right now.
@@ -62,6 +62,7 @@
                     i.fa.fa-angle-double-right
                 span.h4.text-lt Tasks
             TasksList(:domain="'HOME'")
+            Pagination(:pages="taskPages" @reload="getTasks")
 </template>
 
 <script>
@@ -83,6 +84,8 @@ export default {
       cropInformation: 'getInformation',
       cropPages: 'getCropsNumberOfPages',
       tasks: 'getTasks',
+      taskPages: 'getTasksNumberOfPages',
+      tasksLength: 'getNumberOfTasks',
     })
   },
   methods: {
@@ -100,7 +103,11 @@ export default {
       this.fetchCrops({ pageId : pageId, status : 'ACTIVE' })
     },
     getTasks () {
-      this.fetchTasks({ pageId : 1 })
+      let pageId = 1
+      if (typeof this.$route.query.page != "undefined") {
+        pageId = parseInt(this.$route.query.page)
+      }
+      this.fetchTasks({ pageId : pageId })
     },
   },
   mounted () {
