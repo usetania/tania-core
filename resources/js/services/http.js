@@ -36,10 +36,9 @@ export const http = {
       var url = new URL(response.request.responseURL)
       var token = url.searchParams.get("access_token")
       var expires_in = url.searchParams.get("expires_in")
-      state.token = token
-      state.expires_in = expires_in
-      successCb = response.data
-      return response.data
+      ls.set('token', token)
+      ls.set('expires_in', expires_in)
+      return response
     }).catch(function () {
       throw new Error()
     })
@@ -63,7 +62,7 @@ export const http = {
     // Intercept the request to make sure the token is injected into the header.
     axios.interceptors.request.use(config => {
       // we intercept axios request and add authorizatio header before perform send a request to the server
-      config.headers.Authorization = 'Bearer '+ state.token
+      config.headers.Authorization = 'Bearer '+ ls.get('token')
       return config
     })
 
@@ -87,4 +86,8 @@ export const http = {
       return Promise.reject(error)
     })
   }
+}
+
+export default {
+  state
 }
