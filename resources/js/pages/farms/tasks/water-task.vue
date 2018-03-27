@@ -14,11 +14,11 @@
           label Which crop do you want to water?
           .checkbox(v-for="crop in crops")
             label.i-checks
-              input(type="checkbox" name="selectedCrops" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('selectedCrops') }" v-model="task.crops" v-bind:value="crop.uid")
+              input(type="checkbox" name="selected crops" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('selected crops') }" v-model="task.crops" v-bind:value="crop.uid")
               i   
               | {{ crop.inventory.name }}   
               .identifier-sm {{ crop.batch_id }}
-          span.help-block.text-danger(v-show="errors.has('selectedCrops')") {{ errors.first('selectedCrops') }}
+          span.help-block.text-danger(v-show="errors.has('selected crops')") {{ errors.first('selected crops') }}
         .form-group
           button.btn.btn-success.pull-right(type="submit")
             i.fa.fa-check
