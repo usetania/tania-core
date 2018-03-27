@@ -22,11 +22,11 @@
         .panel
           .panel-heading.b-b.b-light.wrapper
             .row
-              .col-sm-7.m-t.m-b
+              .col-sm-6.m-t.m-b
                 .h3.text-lt.m-b {{ crop.inventory.name }}
                 .identifier {{ crop.batch_id }}
                 small.text-muted.m-t.clear {{ crop.area_status.seeding }} Seeding, {{ crop.area_status.growing }} Growing, {{ crop.area_status.dumped }} Dumped
-              .col-sm-5.m-t.m-b
+              .col-sm-6.m-t.m-b
                 .row
                   .col-sm-6.m-b
                     button.btn.btn-success.btn-block(style="cursor: pointer;" @click="showHarvestCropModal = true")
@@ -37,11 +37,11 @@
                       i.fa.fa-trash.m-r
                       | Dump
                 .row
-                  .col-sm-6
+                  .col-sm-6.m-b
                     button.btn.btn-primary.btn-block(style="cursor: pointer;" @click="showMoveCropModal = true")
                       i.fa.fa-exchange-alt.m-r
                       | Move
-                  .col-sm-6
+                  .col-sm-6.m-b
                     button.btn.btn-default.btn-block(style="cursor: pointer;" @click="showUploadCropModal = true")
                       i.fa.fa-camera.m-r
                       | Take Picture
