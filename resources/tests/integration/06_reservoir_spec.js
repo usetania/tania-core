@@ -47,13 +47,13 @@ describe('Reservoirs', () => {
     it ('should show the reservoir page', () => {
       cy.clearLocalStorage()
       Reservoir.open_reservoir_page()
-      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('u').contains('Reservoir1').first().click()
     })
 
     it ('should show the reservoir page and create a note', () => {
       cy.clearLocalStorage()
       Reservoir.open_reservoir_page()
-      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('u').contains('Reservoir1').first().click()
       cy.get('input#content').type('This is the note to reservoir 1')
       cy.get('button[type=submit]').click()
     })
@@ -61,7 +61,7 @@ describe('Reservoirs', () => {
     it ('should delete the newly created note', () => {
       cy.clearLocalStorage()
       Reservoir.open_reservoir_page()
-      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('u').contains('Reservoir1').first().click()
       cy.get('input#content').type('This is the second note to reservoir 1')
       cy.get('button[type=submit]').click()
       cy.get('button').children('i').should('have.class', 'fa-trash').first().click()
@@ -70,7 +70,7 @@ describe('Reservoirs', () => {
     it ('should create a task for the reservoir', () => {
       cy.clearLocalStorage()
       Reservoir.open_reservoir_page()
-      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('u').contains('Reservoir1').first().click()
       cy.get('#addTaskForm').click()
       Task.filled_task('RESERVOIR')
     })

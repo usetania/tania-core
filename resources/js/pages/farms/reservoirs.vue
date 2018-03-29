@@ -22,7 +22,8 @@
               th
           tbody
             tr(v-for="reservoir in reservoirs")
-              td: router-link(:to="{ name: 'FarmReservoir', params: { id: reservoir.uid } }") {{ reservoir.name }}
+              td: router-link(:to="{ name: 'FarmReservoir', params: { id: reservoir.uid } }")
+                u {{ reservoir.name }}
               td {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
               td {{ getType(reservoir.water_source.type).label }}
               td {{ reservoir.water_source.capacity }}

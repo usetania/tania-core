@@ -30,7 +30,7 @@ export function filled_tap_reservoir() {
   cy.get('label#label-type').should('contain', 'Source')
 
   // Typing the form
-  cy.get('#name').type('Tap Reservoir '+moment().valueOf())
+  cy.get('#name').type('Tap '+moment().valueOf())
   cy.get('#type').select('TAP')
   cy.get('#capacity').should('not.be.visible')
   cy.get('button[type=submit]').click()
@@ -43,7 +43,7 @@ export function filled_well_reservoir() {
   cy.get('label#label-type').should('contain', 'Source')
 
   // Typing the form
-  cy.get('#name').type('Bucket Reservoir '+moment().valueOf())
+  cy.get('#name').type('Bucket '+moment().valueOf())
   cy.get('#type').select('BUCKET')
   cy.get('#capacity').type('10')
   cy.get('button[type=submit]').click()
