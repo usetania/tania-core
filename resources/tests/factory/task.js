@@ -41,6 +41,10 @@ export function filled_task(type) {
   cy.get('select#category').select(type)
   cy.get('input#title').type(type + ' Task '+moment().valueOf())
   cy.get('textarea#description').type(type + ' Task Description'+moment().valueOf())
-  cy.get('button[type=submit]').click()
-  cy.get('form').should('not.be.visible')
+  if (type == 'AREA' || type == 'RESERVOIR') {
+    cy.get('button').contains('OK').click()
+  } else {
+    cy.get('button[type=submit]').click()
+    cy.get('form').should('not.be.visible')
+  }
 }

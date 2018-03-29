@@ -6,10 +6,10 @@
       WaterTaskModal(:crops="areaCrops" :area="area")
     .wrapper-md
       .pull-right
-        a.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="openModal()")
+        a#addTaskForm.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="openModal()")
           i.fas.fa-plus
           | Add Task
-        a.btn.btn-sm.btn-addon.btn-info(style="cursor: pointer;" @click="showWaterTaskModal = true")
+        a#waterAreaForm.btn.btn-sm.btn-addon.btn-info(v-if="areaCrops.length > 0" style="cursor: pointer;" @click="showWaterTaskModal = true")
           i.fas.fa-tint
           | Watering
       h1.m-n.font-thin.h3.text-primary {{ area.name }}
@@ -46,11 +46,11 @@
             .panel-body
               form(@submit.prevent="validateBeforeSubmit")
                 .input-group
-                  input.form-control.input-sm#content(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                  input#content.form-control.input-sm(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
                   span.input-group-btn
                     button.btn.btn-sm.btn-success(type="submit")
                       i.fas.fa-paper-plane
-                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
+                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('note.content') }}
             ul.list-group.list-group-lg.no-bg.auto
               li.list-group-item.row(v-for="areaNote in area.notes")
                 .col-sm-9
@@ -140,6 +140,7 @@ export default {
         .then(data => {
           this.area = data
           this.note.content = ''
+          this.$nextTick(() => this.$validator.reset())
         })
         .catch(({ data }) => this.message = data)
     },
