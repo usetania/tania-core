@@ -1,6 +1,7 @@
 import * as Reservoir from '../factory/reservoir'
 
-describe('Reservoir', () => {
+describe('Reservoirs', () => {
+  describe('Reservoirs Listing Page', () => {
     it ('should show the reservoir page', () => {
       cy.clearLocalStorage()
       Reservoir.open_reservoir_page()
@@ -39,4 +40,36 @@ describe('Reservoir', () => {
       Reservoir.open_reservoir_form()
       Reservoir.filled_well_reservoir()
     })
+  })
+
+  describe('Reservoir Page', () => {
+    it ('should show the reservoir page', () => {
+      cy.clearLocalStorage()
+      Reservoir.open_reservoir_page()
+      cy.get('a').contains('Reservoir1').first().click()
+    })
+
+    it ('should show the reservoir page and create a note', () => {
+      cy.clearLocalStorage()
+      Reservoir.open_reservoir_page()
+      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('input#content').type('This is the note to reservoir 1')
+      cy.get('button[type=submit]').click()
+    })
+
+    it ('should delete the newly created note', () => {
+      cy.clearLocalStorage()
+      Reservoir.open_reservoir_page()
+      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('button').children('i').should('have.class', 'fa-trash').first().click()
+    })
+
+    it ('should create a task for the reservoir', () => {
+      cy.clearLocalStorage()
+      Reservoir.open_reservoir_page()
+      cy.get('a').contains('Reservoir1').first().click()
+      cy.get('#addTaskForm').click()
+      Task.filled_task('RESERVOIR')
+    })
+  })
 })

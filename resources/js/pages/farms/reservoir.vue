@@ -3,7 +3,7 @@
     modal(v-if="showModal" @close="closeModal")
       FarmReservoirTaskForm(:data="reservoir" :asset="asset")
     .wrapper-md
-      a.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="openModal()")
+      a#addTaskForm.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fas.fa-plus
         | Add Task
       h1.m-n.font-thin.h3.text-black {{ reservoir.name }}
@@ -37,11 +37,11 @@
             .panel-body
               form(@submit.prevent="validateBeforeSubmit")
                 .input-group
-                  input.form-control.input-sm#content(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                  input#content.form-control.input-sm(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
                   span.input-group-btn
                     button.btn.btn-sm.btn-success(type="submit")
                       i.fa.fa-paper-plane
-                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
+                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('note.content') }}
             ul.list-group.list-group-lg.no-bg.auto
               li.list-group-item.row(v-for="reservoirNote in reservoir.notes")
                 .col-sm-9
@@ -105,6 +105,7 @@ export default {
         .then(data => {
           this.reservoir = data
           this.note.content = ''
+          this.$nextTick(() => this.$validator.reset())
         })
         .catch(({ data }) => this.message = data)
     },
