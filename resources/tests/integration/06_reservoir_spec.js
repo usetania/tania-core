@@ -1,4 +1,5 @@
 import * as Reservoir from '../factory/reservoir'
+import * as Task from '../factory/task'
 
 describe('Reservoirs', () => {
   describe('Reservoirs Listing Page', () => {
