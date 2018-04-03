@@ -64,7 +64,7 @@ func NewGrowthServer(
 		EventBus: bus,
 	}
 
-	switch *config.Config.TaniaPersistanceEngine {
+	switch *config.Config.TaniaPersistenceEngine {
 	case config.DB_INMEMORY:
 		growthServer.CropEventRepo = repoInMem.NewCropEventRepositoryInMemory(cropEventStorage)
 		growthServer.CropEventQuery = queryInMem.NewCropEventQueryInMemory(cropEventStorage)

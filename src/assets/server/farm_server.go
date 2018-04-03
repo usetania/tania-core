@@ -73,7 +73,7 @@ func NewFarmServer(
 		EventBus: eventBus,
 	}
 
-	switch *config.Config.TaniaPersistanceEngine {
+	switch *config.Config.TaniaPersistenceEngine {
 	case config.DB_INMEMORY:
 		farmServer.FarmEventRepo = repoInMem.NewFarmEventRepositoryInMemory(farmEventStorage)
 		farmServer.FarmEventQuery = queryInMem.NewFarmEventQueryInMemory(farmEventStorage)

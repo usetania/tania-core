@@ -51,7 +51,7 @@ func NewTaskServer(
 		EventBus: bus,
 	}
 
-	switch *config.Config.TaniaPersistanceEngine {
+	switch *config.Config.TaniaPersistenceEngine {
 	case config.DB_INMEMORY:
 		taskServer.TaskEventRepo = repoInMem.NewTaskEventRepositoryInMemory(taskEventStorage)
 		taskServer.TaskReadRepo = repoInMem.NewTaskReadRepositoryInMemory(taskReadStorage)
@@ -175,16 +175,16 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 	// Return list of tasks
 	data["data"] = taskList
 	// Return number of tasks
-  countResult := <-s.TaskReadQuery.CountAll()
+	countResult := <-s.TaskReadQuery.CountAll()
 
-  if countResult.Error != nil {
-    return countResult.Error
-  }
-  count, ok := countResult.Result.(int)
-  if !ok {
-    return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-  }
-  data["total_rows"] = count
+	if countResult.Error != nil {
+		return countResult.Error
+	}
+	count, ok := countResult.Result.(int)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
+	data["total_rows"] = count
 	data["page"] = pageInt
 
 	return c.JSON(http.StatusOK, data)
@@ -231,15 +231,15 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	// Return list of tasks
 	data["data"] = taskList
 	// Return number of tasks
-  countResult := <-s.TaskReadQuery.CountTasksWithFilter(queryparams)
+	countResult := <-s.TaskReadQuery.CountTasksWithFilter(queryparams)
 
-  if countResult.Error != nil {
-    return countResult.Error
-  }
-  count, ok := countResult.Result.(int)
-  if !ok {
-    return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-  }
+	if countResult.Error != nil {
+		return countResult.Error
+	}
+	count, ok := countResult.Result.(int)
+	if !ok {
+		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
+	}
 	data["total_rows"] = count
 	data["page"] = pageInt
 	return c.JSON(http.StatusOK, data)
