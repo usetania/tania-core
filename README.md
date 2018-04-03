@@ -1,9 +1,10 @@
-# Tania API Server
+# Tania
 
-[![Build
-Status](https://travis-ci.com/Tanibox/tania-server.svg?token=rFvCvk3YAEKpm9H4axVv&branch=master)](https://travis-ci.com/Tanibox/tania-server)
+[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/taniafarm/Lobby)
 
-The future of Tania farm management system is here. 
+Tania is a free and open source farming management system for everyone. You can manage your areas, reservoirs, farm tasks, inventories, and the crop growing progress.
+
+To get the stable release, you can clone from the master branch or from the [release tab](https://github.com/Tanibox/tania-core/releases).
 
 ## Requirement
 - Go v1.9 
