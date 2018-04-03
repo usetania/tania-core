@@ -12,7 +12,7 @@ type Configuration struct {
 	DemoMode               *bool
 	UploadPathArea         *string
 	UploadPathCrop         *string
-	TaniaPersistanceEngine *string
+	TaniaPersistenceEngine *string
 	SqlitePath             *string
 	MysqlHost              *string
 	MysqlPort              *string

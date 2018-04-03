@@ -38,13 +38,13 @@ func main() {
 	e := echo.New()
 
 	// Initialize DB.
-	log.Print("Using " + *config.Config.TaniaPersistanceEngine + " persistance engine")
+	log.Print("Using " + *config.Config.TaniaPersistenceEngine + " persistance engine")
 
 	// InMemory DB will always be initialized.
 	inMem := initInMemory()
 
 	var db *sql.DB
-	switch *config.Config.TaniaPersistanceEngine {
+	switch *config.Config.TaniaPersistenceEngine {
 	case config.DB_SQLITE:
 		db = initSqlite()
 	case config.DB_MYSQL:
@@ -191,7 +191,7 @@ func initConfig() {
 		UploadPathArea:         conf.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo"),
 		UploadPathCrop:         conf.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo"),
 		DemoMode:               conf.Bool("demo_mode", true, "Switch for the demo mode"),
-		TaniaPersistanceEngine: conf.String("tania_persistance_engine", "sqlite", "The persistance engine of Tania. Options are inmemory, sqlite, inmemory"),
+		TaniaPersistenceEngine: conf.String("tania_persistence_engine", "sqlite", "The persistance engine of Tania. Options are inmemory, sqlite, inmemory"),
 		SqlitePath:             conf.String("sqlite_path", "tania.db", "Path of sqlite file db"),
 		MysqlHost:              conf.String("mysql_host", "127.0.0.1", "Mysql Host"),
 		MysqlPort:              conf.String("mysql_port", "3306", "Mysql Port"),
