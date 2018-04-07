@@ -3,7 +3,7 @@ package domain
 import (
 	"time"
 
-	"github.com/Tanibox/tania-server/src/helper/validationhelper"
+	"github.com/Tanibox/tania-core/src/helper/validationhelper"
 	uuid "github.com/satori/go.uuid"
 )
 

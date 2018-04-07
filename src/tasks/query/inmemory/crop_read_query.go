@@ -1,8 +1,8 @@
 package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/growth/storage"
-	"github.com/Tanibox/tania-server/src/tasks/query"
+	"github.com/Tanibox/tania-core/src/growth/storage"
+	"github.com/Tanibox/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
 

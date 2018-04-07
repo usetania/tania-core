@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/tasks/decoder"
+	"github.com/Tanibox/tania-core/src/tasks/decoder"
 
-	"github.com/Tanibox/tania-server/src/tasks/query"
-	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/Tanibox/tania-core/src/tasks/query"
+	"github.com/Tanibox/tania-core/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Tanibox/tania-server/src/tasks/query"
+	"github.com/Tanibox/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

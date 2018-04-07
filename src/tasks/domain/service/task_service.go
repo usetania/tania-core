@@ -1,8 +1,8 @@
 package service
 
 import (
-	domain "github.com/Tanibox/tania-server/src/tasks/domain"
-	"github.com/Tanibox/tania-server/src/tasks/query"
+	domain "github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
 

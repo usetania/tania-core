@@ -1,9 +1,9 @@
 package inmemory
 
 import (
-	assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
-	"github.com/Tanibox/tania-server/src/assets/storage"
-	"github.com/Tanibox/tania-server/src/growth/query"
+	assetsdomain "github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/Tanibox/tania-core/src/assets/storage"
+	"github.com/Tanibox/tania-core/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 )
 

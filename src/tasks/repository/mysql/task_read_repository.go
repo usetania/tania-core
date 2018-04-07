@@ -3,9 +3,9 @@ package sqlite
 import (
 	"database/sql"
 
-	"github.com/Tanibox/tania-server/src/tasks/domain"
-	"github.com/Tanibox/tania-server/src/tasks/repository"
-	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/tasks/repository"
+	"github.com/Tanibox/tania-core/src/tasks/storage"
 )
 
 type TaskReadRepositoryMysql struct {

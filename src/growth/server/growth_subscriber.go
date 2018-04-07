@@ -5,10 +5,10 @@ import (
 	"sort"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/growth/domain"
-	"github.com/Tanibox/tania-server/src/growth/query"
-	"github.com/Tanibox/tania-server/src/growth/storage"
-	taskevents "github.com/Tanibox/tania-server/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/Tanibox/tania-core/src/growth/query"
+	"github.com/Tanibox/tania-core/src/growth/storage"
+	taskevents "github.com/Tanibox/tania-core/src/tasks/domain"
 	"github.com/labstack/gommon/log"
 	uuid "github.com/satori/go.uuid"
 )

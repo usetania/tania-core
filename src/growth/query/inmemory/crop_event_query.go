@@ -3,8 +3,8 @@ package inmemory
 import (
 	"sort"
 
-	"github.com/Tanibox/tania-server/src/growth/query"
-	"github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/Tanibox/tania-core/src/growth/query"
+	"github.com/Tanibox/tania-core/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

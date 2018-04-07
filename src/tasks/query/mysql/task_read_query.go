@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/tasks/domain"
-	"github.com/Tanibox/tania-server/src/tasks/query"
-	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/tasks/query"
+	"github.com/Tanibox/tania-core/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
-  "github.com/Tanibox/tania-server/src/helper/paginationhelper"
+  "github.com/Tanibox/tania-core/src/helper/paginationhelper"
 )
 
 type TaskReadQueryMysql struct {

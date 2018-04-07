@@ -1,8 +1,8 @@
 package inmemory
 
 import (
-	"github.com/Tanibox/tania-server/src/assets/repository"
-	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-core/src/assets/repository"
+	"github.com/Tanibox/tania-core/src/assets/storage"
 )
 
 type MaterialReadRepositoryInMemory struct {

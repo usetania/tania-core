@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/Tanibox/tania-server/src/growth/domain"
-	"github.com/Tanibox/tania-server/src/growth/query"
+	. "github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/Tanibox/tania-core/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

@@ -3,7 +3,7 @@ package sqlite
 import (
 	"database/sql"
 
-	"github.com/Tanibox/tania-server/src/growth/query"
+	"github.com/Tanibox/tania-core/src/growth/query"
 	uuid "github.com/satori/go.uuid"
 )
 
