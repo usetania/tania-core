@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"github.com/Tanibox/tania-server/src/assets/domain"
-	"github.com/Tanibox/tania-server/src/assets/storage"
+	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/Tanibox/tania-core/src/assets/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

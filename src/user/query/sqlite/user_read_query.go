@@ -6,8 +6,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"github.com/Tanibox/tania-server/src/user/query"
-	"github.com/Tanibox/tania-server/src/user/storage"
+	"github.com/Tanibox/tania-core/src/user/query"
+	"github.com/Tanibox/tania-core/src/user/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

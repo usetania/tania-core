@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/growth/repository"
-	"github.com/Tanibox/tania-server/src/growth/storage"
+	"github.com/Tanibox/tania-core/src/growth/repository"
+	"github.com/Tanibox/tania-core/src/growth/storage"
 )
 
 type CropReadRepositorySqlite struct {

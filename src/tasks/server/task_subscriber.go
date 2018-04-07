@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/Tanibox/tania-server/src/tasks/domain"
-	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/tasks/storage"
 	"github.com/labstack/echo"
 	uuid "github.com/satori/go.uuid"
 )

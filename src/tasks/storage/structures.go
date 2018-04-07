@@ -3,7 +3,7 @@ package storage
 import (
 	"time"
 
-	domain "github.com/Tanibox/tania-server/src/tasks/domain"
+	domain "github.com/Tanibox/tania-core/src/tasks/domain"
 	uuid "github.com/satori/go.uuid"
 )
 

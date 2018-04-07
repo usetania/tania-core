@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/Tanibox/tania-server/src/tasks/domain"
-	"github.com/Tanibox/tania-server/src/tasks/storage"
+	"github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/tasks/storage"
 )
 
 func MapTaskToTaskRead(task *domain.Task) *storage.TaskRead {

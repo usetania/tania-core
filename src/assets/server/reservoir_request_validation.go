@@ -3,9 +3,9 @@ package server
 import (
 	"strconv"
 
-	"github.com/Tanibox/tania-server/src/helper/validationhelper"
+	"github.com/Tanibox/tania-core/src/helper/validationhelper"
 
-	"github.com/Tanibox/tania-server/src/assets/domain"
+	"github.com/Tanibox/tania-core/src/assets/domain"
 )
 
 func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) {

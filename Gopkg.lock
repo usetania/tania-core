@@ -28,18 +28,36 @@
 [[projects]]
   branch = "master"
   name = "github.com/hashicorp/hcl"
-  packages = [".","hcl/ast","hcl/parser","hcl/scanner","hcl/strconv","hcl/token","json/parser","json/scanner","json/token"]
+  packages = [
+    ".",
+    "hcl/ast",
+    "hcl/parser",
+    "hcl/scanner",
+    "hcl/strconv",
+    "hcl/token",
+    "json/parser",
+    "json/scanner",
+    "json/token"
+  ]
   revision = "23c074d0eceb2b8a5bfdbb271ab780cde70f05a8"
 
 [[projects]]
   name = "github.com/labstack/echo"
-  packages = [".","middleware"]
+  packages = [
+    ".",
+    "middleware"
+  ]
   revision = "b338075a0fc6e1a0683dbf03d09b4957a289e26f"
   version = "3.2.6"
 
 [[projects]]
   name = "github.com/labstack/gommon"
-  packages = ["bytes","color","log","random"]
+  packages = [
+    "bytes",
+    "color",
+    "log",
+    "random"
+  ]
   revision = "57409ada9da0f2afad6664c49502f8c50fbd8476"
   version = "0.2.3"
 
@@ -110,7 +128,10 @@
 
 [[projects]]
   name = "github.com/stretchr/testify"
-  packages = ["assert","mock"]
+  packages = [
+    "assert",
+    "mock"
+  ]
   revision = "b91bfb9ebec76498946beb6af7c0230c7cc7ba6c"
   version = "v1.2.0"
 
@@ -129,7 +150,12 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["acme","acme/autocert"]
+  packages = [
+    "acme",
+    "acme/autocert",
+    "bcrypt",
+    "blowfish"
+  ]
   revision = "d585fd2cc9195196078f516b69daff6744ef5e84"
 
 [[projects]]
@@ -153,6 +179,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "293305afbb59b6a334d8f7a77a021b543f6b2c530d6a41a95acfbb2e9b4c2669"
+  inputs-digest = "a05ca946cb48b14b963bb1417bd9b97947661555bdca8f0c985788d289193d7c"
   solver-name = "gps-cdcl"
   solver-version = 1

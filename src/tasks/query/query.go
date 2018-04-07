@@ -1,7 +1,7 @@
 package query
 
 import (
-	//assetsdomain "github.com/Tanibox/tania-server/src/assets/domain"
+	//assetsdomain "github.com/Tanibox/tania-core/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
 )
 

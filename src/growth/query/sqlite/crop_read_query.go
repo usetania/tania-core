@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/growth/domain"
-	"github.com/Tanibox/tania-server/src/growth/query"
-	"github.com/Tanibox/tania-server/src/growth/storage"
-	"github.com/Tanibox/tania-server/src/helper/paginationhelper"
+	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/Tanibox/tania-core/src/growth/query"
+	"github.com/Tanibox/tania-core/src/growth/storage"
+	"github.com/Tanibox/tania-core/src/helper/paginationhelper"
 	uuid "github.com/satori/go.uuid"
 )
 

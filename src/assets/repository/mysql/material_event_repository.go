@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Tanibox/tania-server/src/assets/decoder"
-	"github.com/Tanibox/tania-server/src/assets/domain"
-	"github.com/Tanibox/tania-server/src/assets/repository"
-	"github.com/Tanibox/tania-server/src/helper/structhelper"
+	"github.com/Tanibox/tania-core/src/assets/decoder"
+	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/Tanibox/tania-core/src/assets/repository"
+	"github.com/Tanibox/tania-core/src/helper/structhelper"
 	uuid "github.com/satori/go.uuid"
 )
 

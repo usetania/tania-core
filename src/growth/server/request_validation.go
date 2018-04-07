@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Tanibox/tania-server/src/growth/domain"
+	"github.com/Tanibox/tania-core/src/growth/domain"
 	"github.com/labstack/echo"
 )
 

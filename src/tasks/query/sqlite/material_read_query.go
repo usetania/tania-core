@@ -2,7 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
-	"github.com/Tanibox/tania-server/src/tasks/query"
+	"github.com/Tanibox/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
 

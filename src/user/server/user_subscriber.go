@@ -3,8 +3,8 @@ package server
 import (
 	"errors"
 
-	"github.com/Tanibox/tania-server/src/user/domain"
-	"github.com/Tanibox/tania-server/src/user/storage"
+	"github.com/Tanibox/tania-core/src/user/domain"
+	"github.com/Tanibox/tania-core/src/user/storage"
 	"github.com/labstack/gommon/log"
 )
 
