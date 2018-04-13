@@ -1,9 +1,9 @@
 {
     "tania_persistence_engine": "sqlite",
     "demo_mode": true,
-    "upload_path_area": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/areas",
-    "upload_path_crop": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/uploads/crops",
-    "sqlite_path": "/Users/user/Code/golang/src/github.com/Tanibox/tania-server/db/sqlite/tania.db",
+    "upload_path_area": "uploads/areas",
+    "upload_path_crop": "uploads/crops",
+    "sqlite_path": "db/sqlite/ddl.db",
     "mysql_host": "127.0.0.1",
     "mysql_port": "3306",
     "mysql_dbname": "tania",
