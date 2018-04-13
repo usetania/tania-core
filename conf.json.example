@@ -3,7 +3,7 @@
     "demo_mode": true,
     "upload_path_area": "uploads/areas",
     "upload_path_crop": "uploads/crops",
-    "sqlite_path": "db/sqlite/ddl.db",
+    "sqlite_path": "db/sqlite/tania.db",
     "mysql_host": "127.0.0.1",
     "mysql_port": "3306",
     "mysql_dbname": "tania",
