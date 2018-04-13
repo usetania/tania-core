@@ -25,6 +25,7 @@
 <script>
 import Nprogres from 'nprogress'
 import { mapActions, mapGetters } from 'vuex'
+import config from '../../../../conf.json'
 export default {
   name: 'Login',
 
@@ -68,9 +69,9 @@ export default {
       this.userLogin({
         username: this.username,
         password: this.password,
-        client_id: 'f0ece679-3f53-463e-b624-73e83049d6ac',
+        client_id: config.client_id,
         response_type: 'token',
-        redirect_uri: 'http://localhost:8080/',
+        redirect_uri: config.redirect_uri,
         state: 'random-string',
       }).then(this.redirector)
       .catch(() => this.$toasted.error('Incorrect Username and/or password'))
