@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const path = require('path');
 const glob = require('glob-all');
 const fs = require('fs')
+const confJSON = require('./conf.json');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PurifyCSSPlugin = require('purifycss-webpack');
@@ -67,7 +68,13 @@ mix.webpackConfig({
       chunkSortMode: 'dependency',
       serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
         mix.inProduction() ? './resources/js/service-worker-prod.js' : './resources/js/service-worker-dev.js'), 'utf-8')}</script>`
-    })
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        REDIRECT_URI: JSON.stringify(confJSON.redirect_uri),
+        CLIENT_ID: JSON.stringify(confJSON.client_id)
+      },
+    }),
   ],
   resolve: {
     extensions: [
