@@ -118,7 +118,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 	}
 
 	if userRead.UID == (uuid.UUID{}) {
-		return Error(c, errors.New("Invalid username or password"))
+		return Error(c, NewRequestValidationError(INVALID, "username"))
 	}
 
 	if reqClientID != clientID {

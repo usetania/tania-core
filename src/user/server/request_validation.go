@@ -3,10 +3,13 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"runtime"
 	"strconv"
+	"strings"
 
 	"github.com/Tanibox/tania-core/src/user/domain"
 	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -92,9 +95,22 @@ func Error(c echo.Context, err error) error {
 		"error_message": "",
 	}
 
+	file, line := getFileAndLineNumber()
+
+	logData := log.WithFields(log.Fields{
+		"user_uid":      c.Get("USER_UID"),
+		"request_id":    c.Response().Header().Get(echo.HeaderXRequestID),
+		"file":          file,
+		"line":          line,
+		"error_message": "",
+		"field_name":    "",
+	})
+
 	if re, ok := err.(domain.UserError); ok {
 		errorResponse["error_code"] = strconv.Itoa(re.Code)
 		errorResponse["error_message"] = re.Error()
+
+		logData.WithField("error_message", re.Error()).Info()
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
 	} else if rve, ok := err.(RequestValidationError); ok {
@@ -102,9 +118,30 @@ func Error(c echo.Context, err error) error {
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage
 
+		logData.WithField("error_message", rve.ErrorMessage)
+		logData.WithField("field_name", rve.FieldName)
+		logData.Info()
+
 		return c.JSON(http.StatusBadRequest, rve)
 	}
 
 	errorResponse["error_message"] = err.Error()
+	logData.WithField("error_message", err.Error()).Error()
+
 	return c.JSON(http.StatusInternalServerError, errorResponse)
+}
+
+func getFileAndLineNumber() (string, int) {
+	_, file, line, ok := runtime.Caller(2)
+	if !ok {
+		file = "<???>"
+		line = 1
+	} else {
+		slash := strings.LastIndex(file, "/")
+		if slash >= 0 {
+			file = file[slash+1:]
+		}
+	}
+
+	return file, line
 }
