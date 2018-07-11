@@ -384,14 +384,26 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 				return c.JSON(http.StatusUnauthorized, map[string]string{"data": "Unauthorized"})
 			}
 
-			uid := ""
+			var uid interface{}
 			err := db.QueryRow(`SELECT USER_UID
 				FROM USER_AUTH WHERE ACCESS_TOKEN = ?`, splitted[1]).Scan(&uid)
 			if err != nil {
 				return c.JSON(http.StatusUnauthorized, map[string]string{"data": "Unauthorized"})
 			}
 
-			userUID, err := uuid.FromString(uid)
+			ubyte, ok := uid.([]byte)
+			if !ok {
+				return c.JSON(http.StatusInternalServerError, map[string]string{"data": "Error user UID type assertion"})
+			}
+
+			var userUID uuid.UUID
+			if *config.Config.TaniaPersistenceEngine == config.DB_SQLITE {
+				userUID, err = uuid.FromString(string(ubyte))
+			} else if *config.Config.TaniaPersistenceEngine == config.DB_MYSQL {
+				ubyte := uid.([]byte)
+				userUID, err = uuid.FromBytes(ubyte)
+			}
+
 			if err != nil {
 				return c.JSON(http.StatusInternalServerError, map[string]error{"data": err})
 			}
