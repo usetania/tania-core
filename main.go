@@ -3,13 +3,15 @@ package main
 import (
 	"database/sql"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Tanibox/tania-core/src/eventbus"
 	"github.com/asaskevich/EventBus"
+	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/go-sql-driver/mysql"
 
@@ -25,12 +27,24 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	colorable "github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/paked/configure"
 	uuid "github.com/satori/go.uuid"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
+	if terminal.IsTerminal(int(os.Stdout.Fd())) {
+		log.SetFormatter(&log.TextFormatter{ForceColors: true})
+
+		// We need this for Windows to get coloured
+		// https://github.com/sirupsen/logrus#formatters
+		log.SetOutput(colorable.NewColorableStdout())
+	} else {
+		log.SetFormatter(&log.JSONFormatter{})
+	}
+
 	initConfig()
 }
 
@@ -120,9 +134,10 @@ func main() {
 	err = initUser(authServer)
 
 	// Initialize Echo Middleware
-	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(headerNoCache)
+	e.Use(logrusMiddleware())
+	e.Use(middleware.RequestID())
 
 	APIMiddlewares := []echo.MiddlewareFunc{}
 	if !*config.Config.DemoMode {
@@ -411,6 +426,53 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 			c.Set("USER_UID", userUID)
 
 			return next(c)
+		}
+	}
+}
+
+func logrusMiddleware() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			req := c.Request()
+			start := time.Now()
+
+			if err := next(c); err != nil {
+				c.Error(err)
+			}
+
+			res := c.Response()
+			stop := time.Now()
+
+			fields := map[string]interface{}{
+				"request_id":      res.Header().Get(echo.HeaderXRequestID),
+				"ip":              c.RealIP(),
+				"host":            req.Host,
+				"uri":             req.RequestURI,
+				"method":          req.Method,
+				"user_agent":      req.UserAgent(),
+				"status":          res.Status,
+				"roundtrip":       strconv.FormatInt(stop.Sub(start).Nanoseconds()/1000, 10),
+				"roundtrip_human": stop.Sub(start).String(),
+			}
+
+			// We will add log Form Values and Query String if...
+			if res.Status == http.StatusInternalServerError {
+				if !strings.HasPrefix(req.Header.Get(echo.HeaderContentType), echo.MIMEMultipartForm) {
+					qs := c.QueryString()
+
+					forms, err := c.FormParams()
+					if err != nil {
+						c.Error(err)
+					}
+
+					fields["query_string"] = qs
+					fields["form_values"] = forms
+				}
+			}
+
+			log.WithFields(fields).Info("Response Info")
+
+			return nil
 		}
 	}
 }

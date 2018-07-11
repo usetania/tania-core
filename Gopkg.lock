@@ -154,7 +154,8 @@
     "acme",
     "acme/autocert",
     "bcrypt",
-    "blowfish"
+    "blowfish",
+    "ssh/terminal"
   ]
   revision = "d585fd2cc9195196078f516b69daff6744ef5e84"
 
@@ -167,7 +168,10 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "83801418e1b59fb1880e363299581ee543af32ca"
 
 [[projects]]
@@ -179,6 +183,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "a05ca946cb48b14b963bb1417bd9b97947661555bdca8f0c985788d289193d7c"
+  inputs-digest = "627d1bfa46508216b7c4b5778a6fd92d6b03d01cb6fe45d49d8a8eeb916e14b0"
   solver-name = "gps-cdcl"
   solver-version = 1
