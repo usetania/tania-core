@@ -12,8 +12,10 @@ import (
 	"github.com/Tanibox/tania-core/src/user/domain"
 	"github.com/Tanibox/tania-core/src/user/domain/service"
 	"github.com/Tanibox/tania-core/src/user/query"
+	queryMysql "github.com/Tanibox/tania-core/src/user/query/mysql"
 	querySqlite "github.com/Tanibox/tania-core/src/user/query/sqlite"
 	"github.com/Tanibox/tania-core/src/user/repository"
+	repoMysql "github.com/Tanibox/tania-core/src/user/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-core/src/user/repository/sqlite"
 	"github.com/Tanibox/tania-core/src/user/storage"
 	"github.com/labstack/echo"
@@ -37,30 +39,39 @@ func NewAuthServer(
 	db *sql.DB,
 	eventBus eventbus.TaniaEventBus,
 ) (*AuthServer, error) {
-	userEventRepo := repoSqlite.NewUserEventRepositorySqlite(db)
-	userReadRepo := repoSqlite.NewUserReadRepositorySqlite(db)
-	userEventQuery := querySqlite.NewUserEventQuerySqlite(db)
-	userReadQuery := querySqlite.NewUserReadQuerySqlite(db)
 
-	userAuthRepo := repoSqlite.NewUserAuthRepositorySqlite(db)
-	userAuthQuery := querySqlite.NewUserAuthQuerySqlite(db)
+	authServer := &AuthServer{
+		EventBus: eventBus,
+	}
 
-	userService := service.UserServiceImpl{UserReadQuery: userReadQuery}
+	switch *config.Config.TaniaPersistenceEngine {
+	case config.DB_SQLITE:
+		authServer.UserEventRepo = repoSqlite.NewUserEventRepositorySqlite(db)
+		authServer.UserReadRepo = repoSqlite.NewUserReadRepositorySqlite(db)
+		authServer.UserEventQuery = querySqlite.NewUserEventQuerySqlite(db)
+		authServer.UserReadQuery = querySqlite.NewUserReadQuerySqlite(db)
 
-	authServer := AuthServer{
-		UserEventRepo:  userEventRepo,
-		UserReadRepo:   userReadRepo,
-		UserEventQuery: userEventQuery,
-		UserReadQuery:  userReadQuery,
-		UserAuthRepo:   userAuthRepo,
-		UserAuthQuery:  userAuthQuery,
-		UserService:    userService,
-		EventBus:       eventBus,
+		authServer.UserAuthRepo = repoSqlite.NewUserAuthRepositorySqlite(db)
+		authServer.UserAuthQuery = querySqlite.NewUserAuthQuerySqlite(db)
+
+		authServer.UserService = service.UserServiceImpl{UserReadQuery: authServer.UserReadQuery}
+
+	case config.DB_MYSQL:
+		authServer.UserEventRepo = repoMysql.NewUserEventRepositoryMysql(db)
+		authServer.UserReadRepo = repoMysql.NewUserReadRepositoryMysql(db)
+		authServer.UserEventQuery = queryMysql.NewUserEventQueryMysql(db)
+		authServer.UserReadQuery = queryMysql.NewUserReadQueryMysql(db)
+
+		authServer.UserAuthRepo = repoMysql.NewUserAuthRepositoryMysql(db)
+		authServer.UserAuthQuery = queryMysql.NewUserAuthQueryMysql(db)
+
+		authServer.UserService = service.UserServiceImpl{UserReadQuery: authServer.UserReadQuery}
+
 	}
 
 	authServer.InitSubscriber()
 
-	return &authServer, nil
+	return authServer, nil
 }
 
 // InitSubscriber defines the mapping of which event this domain listen with their handler
