@@ -70,7 +70,7 @@ export default {
         password: this.password,
         client_id: process.env.CLIENT_ID,
         response_type: 'token',
-        redirect_uri: process.env.REDIRECT_URI,
+        redirect_uri: location.protocol+"//"+location.host,
         state: 'random-string',
       }).then(this.redirector)
       .catch(() => this.$toasted.error('Incorrect Username and/or password'))
