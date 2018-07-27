@@ -87,7 +87,7 @@ func (s *AuthServer) Mount(g *echo.Group) {
 
 func (s *AuthServer) Authorize(c echo.Context) error {
 	responseType := "token"
-	redirectURI := *config.Config.RedirectURI
+	redirectURI := config.Config.RedirectURI
 	clientID := *config.Config.ClientID
 
 	reqUsername := c.FormValue("username")
@@ -125,7 +125,15 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 		return Error(c, NewRequestValidationError(INVALID, "client_id"))
 	}
 
-	if reqRedirectURI != redirectURI {
+	selectedRedirectURI := ""
+	for _, v := range redirectURI {
+		if reqRedirectURI == *v {
+			selectedRedirectURI = *v
+			break
+		}
+	}
+
+	if selectedRedirectURI == "" {
 		return Error(c, NewRequestValidationError(INVALID, "redirect_uri"))
 	}
 
@@ -154,11 +162,11 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	redirectURI += "?" + "access_token=" + accessToken + "&state=" + reqState + "&expires_in=" + strconv.Itoa(expiresIn)
+	selectedRedirectURI += "?" + "access_token=" + accessToken + "&state=" + reqState + "&expires_in=" + strconv.Itoa(expiresIn)
 
 	c.Response().Header().Set(echo.HeaderAuthorization, "Bearer "+accessToken)
 
-	return c.Redirect(302, redirectURI)
+	return c.Redirect(302, selectedRedirectURI)
 }
 
 func (s *AuthServer) Register(c echo.Context) error {

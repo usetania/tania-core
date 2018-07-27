@@ -33,10 +33,6 @@
   revision = "36e9d2ebbde5e3f13ab2e25625fd453271d6522e"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/paked/configure"
-
-[[constraint]]
   name = "github.com/sasha-s/go-deadlock"
   version = "0.2.0"
 
@@ -59,3 +55,7 @@
 [[constraint]]
   name = "github.com/mattn/go-colorable"
   version = "0.0.9"
+
+[[constraint]]
+  name = "github.com/spf13/viper"
+  version = "1.0.2"
