@@ -71,7 +71,6 @@ mix.webpackConfig({
     }),
     new webpack.DefinePlugin({
       'process.env': {
-        REDIRECT_URI: JSON.stringify(confJSON.redirect_uri),
         CLIENT_ID: JSON.stringify(confJSON.client_id)
       },
     }),
