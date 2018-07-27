@@ -1,4 +1,5 @@
 {
+    "app_port": "8080",
     "tania_persistence_engine": "sqlite",
     "demo_mode": true,
     "upload_path_area": "uploads/areas",

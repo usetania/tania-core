@@ -167,7 +167,7 @@ func main() {
 	e.Static("/", "public")
 
 	// Start Server
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":" + *config.Config.AppPort))
 }
 
 func initUser(authServer *userserver.AuthServer) error {
