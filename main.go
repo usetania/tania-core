@@ -29,7 +29,6 @@ import (
 	"github.com/labstack/echo/middleware"
 	colorable "github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/paked/configure"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 )
@@ -45,7 +44,7 @@ func init() {
 		log.SetFormatter(&log.JSONFormatter{})
 	}
 
-	initConfig()
+	config.InitViperConfig()
 }
 
 func main() {
@@ -169,67 +168,6 @@ func main() {
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8080"))
-}
-
-/*
-	Example setting and usage of configure package:
-
-	// main.initConfig()
-	configuration := config.Configuration{
-		// this will be filled from environment variables
-		DBPassword: conf.String("TANIA_DB_PASSWORD", "123456", "Description"),
-
-		// this will be filled from flags (ie ./tania-server --port=9000)
-		Port: conf.String("port", "3000", "Description"),
-
-		// this will be filled from conf.json
-		UploadPath: conf.String("UploadPath", "/home/tania/uploads", "Description"),
-	}
-
-	// config.Configuration struct
-	type Configuration struct {
-		DBPassword 		*string
-		Port 			*string
-		UploadPath 		*string
-	}
-
-	// Usage. config.Config can be called globally
-	fmt.Println(*config.Config.DBPassword)
-	fmt.Println(*config.Config.Port)
-	fmt.Println(*config.Config.UploadPath)
-
-*/
-func initConfig() {
-	conf := configure.New()
-
-	configuration := config.Configuration{
-		UploadPathArea:         conf.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo"),
-		UploadPathCrop:         conf.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo"),
-		DemoMode:               conf.Bool("demo_mode", true, "Switch for the demo mode"),
-		TaniaPersistenceEngine: conf.String("tania_persistence_engine", "sqlite", "The persistance engine of Tania. Options are inmemory, sqlite, inmemory"),
-		SqlitePath:             conf.String("sqlite_path", "tania.db", "Path of sqlite file db"),
-		MysqlHost:              conf.String("mysql_host", "127.0.0.1", "Mysql Host"),
-		MysqlPort:              conf.String("mysql_port", "3306", "Mysql Port"),
-		MysqlDbname:            conf.String("mysql_dbname", "tania", "Mysql DBName"),
-		MysqlUsername:          conf.String("mysql_username", "root", "Mysql username"),
-		MysqlPassword:          conf.String("mysql_password", "root", "Mysql password"),
-		RedirectURI:            conf.String("redirect_uri", "http://localhost:8080/oauth2_implicit_callback", "URI for redirection after authorization server grants access token"),
-		ClientID:               conf.String("client_id", "f0ece679-3f53-463e-b624-73e83049d6ac", "OAuth2 Implicit Grant Client ID for frontend"),
-	}
-
-	// This config will read the first configuration.
-	// If it doesn't find the key, then it go to the next configuration.
-	conf.Use(configure.NewEnvironment())
-	conf.Use(configure.NewFlag())
-
-	if _, err := os.Stat("conf.json"); err == nil {
-		log.Print("Using 'conf.json' configuration")
-		conf.Use(configure.NewJSONFromFile("conf.json"))
-	}
-
-	conf.Parse()
-
-	config.Config = configuration
 }
 
 func initUser(authServer *userserver.AuthServer) error {
