@@ -7,9 +7,11 @@ and this project currently doesn't strictly adhere to [Semantic Versioning](http
 ## [Unreleased]
 ### Added 
 - Add `CHANGELOG.md` based on the [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+- Add `app_port` config for configurable backend port
 
 ### Changed
 - Change [paked/configure](https://github.com/paked/configure) package with [spf13/viper](https://github.com/spf13/viper) because [paked/configure](https://github.com/paked/configure) doesn't support config of slice
+- Change `redirect_uri` config to use array of string instead of single string value to handle multiple host
 
 ## [1.5.1] - 2018-04-14
 ### Fixed

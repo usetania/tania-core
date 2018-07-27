@@ -15,6 +15,7 @@ const (
 )
 
 type Configuration struct {
+	AppPort                *string   `mapstructure:"app_port"`
 	DemoMode               *bool     `mapstructure:"demo_mode"`
 	UploadPathArea         *string   `mapstructure:"upload_path_area"`
 	UploadPathCrop         *string   `mapstructure:"upload_path_crop"`
