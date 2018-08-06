@@ -32,6 +32,11 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 			}
 		}
 
+		var assetID []byte
+		if taskRead.AssetID != nil {
+			assetID = taskRead.AssetID.Bytes()
+		}
+
 		res, err := f.DB.Exec(`UPDATE TASK_READ SET
 			TITLE = ?, DESCRIPTION = ?, CREATED_DATE = ?, DUE_DATE = ?,
 			COMPLETED_DATE = ?, CANCELLED_DATE = ?, PRIORITY = ?, STATUS = ?,
@@ -41,7 +46,7 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 			taskRead.Title, taskRead.Description, taskRead.CreatedDate, taskRead.DueDate,
 			taskRead.CompletedDate, taskRead.CancelledDate, taskRead.Priority, taskRead.Status,
 			taskRead.Domain, domainDataMaterialID, domainDataAreaID,
-			taskRead.Category, taskRead.IsDue, taskRead.AssetID.Bytes(),
+			taskRead.Category, taskRead.IsDue, assetID,
 			taskRead.UID.Bytes())
 
 		if err != nil {
@@ -61,11 +66,11 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 				UID, TITLE, DESCRIPTION, CREATED_DATE, DUE_DATE,
 				COMPLETED_DATE, CANCELLED_DATE, PRIORITY, STATUS,
 				DOMAIN_CODE, DOMAIN_DATA_MATERIAL_ID, DOMAIN_DATA_AREA_ID, CATEGORY, IS_DUE, ASSET_ID)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				taskRead.UID.Bytes(), taskRead.Title, taskRead.Description, taskRead.CreatedDate, taskRead.DueDate,
 				taskRead.CompletedDate, taskRead.CancelledDate, taskRead.Priority, taskRead.Status,
 				taskRead.Domain, domainDataMaterialID, domainDataAreaID,
-				taskRead.Category, taskRead.IsDue, taskRead.AssetID.Bytes())
+				taskRead.Category, taskRead.IsDue, assetID)
 
 			if err != nil {
 				result <- err
