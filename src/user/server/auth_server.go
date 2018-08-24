@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
+	"net/url"
 	"strconv"
 
 	"github.com/Tanibox/tania-core/config"
@@ -123,6 +124,16 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 
 	if reqClientID != clientID {
 		return Error(c, NewRequestValidationError(INVALID, "client_id"))
+	}
+
+	if reqRedirectURI == "" {
+		return Error(c, NewRequestValidationError(REQUIRED, "redirect_uri"))
+	}
+
+	var err error
+	reqRedirectURI, err = url.PathUnescape(reqRedirectURI)
+	if err != nil {
+		return Error(c, err)
 	}
 
 	selectedRedirectURI := ""
