@@ -1,13 +1,15 @@
-# Tania
+<div align="center">
+    <img src="logo.png" alt="Tania Farm Management System" width="200">
+    <h1>Farm Management Software</h1>
+    <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
+    <a href="https://opensource.org/licenses/Apache-2.0" target="_blank"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
+</div>
 
-[![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/taniafarm/Lobby)
 
-Tania is a free and open source farming management system for everyone. You can manage your areas, reservoirs, farm tasks, inventories, and the crop growing progress.
+**Tania** is a free and open source farm management software. You can manage your farm areas, farm reservoirs, farm tasks, inventories, and the crop growing progress. It is designed for any type of farms.
 
-To get the stable release, you can clone from the master branch or from the [release tab](https://github.com/Tanibox/tania-core/releases).
-
-## Requirement
-- Go v1.9 
+## Requirements
+- Go 1.9 
 - Vue 2.x
 - Node 8.9.x
 
@@ -27,9 +29,37 @@ To get the stable release, you can clone from the master branch or from the [rel
 - Run the Go server using `go run main.go` and open it in the `http://localhost:8080`
 - Default username and password are `tania / tania`
 
+## Database Engine
+
+Tania use SQLite as the default database engine. You may use MySQL as your database engine by replacing `sqlite` with `mysql` at `tania_persistence_engine` field in your `conf.json`.
+
+```
+{
+    "app_port": "8080",
+    "tania_persistence_engine": "mysql",
+    "demo_mode": true,
+    "upload_path_area": "uploads/areas",
+    "upload_path_crop": "uploads/crops",
+    "sqlite_path": "db/sqlite/tania.db",
+    "mysql_host": "localhost",
+    "mysql_port": "3306",
+    "mysql_dbname": "your_mysql_db_name",
+    "mysql_user": "your_mysql_user",
+    "mysql_password": "your_mysql_password",
+    "redirect_uri": [
+        "http://localhost:8080",
+        "http://127.0.0.1:8080"
+    ],
+    "client_id": "f0ece679-3f53-463e-b624-73e83049d6ac"
+}
+```
+
 ## Test
 - Call `go test ./...` to run all the Go tests.
 - Call `npm run cypress:run` to run the end-to-end test
+
+## REST API
+**Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can read the documentation here: [Tania REST API](https://documenter.getpostman.com/view/3434975/tania/RVnb9H2z).
 
 ## License
 
