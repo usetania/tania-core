@@ -26,10 +26,10 @@ echo "DEMO_MODE is set to ${DEMO_MODE}"
 echo "Starting server for E2E testing ..."
 
 # Run golang on linux
-./terra.linux.amd64 > /dev/null 2>&1 &
-TERRA_PID=$!
+./tania.linux.amd64 > /dev/null 2>&1 &
+TANIA_PID=$!
 
-echo "Server has running running in the background at pid ${TERRA_PID}"
+echo "Server has running running in the background at pid ${TANIA_PID}"
 
 echo "Running Front-End Unit tests ..."
 # build and run unit test
@@ -39,10 +39,10 @@ echo "Running end to end tests ..."
 # build and test e2e
 yarn run production && yarn run cypress:run
 
-echo "Killing Server [$TERRA_PID] ..."
+echo "Killing Server [$TANIA_PID] ..."
 
 # Move the screenshoot and recorded video from the test result into public folder
 mkdir public/assets
 cp -rf resources/tests/assets/videos public/assets/
 
-kill -s TERM $TERRA_PID
+kill -s TERM $TANIA_PID
