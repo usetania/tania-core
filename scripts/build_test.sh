@@ -13,7 +13,7 @@ chmod 775 db/sqlite/tania.db
 
 echo "Building golang binaries..."
 # Build and test Golang
-make linux-arm linux-amd64 windows osxcross
+make linux-arm linux-amd64 windows
 
 echo "Configuring binary for running ..."
 # Setting up configuration
