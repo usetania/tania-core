@@ -1,7 +1,7 @@
 <div align="center">
     <img src="logo.png" alt="Tania Farm Management System" width="200">
     <h1>Farm Management Software</h1>
-    <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat on" alt="telegram"></a>
+    <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
     <img src="https://img.shields.io/badge/semver-1.5.1-green.svg?maxAge=2592000" alt="semver">
     <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
     <a href="https://opensource.org/licenses/Apache-2.0" target="_blank"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
@@ -17,7 +17,7 @@ Username: tania
 Password: tania
 ```
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshot.PNG)
 
 ## Getting Started
 
