@@ -1,6 +1,7 @@
 <div align="center">
     <img src="logo.png" alt="Tania Farm Management System" width="200">
     <h1>Farm Management Software</h1>
+    <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat on" alt="telegram"></a>
     <img src="https://img.shields.io/badge/semver-1.5.1-green.svg?maxAge=2592000" alt="semver">
     <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
     <a href="https://opensource.org/licenses/Apache-2.0" target="_blank"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
@@ -8,6 +9,15 @@
 
 
 **Tania** is a free and open source farm management software. You can manage your farm areas, farm reservoirs, farm tasks, inventories, and the crop growing progress. It is designed for any type of farms.
+
+You can try the live demo on [demo-tania.tanibox.com](https://demo-tania.tanibox.com). Don't worry, it's free.
+
+```
+Username: tania
+Password: tania
+```
+
+![Screenshot](screenshot.png)
 
 ## Getting Started
 
@@ -67,6 +77,27 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 
 ## REST APIs
 **Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can read the documentation here: [Tania REST API](https://documenter.getpostman.com/view/3434975/tania/RVnb9H2z).
+
+## Contributing to Tania
+
+We welcome contributions, but request you to follow these guidelines.
+
+This project adheres to the [Contributor Covenant 1.4](code-of-conduct.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [asep@tanibox.com](mailto:asep@tanibox.com).
+
+### Raising Issues
+
+Please raise any bug reports on [Tania's Github issue trackers](https://github.com/Tanibox/tania-core/issues). Be sure to search the list to see if your issue has already been raised.
+
+A good bug report is one that make it easy to understand what you were trying to do and what went wrong.
+
+### Feature requests
+
+For feature requests, please raise and discuss them on [Tania's Telegram group](https://t.me/usetania).
+
+### Pull-Requests
+
+If you want to raise a pull-request with a new feature, or refactoring of existing code, please, discuss it first on [Tania's Telegram group](https://t.me/usetania).
+
 
 ## Authors
 
