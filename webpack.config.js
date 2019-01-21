@@ -1,4 +1,5 @@
 const path = require('path')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   resolve: {
@@ -12,10 +13,25 @@ module.exports = {
         test: /\.vue$/,
         loader: 'vue-loader'
       },
+      { 
+        test: /\.hbs$/,
+        use: {
+          loader: 'handlebars-loader'
+        }
+      },
+      {
+        test: /\.pug$/,
+        loader: 'pug-plain-loader'
+      },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/env']
+          }
+        }
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -25,7 +41,10 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new VueLoaderPlugin()
+  ]
 }
 
 // test specific setups
