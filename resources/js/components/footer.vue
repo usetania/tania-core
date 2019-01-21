@@ -1,5 +1,4 @@
 <template lang="pug">
-div  
   footer#footer.app-footer(role="footer")
     .wrapper.b-t.bg-light
       span.pull-right Tania 2.0.0
