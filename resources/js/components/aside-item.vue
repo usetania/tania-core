@@ -1,7 +1,8 @@
 <template lang="pug">
-  li(:class="active ? 'active': ''" @click="folded")
-    slot
-    slot(name="item")
+  div
+    li(:class="active ? 'active': ''" @click="folded")
+      slot
+      slot(name="item")
 </template>
 
 <script>
@@ -20,7 +21,7 @@ export default {
 }
 </script>
 
-<style type="sccs" scoped>
+<style lang="scss" scoped>
   li > ul {
     display: none;
     animation-duration: .1s;

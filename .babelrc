@@ -5,7 +5,7 @@
   "plugins": [
     "@babel/transform-runtime",
     "@babel/plugin-syntax-dynamic-import",
-    "transform-object-rest-spread",
+    "@babel/plugin-proposal-object-rest-spread",
     ["babel-plugin-root-import", { "rootPathSuffix": "resources/js", "rootPathPrefix": "@" }]
   ],
   "comments": false,
