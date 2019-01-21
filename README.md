@@ -97,7 +97,7 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 
 ## Roadmap
 
-We want to share our high-level details of our roadmap, so that others can see our priorities in Tania development. You can read our roadmap on [the wiki](https://github.com/flutter/flutter/wiki/Roadmap).
+We want to share our high-level details of our roadmap, so that others can see our priorities in Tania development. You can read our roadmap on [the wiki](https://github.com/Tanibox/tania-core/wiki/Roadmap).
 
 ## Contributing to Tania
 
