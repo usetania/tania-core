@@ -21,7 +21,17 @@ module.exports = {
       },
       {
         test: /\.pug$/,
-        loader: 'pug-plain-loader'
+        oneOf: [
+          // this applies to `<template lang="pug">` in Vue components
+          {
+            resourceQuery: /^\?vue/,
+            use: ['pug-plain-loader']
+          },
+          // this applies to pug imports inside JavaScript
+          {
+            use: ['raw-loader', 'pug-plain-loader']
+          }
+        ]
       },
       {
         test: /\.js$/,
@@ -39,6 +49,10 @@ module.exports = {
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.(css|sass|scss)$/,
+        loader: ['raw-loader', 'sass-loader']
       }
     ]
   },

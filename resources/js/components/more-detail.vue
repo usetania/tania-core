@@ -1,4 +1,5 @@
 <template lang="pug">
+div
   div(v-if="description.length > 0")
     p.small(v-if="clicked")
       span {{ description }}

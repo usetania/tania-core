@@ -1,4 +1,5 @@
 <template lang="pug">
+div
   form(@submit.prevent="create")
     .wrapper-md
       .m-n.font-thin.h3.text-black Home
