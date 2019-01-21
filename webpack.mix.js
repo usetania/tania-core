@@ -17,7 +17,7 @@ mix.setPublicPath('public/')
 mix.webpackConfig({
   output: {
     filename: '[name].[chunkhash].js',
-    chunkFilename: './js/[name].[chunkhash].js',
+    chunkFilename: 'js/[name].[chunkhash].js',
   },
   module: {
     rules: [
@@ -89,16 +89,16 @@ mix.webpackConfig({
   }
 })
 
-mix.js('resources/js/app.js', './js/app.js')
+mix.js('resources/js/app.js', 'js/app.js')
   .then(() => replace.sync({
-    // FIXME: Workaround for laravel-mix placing '//*.js' at the begining of JS output.
+    // FIXME: Workaround for laravel-mix placing '//*.js' at the entry of JS output.
     // Yell at them to fix the following issue:
     // https://github.com/JeffreyWay/laravel-mix/issues/1717#issuecomment-440086631
     files: path.resolve(__dirname, 'public/index.html'),
     from: /\/\/js/gu,
     to: '/js',
   }));
-mix.sass('resources/sass/app.scss', './css/app.css', {
+mix.sass('resources/sass/app.scss', 'css/app.css', {
   implementation: require('node-sass'),
 });
 
