@@ -4,6 +4,7 @@ const path = require('path');
 const glob = require('glob-all');
 const fs = require('fs');
 const confJSON = require('./conf.json');
+const replace = require('replace-in-file');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const PurifyCSSPlugin = require('purifycss-webpack');
@@ -39,13 +40,6 @@ mix.webpackConfig({
             use: ['raw-loader', 'pug-plain-loader']
           }
         ]
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
       }
     ]
   },
@@ -79,7 +73,7 @@ mix.webpackConfig({
       template: './resources/index.hbs',
       inject: true,
       chunkSortMode: 'dependency',
-      serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname, mix.inProduction() ? './resources/js/service-worker-prod.js' : './resources/js/service-worker-dev.js'), 'utf-8')}</script>`
+      serviceWorkerLoader: `<script type="text/javascript">${fs.readFileSync(path.join(__dirname, mix.inProduction() ? './resources/js/service-worker-prod.js' : './resources/js/service-worker-dev.js'), 'utf-8')}</script>`
     }),
     new webpack.DefinePlugin({
       'process.env': {
@@ -95,7 +89,15 @@ mix.webpackConfig({
   }
 })
 
-mix.js('resources/js/app.js', './js/app.js');
+mix.js('resources/js/app.js', './js/app.js')
+  .then(() => replace.sync({
+    // FIXME: Workaround for laravel-mix placing '//*.js' at the begining of JS output.
+    // Yell at them to fix the following issue:
+    // https://github.com/JeffreyWay/laravel-mix/issues/1717#issuecomment-440086631
+    files: path.resolve(__dirname, 'public/index.html'),
+    from: /\/\/js/gu,
+    to: '/js',
+  }));
 mix.sass('resources/sass/app.scss', './css/app.css', {
   implementation: require('node-sass'),
 });
