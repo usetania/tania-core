@@ -18,6 +18,37 @@ mix.webpackConfig({
     filename: '[name].[chunkhash].js',
     chunkFilename: './js/[name].[chunkhash].js',
   },
+  module: {
+    rules: [
+      {
+        test: /\.hbs$/,
+        use: {
+          loader: 'handlebars-loader'
+        }
+      },
+      {
+        test: /\.pug$/,
+        oneOf: [
+          // this applies to `<template lang="pug">` in Vue components
+          {
+            resourceQuery: /^\?vue/,
+            use: ['pug-plain-loader']
+          },
+          // this applies to pug imports inside JavaScript
+          {
+            use: ['raw-loader', 'pug-plain-loader']
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpg|gif|svg)$/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[ext]?[hash]'
+        }
+      }
+    ]
+  },
   plugins: [
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|en|id/),
     new PurifyCSSPlugin({
@@ -55,7 +86,7 @@ mix.webpackConfig({
         CLIENT_ID: JSON.stringify(confJSON.client_id)
       },
     }),
-    new CleanWebpackPlugin('public/js/*.js*')
+    new CleanWebpackPlugin('public/')
   ],
   resolve: {
     extensions: [
@@ -64,11 +95,10 @@ mix.webpackConfig({
   }
 })
 
-mix.js('resources/js/app.js', './public/js');
-mix.sass('resources/sass/app.scss', './public/css', {
-  implementation: require('node-sass')
+mix.js('resources/js/app.js', './js/app.js');
+mix.sass('resources/sass/app.scss', './css/app.css', {
+  implementation: require('node-sass'),
 });
-
 
 mix.sourceMaps();
 
