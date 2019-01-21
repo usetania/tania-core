@@ -19,6 +19,23 @@ Password: tania
 
 ![Screenshot](screenshot.PNG)
 
+## Table of Contents
+
+* [Getting Started](#getting-started)
+    * [Prerequisites](#prerequisites)
+    * [Building Instructions](#building-instructions)
+    * [Database Engine](#database-engine)
+    * [Run The Test](#run-the-test)
+* [REST APIs](#rest-apis)
+* [Roadmap](#roadmap)
+* [Contributing to Tania](#contributing-to-tania)
+    * [Raising Issues](#raising-issues)
+    * [Feature Requests](#feature-requests)
+    * [Pull-Requests](#pull-requests)
+* [Authors](#authors)
+* [Copyright and License](#copyright-and-license)
+
+
 ## Getting Started
 
 This software is built with [Go](https://golang.org) programming language. It means you will get an executable binary to run on your machine. You **don't need** extra software like MAMP, XAMPP, or WAMP to run **Tania**, but you may need MySQL database if you choose to use it instead of SQLite *(the default database.)*
@@ -77,6 +94,10 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 
 ## REST APIs
 **Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can read the documentation here: [Tania REST API](https://documenter.getpostman.com/view/3434975/tania/RVnb9H2z).
+
+## Roadmap
+
+We want to share our high-level details of our roadmap, so that others can see our priorities in Tania development. You can read our roadmap on [the wiki](https://github.com/flutter/flutter/wiki/Roadmap).
 
 ## Contributing to Tania
 
