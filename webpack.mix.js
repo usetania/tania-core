@@ -14,6 +14,11 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 
 
 mix.webpackConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'resources/js')
+    }
+  },
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: '[name].[chunkhash].js',
@@ -84,13 +89,11 @@ mix.webpackConfig({
     new CleanWebpackPlugin('public/')
   ],
   resolve: {
-    extensions: [
-      ".vue"
-    ]
+    extensions: ['.js', '.jsx', '.vue']
   }
 })
 
-mix.js('resources/js/app.js', 'js')
+mix.js('resources/js/app.js', 'js/')
   .then(() => replace.sync({
     // FIXME: Workaround for laravel-mix placing '//*.js' at the entry of JS output.
     // Yell at them to fix the following issue:
@@ -99,7 +102,7 @@ mix.js('resources/js/app.js', 'js')
     from: /\/\/js/gu,
     to: '/js',
   }));
-mix.sass('resources/sass/app.scss', 'css', {
+mix.sass('resources/sass/app.scss', 'css/', {
   implementation: require('node-sass'),
 });
 
