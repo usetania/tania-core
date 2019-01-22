@@ -12,12 +12,13 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-mix.setPublicPath('public/')
 
 mix.webpackConfig({
   output: {
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].[chunkhash].js',
     chunkFilename: 'js/[name].[chunkhash].js',
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -89,7 +90,7 @@ mix.webpackConfig({
   }
 })
 
-mix.js('resources/js/app.js', 'js/app.js')
+mix.js('resources/js/app.js', 'js')
   .then(() => replace.sync({
     // FIXME: Workaround for laravel-mix placing '//*.js' at the entry of JS output.
     // Yell at them to fix the following issue:
@@ -98,7 +99,7 @@ mix.js('resources/js/app.js', 'js/app.js')
     from: /\/\/js/gu,
     to: '/js',
   }));
-mix.sass('resources/sass/app.scss', 'css/app.css', {
+mix.sass('resources/sass/app.scss', 'css', {
   implementation: require('node-sass'),
 });
 

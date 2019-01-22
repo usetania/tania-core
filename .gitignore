@@ -27,6 +27,8 @@ notes.md
 conf.json
 db/sqlite/tania.db
 tania.db
+mix-manifest.json
+tania-core
 tania-server
 tania-uploads
 
