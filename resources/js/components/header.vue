@@ -21,7 +21,7 @@
               li(v-for="f in farms" :class="f.uid === farm.uid ? 'active': ''")
                 a(href="#" @click.prevent="setFarm(f.uid)" :id="f.name")
                   span
-                    i.fa.fa-leaf(:class="f.uid === farm.uid ? 'text-success': ''")
+                    i.fa.fa-leaf(:class="{ 'text-success' : f.uid === farm.uid }")
                     | {{ f.name }}
 </template>
 
