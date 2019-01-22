@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    li(:class="active ? 'active': ''" @click="folded")
+    li(:class="{ active: active }" @click="folded")
       slot
       slot(name="item")
 </template>

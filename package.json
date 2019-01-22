@@ -59,7 +59,6 @@
     "nprogress": "^0.2.0",
     "nyc": "^11.4.1",
     "pug": "^2.0.3",
-    "pug-loader": "^2.4.0",
     "pug-plain-loader": "^1.0.0",
     "purify-css": "^1.2.6",
     "purifycss-webpack": "^0.7.0",
