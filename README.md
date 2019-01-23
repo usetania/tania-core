@@ -31,9 +31,6 @@ Password: tania
 * [REST APIs](#rest-apis)
 * [Roadmap](#roadmap)
 * [Contributing to Tania](#contributing-to-tania)
-    * [Raising Issues](#raising-issues)
-    * [Feature Requests](#feature-requests)
-    * [Pull-Requests](#pull-requests)
 * [Support Us](#support-us)
     * [Backers](#backers)
     * [Sponsors](#sponsors)
@@ -105,23 +102,7 @@ We want to share our high-level details of our roadmap, so that others can see o
 
 ## Contributing to Tania
 
-We welcome contributions, but request you to follow these guidelines.
-
-This project adheres to the [Contributor Covenant 1.4](code-of-conduct.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [asep@tanibox.com](mailto:asep@tanibox.com).
-
-### Raising Issues
-
-Please raise any bug reports on [Tania's Github issue trackers](https://github.com/Tanibox/tania-core/issues). Be sure to search the list to see if your issue has already been raised.
-
-A good bug report is one that make it easy to understand what you were trying to do and what went wrong.
-
-### Feature requests
-
-For feature requests, please raise and discuss them on [Tania's Telegram group](https://t.me/usetania).
-
-### Pull-Requests
-
-If you want to raise a pull-request with a new feature, or refactoring of existing code, please, discuss it first on [Tania's Telegram group](https://t.me/usetania).
+We welcome contributions, but request you to follow these [guidelines](contributing.md).
 
 ## Support Us
 
@@ -129,15 +110,11 @@ You can become a backer or a sponsor for Tania through our [Open Collective page
 
 ### Backers
 
-Become a backer with a monthly donation and help us continue our activities.
-
-<object type="image/svg+xml" data="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600"></object>
+Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
 
 ### Sponsors
 
-Become a sponsor and get your logo on our README on GitHub with a link to your site.
-
-<object type="image/svg+xml" data="https://opencollective.com/tania/tiers/sponsor.svg?avatarHeight=36&width=600"></object>
+Become a sponsor and get your logo on our README on GitHub with a link to your site. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/sponsor.svg?avatarHeight=36&width=600" alt="backers"></a>
 
 ## Authors
 
