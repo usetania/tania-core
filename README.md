@@ -1,6 +1,8 @@
 <div align="center">
     <img src="logo.png" alt="Tania Farm Management System" width="200">
     <h1>Farm Management Software</h1>
+    <img src="https://opencollective.com/tania/tiers/backer/badge.svg?label=backer&color=brightgreen" />
+    <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
     <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
     <img src="https://img.shields.io/badge/semver-1.5.1-green.svg?maxAge=2592000" alt="semver">
     <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
@@ -32,9 +34,11 @@ Password: tania
     * [Raising Issues](#raising-issues)
     * [Feature Requests](#feature-requests)
     * [Pull-Requests](#pull-requests)
+* [Support Us](#support-us)
+    * [Backers](#backers)
+    * [Sponsors](#sponsors)
 * [Authors](#authors)
 * [Copyright and License](#copyright-and-license)
-
 
 ## Getting Started
 
@@ -119,6 +123,21 @@ For feature requests, please raise and discuss them on [Tania's Telegram group](
 
 If you want to raise a pull-request with a new feature, or refactoring of existing code, please, discuss it first on [Tania's Telegram group](https://t.me/usetania).
 
+## Support Us
+
+You can become a backer or a sponsor for Tania through our [Open Collective page](https://opencollective.com/tania).
+
+### Backers
+
+Become a backer with a monthly donation and help us continue our activities.
+
+<object type="image/svg+xml" data="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600"></object>
+
+### Sponsors
+
+Become a sponsor and get your logo on our README on GitHub with a link to your site.
+
+<object type="image/svg+xml" data="https://opencollective.com/tania/tiers/sponsor.svg?avatarHeight=36&width=600"></object>
 
 ## Authors
 
