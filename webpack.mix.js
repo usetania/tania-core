@@ -1,24 +1,17 @@
 const mix = require('laravel-mix');
 const webpack = require('webpack');
 const path = require('path');
-const glob = require('glob-all');
 const fs = require('fs');
 const confJSON = require('./conf.json');
 const replace = require('replace-in-file');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PurifyCSSPlugin = require('purifycss-webpack');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 
 mix.webpackConfig({
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, 'resources/js')
-    }
-  },
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: '[name].[chunkhash].js',
@@ -50,13 +43,8 @@ mix.webpackConfig({
     ]
   },
   plugins: [
+    new CleanWebpackPlugin('public/'),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|en|id/),
-    new PurifyCSSPlugin({
-      paths: glob.sync([
-        path.join(__dirname, 'resources/js/**/*.pug'),
-        path.join(__dirname, 'resources/js/**/**/*.vue')
-      ]),
-    }),
     new SWPrecacheWebpackPlugin({
       cacheId: 'tanibox',
       filename: 'service-worker.js',
@@ -85,8 +73,7 @@ mix.webpackConfig({
       'process.env': {
         CLIENT_ID: JSON.stringify(confJSON.client_id)
       },
-    }),
-    new CleanWebpackPlugin('public/')
+    })
   ],
   resolve: {
     extensions: ['.js', '.jsx', '.vue']
