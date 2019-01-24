@@ -13,9 +13,9 @@
 <script>
 import { event } from '@/services/bus'
 import { mapGetters } from 'vuex'
-import AppHeaderComponent from './header'
-import AppAsideComponent from './aside'
-import AppFooterComponent from './footer'
+import AppHeaderComponent from '@/components/header.vue'
+import AppAsideComponent from '@/components/aside.vue'
+import AppFooterComponent from '@/components/footer.vue'
 
 export default {
   name: 'AppComponent',
