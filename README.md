@@ -1,11 +1,8 @@
 <div align="center">
     <img src="logo.png" alt="Tania Farm Management System" width="200">
     <h1>Farm Management Software</h1>
-<<<<<<< HEAD
     <img src="https://opencollective.com/tania/tiers/backer/badge.svg?label=backer&color=brightgreen" />
     <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
-=======
->>>>>>> upstream/2.0.0-dev
     <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
     <img src="https://img.shields.io/badge/semver-1.5.1-green.svg?maxAge=2592000" alt="semver">
     <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
@@ -24,7 +21,6 @@ Password: tania
 
 ![Screenshot](screenshot.PNG)
 
-<<<<<<< HEAD
 ## Table of Contents
 
 * [Getting Started](#getting-started)
@@ -41,8 +37,6 @@ Password: tania
 * [Authors](#authors)
 * [Copyright and License](#copyright-and-license)
 
-=======
->>>>>>> upstream/2.0.0-dev
 ## Getting Started
 
 This software is built with [Go](https://golang.org) programming language. It means you will get an executable binary to run on your machine. You **don't need** extra software like MAMP, XAMPP, or WAMP to run **Tania**, but you may need MySQL database if you choose to use it instead of SQLite *(the default database.)*
