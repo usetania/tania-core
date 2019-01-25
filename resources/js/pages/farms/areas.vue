@@ -33,7 +33,7 @@
 <script>
 import { FindAreaType, FindAreaSizeUnit } from '@/stores/helpers/farms/area'
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 export default {
   name: "FarmAreas",
   computed: {

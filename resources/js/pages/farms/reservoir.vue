@@ -62,7 +62,7 @@
 import { StubReservoir, StubNote } from '@/stores/stubs'
 import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
 import { mapActions } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 export default {
   name: 'Reservoir',
   data () {

@@ -1,6 +1,11 @@
 <div align="center">
     <img src="logo.png" alt="Tania Farm Management System" width="200">
     <h1>Farm Management Software</h1>
+<<<<<<< HEAD
+    <img src="https://opencollective.com/tania/tiers/backer/badge.svg?label=backer&color=brightgreen" />
+    <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
+=======
+>>>>>>> upstream/2.0.0-dev
     <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
     <img src="https://img.shields.io/badge/semver-1.5.1-green.svg?maxAge=2592000" alt="semver">
     <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
@@ -19,6 +24,25 @@ Password: tania
 
 ![Screenshot](screenshot.PNG)
 
+<<<<<<< HEAD
+## Table of Contents
+
+* [Getting Started](#getting-started)
+    * [Prerequisites](#prerequisites)
+    * [Building Instructions](#building-instructions)
+    * [Database Engine](#database-engine)
+    * [Run The Test](#run-the-test)
+* [REST APIs](#rest-apis)
+* [Roadmap](#roadmap)
+* [Contributing to Tania](#contributing-to-tania)
+* [Support Us](#support-us)
+    * [Backers](#backers)
+    * [Sponsors](#sponsors)
+* [Authors](#authors)
+* [Copyright and License](#copyright-and-license)
+
+=======
+>>>>>>> upstream/2.0.0-dev
 ## Getting Started
 
 This software is built with [Go](https://golang.org) programming language. It means you will get an executable binary to run on your machine. You **don't need** extra software like MAMP, XAMPP, or WAMP to run **Tania**, but you may need MySQL database if you choose to use it instead of SQLite *(the default database.)*
@@ -76,28 +100,28 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 - Use `npm run cypress:run` to run the end-to-end test
 
 ## REST APIs
+
 **Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can read the documentation here: [Tania REST API](https://documenter.getpostman.com/view/3434975/tania/RVnb9H2z).
+
+## Roadmap
+
+We want to share our high-level details of our roadmap, so that others can see our priorities in Tania development. You can read our roadmap on [the wiki](https://github.com/Tanibox/tania-core/wiki/Roadmap).
 
 ## Contributing to Tania
 
-We welcome contributions, but request you to follow these guidelines.
+We welcome contributions, but request you to follow these [guidelines](contributing.md).
 
-This project adheres to the [Contributor Covenant 1.4](code-of-conduct.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [asep@tanibox.com](mailto:asep@tanibox.com).
+## Support Us
 
-### Raising Issues
+You can become a backer or a sponsor for Tania through our [Open Collective page](https://opencollective.com/tania).
 
-Please raise any bug reports on [Tania's Github issue trackers](https://github.com/Tanibox/tania-core/issues). Be sure to search the list to see if your issue has already been raised.
+### Backers
 
-A good bug report is one that make it easy to understand what you were trying to do and what went wrong.
+Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
 
-### Feature requests
+### Sponsors
 
-For feature requests, please raise and discuss them on [Tania's Telegram group](https://t.me/usetania).
-
-### Pull-Requests
-
-If you want to raise a pull-request with a new feature, or refactoring of existing code, please, discuss it first on [Tania's Telegram group](https://t.me/usetania).
-
+Become a sponsor and get your logo on our README on GitHub with a link to your site. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/sponsor.svg?avatarHeight=36&width=600" alt="backers"></a>
 
 ## Authors
 

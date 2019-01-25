@@ -81,7 +81,7 @@
 import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpers/farms/area'
 import { StubArea, StubNote } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 import moment from 'moment-timezone'
 export default {
   name: 'Area',

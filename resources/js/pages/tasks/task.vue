@@ -75,7 +75,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 import TasksList from '@/pages/farms/tasks/task-list.vue'
 import TaskForm from '@/pages/farms/tasks/task-form.vue'
 import CropTaskForm from '@/pages/farms/tasks/crop-task-form.vue'
