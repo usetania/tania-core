@@ -13,6 +13,10 @@
 <script>
 import { event } from '@/services/bus'
 import { mapGetters } from 'vuex'
+import AppHeaderComponent from '@/components/header.vue'
+import AppAsideComponent from '@/components/aside.vue'
+import AppFooterComponent from '@/components/footer.vue'
+
 export default {
   name: 'AppComponent',
   data () {
@@ -27,9 +31,9 @@ export default {
     })
   },
   components: {
-    AppHeaderComponent: () => import('./header.vue'),
-    AppAsideComponent: () => import('./aside.vue'),
-    AppFooterComponent: () => import('./footer.vue')
+    AppHeaderComponent,
+    AppAsideComponent,
+    AppFooterComponent
   },
 
   methods: {

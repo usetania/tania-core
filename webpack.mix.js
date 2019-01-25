@@ -1,49 +1,50 @@
 const mix = require('laravel-mix');
 const webpack = require('webpack');
 const path = require('path');
-const glob = require('glob-all');
-const fs = require('fs')
+const fs = require('fs');
 const confJSON = require('./conf.json');
+const replace = require('replace-in-file');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const PurifyCSSPlugin = require('purifycss-webpack');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-mix.setPublicPath('public/')
 
 mix.webpackConfig({
   output: {
+    path: path.resolve(__dirname, 'public'),
     filename: '[name].[chunkhash].js',
-    chunkFilename: './js/[name].[chunkhash].js',
+    chunkFilename: 'js/[name].[chunkhash].js',
+    publicPath: '/'
   },
   module: {
-    loaders: [
-      { test: /\.hbs$/, loader: 'handlebars-loader' },
+    rules: [
+      {
+        test: /\.hbs$/,
+        use: {
+          loader: 'handlebars-loader'
+        }
+      },
+      {
+        test: /\.pug$/,
+        oneOf: [
+          // this applies to `<template lang="pug">` in Vue components
+          {
+            resourceQuery: /^\?vue/,
+            use: ['pug-plain-loader']
+          },
+          // this applies to pug imports inside JavaScript
+          {
+            use: ['raw-loader', 'pug-plain-loader']
+          }
+        ]
+      }
     ]
   },
   plugins: [
-    new CleanWebpackPlugin('./public/js/*.js*'),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: '/js/vendor',
-      minChunks: (module) => {
-        return module.context && module.context.indexOf('node_modules') !== -1
-      }
-    }),
-    // extract webpack runtime and module manifest to its own file in order to
-    // prevent vendor hash from being updated whenever app bundle is updated
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      chunks: ['vendor']
-    }),
+    new CleanWebpackPlugin('public/'),
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|en|id/),
-    new PurifyCSSPlugin({
-      paths: glob.sync([
-        path.join(__dirname, 'resources/js/**/*.pug'),
-        path.join(__dirname, 'resources/js/**/**/*.vue')
-      ]),
-    }),
     new SWPrecacheWebpackPlugin({
       cacheId: 'tanibox',
       filename: 'service-worker.js',
@@ -66,29 +67,35 @@ mix.webpackConfig({
       template: './resources/index.hbs',
       inject: true,
       chunkSortMode: 'dependency',
-      serviceWorkerLoader: `<script>${fs.readFileSync(path.join(__dirname,
-        mix.inProduction() ? './resources/js/service-worker-prod.js' : './resources/js/service-worker-dev.js'), 'utf-8')}</script>`
+      serviceWorkerLoader: `<script type="text/javascript">${fs.readFileSync(path.join(__dirname, mix.inProduction() ? './resources/js/service-worker-prod.js' : './resources/js/service-worker-dev.js'), 'utf-8')}</script>`
     }),
     new webpack.DefinePlugin({
       'process.env': {
         CLIENT_ID: JSON.stringify(confJSON.client_id)
       },
-    }),
+    })
   ],
   resolve: {
-    extensions: [
-      ".vue"
-    ]
+    extensions: ['.js', '.jsx', '.vue']
   }
 })
 
-mix.js('resources/js/app.js', './public/js')
-mix.sass('resources/sass/app.scss', './public/css')
+mix.js('resources/js/app.js', 'js/')
+  .then(() => replace.sync({
+    // FIXME: Workaround for laravel-mix placing '//*.js' at the entry of JS output.
+    // Yell at them to fix the following issue:
+    // https://github.com/JeffreyWay/laravel-mix/issues/1717#issuecomment-440086631
+    files: path.resolve(__dirname, 'public/index.html'),
+    from: /\/\/js/gu,
+    to: '/js',
+  }));
+mix.sass('resources/sass/app.scss', 'css/', {
+  implementation: require('node-sass'),
+});
 
-
-mix.sourceMaps()
+mix.sourceMaps();
 
 if (mix.inProduction()) {
-  mix.version()
-  mix.disableNotifications()
+  mix.version();
+  mix.disableNotifications();
 }

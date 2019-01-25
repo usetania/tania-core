@@ -36,8 +36,8 @@ echo "Running Front-End Unit tests ..."
 yarn && yarn run unit
 
 echo "Running end to end tests ..."
-# build and test e2e
-yarn run production && yarn run cypress:run
+# build and test e2e.
+yarn run prod && yarn run cypress:run
 
 echo "Killing Server [$TANIA_PID] ..."
 

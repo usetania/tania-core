@@ -70,7 +70,7 @@
 import { AreaTypes, AreaLocations, AreaSizeUnits } from '@/stores/helpers/farms/area'
 import { StubArea, StubMessage } from '@/stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
-import UploadComponent from '@/components/upload'
+import UploadComponent from '@/components/upload.vue'
 export default {
   name: 'AreaIntro',
   components: {

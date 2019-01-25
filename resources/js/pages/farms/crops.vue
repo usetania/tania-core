@@ -34,7 +34,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 import Pagination from '@/components/pagination.vue'
 export default {
   name: "FarmCrops",

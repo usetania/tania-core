@@ -5,4 +5,5 @@
  */
 
 // Core variables and mixins
-@import "./node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+$bootstrap-sass-asset-helper: true;
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";

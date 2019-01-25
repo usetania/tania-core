@@ -39,7 +39,7 @@
 <script>
 import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
 import { mapGetters, mapActions } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 export default {
   name: "FarmReservoirs",
   computed : {

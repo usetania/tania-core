@@ -49,7 +49,7 @@
 import { FindContainer } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop, StubNote } from '@/stores/stubs'
-import Modal from '@/components/modal'
+import Modal from '@/components/modal.vue'
 export default {
   name: 'FarmCropNotes',
   components: {

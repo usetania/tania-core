@@ -2,7 +2,7 @@
 require('jsdom-global')()
 
 // make sure polyfill is loaded before generators
-require('babel-polyfill')
+require('@babel/polyfill')
 
 require('chai').should()
 
