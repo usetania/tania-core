@@ -23,7 +23,7 @@
 
       ul.navbar-nav
         li.nav-item
-          a#signout.nav-link(href="#" @click.prevent="signout") Log Out
+          a#signout.nav-link(href="#" @click.prevent="signout") Sign Out
 </template>
 
 <script>

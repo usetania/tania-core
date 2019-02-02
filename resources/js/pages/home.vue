@@ -6,63 +6,78 @@
       .row
         // At A Glance
         .col-sm-4
-          .panel.ataglance.no-border
-            .panel-heading
+          .card.ataglance
+            .card-header
               .m-sm
                 span.h4.text-lt At A Glance
-            .panel-body
-              ul
-                li.h4
-                  .col-md-6.col-xs-6
-                    i.fa.fa-th-large
+            .card-body
+              .row
+                .col-md-6
+                  h5.text-lt
+                    i
+                      font-awesome-icon(icon="dice-four")
+                    |
+                    |
                     router-link(:to="{ name: 'FarmAreas' }") {{ areas.length }} Areas
-                li.h4
-                  .col-md-6.col-xs-6
-                    i.fa.fa-leaf
+
+                .col-md-6
+                  h5.text-lt
+                    i
+                      font-awesome-icon(icon="leaf")
+                    |
+                    |
                     router-link(:to="{ name: 'FarmCrops' }") {{ cropInformation.total_plant_variety }} Varieties
-                li.h4
-                  .col-md-6.col-xs-6
-                    i.fa.fa-clipboard
+      
+                .col-md-6
+                  h5.text-lt
+                    i
+                      font-awesome-icon(icon="clipboard")
+                    |
+                    |
                     router-link(:to="{ name: 'Task' }") {{ tasksLength }} Tasks
-            .panel-footer.bg-light.lter.wrapper.no-border
+            .card-footer.bg-light.lter.wrapper
               small.text-muted
-                | You are using Tania 1.5 right now.
+                | You are using Tania 2.0.
                 // There's a new version recently released. <a href="#">Take a look!</a>
         .col-sm-8
           // CROPS STATUS
-          .panel.no-border
-            .panel-heading
-              .m-b.m-t
-                span.pull-right.text-primary
+          .card
+            .card-header
+              .m-sm
+                span.float-right.text-primary
                   router-link(:to="{ name: 'FarmCrops' }")
                     | See all Crops 
-                    i.fa.fa-angle-double-right
+                    i
+                      font-awesome-icon(icon="angle-double-right")
                 span.h4.text-lt Crops
-            table.table.m-b-none
-              thead
-                tr
-                  th Crop Variety
-                  th Batches Qty
-              tbody
-                tr(v-if="crops.length == 0")
-                  td(colspan="2") No Task Created
-                tr(v-for="crop in crops")
-                  td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
-                  td {{ crop.container.quantity }}
-            Pagination(:pages="cropPages" @reload="getCrops")
+            .card-body
+              table.table
+                thead
+                  tr
+                    th Crop Variety
+                    th Batches Qty
+                tbody
+                  tr(v-if="crops.length == 0")
+                    td(colspan="2") No Task Created
+                  tr(v-for="crop in crops")
+                    td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
+                    td {{ crop.container.quantity }}
+              Pagination(:pages="cropPages" @reload="getCrops")
       .row
         // TASK LIST
         .col-sm-12
-          .panel.no-border
-            .panel-heading
-              .m-b.m-t
-                span.pull-right.text-primary
+          .card
+            .card-header
+              .m-sm
+                span.float-right.text-primary
                   router-link(:to="{ name: 'Task' }")
                     | See all Tasks
-                    i.fa.fa-angle-double-right
+                    i
+                      font-awesome-icon(icon="angle-double-right")
                 span.h4.text-lt Tasks
-            TasksList(:domain="'HOME'")
-            Pagination(:pages="taskPages" @reload="getTasks")
+            .card-body
+              TasksList(:domain="'HOME'")
+              Pagination(:pages="taskPages" @reload="getTasks")
 </template>
 
 <script>

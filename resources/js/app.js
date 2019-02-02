@@ -10,11 +10,13 @@ import {
   faLeaf, 
   faAngleDown, 
   faAngleRight,
+  faAngleDoubleRight,
   faClipboard,
   faArchive,
   faUser,
   faChevronCircleLeft,
-  faChevronCircleRight
+  faChevronCircleRight,
+  faDiceFour
 } from 'fortawesomeDir/free-solid-svg-icons'
 import { FontAwesomeIcon } from 'fortawesomeDir/vue-fontawesome'
 
@@ -36,7 +38,20 @@ import {
   IsLongitude
 } from './services'
 
-library.add(faLongArrowAltRight, faHome, faLeaf, faAngleDown, faAngleRight, faClipboard, faArchive, faUser, faChevronCircleRight, faChevronCircleLeft)
+library.add(
+  faLongArrowAltRight, 
+  faHome, 
+  faLeaf, 
+  faAngleDown, 
+  faAngleRight, 
+  faClipboard, 
+  faArchive, 
+  faUser, 
+  faChevronCircleRight, 
+  faChevronCircleLeft, 
+  faDiceFour, 
+  faAngleDoubleRight
+)
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
