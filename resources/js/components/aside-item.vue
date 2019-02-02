@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div.aside-item
     li(:class="{ active: active }" @click="folded")
       slot
       slot(name="item")

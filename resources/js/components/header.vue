@@ -1,28 +1,29 @@
 <template lang="pug">
-  div
-    header#header.app-header.navbar(role="menu")
-      .navbar-header.bg-dark
-        button.pull-right.visible-xs.dk()
-        button.pull-right.visible-xs()
-        a.navbar-brand.text-lt(href="/")
-          img(src="../../images/logo.png")
-          span.hidden-folded.m-l.xs Tania
-      .collapse.pos-rlt.navbar-collapse.box-shadow.bg-white-only
-        ul.nav.navbar-nav.navbar-right
-          li
-            a#signout(href="#" @click.prevent="signout") Sign Out
-        ul.nav.navbar-nav.hidden-xs
-          li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
-            a.farm-current(href="#" @click.prevent="dropdownToggle")
-              span {{ farm.name }}
-              span.caret
-            ul.dropdown-menu
-              li.m-l.m-r.text-muted Switch Farm
-              li(v-for="f in farms" :class="f.uid === farm.uid ? 'active': ''")
-                a(href="#" @click.prevent="setFarm(f.uid)" :id="f.name")
-                  span
-                    i.fa.fa-leaf(:class="{ 'text-success' : f.uid === farm.uid }")
-                    | {{ f.name }}
+  nav#header.app-header.navbar.navbar-expand-lg.navbar-dark.bg-dark
+    a.navbar-brand(href="/")
+      img(src="../../images/logo.png")
+      span.hidden-folded.m-l.xs Tania
+    
+    button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarSupportedContent", aria-controls="navbarSupportedContent", aria-expanded="false", aria-label="Toggle navigation")
+      span.navbar-toggler-icon
+
+    #navbarSupportedContent.collapse.navbar-collapse
+      ul.nav.navbar-nav.hidden-xs.mr-auto
+        li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
+          a.farm-current(href="#" @click.prevent="dropdownToggle")
+            span {{ farm.name }}
+            span.caret
+          ul.dropdown-menu
+            li.m-l.m-r.text-muted Switch Farm
+            li(v-for="f in farms" :class="f.uid === farm.uid ? 'active': ''")
+              a(href="#" @click.prevent="setFarm(f.uid)" :id="f.name")
+                span
+                  i.fa.fa-leaf(:class="{ 'text-success' : f.uid === farm.uid }")
+                  | {{ f.name }}
+
+      ul.navbar-nav
+        li.nav-item
+          a#signout.nav-link(href="#" @click.prevent="signout") Log Out
 </template>
 
 <script>

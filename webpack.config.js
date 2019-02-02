@@ -13,7 +13,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'resources/js')
+      '@': path.resolve(__dirname, 'resources/js'),
+      'fortawesomeDir': path.resolve(__dirname, 'node_modules/@fortawesome')
     }
   },
   entry: {

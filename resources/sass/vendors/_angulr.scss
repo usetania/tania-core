@@ -608,6 +608,10 @@ pre {
   margin-left: -1px;
 }
 
+.aside-item {
+  width: 100%;
+}
+
 /*cols*/
 
 .col-lg-2-4 {
@@ -711,6 +715,7 @@ body {
 
 .app-aside {
   float: left;
+  height: 100vh;
 }
 
 .app-aside:before {

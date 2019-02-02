@@ -6,15 +6,19 @@
           ul.nav
             aside-item-component
               router-link(:to="{ name: 'Home' }")
-                i.fa.fa-home.icon.text-primary
-                span.font-bold.text-primary Dashboard
+                i
+                  font-awesome-icon.icon.text-primary(icon="home")
+                span.hidden-folded.font-bold.text-primary Dashboard
             aside-item-component
               a.auto#production(@click.prevent="")
-                span.pull-right.text-muted
-                  i.fa.fa-fw.fa-angle-right.text
-                  i.fa.fa.fw.fa-angle-down.text-active
-                i.fa.fa-leaf
-                span Production
+                span.hidden-folded.float-right.text-muted
+                  i.fw.text
+                    font-awesome-icon(icon="angle-right")
+                  i.fw.text-active
+                    font-awesome-icon(icon="angle-down")
+                i
+                  font-awesome-icon(icon="leaf")
+                span.hidden-folded Production
               slot(name="item")
                 ul.nav.nav-sub.dk
                   li: router-link#areas(:to="{name: 'FarmAreas'}")
@@ -25,31 +29,39 @@
                     span Reservoirs
             aside-item-component
               router-link#tasks(:to="{name: 'Task'}")
-                i.fa.fa-clipboard
-                span Tasks
+                i
+                  font-awesome-icon(icon="clipboard")
+                span.hidden-folded Tasks
             aside-item-component
               a#inventories.auto(@click.prevent="")
-                span.pull-right.text-muted
-                  i.fa.fa-fw.fa-angle-right.text
-                  i.fa.fa.fw.fa-angle-down.text-active
-                i.fa.fa-archive
-                span Inventories
+                span.hidden-folded.float-right.text-muted
+                  i.fw.text
+                    font-awesome-icon(icon="angle-right")
+                  i.fw.text-active
+                    font-awesome-icon(icon="angle-down")
+                i
+                  font-awesome-icon(icon="archive")
+                span.hidden-folded Inventories
               slot(name="item")
                 ul.nav.nav-sub.dk
                   li: router-link#materials(:to="{name: 'InventoriesMaterials'}")
-                    span Materials
+                    span.hidden-folded Materials
             li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
               router-link#account(:to="{ name: 'Account' }")
-                i.fa.fa-user
-                span Account
+                i
+                  font-awesome-icon(icon="user")
+                span.hidden-folded Account
             li.line.dk
-            li
-              a.btn.no-shadow.navbar-btn(:class="folded == true ? 'active': ''" @click="setFolded")
-                i.fa.fa-chevron-circle-left.text
-                i.fa.fa-chevron-circle-right.text-active
-                span.text-muted Collapse Menu
+            .aside-item
+              li
+                a.no-shadow.navbar-btn(:class="folded == true ? 'active': ''" @click="setFolded")
+                  i.text
+                    font-awesome-icon(icon="chevron-circle-left")
+                  i.text-active
+                    font-awesome-icon(icon="chevron-circle-right")
+                  span.hidden-folded.text-muted Collapse Menu
 
 </template>
 

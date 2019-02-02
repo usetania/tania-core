@@ -3,6 +3,21 @@ import Vue from 'vue'
 import VueRouter from './router'
 import VuexStore from './stores'
 
+import { library } from 'fortawesomeDir/fontawesome-svg-core'
+import { 
+  faLongArrowAltRight, 
+  faHome, 
+  faLeaf, 
+  faAngleDown, 
+  faAngleRight,
+  faClipboard,
+  faArchive,
+  faUser,
+  faChevronCircleLeft,
+  faChevronCircleRight
+} from 'fortawesomeDir/free-solid-svg-icons'
+import { FontAwesomeIcon } from 'fortawesomeDir/vue-fontawesome'
+
 import Component from './component'
 import VeeValidate, { Validator } from 'vee-validate'
 
@@ -20,6 +35,10 @@ import {
   IsLatitude,
   IsLongitude
 } from './services'
+
+library.add(faLongArrowAltRight, faHome, faLeaf, faAngleDown, faAngleRight, faClipboard, faArchive, faUser, faChevronCircleRight, faChevronCircleLeft)
+
+Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Validator.extend('alpha_num_space', IsAlphanumSpaceHyphenUnderscore)
 Validator.extend('float', IsFloat)
