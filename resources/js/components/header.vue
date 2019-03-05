@@ -5,7 +5,6 @@
       button.pull-right.visible-xs()
       a.navbar-brand.text-lt(href="/")
         img(src="../../images/logo.png")
-        span.hidden-folded.m-l.xs Tania
     .collapse.pos-rlt.navbar-collapse.box-shadow.bg-white-only
       ul.nav.navbar-nav.navbar-right
         li
