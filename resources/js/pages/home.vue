@@ -35,9 +35,8 @@
               .m-b.m-t
                 span.pull-right.text-primary
                   router-link(:to="{ name: 'FarmCrops' }")
-                    | See all Crops 
-                    i.fa.fa-angle-double-right
-                span.h4.text-lt Crops
+                    | See all Crops
+                span.h4.text-lt What's On Production
             table.table.m-b-none
               thead
                 tr
@@ -45,7 +44,8 @@
                   th Batches Qty
               tbody
                 tr(v-if="crops.length == 0")
-                  td(colspan="2") No Task Created
+                  td(colspan="2") No crops on production. 
+                    a(href="/#/crops") Add your first crops here.
                 tr(v-for="crop in crops")
                   td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
                   td {{ crop.container.quantity }}
@@ -59,7 +59,6 @@
                 span.pull-right.text-primary
                   router-link(:to="{ name: 'Task' }")
                     | See all Tasks
-                    i.fa.fa-angle-double-right
                 span.h4.text-lt Tasks
             TasksList(:domain="'HOME'")
             Pagination(:pages="taskPages" @reload="getTasks")
