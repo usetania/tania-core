@@ -42,7 +42,7 @@
         .col-md-7.col-xs-12
           .panel
             .panel-heading
-              span.h4.text-lt Current status
+              span.h4.text-lt Current Status
             FarmCropsListing(:crops="areaCrops" :domain="'AREA'")
       //- Ending row
 
