@@ -6,8 +6,8 @@
           ul.nav
             aside-item-component
               router-link(:to="{ name: 'Home' }")
-                i.fa.fa-home.icon.text-primary
-                span.font-bold.text-primary Dashboard
+                i.fa.fa-home
+                span Dashboard
             aside-item-component
               a.auto#production(@click.prevent="")
                 span.pull-right.text-muted
