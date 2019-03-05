@@ -4,16 +4,16 @@
       farmCropForm(:data="data")
     .wrapper-md
       h1.m-t.font-thin.h3.text-black Crops
-      .row
+      //.row
         .col-sm-3.m-t
           .hbox.bg-white-only.wrapper
             small.text-muted Harvested Produce This Month 
-            //a.pull-right(href=""): i.fa.fa-question-circle
+            a.pull-right(href=""): i.fa.fa-question-circle
             .h3.m-b.m-t {{ cropInformation.total_harvest_produced/1000 }} kilograms
         .col-sm-3.m-t
           .hbox.bg-white-only.wrapper
             small.text-muted Planted Varieties
-            //a.pull-right(href=""): i.fa.fa-question-circle
+            a.pull-right(href=""): i.fa.fa-question-circle
             .h3.m-b.m-t {{ cropInformation.total_plant_variety }}
     .wrapper
       .m-b
