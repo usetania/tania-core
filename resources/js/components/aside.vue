@@ -38,7 +38,7 @@
                 ul.nav.nav-sub.dk
                   li: router-link#materials(:to="{name: 'InventoriesMaterials'}")
                     span Materials
-            li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
+            //li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
               router-link#account(:to="{ name: 'Account' }")
