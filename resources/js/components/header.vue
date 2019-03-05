@@ -10,7 +10,9 @@
         li
           a#signout(href="#" @click.prevent="signout") Sign Out
       ul.nav.navbar-nav.hidden-xs
-        li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
+        li
+          a {{ farm.name }}
+        //li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
           a.farm-current(href="#" @click.prevent="dropdownToggle")
             span {{ farm.name }}
             span.caret
