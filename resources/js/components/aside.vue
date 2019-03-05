@@ -44,13 +44,6 @@
               router-link#account(:to="{ name: 'Account' }")
                 i.fa.fa-user
                 span Account
-            li.line.dk
-            li
-              a.btn.no-shadow.navbar-btn(:class="folded == true ? 'active': ''" @click="setFolded")
-                i.fa.fa-chevron-circle-left.text
-                i.fa.fa-chevron-circle-right.text-active
-                span.text-muted Collapse Menu
-
 </template>
 
 <script>
