@@ -38,7 +38,7 @@ func TestCreateTask(t *testing.T) {
 
 	due_date_invalid, _ := time.Parse(time.RFC3339, "2017-01-23T17:37:39.697328206+01:00")
 	due_ptr_invalid := &due_date_invalid
-	due_date, _ := time.Parse(time.RFC3339, "2019-01-23T17:37:39.697328206+01:00")
+	due_date, _ := time.Parse(time.RFC3339, "2020-12-31T17:37:39.697328206+01:00")
 	due_ptr := &due_date
 
 	tasktitle := "My Task"
