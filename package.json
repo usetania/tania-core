@@ -92,6 +92,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
-    "style-loader": "^0.23.1"
+    "style-loader": "^0.23.1",
+    "vue-gettext": "^2.1.2"
   }
 }
