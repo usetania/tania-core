@@ -498,6 +498,7 @@ a.list-group-item.hover {
 .table > thead > tr > th {
   padding: 8px 15px;
   border-bottom: 1px solid #eaeff0;
+  vertical-align: top;
 }
 
 .table-bordered {
@@ -524,6 +525,10 @@ a.list-group-item.hover {
 
 .table-striped > thead > th:last-child {
   border-right: none;
+}
+
+.table > tbody > tr > td a {
+  color: #46B7A9;
 }
 
 .well,
@@ -1242,6 +1247,7 @@ html.bg {
 
 .navi ul.nav li li a {
   padding-left: 55px;
+  font-size: 18px;
 }
 
 .navi ul.nav li li ul {
@@ -1255,7 +1261,7 @@ html.bg {
 .navi ul.nav li a {
   position: relative;
   display: block;
-  padding: 10px 20px;
+  padding: 16px 20px;
   font-weight: normal;
   text-transform: none;
   -webkit-transition: background-color 0.2s ease-in-out 0s;
@@ -3029,7 +3035,7 @@ fieldset[disabled] .i-checks input + i:before {
 
 .bg-dark {
   color: #a6a8b1;
-  background-color: #1E162D;
+  background-color: #3A294D;
 }
 
 .bg-dark.lt,

@@ -13,7 +13,7 @@
         th(v-if="domain == 'CROPS'")
     tbody
       tr(v-if="crops.length == 0")
-        td(colspan="6") No Crops Available
+        td(colspan="6") No crops available.
       tr(v-for="crop in crops")
         td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
         td: span.identifier {{ crop.batch_id }}

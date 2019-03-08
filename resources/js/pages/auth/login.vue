@@ -10,15 +10,15 @@
             form(@submit.prevent="validateBeforeSubmit")
               .form-group(:class="{ 'control': true }")
                 label#label-username Username
-                input.form-control#username(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('username') }" placeholder="Please input username" v-model="username" name="username")
+                input.form-control#username(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('username') }" placeholder="Input your username here" v-model="username" name="username")
                 span.help-block.text-danger(v-show="errors.has('username')") {{ errors.first('username') }}
               .form-group(:class="{ 'control': true }")
                 label#label-password Password
-                input.form-control#password(type="password" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('password') }" placeholder="Please input username" v-model="password" name="password")
+                input.form-control#password(type="password" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('password') }" placeholder="Your password here" v-model="password" name="password")
                 span.help-block.text-danger(v-show="errors.has('password')") {{ errors.first('password') }}
               .form-group.text-center.m-t
                   button.btn.btn-addon.btn-primary(type="submit")
-                    i.fas.fa-long-arrow-alt-right
+                    i.fas.fa-unlock
                     | Login
 </template>
 

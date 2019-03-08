@@ -4,7 +4,7 @@
       farmCropForm(:data="data")
     .wrapper-md
       h1.m-t.font-thin.h3.text-black Crops
-      .row
+      //.row
         .col-sm-3.m-t
           .hbox.bg-white-only.wrapper
             small.text-muted Harvested Produce This Month 

@@ -6,8 +6,8 @@
           ul.nav
             aside-item-component
               router-link(:to="{ name: 'Home' }")
-                i.fa.fa-home.icon.text-primary
-                span.font-bold.text-primary Dashboard
+                i.fa.fa-home
+                span Dashboard
             aside-item-component
               a.auto#production(@click.prevent="")
                 span.pull-right.text-muted
@@ -38,19 +38,12 @@
                 ul.nav.nav-sub.dk
                   li: router-link#materials(:to="{name: 'InventoriesMaterials'}")
                     span Materials
-            li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
+            //li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
               span Settings
             aside-item-component
               router-link#account(:to="{ name: 'Account' }")
                 i.fa.fa-user
                 span Account
-            li.line.dk
-            li
-              a.btn.no-shadow.navbar-btn(:class="folded == true ? 'active': ''" @click="setFolded")
-                i.fa.fa-chevron-circle-left.text
-                i.fa.fa-chevron-circle-right.text-active
-                span.text-muted Collapse Menu
-
 </template>
 
 <script>

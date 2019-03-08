@@ -9,8 +9,6 @@
       h1.m-n.font-thin.h3.text-black Water Reservoir
     .wrapper
       .panel.no-border
-        .panel-heading.wrapper
-          span.h4.text-lt All Reservoirs on This Farm
         table.table.m-b
           thead
             tr
