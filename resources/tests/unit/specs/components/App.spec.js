@@ -1,4 +1,4 @@
-import { shallow, createLocalVue } from 'vue-test-utils'
+import { shallowMount, createLocalVue } from '../../../../../node_modules/@vue/test-utils'
 import Vuex from 'vuex'
 import AppComponent from '@/components/app.vue'
 
@@ -25,7 +25,7 @@ describe('components/app', () => {
     }
 
     const VuexFactory = new Vuex.Store({getters, actions})
-    const wrapper = shallow(AppComponent, {
+    const wrapper = shallowMount(AppComponent, {
       mocks: { $store: VuexFactory },
       localVue
     })
@@ -47,7 +47,7 @@ describe('components/app', () => {
     }
 
     const VuexFactory = new Vuex.Store({getters, actions})
-    const wrapper = shallow(AppComponent, {
+    const wrapper = shallowMount(AppComponent, {
       mocks: { $store: VuexFactory },
       localVue
     })

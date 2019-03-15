@@ -1,7 +1,7 @@
 import VeeValidate from 'vee-validate'
 import Vuex from 'vuex'
 import Login from '@/pages/auth/login.vue'
-import { shallow, createLocalVue } from 'vue-test-utils'
+import { shallowMount, createLocalVue } from '../../../../../node_modules/@vue/test-utils'
 import userStore from '@/stores/modules/user'
 
 const localVue = createLocalVue()
@@ -24,7 +24,7 @@ describe('pages/auth/login', () => {
   }
 
   it('should render username and password label', () => {
-    const wrapper = shallow(Login, {
+    const wrapper = shallowMount(Login, {
       mocks: {
         $store: VuexStore,
         $router: Router

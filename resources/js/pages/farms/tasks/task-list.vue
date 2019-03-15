@@ -82,8 +82,8 @@
 import { AddClicked } from '@/stores/helpers/farms/crop'
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
-import MoreDetail from '@/components/more-detail'
-import TaskLabel from './task-label'
+import MoreDetail from '@/components/more-detail.vue'
+import TaskLabel from './task-label.vue'
 import Pagination from '@/components/pagination.vue'
 export default {
   name: 'TasksList',

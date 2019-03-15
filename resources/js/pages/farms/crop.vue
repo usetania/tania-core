@@ -218,9 +218,9 @@
 import { FindContainer, AddClicked } from '@/stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
 import { StubCrop, StubNote } from '@/stores/stubs'
-import Modal from '@/components/modal'
-import MoreDetail from '@/components/more-detail'
-import Timestamp from '@/components/timestamp'
+import Modal from '@/components/modal.vue'
+import MoreDetail from '@/components/more-detail.vue'
+import Timestamp from '@/components/timestamp.vue'
 export default {
   name: 'FarmCrop',
   components: {
