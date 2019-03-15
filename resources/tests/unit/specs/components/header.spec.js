@@ -1,7 +1,7 @@
 import Vuex from 'vuex/dist/vuex.js'
 import VeeValidate from 'vee-validate'
 import Header from '@/components/header.vue'
-import { shallow, createLocalVue } from 'vue-test-utils';
+import { shallowMount, createLocalVue } from '../../../../../node_modules/@vue/test-utils';
 import farmStore from '@/stores/modules/farm'
 
 const localVue = createLocalVue()
@@ -38,7 +38,7 @@ const VuexFactory = new Vuex.Store({
 describe('components/header', () => {
 
   it('should display current farm from state', () => {
-    const wrapper = shallow(Header, {
+    const wrapper = shallowMount(Header, {
       mocks: { $store: VuexFactory },
       localVue
     })
@@ -47,7 +47,7 @@ describe('components/header', () => {
   })
 
   it('should display dropdown farms', () => {
-    const wrapper = shallow(Header, {
+    const wrapper = shallowMount(Header, {
       mocks: { $store: VuexFactory },
       localVue
     })
@@ -56,7 +56,7 @@ describe('components/header', () => {
   })
 
   it('should not display dropdown farms', () => {
-    const wrapper = shallow(Header, {
+    const wrapper = shallowMount(Header, {
       mocks: { $store: VuexFactory },
       localVue
     })
@@ -67,7 +67,7 @@ describe('components/header', () => {
   })
 
   it('should change farm context when the user select a fam in dropdown list', () => {
-    const wrapper = shallow(Header, {
+    const wrapper = shallowMount(Header, {
       mocks: { $store: VuexFactory },
       localVue
     })

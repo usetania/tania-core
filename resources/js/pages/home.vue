@@ -66,8 +66,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import TaskLabel from './farms/tasks/task-label'
-import TasksList from './farms/tasks/task-list'
+import TaskLabel from './farms/tasks/task-label.vue'
+import TasksList from './farms/tasks/task-list.vue'
 import Pagination from '@/components/pagination.vue'
 export default {
   name: 'Home',

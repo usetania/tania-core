@@ -1,10 +1,10 @@
 import Vue from 'vue/dist/vue.common.js'
 import ErrorMessage from '@/components/error.vue'
-import { shallow } from 'vue-test-utils';
+import { shallowMount } from '../../../../../node_modules/@vue/test-utils';
 
 describe('components/error', () => {
   it('should render error message', () => {
-    const wrapper = shallow(ErrorMessage, {
+    const wrapper = shallowMount(ErrorMessage, {
       propsData: {
         message: 'This field is required'
       }
@@ -15,7 +15,7 @@ describe('components/error', () => {
     expect(wrapper.text()).toBe('This field is required')
   })
   it('should not render error message', () => {
-    const wrapper = shallow(ErrorMessage, {
+    const wrapper = shallowMount(ErrorMessage, {
       propsData: {
         message: ''
       }
