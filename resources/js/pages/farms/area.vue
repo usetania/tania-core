@@ -73,14 +73,14 @@
             .panel-heading
               span.h4.text-lt Tasks
             TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
-      //- Ending row          
+      //- Ending row
 </template>
 
 <script>
-import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpers/farms/area'
-import { StubArea, StubNote } from '@/stores/stubs'
+import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '../../stores/helpers/farms/area'
+import { StubArea, StubNote } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal.vue'
+import Modal from '../../components/modal.vue'
 import moment from 'moment-timezone'
 export default {
   name: 'Area',

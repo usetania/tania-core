@@ -15,8 +15,8 @@
           .checkbox(v-for="crop in crops")
             label.i-checks
               input(type="checkbox" name="selected crops" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('selected crops') }" v-model="task.crops" v-bind:value="crop.uid")
-              i   
-              | {{ crop.inventory.name }}   
+              i
+              | {{ crop.inventory.name }}
               .identifier-sm {{ crop.batch_id }}
           span.help-block.text-danger(v-show="errors.has('selected crops')") {{ errors.first('selected crops') }}
         .form-group
@@ -30,7 +30,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
+import { StubTask } from '../../../stores/stubs'
 import moment from 'moment-timezone'
 export default {
   name: "WaterTaskModal",

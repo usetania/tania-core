@@ -1,9 +1,9 @@
 import NProgress from 'nprogress'
-import Api from '@/stores/api/farm'
-import * as types from '@/stores/mutation-types'
-import stubFarm from '@/stores/stubs/farm'
-import stubReservoir from '@/stores/stubs/reservoir'
-import stubArea from '@/stores/stubs/area'
+import Api from '../api/farm'
+import * as types from '../mutation-types'
+import stubFarm from '../stubs/farm'
+import stubReservoir from '../stubs/reservoir'
+import stubArea from '../stubs/area'
 
 const defaults = {
   farm: Object.assign({}, stubFarm),

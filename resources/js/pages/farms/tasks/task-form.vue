@@ -3,7 +3,7 @@
     .modal-header
       h4.font-bold(v-if="task.uid") Update Task
       h4.font-bold(v-else-if="asset != 'General'")
-        | {{ asset }}: Add New Task on 
+        | {{ asset }}: Add New Task on
         span.areatag {{ data.name }}
       h4.font-bold(v-else) Add New Task
     .modal-body
@@ -33,7 +33,7 @@
                   | No
               span.help-block.text-danger(v-show="errors.has('priority')") {{ errors.first('priority') }}
         .form-group
-          label#label-category(for="category") 
+          label#label-category(for="category")
             | Task Category
           select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
             option(value="") Please select category
@@ -61,10 +61,10 @@
 </template>
 
 <script>
-import { StubTask } from '@/stores/stubs'
+import { StubTask } from '../../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
-import { TaskDomainCategories } from '@/stores/helpers/farms/task'
+import { TaskDomainCategories } from '../../../stores/helpers/farms/task'
 
 export default {
   name: "FarmTasksForm",

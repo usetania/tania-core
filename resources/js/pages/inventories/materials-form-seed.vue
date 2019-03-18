@@ -55,9 +55,9 @@
 </template>
 
 <script>
-import { StubInventory } from '@/stores/stubs'
-import { PlantTypes } from '@/stores/helpers/farms/plant'
-import { QuantityUnits } from '@/stores/helpers/inventories/inventory'
+import { StubInventory } from '../../stores/stubs'
+import { PlantTypes } from '../../stores/helpers/farms/plant'
+import { QuantityUnits } from '../../stores/helpers/inventories/inventory'
 import { mapGetters, mapActions } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
 import moment from 'moment';

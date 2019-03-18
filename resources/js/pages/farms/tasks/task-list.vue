@@ -3,8 +3,8 @@
     table.table.m-b-none(v-if="domain == 'AREA' || domain == 'RESERVOIR' || domain == 'HOME'")
       thead
         tr
-          th 
-          th Items 
+          th
+          th Items
           th Category
           th(v-if="domain != 'AREA' && domain != 'RESERVOIR'")
       tbody
@@ -40,11 +40,11 @@
                 i
           .col-sm-8
             span.h4.text-dark(v-if="task.category == 'PESTCONTROL' || task.category == 'NUTRIENT'")
-              | Apply 
+              | Apply
               u(v-if="task.domain_details.material") {{ task.domain_details.material.material_name }}
-              |  to 
+              |  to
               span.identifier-sm(v-if="task.domain_details.crop") {{ task.domain_details.crop.crop_batch_id }}
-              |  on 
+              |  on
               span.areatag-sm(v-if="task.domain_details.area") {{ task.domain_details.area.area_name }}
             span.h4.text-dark(v-else-if="task.category == 'AREA'")
               span.areatag-sm(v-if="task.domain_details.area") {{ task.domain_details.area.area_name }}
@@ -56,7 +56,7 @@
               |  {{ task.title }}
             span.h4.text-dark(v-else-if="task.category == 'CROP'")
               span.identifier-sm(v-if="task.domain_details.crop") {{ task.domain_details.crop.crop_batch_id }}
-              |  on 
+              |  on
               span.areatag-sm(v-if="task.domain_details.area") {{ task.domain_details.area.area_name }}
               i.fas.fa-long-arrow-alt-right
               |  {{ task.title }}
@@ -79,12 +79,12 @@
 </template>
 
 <script>
-import { AddClicked } from '@/stores/helpers/farms/crop'
+import { AddClicked } from '../../../stores/helpers/farms/crop'
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment-timezone'
-import MoreDetail from '@/components/more-detail.vue'
+import MoreDetail from '../../../components/more-detail.vue'
 import TaskLabel from './task-label.vue'
-import Pagination from '@/components/pagination.vue'
+import Pagination from '../../../components/pagination.vue'
 export default {
   name: 'TasksList',
   components: {
@@ -99,7 +99,7 @@ export default {
     })
   },
   created () {
-    this.getTasks() 
+    this.getTasks()
   },
   methods: {
     ...mapActions([

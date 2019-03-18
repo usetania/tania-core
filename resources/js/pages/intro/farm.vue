@@ -54,8 +54,8 @@
 </template>
 
 <script>
-import Mapbox from '@/components/mapbox.vue'
-import { StubFarm, StubMessage } from '@/stores/stubs'
+import Mapbox from '../../components/mapbox.vue'
+import { StubFarm, StubMessage } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {

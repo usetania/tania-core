@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import { StubInventory } from '@/stores/stubs'
-import { GrowingMediumQuantityUnits } from '@/stores/helpers/inventories/inventory'
+import { StubInventory } from '../../stores/stubs'
+import { GrowingMediumQuantityUnits } from '../../stores/helpers/inventories/inventory'
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment';
 export default {

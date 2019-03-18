@@ -64,9 +64,9 @@
 </template>
 
 <script>
-import { AreaTypes } from '@/stores/helpers/farms/area'
-import { Containers } from '@/stores/helpers/farms/crop'
-import { StubCrop } from '@/stores/stubs'
+import { AreaTypes } from '../../stores/helpers/farms/area'
+import { Containers } from '../../stores/helpers/farms/crop'
+import { StubCrop } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: "FarmCropForm",

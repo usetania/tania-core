@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { StubUser } from '@/stores/stubs'
+import { StubUser } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: "Account",
@@ -52,7 +52,7 @@ export default {
         old_password : this.user.old_password,
         new_password : this.user.password,
         confirm_new_password : this.user.password_confirmation,
-        }).then(() => { 
+        }).then(() => {
           this.$toasted.show('Password update successful')
           this.user.old_password = ''
           this.user.password = ''

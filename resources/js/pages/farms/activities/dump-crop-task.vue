@@ -1,7 +1,7 @@
 <template lang="pug">
   .dump-crop-task
     .modal-header
-      span.h4.font-bold Dump 
+      span.h4.font-bold Dump
         span.identifier {{ crop.batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
@@ -33,7 +33,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
+import { StubTask } from '../../../stores/stubs'
 import vueSlider from 'vue-slider-component';
 export default {
   name: "DumpCropTask",

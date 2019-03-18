@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { ls } from '@/services'
+import { ls } from '../services'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'AppHeaderComponent',

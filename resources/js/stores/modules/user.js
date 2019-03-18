@@ -1,8 +1,8 @@
 import NProgress from 'nprogress'
 
-import * as types from '@/stores/mutation-types'
-import API from '@/stores/api/farm'
-import stub from '@/stores/stubs/user'
+import * as types from '../mutation-types'
+import API from '../api/farm'
+import stub from '../stubs/user'
 
 const state = {
   current: stub

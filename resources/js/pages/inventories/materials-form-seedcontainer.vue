@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import { StubInventory } from '@/stores/stubs'
-import { Containers } from '@/stores/helpers/farms/crop'
+import { StubInventory } from '../../stores/stubs'
+import { Containers } from '../../stores/helpers/farms/crop'
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment';
 export default {

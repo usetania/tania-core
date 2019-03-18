@@ -1,14 +1,14 @@
 <template lang="pug">
   .harvest-crop-task
     .modal-header
-      span.h4.font-bold Harvest 
+      span.h4.font-bold Harvest
         span.identifier {{ crop.batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
           .col-xs-6
             .form-group
-              label(for="source_area_id") 
+              label(for="source_area_id")
                 | Choose area to be harvested
               select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('source_area_id') }" v-model="task.source_area_id" name="source_area_id")
                 option(value="") Please select area
@@ -50,7 +50,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
+import { StubTask } from '../../../stores/stubs'
 export default {
   name: "HarvestCropTask",
   computed : {
