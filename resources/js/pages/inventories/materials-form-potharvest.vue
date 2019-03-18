@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import { StubInventory } from '@/stores/stubs'
+import { StubInventory } from '../../stores/stubs'
 import { mapGetters, mapActions } from 'vuex'
 import moment from 'moment';
 export default {

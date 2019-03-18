@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { InventoryTypes } from '@/stores/helpers/inventories/inventory'
+import { InventoryTypes } from '../../stores/helpers/inventories/inventory'
 import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'InventoriesMaterialsForm',

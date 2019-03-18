@@ -19,7 +19,7 @@
               th Produced By
               th Quantity
               th Additional Notes
-              th 
+              th
           tbody
             tr(v-if="materials.length == 0")
               td(colspan="7") No Materials Available
@@ -37,10 +37,10 @@
 </template>
 
 <script>
-import Modal from '@/components/modal.vue'
-import Pagination from '@/components/pagination.vue'
+import Modal from '../../components/modal.vue'
+import Pagination from '../../components/pagination.vue'
 import { mapActions, mapGetters } from 'vuex'
-import { FindInventoryType, FindQuantityUnit } from '@/stores/helpers/inventories/inventory'
+import { FindInventoryType, FindQuantityUnit } from '../../stores/helpers/inventories/inventory'
 export default {
   name: 'InventoriesMaterial',
   computed: {

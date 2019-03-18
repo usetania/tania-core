@@ -1,7 +1,7 @@
 <template lang="pug">
   .crop-task
     .modal-header
-      span.h4.font-bold Crop: Add New Task for 
+      span.h4.font-bold Crop: Add New Task for
         span.identifier {{ batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
@@ -32,7 +32,7 @@
         .row
           .col-xs-6
             .form-group
-              label(for="area_id") 
+              label(for="area_id")
                 | Select area to do your task
               select.form-control#area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('area_id') }" v-model="task.area_id" name="area_id")
                 option(value="") Please select area
@@ -40,7 +40,7 @@
               span.help-block.text-danger(v-show="errors.has('area_id')") {{ errors.first('area_id') }}
           .col-xs-6
             .form-group
-              label(for="category") 
+              label(for="category")
                 | Task Category
               select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category" @change="typeChanged($event.target.value)")
                 option(value="") Please select category
@@ -49,14 +49,14 @@
                 option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
               span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group(v-if="isfertilizer")
-          label(for="fertilizer") 
+          label(for="fertilizer")
             | Select fertilizer you are going to use
           select.form-control#fertilizer(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('fertilizer') }" v-model="task.material_id" name="fertilizer")
             option(value="") Please select fertilizer
             option(v-for="fertilizer in fertilizers" :value="fertilizer.uid") {{ fertilizer.name }}
           span.help-block.text-danger(v-show="errors.has('fertilizer')") {{ errors.first('fertilizer') }}
         .form-group(v-if="ispesticide")
-          label(for="pesticide") 
+          label(for="pesticide")
             | Select pesticide you are going to use
           select.form-control#pesticide(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('pesticide') }" v-model="task.material_id" name="pesticide")
             option(value="") Please select pesticide
@@ -82,8 +82,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
-import { TaskDomainCategories } from '@/stores/helpers/farms/task'
+import { StubTask } from '../../../stores/stubs'
+import { TaskDomainCategories } from '../../../stores/helpers/farms/task'
 import Datepicker from 'vuejs-datepicker';
 export default {
   name: "CropTask",

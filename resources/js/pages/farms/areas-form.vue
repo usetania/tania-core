@@ -58,10 +58,10 @@
 </template>
 
 <script>
-import { AreaTypes, AreaLocations, AreaSizeUnits } from '@/stores/helpers/farms/area'
-import { StubArea, StubMessage } from '@/stores/stubs'
+import { AreaTypes, AreaLocations, AreaSizeUnits } from '../../stores/helpers/farms/area'
+import { StubArea, StubMessage } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
-import UploadComponent from '@/components/upload.vue'
+import UploadComponent from '../../components/upload.vue'
 export default {
   name: "FarmAreasForm",
   components: {

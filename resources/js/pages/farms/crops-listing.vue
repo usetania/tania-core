@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { FindContainer } from '@/stores/helpers/farms/crop'
+import { FindContainer } from '../../stores/helpers/farms/crop'
 export default {
   name: "FarmCropsListing",
   methods: {

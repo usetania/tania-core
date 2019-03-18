@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import { ReservoirTypes } from '@/stores/helpers/farms/reservoir'
-import { StubReservoir, StubMessage } from '@/stores/stubs'
+import { ReservoirTypes } from '../../stores/helpers/farms/reservoir'
+import { StubReservoir, StubMessage } from '../../stores/stubs'
 import { mapGetters, mapActions } from 'vuex'
 
 export default {

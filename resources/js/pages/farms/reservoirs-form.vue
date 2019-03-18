@@ -27,8 +27,8 @@
 
 
 <script>
-import { ReservoirTypes } from '@/stores/helpers/farms/reservoir'
-import { StubReservoir, StubMessage } from '@/stores/stubs'
+import { ReservoirTypes } from '../../stores/helpers/farms/reservoir'
+import { StubReservoir, StubMessage } from '../../stores/stubs'
 import { mapActions } from 'vuex'
 export default {
   name: "FarmReservoirForm",

@@ -1,4 +1,4 @@
-import { http } from '@/services'
+import { http } from '../../services'
 
 export default {
   ApiLogin: function (payload) {

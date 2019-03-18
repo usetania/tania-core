@@ -75,11 +75,11 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal.vue'
-import TasksList from '@/pages/farms/tasks/task-list.vue'
-import TaskForm from '@/pages/farms/tasks/task-form.vue'
-import CropTaskForm from '@/pages/farms/tasks/crop-task-form.vue'
-import { TaskDomainCategories } from '@/stores/helpers/farms/task'
+import Modal from '../../components/modal.vue'
+import TasksList from '../farms/tasks/task-list.vue'
+import TaskForm from '../farms/tasks/task-form.vue'
+import CropTaskForm from '../farms/tasks/crop-task-form.vue'
+import { TaskDomainCategories } from '../../stores/helpers/farms/task'
 
 export default {
   name: 'Tasks',

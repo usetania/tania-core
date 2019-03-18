@@ -7,7 +7,7 @@
       //.row
         .col-sm-3.m-t
           .hbox.bg-white-only.wrapper
-            small.text-muted Harvested Produce This Month 
+            small.text-muted Harvested Produce This Month
             a.pull-right(href=""): i.fa.fa-question-circle
             .h3.m-b.m-t {{ cropInformation.total_harvest_produced/1000 }} kilograms
         .col-sm-3.m-t
@@ -34,8 +34,8 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal.vue'
-import Pagination from '@/components/pagination.vue'
+import Modal from '../../components/modal.vue'
+import Pagination from '../../components/pagination.vue'
 export default {
   name: "FarmCrops",
   components: {

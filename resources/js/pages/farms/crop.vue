@@ -66,14 +66,14 @@
                     .col-sm-6
                       small.text-muted Initial Planting
                       .h4.m-b
-                        | {{ crop.initial_area.initial_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
+                        | {{ crop.initial_area.initial_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on
                         span.areatag {{ crop.initial_area.name }}
                       small.text-muted Current Quantity
                       .h4(v-if="crop.initial_area.current_quantity > 0")
-                        | {{ crop.initial_area.current_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
+                        | {{ crop.initial_area.current_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on
                         span.areatag {{ crop.initial_area.name }}
                       .h4(v-for="area in crop.moved_area" v-if="area.current_quantity > 0")
-                        | {{ area.current_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on 
+                        | {{ area.current_quantity }} {{ getCropContainer(crop.container.type, crop.container.quantity) }} on
                         span.areatag {{ area.name }}
             .row.m-t
               // ACTIVITY FEEDS
@@ -89,11 +89,11 @@
                           i.fa.fa-exchange-alt.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Moved 
+                            | Moved
                             u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
-                            |  from 
+                            |  from
                             span.areatag-sm {{ activity.activity_type.source_area_name }}
-                            |  to 
+                            |  to
                             span.areatag-sm {{ activity.activity_type.destination_area_name }}
                           Timestamp(:timestamp="activity.created_date")
                       // SEEDING
@@ -102,11 +102,11 @@
                           i.fa.fa-utensil-spoon.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Seeded 
+                            | Seeded
                             u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
-                            |  of 
+                            |  of
                             span.identifier-sm {{ activity.batch_id }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.area_name }}
                           Timestamp(:timestamp="activity.created_date")
                       // DUMP
@@ -115,9 +115,9 @@
                           i.fa.fa-trash.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Dumped 
+                            | Dumped
                             u {{ activity.activity_type.quantity }} {{ getCropContainer(activity.container_type, activity.activity_type.quantity) }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.source_area_name }}
                           MoreDetail(:data="activity" :description="activity.description")
                           Timestamp(:timestamp="activity.created_date")
@@ -125,7 +125,7 @@
                       .row(v-if="activity.activity_type.code == 'PHOTO'")
                         .col-xs-1.text-center
                           i.fa.fa-camera.block.m-b.m-t
-                        .col-xs-11 
+                        .col-xs-11
                           MoreDetail(:data="activity" :description="activity.activity_type.description")
                           Timestamp(:timestamp="activity.created_date")
                           img.img-full.m-t.m-b(:src="'/api/farms/crops/' + crop.uid + '/photos/' + activity.activity_type.uid")
@@ -135,12 +135,12 @@
                           i.fas.fa-cut.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Harvested 
+                            | Harvested
                             u(v-if="activity.activity_type.type == 'PARTIAL'") Partial
                             u(v-if="activity.activity_type.type == 'ALL'") All
-                            |  of 
+                            |  of
                             b {{ activity.activity_type.produced_gram_quantity }} Grams
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.source_area_name }}
                           Timestamp(:timestamp="activity.created_date")
                       // WATER
@@ -149,9 +149,9 @@
                           i.fa.fa-tint.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Area 
-                            u: router-link(:to="{ name: 'FarmArea', params: { id: activity.activity_type.area_id } }") {{ activity.activity_type.area_name }} 
-                            | Watered 
+                            | Area
+                            u: router-link(:to="{ name: 'FarmArea', params: { id: activity.activity_type.area_id } }") {{ activity.activity_type.area_name }}
+                            | Watered
                           Timestamp(:timestamp="activity.created_date")
                       // PESTICIDE
                       .row(v-if="activity.activity_type.code == 'TASK_PEST_CONTROL'")
@@ -159,11 +159,11 @@
                           i.fa.fa-bug.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Apply 
+                            | Apply
                             u {{ activity.activity_type.material_name }}
-                            |  to 
+                            |  to
                             span.identifier-sm {{ crop.batch_id }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.area_name }}
                           Timestamp(:timestamp="activity.created_date")
                       //SAFETY
@@ -173,7 +173,7 @@
                         .col-xs-11
                           div
                             span.identifier-sm {{ crop.batch_id }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.area_name }}
                             i.fas.fa-long-arrow-alt-right
                             |  {{ activity.activity_type.title }}
@@ -185,7 +185,7 @@
                         .col-xs-11
                           div
                             span.identifier-sm {{ crop.batch_id }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.area_name }}
                             i.fas.fa-long-arrow-alt-right
                             |  {{ activity.activity_type.title }}
@@ -196,9 +196,9 @@
                           i.fa.fa-flask.block.m-b.m-t
                         .col-xs-11
                           div
-                            | Apply 
+                            | Apply
                             u {{ activity.activity_type.material_name }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.area_name }}
                           Timestamp(:timestamp="activity.created_date")
                       .row(v-if="activity.activity_type.code == 'TASK_SANITATION'")
@@ -207,7 +207,7 @@
                         .col-xs-11
                           div
                             span.identifier-sm {{ crop.batch_id }}
-                            |  on 
+                            |  on
                             span.areatag-sm {{ activity.activity_type.area_name }}
                             i.fas.fa-long-arrow-alt-right
                             |  {{ activity.activity_type.title }}
@@ -215,12 +215,12 @@
                           Timestamp(:timestamp="activity.created_date")
 </template>
 <script>
-import { FindContainer, AddClicked } from '@/stores/helpers/farms/crop'
+import { FindContainer, AddClicked } from '../../stores/helpers/farms/crop'
 import { mapActions } from 'vuex'
-import { StubCrop, StubNote } from '@/stores/stubs'
-import Modal from '@/components/modal.vue'
-import MoreDetail from '@/components/more-detail.vue'
-import Timestamp from '@/components/timestamp.vue'
+import { StubCrop, StubNote } from '../../stores/stubs'
+import Modal from '../../components/modal.vue'
+import MoreDetail from '../../components/more-detail.vue'
+import Timestamp from '../../components/timestamp.vue'
 export default {
   name: 'FarmCrop',
   components: {

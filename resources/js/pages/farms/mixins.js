@@ -1,5 +1,5 @@
-import stubFarm from '@/stores/stubs/farm'
-import stubMessage from '@/stores/stubs/message'
+import stubFarm from '../../stores/stubs/farm'
+import stubMessage from '../../stores/stubs/message'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {

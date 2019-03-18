@@ -28,16 +28,16 @@
               td
                 span(v-for="(area, index) in reservoir.installed_to_area")
                   | {{ area.name }}
-                  span(v-if="index+1 < reservoir.installed_to_area.length") , 
+                  span(v-if="index+1 < reservoir.installed_to_area.length") ,
               td
                 a.pull-right(style="cursor: pointer;" @click="openModal(reservoir)")
                   i.fa.fa-edit
 </template>
 
 <script>
-import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
+import { FindReservoirType } from '../../stores/helpers/farms/reservoir'
 import { mapGetters, mapActions } from 'vuex'
-import Modal from '@/components/modal.vue'
+import Modal from '../../components/modal.vue'
 export default {
   name: "FarmReservoirs",
   computed : {

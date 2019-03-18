@@ -1,7 +1,7 @@
 <template lang="pug">
   .move-crop-task
     .modal-header
-      span.h4.font-bold Move 
+      span.h4.font-bold Move
         span.identifier {{ crop.batch_id }}
       span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
         i.fa.fa-close
@@ -36,7 +36,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
+import { StubTask } from '../../../stores/stubs'
 import vueSlider from 'vue-slider-component';
 export default {
   name: "MoveCropTask",

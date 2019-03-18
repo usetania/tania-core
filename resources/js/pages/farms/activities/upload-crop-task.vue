@@ -24,8 +24,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '@/stores/stubs'
-import UploadComponent from '@/components/upload.vue'
+import { StubTask } from '../../../stores/stubs'
+import UploadComponent from '../../../components/upload.vue'
 export default {
   name: "UploadCropTask",
   components: {

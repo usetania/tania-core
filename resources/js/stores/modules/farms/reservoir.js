@@ -1,7 +1,7 @@
 import NProgress from 'nprogress'
 
-import * as types from '@/stores/mutation-types'
-import FarmApi from '@/stores/api/farm'
+import * as types from '../../mutation-types'
+import FarmApi from '../../api/farm'
 
 const state = {
   reservoir: {},
