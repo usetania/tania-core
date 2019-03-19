@@ -72,7 +72,6 @@
     "sinon-test": "^2.4.0",
     "style-loader": "^0.23.1",
     "sw-precache-webpack-plugin": "^0.11.5",
-    "v-click-outside": "^1.0.2",
     "vee-validate": "^2.0.0",
     "velocity-animate": "^1.5.0",
     "vue": "^2.5.13",

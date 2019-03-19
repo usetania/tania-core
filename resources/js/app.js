@@ -5,7 +5,6 @@ import Component from './component'
 import VeeValidate, { Validator } from 'vee-validate'
 import moment from 'moment-timezone'
 import VueMoment from 'vue-moment'
-import vClickOutside from 'v-click-outside'
 import Toasted from 'vue-toasted'
 import AppComponent from './components/app.vue'
 import GetTextPlugin from 'vue-gettext'
@@ -27,7 +26,6 @@ Validator.extend('longitude', IsLongitude)
 Vue.use(Component)
 Vue.use(VeeValidate)
 Vue.use(VueMoment, { moment })
-Vue.use(vClickOutside)
 Vue.use(Toasted, {
    theme: "bubble",
    position: "bottom-center",

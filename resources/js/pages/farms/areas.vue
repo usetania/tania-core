@@ -6,7 +6,7 @@
       a#areasform.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
         | Add Area
-      h1.m-n.font-thin.h3.text-black Areas
+      h1.m-n.font-thin.h3.text-black Areas {{ showModal }}
     .wrapper-md
       .row
         .col-md-4.col-xs-12(v-for="area in areas")
