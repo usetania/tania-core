@@ -44,7 +44,8 @@
                   th Batches Qty
               tbody
                 tr(v-if="crops.length == 0")
-                  td(colspan="2") No crops on production. 
+                  td(colspan="2") No crops on production.
+                    | &nbsp;
                     a(href="/#/crops") Add your first crops here.
                 tr(v-for="crop in crops")
                   td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
@@ -68,7 +69,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import TaskLabel from './farms/tasks/task-label.vue'
 import TasksList from './farms/tasks/task-list.vue'
-import Pagination from '@/components/pagination.vue'
+import Pagination from '../components/pagination.vue'
 export default {
   name: 'Home',
   components: {
