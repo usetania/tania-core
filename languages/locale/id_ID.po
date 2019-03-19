@@ -1,18 +1,18 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Tania in Bahasa Indonesia.
+# Copyright (C) 2019
+# This file is distributed under the same license as the Tania package.
+# Retno Ika Safitri <safitri.retnoika@gmail.com>, 2019.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: 1.6.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-03-19 13:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: id_ID\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -495,7 +495,7 @@ msgstr ""
 
 #: resources/js/pages/auth/login.vue:22
 msgid "Login"
-msgstr ""
+msgstr "Masuk"
 
 #: resources/js/components/footer.vue:4
 msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
@@ -622,7 +622,7 @@ msgstr ""
 #: resources/js/pages/auth/login.vue:16
 #: resources/js/pages/settings/account.vue:27
 msgid "Password"
-msgstr ""
+msgstr "Kata Sandi"
 
 #: resources/js/pages/intro/area.vue:4
 msgid "Perfect! Let's create a new area."
@@ -975,7 +975,7 @@ msgstr ""
 #: resources/js/pages/auth/login.vue:10
 #: resources/js/pages/settings/account.vue:15
 msgid "Username"
-msgstr ""
+msgstr "Nama Pengguna"
 
 #: resources/js/pages/home.vue:29
 msgid "Varieties"

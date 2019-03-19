@@ -5,18 +5,24 @@
     .wrapper-md
       a#reservoirsform.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
-        | Add Reservoir
-      h1.m-n.font-thin.h3.text-black Water Reservoir
+        translate Add Reservoir
+      h1.m-n.font-thin.h3.text-black
+        translate Water Reservoir
     .wrapper
       .panel.no-border
         table.table.m-b
           thead
             tr
-              th Name
-              th Created On
-              th Source Type
-              th Capacity
-              th Used In
+              th
+                translate Name
+              th
+                translate Created On
+              th
+                translate Source Type
+              th
+                translate Capacity
+              th
+                translate Used In
               th
           tbody
             tr(v-for="reservoir in reservoirs")

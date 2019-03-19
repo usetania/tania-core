@@ -1,7 +1,9 @@
 <template lang="pug">
-  small.text-muted 
-    | {{ timestamp | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }} 
-    | at {{ timestamp | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
+  small.text-muted
+    | {{ timestamp | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+    translate at
+    | &nbsp;
+    | {{ timestamp | moment('timezone', 'Asia/Jakarta').format('HH:mm') }}
 </template>
 
 <script>

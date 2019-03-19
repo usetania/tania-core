@@ -1,15 +1,18 @@
 <template lang="pug">
   .crops-form(v-if="loading === false")
     .modal-header
-      span.h4.font-bold(v-if="crop.uid") Update Crop
-      span.h4.font-bold(v-else) Add a New Batch
+      span.h4.font-bold(v-if="crop.uid")
+        translate Update Crop
+      span.h4.font-bold(v-else)
+        translate Add a New Batch
     .modal-body
       p.text-muted
-        | Crop Batch is a quantity or consignment of crops done at one time.
+        translate Crop Batch is a quantity or consignment of crops done at one time.
       form(@submit.prevent="validateBeforeSubmit")
         .line.line-dashed.b-b.line-lg
         .form-group
-          label.control-label Select activity type of this crop batch
+          label.control-label
+            translate Select activity type of this crop batch
           .row
             .col-sm-6(v-for="type in options.areaTypes")
               .radio
@@ -59,8 +62,10 @@
               input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('container cell') }" v-model="crop.container_cell" name="container cell")
               span.help-block.text-danger(v-show="errors.has('container cell')") {{ errors.first('container cell') }}
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit") SAVE
-          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')") CANCEL
+          button.btn.btn-addon.btn-success.pull-right(type="submit")
+            translate SAVE
+          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')")
+            translate CANCEL
 </template>
 
 <script>

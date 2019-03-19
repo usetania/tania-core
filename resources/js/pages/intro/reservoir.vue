@@ -2,23 +2,28 @@
   .container.init.col-md-4.col-md-offset-4
     a.navbar-brand.block.m-b.m-t.text-center
       img(src="../../../images/logobig.png")
-    h3.text-lt.text-center.wrapper.m-t Awesome! Now let's create a new<br/> water source for your farm.
+    h3.text-lt.text-center.wrapper.m-t
+      translate Awesome! Now let's create a new<br/> water source for your farm.
     .m-b-lg
       .wrapper
         .panel.panel-default
           .panel-heading
-            h4.text-lt Create Reservoir
+            h4.text-lt
+              translate Create Reservoir
           .panel-body
             error-message(:message="message.error_message")
             form(@submit.prevent="validateBeforeSubmit")
               .form-group
-                label#label-name(for="name") Reservoir Name
+                label#label-name(for="name")
+                  translate Reservoir Name
                 input.form-control#name(type="text" v-validate="'required|alpha_num_space|min:5|max:100'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="reservoir.name" name="name")
                 span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
               .form-group
-                label#label-source(for="type") Source
+                label#label-source(for="type")
+                  translate Source
                 select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="reservoir.type" name="type" @change="typeChanged($event.target.value)")
-                  option(value="") Please select source
+                  option(value="")
+                    translate Please select source
                   option(v-for="option in options" :value="option.key") {{ option.label }}
                 span.help-block.text-danger(v-show="errors.has('type')") {{ errors.first('type') }}
               .form-group(v-if="reservoir.type == 'BUCKET'")
@@ -27,10 +32,10 @@
               .form-group
                 button.btn.btn-addon.btn-primary.pull-right(type="submit")
                   i.fas.fa-long-arrow-alt-right
-                  | Continue
+                  translate Continue
                 router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroFarmCreate'}")
                   i.fas.fa-long-arrow-alt-left
-                  | Back
+                  translate Back
 </template>
 
 <script>

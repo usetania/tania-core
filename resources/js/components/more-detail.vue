@@ -5,10 +5,10 @@
     p
       a(@click="toggle()")
         small.text(v-if="clicked")
-          | Close details 
+          translate Close details
           i.fa.fa-angle-up
         small.text(v-else)
-          | Read details 
+          translate Read details
           i.fa.fa-angle-down
 </template>
 
