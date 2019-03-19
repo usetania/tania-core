@@ -19,18 +19,21 @@
                     i.fa.fa-th-large
                     router-link(:to="{ name: 'FarmAreas' }")
                       | {{ areas.length }}
+                      | &nbsp;
                       translate Areas
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-leaf
                     router-link(:to="{ name: 'FarmCrops' }")
                       | {{ cropInformation.total_plant_variety }}
+                      | &nbsp;
                       translate Varieties
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-clipboard
                     router-link(:to="{ name: 'Task' }")
                       | {{ tasksLength }}
+                      | &nbsp;
                       translate Tasks
             .panel-footer.bg-light.lter.wrapper.no-border
               small.text-muted

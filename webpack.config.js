@@ -122,12 +122,12 @@ module.exports = {
       'process.env': {
         CLIENT_ID: JSON.stringify(confJSON.client_id)
       },
-    }),
+    })/*,
     new webpack.ProvidePlugin({
       $: 'jquery',
       jQuery: 'jquery',
       Popper: ['popper.js', 'default']
-    })
+    })*/
   ]
 }
 
