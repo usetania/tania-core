@@ -5,7 +5,7 @@ LOGNAME ?= $(shell logname)
 
 # adding the name of the user's login name to the template file, so that
 # on a multi-user system several users can run this without interference
-TEMPLATE_POT ?= /tmp/template-$(LOGNAME).pot
+TEMPLATE_POT = ./languages/template.pot
 
 # Where to find input files (it can be multiple paths).
 INPUT_FILES = ./resources/js
@@ -17,9 +17,9 @@ OUTPUT_DIR = ./languages
 LOCALES = en_GB id_ID hu_HU
 
 # Name of the generated .po files for each available locale.
-LOCALE_FILES ?= $(patsubst %,$(OUTPUT_DIR)/locale/%/LC_MESSAGES/app.po,$(LOCALES))
+LOCALE_FILES ?= $(patsubst %,$(OUTPUT_DIR)/locale/app.po, $(LOCALES))
 
-GETTEXT_SOURCES ?= $(shell find $(INPUT_FILES) -name '*.jade' -o -name '*.html' -o -name '*.js' -o -name '*.vue' 2> /dev/null)
+GETTEXT_SOURCES ?= $($(INPUT_FILES) 2> /dev/null)
 
 .PHONY: all cover clean clean-osx clean-linux-arm clean-linux-amd64 clean-win64 \
 	osx linux-amd64 linux-arm windows fetch-dep run osxcross.bin \
@@ -99,12 +99,8 @@ translations: ./$(OUTPUT_DIR)/translations.json
 # Create a main .pot template, then generate .po files for each available language.
 # Thanx to Systematic: https://github.com/Polyconseil/systematic/blob/866d5a/mk/main.mk#L167-L183
 $(TEMPLATE_POT): $(GETTEXT_SOURCES)
-# `dir` is a Makefile built-in expansion function which extracts the directory-part of `$@`.
-# `$@` is a Makefile automatic variable: the file name of the target of the rule.
-# => `mkdir -p /tmp/`
-	mkdir -p $(dir $@)
 # Extract gettext strings from templates files and create a POT dictionary template.
-	gettext-extract --quiet --attribute v-translate --output $@ $(GETTEXT_SOURCES)
+	node node_modules/vue-webpack-gettext/extract --output ./$(OUTPUT_DIR)/template.pot --src ./resources/js/
 # Generate .po files for each available language.
 	@for lang in $(LOCALES); do \
 		export PO_FILE=$(OUTPUT_DIR)/locale/$$lang/LC_MESSAGES/app.po; \

@@ -1,7 +1,8 @@
 <template lang="pug">
   .row
     .col-xs-12.text-truncate
-      label.btn.btn-default.btn-file Browse
+      label.btn.btn-default.btn-file
+        translate Browse
         input(type="file" @change="processFile($event)" style="display: none;")
       span.text-muted {{ filename }}
 </template>

@@ -1,14 +1,18 @@
 <template lang="pug">
   .materials-form
     .modal-header
-      span.h4.font-bold(v-if="data.uid") Update Material
-      span.h4.font-bold(v-else) Add Material to Inventory
+      span.h4.font-bold(v-if="data.uid")
+        translate Update Material
+      span.h4.font-bold(v-else)
+        translate Add Material to Inventory
     .modal-body
-      p.text-muted Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on.
+      p.text-muted
+        translate Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on.
       form
         .line.line-dashed.b-b.line-lg
         .form-group
-          label#label-material-type Choose type of material
+          label#label-material-type
+            translate Choose type of material
           select.form-control#material_type(@change="typeChanged($event.target.value)" v-model="materialType")
             option(v-for="inventory in options.inventoryTypes" v-bind:value="inventory.key") {{ inventory.label }}
         InventoriesMaterialFormAgrochemical(v-if="showAgrochemical" @closeModal="closeModal" :data="data")

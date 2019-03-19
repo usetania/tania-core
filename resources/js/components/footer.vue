@@ -4,7 +4,7 @@
       span.pull-right Tania 1.6.0
         a.m-l-sm.text-muted(href="")
           i.fas.fa-long-arrow-up
-      | Made for the &#9829; of plants &copy; 2019 Copyright.
+      translate Made for the &#9829; of plants &copy; 2019 Copyright.
 </template>
 
 <script>

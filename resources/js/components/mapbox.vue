@@ -1,7 +1,8 @@
 <template lang="pug">
   .mapbox
     .mapbox-button
-      label#label-location Location
+      label#label-location
+        translate Location
       button.btn.btn-default.pull-right(@click="findMe" type="button")
         i.fa.fa-crosshairs
     v-map.map(:zoom="13" ref="map" :center="location")

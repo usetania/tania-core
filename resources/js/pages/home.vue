@@ -1,7 +1,8 @@
 <template lang="pug">
   .dashboard.col
     .wrapper-md
-      .m-t.font-thin.h3.text-black Dashboard
+      .m-t.font-thin.h3.text-black
+        translate Dashboard
     .wrapper-md
       .row
         // At A Glance
@@ -9,24 +10,31 @@
           .panel.ataglance.no-border
             .panel-heading
               .m-sm
-                span.h4.text-lt At A Glance
+                span.h4.text-lt
+                  translate At A Glance
             .panel-body
               ul
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-th-large
-                    router-link(:to="{ name: 'FarmAreas' }") {{ areas.length }} Areas
+                    router-link(:to="{ name: 'FarmAreas' }")
+                      | {{ areas.length }}
+                      translate Areas
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-leaf
-                    router-link(:to="{ name: 'FarmCrops' }") {{ cropInformation.total_plant_variety }} Varieties
+                    router-link(:to="{ name: 'FarmCrops' }")
+                      | {{ cropInformation.total_plant_variety }}
+                      translate Varieties
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-clipboard
-                    router-link(:to="{ name: 'Task' }") {{ tasksLength }} Tasks
+                    router-link(:to="{ name: 'Task' }")
+                      | {{ tasksLength }}
+                      translate Tasks
             .panel-footer.bg-light.lter.wrapper.no-border
               small.text-muted
-                | You are using Tania 1.5 right now.
+                translate You are using Tania 1.6 right now.
                 // There's a new version recently released. <a href="#">Take a look!</a>
         .col-sm-8
           // CROPS STATUS
@@ -35,16 +43,20 @@
               .m-b.m-t
                 span.pull-right.text-primary
                   router-link(:to="{ name: 'FarmCrops' }")
-                    | See all Crops
-                span.h4.text-lt What's On Production
+                    translate See all Crops
+                span.h4.text-lt
+                  translate What's On Production
             table.table.m-b-none
               thead
                 tr
-                  th Crop Variety
-                  th Batches Qty
+                  th
+                    translate Crop Variety
+                  th
+                    translate Batches Qty
               tbody
                 tr(v-if="crops.length == 0")
-                  td(colspan="2") No crops on production.
+                  td(colspan="2")
+                    translate No crops on production.
                     | &nbsp;
                     a(href="/#/crops") Add your first crops here.
                 tr(v-for="crop in crops")
@@ -59,8 +71,9 @@
               .m-b.m-t
                 span.pull-right.text-primary
                   router-link(:to="{ name: 'Task' }")
-                    | See all Tasks
-                span.h4.text-lt Tasks
+                    translate See all Tasks
+                span.h4.text-lt
+                  translate Tasks
             TasksList(:domain="'HOME'")
             Pagination(:pages="taskPages" @reload="getTasks")
 </template>

@@ -6,9 +6,11 @@
           .modal-content
             slot
               .modal-header
-                span.h4.font-bold This is the Modal Header
+                span.h4.font-bold
+                  translate This is the Modal Header
               .modal-body
-                span.h4.font-bold This is the Modal Body
+                span.h4.font-bold
+                  translate This is the Modal Body
     .modal-backdrop.fade.in
 </template>
 
