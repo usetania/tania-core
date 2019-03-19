@@ -35,14 +35,14 @@ echo "Running Front-End Unit tests ..."
 # build and run unit test
 npm install && npm run unit
 
-echo "Running end to end tests ..."
+# echo "Running end to end tests ..."
 # build and test e2e
-npm run prod && npm run cypress:run
-
+# npm run prod && npm run cypress:run
+npm run prod
 echo "Killing Server [$TANIA_PID] ..."
 
 # Move the screenshoot and recorded video from the test result into public folder
-mkdir public/assets
-cp -rf resources/tests/assets/videos public/assets/
+# mkdir public/assets
+# cp -rf resources/tests/assets/videos public/assets/
 
 kill -s TERM $TANIA_PID
