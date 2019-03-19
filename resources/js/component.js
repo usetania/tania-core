@@ -1,4 +1,4 @@
-import ErrorMessage from '@/components/error.vue'
+import ErrorMessage from './components/error.vue'
 
 export default {
   ErrorMessage,
