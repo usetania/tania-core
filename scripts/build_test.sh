@@ -33,11 +33,11 @@ echo "Server has running running in the background at pid ${TANIA_PID}"
 
 echo "Running Front-End Unit tests ..."
 # build and run unit test
-yarn && yarn run unit
+npm install && npm run unit
 
 echo "Running end to end tests ..."
 # build and test e2e
-yarn run production && yarn run cypress:run
+npm run prod && npm run cypress:run
 
 echo "Killing Server [$TANIA_PID] ..."
 
