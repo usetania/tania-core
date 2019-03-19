@@ -1,6 +1,8 @@
-import { shallowMount, createLocalVue } from '../../../../../node_modules/@vue/test-utils'
+import { shallowMount, createLocalVue } from '../../../../../node_modules/vue-test-utils'
 import Vuex from 'vuex'
-import AppComponent from '@/components/app.vue'
+import GetTextPlugin from 'vue-gettext'
+import AppComponent from '../../../../js/components/app.vue'
+import translations from '../../../../../languages/translations.json'
 
 const routerView = {
   name: 'router-view',
@@ -8,6 +10,17 @@ const routerView = {
 };
 const localVue = createLocalVue()
 localVue.use(Vuex)
+localVue.use(GetTextPlugin, {
+  availableLanguages: {
+    en_GB: 'British English',
+    id_ID: 'Bahasa Indonesia',
+    hu_HU: 'Magyar Nyelv'
+  },
+  defaultLanguage: 'en_GB',
+  translations: translations,
+  silent: false
+})
+
 localVue.component('router-view', routerView)
 
 describe('components/app', () => {
@@ -25,7 +38,7 @@ describe('components/app', () => {
     }
 
     const VuexFactory = new Vuex.Store({getters, actions})
-    const wrapper = shallowMount(AppComponent, {
+    const wrapper = shallow(AppComponent, {
       mocks: { $store: VuexFactory },
       localVue
     })
@@ -47,7 +60,7 @@ describe('components/app', () => {
     }
 
     const VuexFactory = new Vuex.Store({getters, actions})
-    const wrapper = shallowMount(AppComponent, {
+    const wrapper = shallow(AppComponent, {
       mocks: { $store: VuexFactory },
       localVue
     })
