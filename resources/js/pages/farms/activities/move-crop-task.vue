@@ -1,36 +1,41 @@
 <template lang="pug">
   .move-crop-task
     .modal-header
-      span.h4.font-bold Move
+      span.h4.font-bold
+        translate Move
         span.identifier {{ crop.batch_id }}
       span.pull-right.text-muted(style="cursor: pointer;" @click="$parent.$emit('close')")
         i.fa.fa-close
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
-          label(for="source_area_id") Select source area
+          label(for="source_area_id")
+            translate Select source area
           select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('source_area_id') }" v-model="task.source_area_id" name="source_area_id" @change="areaChange($event.target.value)")
-            option(value="") Please select area
+            option(value="")
+              translate Please select area
             option(v-for="area in current_areas" :value="area.area_id") {{ area.name }}
           span.help-block.text-danger(v-show="errors.has('source_area_id')") {{ errors.first('source_area_id') }}
         .form-group
-          label(for="destination_area_id") Select destination area
+          label(for="destination_area_id")
+            translate Select destination area
           select.form-control#destination_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('destination_area_id') }" v-model="task.destination_area_id" name="destination_area_id")
-            option(value="") Please select area
+            option(value="")
+              translate Please select area
             option(v-for="area in areas" :value="area.uid") {{ area.name }}
           span.help-block.text-danger(v-show="errors.has('destination_area_id')") {{ errors.first('destination_area_id') }}
         .form-group
           label(for="quantity")
-            | How many plants do you want to move?
+            translate How many plants do you want to move?
           vue-slider(v-model="task.quantity" v-bind:min="1" v-bind:max="max_value")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
           button.btn.btn-addon.btn-primary.pull-right(type="submit")
             i.fas.fa-check
-            |  OK
+            translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fas.fa-times
-            |  Cancel
+            translate Cancel
 </template>
 
 

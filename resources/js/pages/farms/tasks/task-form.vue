@@ -1,17 +1,21 @@
 <template lang="pug">
   .tasks-form
     .modal-header
-      h4.font-bold(v-if="task.uid") Update Task
+      h4.font-bold(v-if="task.uid")
+        translate Update Task
       h4.font-bold(v-else-if="asset != 'General'")
-        | {{ asset }}: Add New Task on
+        | {{ asset }}:
+        translate Add New Task on
         span.areatag {{ data.name }}
-      h4.font-bold(v-else) Add New Task
+      h4.font-bold(v-else)
+        translate Add New Task
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .row
           .col-xs-6
             .form-group
-              label#label-due-date Due Date
+              label#label-due-date
+                translate Due Date
               .input-group
                 datepicker#due_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('due date') }" v-model="task.due_date" name="due date" input-class="form-control" ref="openCal")
                 span.input-group-btn
@@ -20,44 +24,52 @@
               span.help-block.text-danger(v-show="errors.has('due date')") {{ errors.first('due date') }}
           .col-xs-6
             .form-group
-              label#label-priority Is this task urgent?
+              label#label-priority
+                translate Is this task urgent?
               .radio
                 label.i-checks.i-checks-sm
                   input#priority(type="radio" name="priority" value="URGENT" checked="checked" v-model="task.priority" v-validate="'required'")
                   i
-                  | Yes
+                  translate Yes
               .radio
                 label.i-checks.i-checks-sm
                   input#priority(type="radio" name="priority" value="NORMAL" v-model="task.priority" v-validate="'required'")
                   i
-                  | No
+                  translate No
               span.help-block.text-danger(v-show="errors.has('priority')") {{ errors.first('priority') }}
         .form-group
           label#label-category(for="category")
-            | Task Category
+            translate Task Category
           select.form-control#category(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('category') }" v-model="task.category" name="category")
-            option(value="") Please select category
-            option(v-if="asset_name == 'AREA'" value="AREA") Area
-            option(v-if="asset_name == 'RESERVOIR'" value="RESERVOIR") Reservoir
-            option(v-if="asset_name == 'GENERAL'" value="GENERAL") General
+            option(value="")
+              translate Please select category
+            option(v-if="asset_name == 'AREA'" value="AREA")
+              translate Area
+            option(v-if="asset_name == 'RESERVOIR'" value="RESERVOIR")
+              translate Reservoir
+            option(v-if="asset_name == 'GENERAL'" value="GENERAL")
+              translate General
             option(v-for="category in options.taskCategories" :value="category.key") {{ category.label }}
-            option(v-if="asset_name == 'GENERAL'" value="INVENTORY") Inventory
+            option(v-if="asset_name == 'GENERAL'" value="INVENTORY")
+              translate Inventory
           span.help-block.text-danger(v-show="errors.has('category')") {{ errors.first('category') }}
         .form-group
-          label#label-title(for="title") Title
+          label#label-title(for="title")
+            translate Title
           input.form-control#title(type="text" v-validate="'required|max:100'" :class="{'input': true, 'text-danger': errors.has('title') }" v-model="task.title" name="title")
           span.help-block.text-danger(v-show="errors.has('title')") {{ errors.first('title') }}
         .form-group
-          label#label-description(for="description") Description
+          label#label-description(for="description")
+            translate Description
           textarea.form-control#description(type="text" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
           button.btn.btn-addon.btn-primary.pull-right(type="submit")
             i.fas.fa-check
-            |  OK
+            translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fas.fa-times
-            |  Cancel
+            translate Cancel
 </template>
 
 <script>

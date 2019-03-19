@@ -1,17 +1,22 @@
 <template lang="pug">
   .upload-crop-task
     .modal-header
-      span.h4.font-bold Watering
+      span.h4.font-bold
+        translate Watering
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
-          label(for="type") Choose type of watering
+          label(for="type")
+            translate Choose type of watering
           select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.type" name="type" @change="typeChanged($event.target.value)")
-            option(value="ALL") All
-            option(value="PARTIAL") Partial
+            option(value="ALL")
+              translate All
+            option(value="PARTIAL")
+              translate Partial
           span.help-block.text-danger(v-show="errors.has('type')") {{ errors.first('type') }}
         .form-group
-          label Which crop do you want to water?
+          label
+            translate Which crop do you want to water?
           .checkbox(v-for="crop in crops")
             label.i-checks
               input(type="checkbox" name="selected crops" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('selected crops') }" v-model="task.crops" v-bind:value="crop.uid")
@@ -22,10 +27,10 @@
         .form-group
           button.btn.btn-success.pull-right(type="submit")
             i.fa.fa-check
-            |  SAVE
+            translate SAVE
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fa.fa-close
-            |  Cancel
+            translate Cancel
 </template>
 
 <script>

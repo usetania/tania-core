@@ -1,24 +1,27 @@
 <template lang="pug">
   .upload-crop-task
     .modal-header
-      span.h4.font-bold Take Picture
+      span.h4.font-bold
+        translate Take Picture
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
-          label Choose photo
+          label
+            translate Choose photo
           UploadComponent(@fileSelelected="fileSelelected")
         .form-group
           small.text-muted.pull-right (max. 200 char)
-          label(for="description") Describe a bit about this photo
+          label(for="description")
+            translate Describe a bit about this photo
           textarea.form-control#description(type="text" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
           button.btn.btn-addon.btn-primary.pull-right(type="submit")
             i.fas.fa-check
-            |  OK
+            translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fas.fa-times
-            |  Cancel
+            translate Cancel
 </template>
 
 

@@ -1,33 +1,36 @@
 <template lang="pug">
   .dump-crop-task
     .modal-header
-      span.h4.font-bold Dump
+      span.h4.font-bold
+        translate Dump
         span.identifier {{ crop.batch_id }}
     .modal-body
       form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label(for="type")
-            | Choose area
+            translate Choose area
           select.form-control#source_area_id(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="task.source_area_id" name="source_area_id" @change="areaChange($event.target.value)")
-            option(value="") Please select area
+            option(value="")
+              translate Please select area
             option(v-for="area in current_areas" :value="area.area_id") {{ area.name }}
           span.help-block.text-danger(v-show="errors.has('source_area_id')") {{ errors.first('source_area_id') }}
         .form-group
           label(for="quantity")
-            | How many plants you want to dump?
+            translate How many plants you want to dump?
           vue-slider(v-model="task.quantity" v-bind:min="1" v-bind:max="max_value")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
         .form-group
-          label(for="notes") Notes
+          label(for="notes")
+            translate Notes
           textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
           span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
         .form-group
           button.btn.btn-addon.btn-primary.pull-right(type="submit")
             i.fas.fa-check
-            |  OK
+            translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
             i.fas.fa-times
-            |  Cancel
+            translate Cancel
 </template>
 
 

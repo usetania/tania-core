@@ -1,0 +1,289 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-19 11:59+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: resources/js/pages/farms/tasks/task-form.vue:11
+msgid "Add New Task"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:8
+msgid "Add New Task on"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:31
+msgid "All"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:57
+msgid "Area"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:4
+msgid "AREA"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:35
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:73
+#: resources/js/pages/farms/activities/move-crop-task.vue:40
+#: resources/js/pages/farms/activities/upload-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:112
+#: resources/js/pages/farms/tasks/task-form.vue:88
+msgid "Cancel"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:9
+msgid "Choose area"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:11
+msgid "Choose area to be harvested"
+msgstr ""
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:9
+msgid "Choose photo"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:24
+msgid "Choose type of harvesting"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:63
+msgid "Crop"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:8
+msgid "CROP"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:4
+msgid "Crop: Add New Task for"
+msgstr ""
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:15
+msgid "Describe a bit about this photo"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:103
+#: resources/js/pages/farms/tasks/task-form.vue:79
+msgid "Description"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:11
+#: resources/js/pages/farms/tasks/task-form.vue:20
+msgid "Due Date"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:4
+msgid "Dump"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:7
+msgid "FINANCE"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:63
+msgid "General"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:11
+msgid "GENERAL"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:53
+msgid "Grams"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:4
+msgid "Harvest"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:31
+msgid "How many plants do you want to move?"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:20
+msgid "How many plants you want to dump?"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:67
+msgid "Inventory"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:10
+msgid "INVENTORY"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:22
+#: resources/js/pages/farms/tasks/task-form.vue:31
+msgid "Is this task urgent?"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:56
+msgid "Kilograms"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:22
+msgid "Login"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:4
+msgid "Move"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:33
+#: resources/js/pages/farms/tasks/task-form.vue:42
+msgid "No"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:14
+msgid "NORMAL"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:26
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:64
+msgid "Notes"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:66
+msgid "Nutrient"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:12
+msgid "NUTRIENT"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:32
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:70
+#: resources/js/pages/farms/activities/move-crop-task.vue:37
+#: resources/js/pages/farms/activities/upload-crop-task.vue:21
+#: resources/js/pages/farms/tasks/crop-task-form.vue:109
+#: resources/js/pages/farms/tasks/task-form.vue:85
+msgid "OK"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:28
+msgid "Partial"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:16
+msgid "Password"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:2
+msgid "PEST CONTROL"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:13
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:15
+#: resources/js/pages/farms/activities/move-crop-task.vue:13
+#: resources/js/pages/farms/activities/move-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:47
+msgid "Please select area"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:60
+#: resources/js/pages/farms/tasks/task-form.vue:54
+msgid "Please select category"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:79
+msgid "Please select fertilizer"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:90
+msgid "Please select pesticide"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:41
+msgid "Quantity"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:60
+msgid "Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:5
+msgid "RESERVOIR"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:6
+msgid "SAFETY"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:3
+msgid "SANITATION"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:43
+msgid "Select area to do your task"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:20
+msgid "Select destination area"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:75
+msgid "Select fertilizer you are going to use"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:86
+msgid "Select pesticide you are going to use"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:9
+msgid "Select source area"
+msgstr ""
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:4
+msgid "Take Picture"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:56
+#: resources/js/pages/farms/tasks/task-form.vue:50
+msgid "Task Category"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:97
+#: resources/js/pages/farms/tasks/task-form.vue:73
+msgid "Title"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:49
+msgid "Units"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:5
+msgid "Update Task"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:13
+msgid "URGENT"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:10
+msgid "Username"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:9
+msgid "WATER"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:27
+#: resources/js/pages/farms/tasks/task-form.vue:36
+msgid "Yes"
+msgstr ""
