@@ -7,33 +7,38 @@
         .m-t.m-b
           a.h5.text-lt.m-b(href="#/crops")
             i.fa.fa-long-arrow-alt-left.m-r
-            | Back to Crop Batches
+            translate Back to Crop Batches
         ul.nav.nav-tabs.h4
           li
-            router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") Basic Info
+            router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }")
+              translate Basic Info
           li.active
-            router-link(:to="{ name: 'FarmCropNotes', params: { id: crop.uid } }")  Tasks & Notes
+            router-link(:to="{ name: 'FarmCropNotes', params: { id: crop.uid } }")
+              translate Tasks & Notes
         .panel
           .panel-heading
             .row.m-t
               .col-sm-8
-                .h4.font-bold Tasks
+                .h4.font-bold
+                  translate Tasks
               .col-sm-4.text-right
                 a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
                   i.fa.fa-plus
-                  | Add Task
+                  translate Add Task
           .panel-body.bg-white-only
             .row
               TasksList(:domain="'CROP'" :asset_id="crop.uid" :reload="reload"  @openModal="openModal")
               .col-sm-12
-                .h4.font-bold.m-b Notes
+                .h4.font-bold.m-b
+                  translate Notes
                 .row
                   form(@submit.prevent="validateBeforeSubmit")
                     .col-xs-10
                       textarea.form-control.m-b#content(placeholder="Leave a note here..." rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
                       span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
                     .col-xs-2
-                      button.btn.btn-success.pull-right.m-b(type="submit") Add Notes
+                      button.btn.btn-success.pull-right.m-b(type="submit")
+                        translate Add Notes
                 ul.list-group.list-group-lg.no-bg.auto
                   li.list-group-item.row(v-for="cropNote in crop.notes")
                     .col-xs-10

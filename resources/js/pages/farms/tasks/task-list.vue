@@ -4,12 +4,15 @@
       thead
         tr
           th
-          th Items
-          th Category
+          th
+            translate Items
+          th
+            translate Category
           th(v-if="domain != 'AREA' && domain != 'RESERVOIR'")
       tbody
         tr(v-if="tasks.length == 0")
-          td(colspan="3") No Task Created
+          td(colspan="3")
+            translate No Task Created
         tr(v-for="task in tasks")
           td
             .checkbox
@@ -22,15 +25,18 @@
               MoreDetail(:data="task" :description="task.description")
               small.text-muted(v-if="task.due_date") Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
                 TaskLabel(:type="'PRIORITY'" :task="task")
-                span.text-danger(v-if="task.is_due == true") Overdue!
-                span.text-success(v-if="isToday(task.due_date)") Today
+                span.text-danger(v-if="task.is_due == true")
+                  translate Overdue!
+                span.text-success(v-if="isToday(task.due_date)")
+                  translate Today
           td
             TaskLabel(:type="'CATEGORY'" :task="task")
           td(v-if="domain != 'AREA' && domain != 'RESERVOIR' && domain != 'HOME'")
             a.h3(style="cursor: pointer;" @click="openModal(task)")
               i.fas.fa-edit
     div(v-else)
-      p(v-if="tasks.length == 0") No Task Created
+      p(v-if="tasks.length == 0")
+        translate No Task Created
       li.list-group-item.clearfix(v-for="task in tasks")
         .row
           .col-sm-1
@@ -40,11 +46,11 @@
                 i
           .col-sm-8
             span.h4.text-dark(v-if="task.category == 'PESTCONTROL' || task.category == 'NUTRIENT'")
-              | Apply
+              translate Apply
               u(v-if="task.domain_details.material") {{ task.domain_details.material.material_name }}
-              |  to
+              translate to
               span.identifier-sm(v-if="task.domain_details.crop") {{ task.domain_details.crop.crop_batch_id }}
-              |  on
+              translate on
               span.areatag-sm(v-if="task.domain_details.area") {{ task.domain_details.area.area_name }}
             span.h4.text-dark(v-else-if="task.category == 'AREA'")
               span.areatag-sm(v-if="task.domain_details.area") {{ task.domain_details.area.area_name }}
@@ -56,7 +62,7 @@
               |  {{ task.title }}
             span.h4.text-dark(v-else-if="task.category == 'CROP'")
               span.identifier-sm(v-if="task.domain_details.crop") {{ task.domain_details.crop.crop_batch_id }}
-              |  on
+              translate on
               span.areatag-sm(v-if="task.domain_details.area") {{ task.domain_details.area.area_name }}
               i.fas.fa-long-arrow-alt-right
               |  {{ task.title }}
@@ -68,8 +74,10 @@
             MoreDetail(:data="task" :description="task.description")
             div
               small.text-muted Due date: {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-              .status.status-urgent(v-if="task.priority == 'URGENT'") URGENT
-              span.text-danger(v-if="task.is_due == true") Overdue!
+              .status.status-urgent(v-if="task.priority == 'URGENT'")
+                translate URGENT
+              span.text-danger(v-if="task.is_due == true")
+                translate Overdue!
           .col-sm-2
             TaskLabel(:type="'CATEGORY'" :task="task")
           .col-sm-1.text-right

@@ -1,23 +1,27 @@
 <template lang="pug">
   .areas-form
     .modal-header
-      span.h4.font-bold(v-if="area.uid") Update Area
-      span.h4.font-bold(v-else) Add New Area
+      span.h4.font-bold(v-if="area.uid")
+        translate Update Area
+      span.h4.font-bold(v-else)
+        translate Add New Area
     .modal-body
       p.text-muted
-        | Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a
-        | pot or anything that describes the different physical locations in your facility.
+        translate Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a
+        translate pot or anything that describes the different physical locations in your facility.
       form(@submit.prevent="validateBeforeSubmit")
         .line.line-dashed.b-b.line-lg
         .row
           .col-xs-6
             .form-group
-              label#label-name(for="name") Area Name
+              label#label-name(for="name")
+                translate Area Name
               input#name.form-control(type="text" v-validate="'required|alpha_num_space|min:5|max:100'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="area.name" name="name")
               span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
           .col-xs-6
             .from-group
-              label#label-size Size
+              label#label-size
+                translate Size
               .row
                 .col-xs-6
                   input#size.form-control(type="text" v-validate="'required|decimal'" :class="{'input': true, 'text-danger': errors.has('size') }" v-model="area.size" name="size")
@@ -29,7 +33,8 @@
         .row
           .col-xs-6
             .form-group
-              label#label-type(for="type") Type
+              label#label-type(for="type")
+                translate Type
               select#type.form-control(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="area.type" name="type")
                 option(v-for="type in options.types" :value="type.key") {{ type.label }}
               span.help-block.text-danger(v-show="errors.has('type')") {{ errors.first('type') }}

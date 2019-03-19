@@ -26,6 +26,7 @@ Download Tania for Windows x64 and Linux x64 on [the release page](https://githu
 * [REST APIs](#rest-apis)
 * [Roadmap](#roadmap)
 * [Contributing to Tania](#contributing-to-tania)
+    * [Localisation](#localisation)
 * [Support Us](#support-us)
     * [Backers](#backers)
     * [Sponsors](#sponsors)
@@ -95,6 +96,11 @@ We want to share our high-level details of our roadmap, so that others can see o
 ## Contributing to Tania
 
 We welcome contributions, but request you to follow these [guidelines](contributing.md).
+
+### Localisation
+
+1. Install `gettext`. Ubuntu use `apt-get install gettext`.
+2. Run `npm run translation:extract` to update the POT file.
 
 ## Support Us
 
