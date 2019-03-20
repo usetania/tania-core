@@ -1,6 +1,6 @@
 export const AreaTypes = [
   { key: 'SEEDING',  label: 'Seeding' },
-  { key: 'GROWING', label: 'Growing Area' }
+  { key: 'GROWING', label: 'Growing' }
 ]
 
 export const AreaLocations = [

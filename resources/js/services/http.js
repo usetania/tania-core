@@ -2,7 +2,7 @@ import axios from 'axios'
 import NProgress from 'nprogress'
 import qs from 'qs';
 
-import { ls } from '@/services'
+import { ls } from '../services'
 
 const state = {
   token: '',

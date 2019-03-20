@@ -5,7 +5,9 @@
     <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
     <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
     <img src="https://img.shields.io/badge/semver-1.5.1-green.svg?maxAge=2592000" alt="semver">
-    <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
+    <a href="https://travis-ci.com/Tanibox/tania-core">
+      <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
+    </a>
     <a href="https://opensource.org/licenses/Apache-2.0" target="_blank"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
 </div>
 
@@ -26,6 +28,7 @@ Download Tania for Windows x64 and Linux x64 on [the release page](https://githu
 * [REST APIs](#rest-apis)
 * [Roadmap](#roadmap)
 * [Contributing to Tania](#contributing-to-tania)
+    * [Localisation](#localisation)
 * [Support Us](#support-us)
     * [Backers](#backers)
     * [Sponsors](#sponsors)
@@ -95,6 +98,15 @@ We want to share our high-level details of our roadmap, so that others can see o
 ## Contributing to Tania
 
 We welcome contributions, but request you to follow these [guidelines](contributing.md).
+
+### Localisation
+
+You can help us to localise Tania into your language by following these steps:
+
+1. Copy `languages/template.pot` and paste it to `languages/locale` directory.
+2. Rename it with your language locale code e.g: `en_AU.po`, `de_DE.po`, etc.
+3. Fill `msgstr` key with your translation. You can edit the `.po` file by using text editor or PO Edit software.
+4. Pull request your translation to `master` branch.
 
 ## Support Us
 

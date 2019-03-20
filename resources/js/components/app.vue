@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { event } from '@/services/bus'
+import { event } from '../services/bus'
 import { mapGetters } from 'vuex'
 export default {
   name: 'AppComponent',

@@ -5,24 +5,32 @@
         InventoriesMaterialForm(:data="data")
       a#materialsform.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="openModal()")
         i.fa.fa-plus
-        |Add Material
-      h1.m-t.font-thin.h3.text-black Materials
+        translate Add Material
+      h1.m-t.font-thin.h3.text-black
+        translate Materials
 
     .wrapper-md
       .panel.no-border
         table.table.m-b
           thead
             tr
-              th Category
-              th Name
-              th Price
-              th Produced By
-              th Quantity
-              th Additional Notes
-              th 
+              th
+                translate Category
+              th
+                translate Name
+              th
+                translate Price
+              th
+                translate Produced By
+              th
+                translate Quantity
+              th
+                translate Additional Notes
+              th
           tbody
             tr(v-if="materials.length == 0")
-              td(colspan="7") No Materials Available
+              td(colspan="7")
+                translate No Materials Available
             tr(v-for="material in materials")
               td {{ getType(material.type.code) }}
               td {{ material.name }}
@@ -37,10 +45,10 @@
 </template>
 
 <script>
-import Modal from '@/components/modal.vue'
-import Pagination from '@/components/pagination.vue'
+import Modal from '../../components/modal.vue'
+import Pagination from '../../components/pagination.vue'
 import { mapActions, mapGetters } from 'vuex'
-import { FindInventoryType, FindQuantityUnit } from '@/stores/helpers/inventories/inventory'
+import { FindInventoryType, FindQuantityUnit } from '../../stores/helpers/inventories/inventory'
 export default {
   name: 'InventoriesMaterial',
   computed: {

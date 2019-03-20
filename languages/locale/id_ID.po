@@ -1,0 +1,1021 @@
+# Tania in Bahasa Indonesia.
+# Copyright (C) 2019
+# This file is distributed under the same license as the Tania package.
+# Retno Ika Safitri <safitri.retnoika@gmail.com>, 2019.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-19 13:44+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: id_ID\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:25
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:35
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:17
+#: resources/js/pages/inventories/materials-form-other.vue:27
+#: resources/js/pages/inventories/materials-form-plant.vue:53
+#: resources/js/pages/inventories/materials-form-potharvest.vue:27
+#: resources/js/pages/inventories/materials-form-seed.vue:53
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:29
+msgid "&euro;"
+msgstr ""
+
+#: resources/js/components/aside.vue:48
+msgid "Account"
+msgstr ""
+
+#: resources/js/pages/settings/account.vue:5
+msgid "Account Settings"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:128
+msgid "Activity"
+msgstr ""
+
+#: resources/js/pages/farms/crops-form.vue:5
+#: resources/js/pages/farms/crops.vue:35
+msgid "Add a New Batch"
+msgstr ""
+
+#: resources/js/pages/farms/areas.vue:7
+msgid "Add Area"
+msgstr ""
+
+#: resources/js/pages/inventories/materials.vue:7
+msgid "Add Material"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form.vue:5
+msgid "Add Material to Inventory"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:5
+#: resources/js/pages/intro/area.vue:11
+msgid "Add New Area"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs-form.vue:5
+msgid "Add New Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:11
+msgid "Add New Task"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:8
+msgid "Add New Task on"
+msgstr ""
+
+#: resources/js/pages/farms/crop-notes.vue:48
+msgid "Add Notes"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs.vue:7
+msgid "Add Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:11
+#: resources/js/pages/farms/crop-notes.vue:31
+#: resources/js/pages/farms/reservoir.vue:7
+#: resources/js/pages/tasks/task.vue:26
+msgid "Add Task"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:70
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:49
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:34
+#: resources/js/pages/inventories/materials-form-other.vue:44
+#: resources/js/pages/inventories/materials-form-plant.vue:70
+#: resources/js/pages/inventories/materials-form-potharvest.vue:44
+#: resources/js/pages/inventories/materials-form-seed.vue:70
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:54
+#: resources/js/pages/inventories/materials.vue:33
+msgid "Additional Notes"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:31
+#: resources/js/pages/farms/crop.vue:189
+#: resources/js/pages/farms/tasks/water-task.vue:13
+#: resources/js/pages/tasks/task.vue:53 resources/js/pages/tasks/task.vue:80
+msgid "All"
+msgstr ""
+
+#: resources/js/pages/farms/crops.vue:34
+msgid "All Growing Batches on This Farm"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:217 resources/js/pages/farms/crop.vue:250
+#: resources/js/pages/farms/tasks/task-list.vue:57
+msgid "Apply"
+msgstr ""
+
+#: resources/js/pages/farms/crops.vue:29
+msgid "Archives"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:203
+#: resources/js/pages/farms/tasks/task-form.vue:57
+#: resources/js/pages/tasks/task.vue:56
+msgid "Area"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:4
+msgid "AREA"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:8
+#: resources/js/pages/intro/area.vue:16
+msgid "Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:17
+#: resources/js/pages/intro/area.vue:25
+msgid "Area Name"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:24
+msgid "Area Size"
+msgstr ""
+
+#: resources/js/components/aside.vue:16 resources/js/pages/farms/areas.vue:9
+#: resources/js/pages/home.vue:22
+msgid "Areas"
+msgstr ""
+
+#: resources/js/components/timestamp.vue:2 resources/js/pages/farms/crop.vue:88
+#: resources/js/pages/farms/crop.vue:95
+msgid "at"
+msgstr ""
+
+#: resources/js/pages/home.vue:15
+msgid "At A Glance"
+msgstr ""
+
+#: resources/js/pages/intro/reservoir.vue:4
+msgid "Awesome! Now let's create a new<br> water source for your farm."
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:98
+#: resources/js/pages/intro/reservoir.vue:42
+msgid "Back"
+msgstr ""
+
+#: resources/js/pages/farms/crop-notes.vue:9
+#: resources/js/pages/farms/crop.vue:18
+msgid "Back to Crop Batches"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:20
+msgid "Basic info"
+msgstr ""
+
+#: resources/js/pages/farms/crop-notes.vue:13
+#: resources/js/pages/farms/crop.vue:22
+#: resources/js/pages/farms/reservoir.vue:15
+msgid "Basic Info"
+msgstr ""
+
+#: resources/js/pages/farms/crops.vue:27
+msgid "Batch"
+msgstr ""
+
+#: resources/js/pages/farms/crops-listing.vue:9
+msgid "Batch ID"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:28
+msgid "Batches"
+msgstr ""
+
+#: resources/js/pages/home.vue:64
+msgid "Batches Qty"
+msgstr ""
+
+#: resources/js/components/upload.vue:5
+msgid "Browse"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:35
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:73
+#: resources/js/pages/farms/activities/move-crop-task.vue:40
+#: resources/js/pages/farms/activities/upload-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:112
+#: resources/js/pages/farms/tasks/task-form.vue:88
+#: resources/js/pages/farms/tasks/water-task.vue:36
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:79
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:58
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:43
+#: resources/js/pages/inventories/materials-form-other.vue:53
+#: resources/js/pages/inventories/materials-form-plant.vue:79
+#: resources/js/pages/inventories/materials-form-potharvest.vue:53
+#: resources/js/pages/inventories/materials-form-seed.vue:79
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:65
+msgid "Cancel"
+msgstr ""
+
+#: resources/js/pages/farms/crops-form.vue:82
+#: resources/js/pages/farms/reservoirs-form.vue:35
+msgid "CANCEL"
+msgstr ""
+
+#: resources/js/pages/farms/reservoir.vue:23
+#: resources/js/pages/farms/reservoirs.vue:27
+msgid "Capacity"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-list.vue:11
+#: resources/js/pages/inventories/materials.vue:18
+#: resources/js/pages/tasks/task.vue:47
+msgid "Category"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:14
+msgid "Chemical Type"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:9
+msgid "Choose area"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:11
+msgid "Choose area to be harvested"
+msgstr ""
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:9
+msgid "Choose photo"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:24
+msgid "Choose type of harvesting"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form.vue:14
+msgid "Choose type of material"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/water-task.vue:9
+msgid "Choose type of watering"
+msgstr ""
+
+#: resources/js/pages/intro/farm.vue:63
+msgid "City"
+msgstr ""
+
+#: resources/js/components/more-detail.vue:5
+msgid "Close details"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:97
+msgid "Completed"
+msgstr ""
+
+#: resources/js/pages/settings/account.vue:33
+msgid "Confirm Password"
+msgstr ""
+
+#: resources/js/pages/farms/create.vue:72 resources/js/pages/intro/farm.vue:71
+#: resources/js/pages/intro/reservoir.vue:39
+msgid "Continue"
+msgstr ""
+
+#: resources/js/pages/farms/create.vue:13 resources/js/pages/intro/farm.vue:11
+msgid "Create Farm"
+msgstr ""
+
+#: resources/js/pages/intro/reservoir.vue:11
+msgid "Create Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/reservoir.vue:35
+#: resources/js/pages/farms/reservoirs.vue:21
+msgid "Created On"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:63
+#: resources/js/pages/tasks/task.vue:62
+msgid "Crop"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:8
+msgid "CROP"
+msgstr ""
+
+#: resources/js/pages/farms/crops-form.vue:8
+msgid "Crop Batch is a quantity or consignment of crops done at one time."
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:30
+#: resources/js/pages/farms/crops-listing.vue:6 resources/js/pages/home.vue:61
+msgid "Crop Variety"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:4
+msgid "Crop: Add New Task for"
+msgstr ""
+
+#: resources/js/components/aside.vue:20 resources/js/pages/farms/crops.vue:8
+msgid "Crops"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:106
+msgid "Current Quantity"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:39
+msgid "Current Status"
+msgstr ""
+
+#: resources/js/components/aside.vue:9 resources/js/pages/home.vue:5
+msgid "Dashboard"
+msgstr ""
+
+#: resources/js/pages/farms/crops-listing.vue:15
+msgid "Days Since Seeding"
+msgstr ""
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:15
+msgid "Describe a bit about this photo"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:103
+#: resources/js/pages/farms/tasks/task-form.vue:79
+msgid "Description"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:11
+#: resources/js/pages/farms/tasks/task-form.vue:20
+msgid "Due Date"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:56
+msgid "Dump"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:45 resources/js/pages/farms/crop.vue:163
+#: resources/js/pages/farms/crops-listing.vue:59
+msgid "Dumped"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:53
+#: resources/js/pages/inventories/materials-form-plant.vue:59
+#: resources/js/pages/inventories/materials-form-seed.vue:59
+msgid "Expiration date"
+msgstr ""
+
+#: resources/js/pages/farms/create.vue:24 resources/js/pages/intro/farm.vue:22
+msgid "Farm Description"
+msgstr ""
+
+#: resources/js/pages/farms/create.vue:18 resources/js/pages/intro/farm.vue:16
+msgid "Farm Name"
+msgstr ""
+
+#: resources/js/pages/farms/create.vue:30 resources/js/pages/intro/farm.vue:28
+msgid "Farm Type"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:7
+msgid "FINANCE"
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:95
+msgid "Finish Setup"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:139
+msgid "from"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:63
+#: resources/js/pages/tasks/task.vue:65
+msgid "General"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:11
+msgid "GENERAL"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:53
+#: resources/js/pages/farms/crop.vue:192
+msgid "Grams"
+msgstr ""
+
+#: resources/js/pages/farms/areas.vue:25
+msgid "Grow Batches"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:42
+#: resources/js/pages/farms/crops-listing.vue:55
+msgid "Growing"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:51
+msgid "Harvest"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:184
+msgid "Harvested"
+msgstr ""
+
+#: resources/js/pages/intro/farm.vue:4
+msgid "Hello! Can you tell me a little <br> about your farm?"
+msgstr ""
+
+#: resources/js/pages/farms/create.vue:5
+msgid "Home"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:31
+msgid "How many plants do you want to move?"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:20
+msgid "How many plants you want to dump?"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:103
+msgid "Incomplete"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:100
+msgid "Initial Planting"
+msgstr ""
+
+#: resources/js/pages/farms/crops-listing.vue:21
+msgid "Initial Quantity"
+msgstr ""
+
+#: resources/js/components/aside.vue:34
+msgid "Inventories"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:67
+msgid "Inventory"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:10
+msgid "INVENTORY"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:22
+#: resources/js/pages/farms/tasks/task-form.vue:31
+msgid "Is this task urgent?"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-list.vue:8
+msgid "Items"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:56
+msgid "Kilograms"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:84
+#: resources/js/pages/farms/crops-listing.vue:27
+msgid "Last Watering"
+msgstr ""
+
+#: resources/js/components/mapbox.vue:5 resources/js/pages/farms/area.vue:26
+msgid "Location"
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:62
+msgid "Locations"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:22
+msgid "Login"
+msgstr "Masuk"
+
+#: resources/js/components/footer.vue:4
+msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form.vue:8
+msgid "Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on."
+msgstr ""
+
+#: resources/js/components/aside.vue:39
+#: resources/js/pages/inventories/materials.vue:9
+msgid "Materials"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:63
+msgid "Move"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:137
+msgid "Moved"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs.vue:18
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:6
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:6
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:6
+#: resources/js/pages/inventories/materials-form-other.vue:8
+#: resources/js/pages/inventories/materials-form-potharvest.vue:8
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:8
+#: resources/js/pages/inventories/materials.vue:21
+msgid "Name"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:33
+#: resources/js/pages/farms/tasks/task-form.vue:42
+msgid "No"
+msgstr ""
+
+#: resources/js/pages/farms/crops-listing.vue:35
+msgid "No crops available."
+msgstr ""
+
+#: resources/js/pages/home.vue:71
+msgid "No crops on production."
+msgstr ""
+
+#: resources/js/pages/inventories/materials.vue:41
+msgid "No Materials Available"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-list.vue:19
+#: resources/js/pages/farms/tasks/task-list.vue:45
+msgid "No Task Created"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:86
+msgid "Normal"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:14
+msgid "NORMAL"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:26
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:64
+#: resources/js/pages/farms/area.vue:48
+#: resources/js/pages/farms/crop-notes.vue:39
+#: resources/js/pages/farms/reservoir.vue:45
+msgid "Notes"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:66
+msgid "Nutrient"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:12
+msgid "NUTRIENT"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:152 resources/js/pages/farms/crop.vue:191
+msgid "of"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:32
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:70
+#: resources/js/pages/farms/activities/move-crop-task.vue:37
+#: resources/js/pages/farms/activities/upload-crop-task.vue:21
+#: resources/js/pages/farms/tasks/crop-task-form.vue:109
+#: resources/js/pages/farms/tasks/task-form.vue:85
+msgid "OK"
+msgstr ""
+
+#: resources/js/pages/settings/account.vue:21
+msgid "Old Password"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:104 resources/js/pages/farms/crop.vue:110
+#: resources/js/pages/farms/crop.vue:115 resources/js/pages/farms/crop.vue:153
+#: resources/js/pages/farms/crop.vue:165 resources/js/pages/farms/crop.vue:193
+#: resources/js/pages/farms/crop.vue:220 resources/js/pages/farms/crop.vue:230
+#: resources/js/pages/farms/crop.vue:240 resources/js/pages/farms/crop.vue:252
+#: resources/js/pages/farms/crop.vue:261
+#: resources/js/pages/farms/tasks/task-list.vue:60
+#: resources/js/pages/farms/tasks/task-list.vue:62
+msgid "on"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:109
+msgid "Overdue"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-list.vue:34
+#: resources/js/pages/farms/tasks/task-list.vue:68
+msgid "Overdue!"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:28
+#: resources/js/pages/farms/crop.vue:186
+#: resources/js/pages/farms/tasks/water-task.vue:16
+msgid "Partial"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:16
+#: resources/js/pages/settings/account.vue:27
+msgid "Password"
+msgstr "Kata Sandi"
+
+#: resources/js/pages/intro/area.vue:4
+msgid "Perfect! Let's create a new area."
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:2
+msgid "PEST CONTROL"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:27
+#: resources/js/pages/inventories/materials-form-other.vue:37
+#: resources/js/pages/inventories/materials-form-potharvest.vue:37
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:39
+msgid "Pieces"
+msgstr ""
+
+#: resources/js/pages/farms/areas.vue:27
+msgid "Plant Quantity"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-plant.vue:14
+#: resources/js/pages/inventories/materials-form-seed.vue:14
+msgid "Plant Type"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:13
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:15
+#: resources/js/pages/farms/activities/move-crop-task.vue:13
+#: resources/js/pages/farms/activities/move-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:47
+msgid "Please select area"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:60
+#: resources/js/pages/farms/tasks/task-form.vue:54
+msgid "Please select category"
+msgstr ""
+
+#: resources/js/pages/intro/farm.vue:56
+msgid "Please select country"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:79
+msgid "Please select fertilizer"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:90
+msgid "Please select pesticide"
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:78
+msgid "Please select reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs-form.vue:22
+#: resources/js/pages/intro/reservoir.vue:29
+msgid "Please select source"
+msgstr ""
+
+#: resources/js/pages/intro/farm.vue:32
+msgid "Please select type"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:9
+#: resources/js/pages/intro/area.vue:17
+msgid "pot or anything that describes the different physical locations in your facility."
+msgstr ""
+
+#: resources/js/pages/inventories/materials.vue:24
+msgid "Price"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:22
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:32
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:14
+#: resources/js/pages/inventories/materials-form-other.vue:24
+#: resources/js/pages/inventories/materials-form-plant.vue:50
+#: resources/js/pages/inventories/materials-form-potharvest.vue:24
+#: resources/js/pages/inventories/materials-form-seed.vue:50
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:26
+msgid "Price per Unit"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:74
+msgid "Priority"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:62
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:41
+#: resources/js/pages/inventories/materials-form-other.vue:14
+#: resources/js/pages/inventories/materials-form-plant.vue:22
+#: resources/js/pages/inventories/materials-form-potharvest.vue:14
+#: resources/js/pages/inventories/materials-form-seed.vue:22
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:48
+msgid "Produced by"
+msgstr ""
+
+#: resources/js/pages/inventories/materials.vue:27
+msgid "Produced By"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:41
+#: resources/js/pages/farms/crops-listing.vue:18
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:35
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:14
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:23
+#: resources/js/pages/inventories/materials-form-other.vue:33
+#: resources/js/pages/inventories/materials-form-plant.vue:32
+#: resources/js/pages/inventories/materials-form-potharvest.vue:33
+#: resources/js/pages/inventories/materials-form-seed.vue:32
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:35
+#: resources/js/pages/inventories/materials.vue:30
+msgid "Quantity"
+msgstr ""
+
+#: resources/js/components/more-detail.vue:6
+msgid "Read details"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:32
+#: resources/js/pages/farms/tasks/task-form.vue:60
+#: resources/js/pages/tasks/task.vue:59
+msgid "Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:5
+msgid "RESERVOIR"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs-form.vue:7
+msgid "Reservoir is a water source for your farm. It can be a direct line from well, or water tank that has volume/capacity."
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs-form.vue:12
+#: resources/js/pages/intro/reservoir.vue:19
+msgid "Reservoir Name"
+msgstr ""
+
+#: resources/js/components/aside.vue:24
+msgid "Reservoirs"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:6
+msgid "SAFETY"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:3
+msgid "SANITATION"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:76
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:55
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:40
+#: resources/js/pages/inventories/materials-form-other.vue:50
+#: resources/js/pages/inventories/materials-form-plant.vue:76
+#: resources/js/pages/inventories/materials-form-potharvest.vue:50
+#: resources/js/pages/inventories/materials-form-seed.vue:76
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:62
+msgid "Save"
+msgstr ""
+
+#: resources/js/pages/farms/crops-form.vue:79
+#: resources/js/pages/farms/reservoirs-form.vue:32
+#: resources/js/pages/farms/tasks/water-task.vue:33
+#: resources/js/pages/settings/account.vue:39
+msgid "SAVE"
+msgstr ""
+
+#: resources/js/pages/home.vue:53
+msgid "See all Crops"
+msgstr ""
+
+#: resources/js/pages/home.vue:93
+msgid "See all Tasks"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:150
+msgid "Seeded"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:39
+#: resources/js/pages/farms/crops-listing.vue:51
+msgid "Seeding"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:82
+#: resources/js/pages/farms/crops-listing.vue:12
+msgid "Seeding Date"
+msgstr ""
+
+#: resources/js/pages/farms/crops-form.vue:14
+msgid "Select activity type of this crop batch"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:43
+msgid "Select area to do your task"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:20
+msgid "Select destination area"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:75
+msgid "Select fertilizer you are going to use"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:86
+msgid "Select pesticide you are going to use"
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:87
+msgid "Select photo"
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:74
+msgid "Select Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:9
+msgid "Select source area"
+msgstr ""
+
+#: resources/js/components/header.vue:10
+msgid "Sign Out"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:25
+#: resources/js/pages/intro/area.vue:33
+msgid "Size"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs-form.vue:18
+#: resources/js/pages/intro/reservoir.vue:25
+msgid "Source"
+msgstr ""
+
+#: resources/js/pages/farms/reservoir.vue:19
+#: resources/js/pages/farms/reservoirs.vue:24
+msgid "Source Type"
+msgstr ""
+
+#: resources/js/pages/farms/crops-listing.vue:24
+msgid "Status"
+msgstr ""
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:68
+msgid "Take Picture"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:56
+#: resources/js/pages/farms/tasks/task-form.vue:50
+msgid "Task Category"
+msgstr ""
+
+#: resources/js/components/aside.vue:31 resources/js/pages/farms/area.vue:70
+#: resources/js/pages/farms/crop-notes.vue:27
+#: resources/js/pages/farms/reservoir.vue:69 resources/js/pages/home.vue:36
+#: resources/js/pages/home.vue:95 resources/js/pages/tasks/task.vue:22
+msgid "Tasks"
+msgstr ""
+
+#: resources/js/pages/farms/crop-notes.vue:18
+#: resources/js/pages/farms/crop.vue:27
+msgid "Tasks & Notes"
+msgstr ""
+
+#: resources/js/components/modal.vue:11
+msgid "This is the Modal Body"
+msgstr ""
+
+#: resources/js/components/modal.vue:9
+msgid "This is the Modal Header"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:127
+msgid "This Month"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:121
+msgid "This Week"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:97
+#: resources/js/pages/farms/tasks/task-form.vue:73
+msgid "Title"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:140 resources/js/pages/farms/crop.vue:219
+#: resources/js/pages/farms/tasks/task-list.vue:59
+msgid "to"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-list.vue:35
+#: resources/js/pages/tasks/task.vue:115
+msgid "Today"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:44
+#: resources/js/pages/intro/area.vue:52
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:14
+msgid "Type"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:41
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:20
+#: resources/js/pages/inventories/materials-form-plant.vue:38
+#: resources/js/pages/inventories/materials-form-seed.vue:38
+msgid "Unit"
+msgstr ""
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:49
+msgid "Units"
+msgstr ""
+
+#: resources/js/pages/farms/areas-form.vue:4
+msgid "Update Area"
+msgstr ""
+
+#: resources/js/pages/farms/crops-form.vue:4
+msgid "Update Crop"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form.vue:4
+msgid "Update Material"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs-form.vue:4
+msgid "Update Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-form.vue:5
+msgid "Update Task"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:83
+msgid "Urgent"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:13
+#: resources/js/pages/farms/tasks/task-list.vue:66
+msgid "URGENT"
+msgstr ""
+
+#: resources/js/pages/farms/reservoir.vue:29
+#: resources/js/pages/farms/reservoirs.vue:30
+msgid "Used In"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:10
+#: resources/js/pages/settings/account.vue:15
+msgid "Username"
+msgstr "Nama Pengguna"
+
+#: resources/js/pages/home.vue:29
+msgid "Varieties"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-plant.vue:6
+#: resources/js/pages/inventories/materials-form-seed.vue:6
+msgid "Variety Name"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-label.vue:9
+msgid "WATER"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs.vue:9
+msgid "Water Reservoir"
+msgstr ""
+
+#: resources/js/pages/farms/crop.vue:207
+msgid "Watered"
+msgstr ""
+
+#: resources/js/pages/farms/area.vue:12
+#: resources/js/pages/farms/tasks/water-task.vue:4
+msgid "Watering"
+msgstr ""
+
+#: resources/js/pages/home.vue:55
+msgid "What's On Production"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/water-task.vue:22
+msgid "Which crop do you want to water?"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:27
+#: resources/js/pages/farms/tasks/task-form.vue:36
+msgid "Yes"
+msgstr ""
+
+#: resources/js/pages/home.vue:43
+msgid "You are using Tania 1.6 right now."
+msgstr ""

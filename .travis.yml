@@ -41,7 +41,7 @@ before_install:
   - tar xJf gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz
   - export PATH=$(pwd)/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH
   - arm-linux-gnueabihf-gcc --version
-  - ./scripts/fetch_osxcross.sh
+  - bash scripts/fetch_osxcross.sh
   - export PATH=~/osx_tools/bin:$PATH
   - o64-clang --version && o64-clang++ --version
 
@@ -50,4 +50,4 @@ install:
   - npm install -g npm@latest
   - yarn
 
-script: ./scripts/build_test.sh
+script: bash scripts/build_test.sh

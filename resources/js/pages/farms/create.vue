@@ -1,23 +1,28 @@
 <template lang="pug">
   form(@submit.prevent="create")
     .wrapper-md
-      .m-n.font-thin.h3.text-black Home
+      .m-n.font-thin.h3.text-black
+        translate Home
     .wrapper-md
       .row
         .col-sm-8.col-sm-offset-2.col-md-6.col-md-offset-3
           .panel.panel-default
             .panel-heading
-              span.h4.font-bold Create Farm
+              span.h4.font-bold
+                translate Create Farm
             .panel-body
               error-message(:message="message.error_message")
               .form-group
-                label(for="name") Farm Name
+                label(for="name")
+                  translate Farm Name
                 input.form-control#name(type="text" placeholder="" v-model="farm.name")
               .form-group
-                label(for="name") Farm Description
+                label(for="name")
+                  translate Farm Description
                 textarea.form-control#description(placeholder="" rows="4" v-model="farm.description")
               .form-group
-                label(for="type") Farm Type
+                label(for="type")
+                  translate Farm Type
                 select.form-control#type(placeholder="" v-model="farm.farm_type")
                   option(v-for="type in types" :value="type.code") {{ type.name }}
               .row
@@ -45,7 +50,7 @@
               .form-group.text-center.m-t
                 button.btn.btn-addon.btn-primary(type="submit")
                   i.fa.fa-long-arrow-right
-                  | Continue
+                  translate Continue
 </template>
 
 <script>

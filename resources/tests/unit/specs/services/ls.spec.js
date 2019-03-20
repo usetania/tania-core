@@ -1,5 +1,5 @@
 import localStorage from 'local-storage'
-import { ls } from '@/services'
+import { ls } from '../../../../js/services'
 
 describe('services/ls', () => {
   beforeEach(() => localStorage.remove('foo'))

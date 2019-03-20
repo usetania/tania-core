@@ -2,37 +2,44 @@
   .materials-create
     form(@submit.prevent="validateBeforeSubmit")
       .form-group
-        label#label-name Name
+        label#label-name
+          translate Name
         input.form-control#name(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('name') }" v-model="inventory.name" name="name")
         span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
       .form-group
         .row
           .col-xs-6
-            label#label-chemical-type Chemical Type
+            label#label-chemical-type
+              translate Chemical Type
               select.form-control#chemical_type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('chemical type') }" v-model="inventory.chemical_type" name="chemical type")
                 option(v-for="chemical in options.chemicalTypes" v-bind:value="chemical.key") {{ chemical.label }}
               span.help-block.text-danger(v-show="errors.has('chemical type')") {{ errors.first('chemical type') }}
           .col-xs-6
-            label#label-price-per-unit Price per Unit
+            label#label-price-per-unit
+              translate Price per Unit
             .input-group.m-b
-              span.input-group-addon &euro;
+              span.input-group-addon
+                translate &euro;
               input.form-control#price_per_unit(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('price') }" v-model="inventory.price_per_unit" name="price")
             span.help-block.text-danger(v-show="errors.has('price')") {{ errors.first('price') }}
       .form-group
         .row
           .col-xs-6
-            label#label-quantity Quantity
+            label#label-quantity
+              translate Quantity
             input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
             span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
           .col-xs-6
-            label#label-quantity-unit Unit
+            label#label-quantity-unit
+              translate Unit
             select.form-control#quantity_unit(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('quantity_unit') }" v-model="inventory.quantity_unit" name="quantity_unit")
               option(v-for="unit in options.quantityUnits" v-bind:value="unit.key") {{ unit.label }}
             span.help-block.text-danger(v-show="errors.has('quantity_unit')") {{ errors.first('quantity_unit') }}
       .form-group
         .row
           .col-xs-6
-            label#label-expiration-date Expiration date
+            label#label-expiration-date
+              translate Expiration date
             .input-group
               datepicker#expiration_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('expiration date') }" v-model="inventory.expiration_date" name="expiration date" input-class="form-control" ref="openCal")
               span.input-group-btn
@@ -40,23 +47,26 @@
                   i.fa.fa-calendar
             span.help-block.text-danger(v-show="errors.has('expiration date')") {{ errors.first('expiration date') }}
           .col-xs-6
-            label#label-produced-by Produced by
+            label#label-produced-by
+              translate Produced by
             input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced by') }" v-model="inventory.produced_by" name="produced by")
             span.help-block.text-danger(v-show="errors.has('produced by')") {{ errors.first('produced by') }}
       .form-group
-        label#label-notes Additional Notes
+        label#label-notes
+          translate Additional Notes
         textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
         span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
         button.btn.btn-addon.btn-success.pull-right(type="submit")
           i.fa.fa-plus
-          | Save
-        button.btn.btn-default(type="button" style="cursor: pointer;" @click="closeModal()") Cancel
+          translate Save
+        button.btn.btn-default(type="button" style="cursor: pointer;" @click="closeModal()")
+          translate Cancel
 </template>
 
 <script>
-import { StubInventory } from '@/stores/stubs'
-import { AgrochemicalQuantityUnits, ChemicalTypes } from '@/stores/helpers/inventories/inventory'
+import { StubInventory } from '../../stores/stubs'
+import { AgrochemicalQuantityUnits, ChemicalTypes } from '../../stores/helpers/inventories/inventory'
 import { mapGetters, mapActions } from 'vuex'
 import Datepicker from 'vuejs-datepicker';
 import moment from 'moment';

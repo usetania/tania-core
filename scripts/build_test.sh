@@ -33,16 +33,16 @@ echo "Server has running running in the background at pid ${TANIA_PID}"
 
 echo "Running Front-End Unit tests ..."
 # build and run unit test
-yarn && yarn run unit
+npm install && npm run unit
 
-echo "Running end to end tests ..."
+# echo "Running end to end tests ..."
 # build and test e2e
-yarn run production && yarn run cypress:run
-
+# npm run prod && npm run cypress:run
+npm run prod
 echo "Killing Server [$TANIA_PID] ..."
 
 # Move the screenshoot and recorded video from the test result into public folder
-mkdir public/assets
-cp -rf resources/tests/assets/videos public/assets/
+# mkdir public/assets
+# cp -rf resources/tests/assets/videos public/assets/
 
 kill -s TERM $TANIA_PID

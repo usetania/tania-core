@@ -1,17 +1,18 @@
 {
   "presets": [
-    ["env", { "modules": false }],
-    "stage-2"
+    ["@babel/preset-env", {
+      "modules": false
+    }]
   ],
   "plugins": [
-    "transform-runtime",
-    "transform-object-rest-spread",
-    ["babel-plugin-root-import", { "rootPathSuffix": "resources/js", "rootPathPrefix": "@" }]
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-syntax-dynamic-import",
+    "@babel/plugin-proposal-object-rest-spread"
   ],
   "comments": false,
   "env": {
     "test": {
-      "presets": ["env", "stage-2"],
+      "presets": ["@babel/preset-env"],
       "plugins": [ "istanbul" ]
     }
   }
