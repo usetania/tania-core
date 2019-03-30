@@ -32,7 +32,7 @@
     "babel-plugin-module-resolver": "^3.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-register": "^6.26.0",
-    "bootstrap": "3.4.0",
+    "bootstrap-sass": "^3.3.7",
     "chai": "^4.1.2",
     "chalk": "^2.0.1",
     "chromedriver": "^2.27.2",
