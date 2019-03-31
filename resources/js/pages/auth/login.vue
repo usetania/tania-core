@@ -66,7 +66,7 @@ export default {
         }
       })
     },
-    login () {
+    login() {
       this.userLogin({
         username: this.username,
         password: this.password,

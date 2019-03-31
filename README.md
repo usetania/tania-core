@@ -106,7 +106,28 @@ You can help us to localise Tania into your language by following these steps:
 1. Copy `languages/template.pot` and paste it to `languages/locale` directory.
 2. Rename it with your language locale code e.g: `en_AU.po`, `de_DE.po`, etc.
 3. Fill `msgstr` key with your translation. You can edit the `.po` file by using text editor or PO Edit software.
-4. Pull request your translation to `master` branch.
+4. Pull request your translation to the `master` branch.
+
+### Build Tania localisation by yourself
+
+**Note:** You will need to install GNU Gettext for your OS. Get it [here](https://www.gnu.org/software/gettext/).
+
+You can build Tania in your language by changing the default language inside `resources/js/app.js`.
+
+```
+Vue.use(GetTextPlugin, {
+  availableLanguages: { // add your language here
+    en_GB: 'British English',
+    id_ID: 'Bahasa Indonesia',
+    hu_HU: 'Magyar Nyelv'
+  },
+  defaultLanguage: 'en_GB', // change this to your language
+  translations: translations,
+  silent: false
+})
+```
+
+Then follow the instruction to [build Tania](#building-instructions).
 
 ## Support Us
 
