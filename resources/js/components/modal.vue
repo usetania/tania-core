@@ -1,16 +1,16 @@
-import vClickOutside from 'v-click-outside'
-
 <template lang="pug">
   .modal-template
     .modal-open
       .modal(style="display: block;")
         .modal-dialog
-          .modal-content(v-click-outside="onClickOutside")
+          .modal-content
             slot
               .modal-header
-                span.h4.font-bold This is the Modal Header
+                span.h4.font-bold
+                  translate This is the Modal Header
               .modal-body
-                span.h4.font-bold This is the Modal Body
+                span.h4.font-bold
+                  translate This is the Modal Body
     .modal-backdrop.fade.in
 </template>
 
@@ -24,13 +24,7 @@ export default {
           vm.$emit('close')
         }
     });
-  },
-  methods: {
-    onClickOutside (event) {
-      this.$emit('close')
-    }
   }
-
 }
 </script>
 

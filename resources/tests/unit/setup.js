@@ -1,8 +1,10 @@
 // setup JSDOM
 require('jsdom-global')()
+window.Date = Date
+global.performance = window.performance;
 
 // make sure polyfill is loaded before generators
-require('babel-polyfill')
+require('@babel/polyfill')
 
 require('chai').should()
 

@@ -2,26 +2,32 @@
   .container.init.col-md-4.col-md-offset-4
     a.navbar-brand.block.m-b.m-t.text-center
       img(src="../../../images/logobig.png")
-    h3.text-lt.text-center.wrapper.m-t Hello! Can you tell me a little <br/> about your farm?
+    h3.text-lt.text-center.wrapper.m-t
+      translate Hello! Can you tell me a little <br/> about your farm?
     .m-b-lg
       .wrapper
         form(@submit.prevent="validateBeforeSubmit")
           .panel.panel-default
             .panel-heading
-              span.h4.font-bold Create Farm
+              span.h4.font-bold
+                translate Create Farm
             .panel-body
               error-message(:message="message.error_message")
               .form-group
-                label#label-name(for="name") Farm Name
+                label#label-name(for="name")
+                  translate Farm Name
                 input.form-control#name(type="text" v-validate="'required|alpha_num_space|min:5|max:100'" :class="{'input': true, 'text-danger': errors.has('name') }" placeholder="" v-model="farm.name" name="name")
                 span.help-block.text-danger(v-show="errors.has('name')") {{ errors.first('name') }}
               .form-group
-                label#label-description(for="description") Farm Description
+                label#label-description(for="description")
+                  translate Farm Description
                 textarea.form-control#description(placeholder="" rows="3" v-model="farm.description")
               .form-group
-                label#label-type(for="type") Farm Type
+                label#label-type(for="type")
+                  translate Farm Type
                 select.form-control#type(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('type') }" v-model="farm.farm_type" name="type")
-                  option(value="") Please select type
+                  option(value="")
+                    translate Please select type
                   option(v-for="type in types" :value="type.code") {{ type.name }}
                 span.help-block.text-danger(v-show="errors.has('type')") {{ errors.first('type') }}
               .form-group
@@ -39,23 +45,25 @@
                   .col-xs-6
                     label#label-country(for="country") Country
                     select.form-control#country(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('country') }" v-model="farm.country" name="country")
-                      option(value="") Please select country
+                      option(value="")
+                        translate Please select country
                       option(v-for="country in countries" :value="country.name") {{ country.name }}
                     span.help-block.text-danger(v-show="errors.has('country')") {{ errors.first('country') }}
                   .col-xs-6
-                    label#label-city(for="city") City
+                    label#label-city(for="city")
+                      translate City
                     input.form-control#city(v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('city') }" v-model="farm.city" name="city")
                     span.help-block.text-danger(v-show="errors.has('city')") {{ errors.first('city') }}
               .form-group.text-center.m-t
                 button.btn.btn-addon.btn-primary(type="submit")
                   i.fas.fa-long-arrow-alt-right
-                  | Continue
+                  translate Continue
 
 </template>
 
 <script>
-import Mapbox from '@/components/mapbox'
-import { StubFarm, StubMessage } from '@/stores/stubs'
+import Mapbox from '../../components/mapbox.vue'
+import { StubFarm, StubMessage } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {

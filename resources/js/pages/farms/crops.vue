@@ -3,11 +3,12 @@
     modal(v-if="showModal" @close="showModal = false")
       farmCropForm(:data="data")
     .wrapper-md
-      h1.m-t.font-thin.h3.text-black Crops
+      h1.m-t.font-thin.h3.text-black
+        translate Crops
       //.row
         .col-sm-3.m-t
           .hbox.bg-white-only.wrapper
-            small.text-muted Harvested Produce This Month 
+            small.text-muted Harvested Produce This Month
             a.pull-right(href=""): i.fa.fa-question-circle
             .h3.m-b.m-t {{ cropInformation.total_harvest_produced/1000 }} kilograms
         .col-sm-3.m-t
@@ -19,23 +20,26 @@
       .m-b
         ul.nav.nav-tabs.h4
           li(role="presentation"  v-bind:class="{ active: isActive('BATCH') }")
-            a(style="cursor: pointer;" @click="statusSelected('BATCH')") Batch
+            a(style="cursor: pointer;" @click="statusSelected('BATCH')")
+              translate Batch
           li(role="presentation"  v-bind:class="{ active: isActive('ARCHIVES') }")
-            a(style="cursor: pointer;" @click="statusSelected('ARCHIVES')") Archives
+            a(style="cursor: pointer;" @click="statusSelected('ARCHIVES')")
+              translate Archives
       .panel.no-border
         .panel-heading.wrapper.m-b
-          span.h4.text-lt All Growing Batches on This Farm
+          span.h4.text-lt
+            translate All Growing Batches on This Farm
           a.btn.btn-sm.btn-primary.btn-addon.pull-right(style="cursor: pointer;" id="show-modal" @click="showModal = true")
             i.fa.fa-plus
-            | Add a New Batch
+            translate Add a New Batch
         FarmCropsListing(:crops="crops" :domain="'CROPS'" :batch="isActive('BATCH')" @editCrop="editCrop")
         Pagination(:pages="pages" :current="currentPage" @reload="getCrops")
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
-import Pagination from '@/components/pagination.vue'
+import Modal from '../../components/modal.vue'
+import Pagination from '../../components/pagination.vue'
 export default {
   name: "FarmCrops",
   components: {

@@ -5,8 +5,10 @@
     .wrapper-md
       a#areasform.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
-        | Add Area
-      h1.m-n.font-thin.h3.text-black Areas
+        translate Add Area
+      h1.m-n.font-thin.h3.text-black
+        translate Areas
+        | {{ showModal }}
     .wrapper-md
       .row
         .col-md-4.col-xs-12(v-for="area in areas")
@@ -23,17 +25,19 @@
                   small.text-muted.block Size ( {{ getSizeUnit(area.size.unit.symbol).label }} )
                   span.text-md {{ area.size.value }}
                 .col-xs-4
-                  small.text-muted.block Grow Batches
+                  small.text-muted.block
+                    translate Grow Batches
                   span.text-md {{ area.total_crop_batch }}
                 .col-xs-4
-                  small.text-muted.block Plant Quantity
+                  small.text-muted.block
+                    translate Plant Quantity
                   span.text-md {{ area.plant_quantity }}
 </template>
 
 <script>
-import { FindAreaType, FindAreaSizeUnit } from '@/stores/helpers/farms/area'
+import { FindAreaType, FindAreaSizeUnit } from '../../stores/helpers/farms/area'
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '../../components/modal.vue'
 export default {
   name: "FarmAreas",
   computed: {

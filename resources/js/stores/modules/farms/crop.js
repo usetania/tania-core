@@ -1,8 +1,8 @@
 import NProgress from 'nprogress'
 
-import * as types from '@/stores/mutation-types'
-import { calculateNumberOfPages, pageLength } from '@/stores/constants'
-import FarmApi from '@/stores/api/farm'
+import * as types from '../../mutation-types'
+import { calculateNumberOfPages, pageLength } from '../../constants'
+import FarmApi from '../../api/farm'
 
 const state = {
   crops: [],

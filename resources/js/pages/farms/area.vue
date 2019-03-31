@@ -8,10 +8,10 @@
       .pull-right
         a#addTaskForm.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="openModal()")
           i.fas.fa-plus
-          | Add Task
+          translate Add Task
         a#waterAreaForm.btn.btn-sm.btn-addon.btn-info(v-if="areaCrops.length > 0" style="cursor: pointer;" @click="showWaterTaskModal = true")
           i.fas.fa-tint
-          | Watering
+          translate Watering
       h1.m-n.font-thin.h3.text-primary {{ area.name }}
       small.text-muted {{ getType(area.type).label }}
     .wrapper-md
@@ -19,30 +19,38 @@
         .col-md-5.col-xs-12
           .panel.basicinfo
             .panel-heading
-              span.h4.text-lt Basic info
+              span.h4.text-lt
+                translate Basic info
             .item
               img.img-full(v-if="area.photo.filename.length > 0" :src="'/api/farms/' + farm.uid + '/areas/' + area.uid + '/photos'")
               img.img-full(v-else src="../../../images/no-img.png")
             .list-group.no-radius.alt
               .list-group-item
-                span.col-sm-7.text-muted.point Area Size {{ getSizeUnit(area.size.unit.symbol).label }}
+                span.col-sm-7.text-muted.point
+                  translate Area Size
+                  | {{ getSizeUnit(area.size.unit.symbol).label }}
                 span {{ area.size.value }}
               .list-group-item
-                span.col-sm-7.text-muted.point Location
+                span.col-sm-7.text-muted.point
+                  translate Location
                 span {{ getLocation(area.location.code).label }}
               .list-group-item
-                span.col-sm-7.text-muted.point Batches
+                span.col-sm-7.text-muted.point
+                  translate Batches
                 span {{ area.total_crop_batch }}
               .list-group-item
-                span.col-sm-7.text-muted.point Crop Variety
+                span.col-sm-7.text-muted.point
+                  translate Crop Variety
                 span {{ area.total_variety }}
               .list-group-item
-                span.col-sm-7.text-muted.point Reservoir
+                span.col-sm-7.text-muted.point
+                  translate Reservoir
                 span {{ area.reservoir.name }}
         .col-md-7.col-xs-12
           .panel
             .panel-heading
-              span.h4.text-lt Current Status
+              span.h4.text-lt
+                translate Current Status
             FarmCropsListing(:crops="areaCrops" :domain="'AREA'")
       //- Ending row
 
@@ -51,7 +59,8 @@
         .col-md-6.col-xs-12
           .panel
             .panel-heading
-              span.h4.text-lt Notes
+              span.h4.text-lt
+                translate Notes
             .panel-body
               form(@submit.prevent="validateBeforeSubmit")
                 .input-group
@@ -71,16 +80,17 @@
         .col-md-6.col-xs-12.task-list
           .panel
             .panel-heading
-              span.h4.text-lt Tasks
+              span.h4.text-lt
+                translate Tasks
             TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
-      //- Ending row          
+      //- Ending row
 </template>
 
 <script>
-import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '@/stores/helpers/farms/area'
-import { StubArea, StubNote } from '@/stores/stubs'
+import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '../../stores/helpers/farms/area'
+import { StubArea, StubNote } from '../../stores/stubs'
 import { mapActions, mapGetters } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '../../components/modal.vue'
 import moment from 'moment-timezone'
 export default {
   name: 'Area',

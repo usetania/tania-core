@@ -5,35 +5,41 @@
     .wrapper-md
       a#addTaskForm.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fas.fa-plus
-        | Add Task
+        translate Add Task
       h1.m-n.font-thin.h3.text-black {{ reservoir.name }}
     .wrapper
       .row.basicinfo
         .col-md-6
           .panel
             .panel-heading
-              span.h4.text-lt Basic Info
+              span.h4.text-lt
+                translate Basic Info
             .panel-body
               .row.m-b
                 .col-md-6
-                  small.text-muted Source Type
+                  small.text-muted
+                    translate Source Type
                   .h4.text-lt {{ getReservoirType(reservoir.water_source.type).label }}
                 .col-md-6
-                  small.text-muted Capacity
+                  small.text-muted
+                    translate Capacity
                   .h4.text-lt {{ reservoir.water_source.capacity }}
               .row.m-b
                 .col-md-6
-                  small.text-muted Used In
+                  small.text-muted
+                    translate Used In
                   .h4.text-lt(v-for="area in reservoir.installed_to_area")
                     span.areatag {{ area.name }}
               .row.m-b
                 .col-md-6
-                  small.text-muted Created On
+                  small.text-muted
+                    translate Created On
                   .h4.text-lt {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
         .col-md-6
           .panel
             .panel-heading
-              span.h4.text-lt Notes
+              span.h4.text-lt
+                translate Notes
             .panel-body
               form(@submit.prevent="validateBeforeSubmit")
                 .input-group
@@ -54,15 +60,16 @@
         .task-list.col-xs-12
           .panel
             .panel-heading
-              span.h4.text-lt Tasks
+              span.h4.text-lt
+                translate Tasks
             TasksList(:domain="'RESERVOIR'" :asset_id="reservoir.uid" :reload="reload")
 </template>
 
 <script>
-import { StubReservoir, StubNote } from '@/stores/stubs'
-import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
+import { StubReservoir, StubNote } from '../../stores/stubs'
+import { FindReservoirType } from '../../stores/helpers/farms/reservoir'
 import { mapActions } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '../../components/modal.vue'
 export default {
   name: 'Reservoir',
   data () {

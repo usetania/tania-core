@@ -8,7 +8,8 @@
     .collapse.pos-rlt.navbar-collapse.box-shadow.bg-white-only
       ul.nav.navbar-nav.navbar-right
         li
-          a#signout(href="#" @click.prevent="signout") Sign Out
+          a#signout(href="#" @click.prevent="signout")
+            translate Sign Out
       ul.nav.navbar-nav.hidden-xs
         li
           a {{ farm.name }}
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import { ls } from '@/services'
+import { ls } from '../services'
 import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'AppHeaderComponent',

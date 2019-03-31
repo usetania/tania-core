@@ -1,9 +1,9 @@
 import NProgress from 'nprogress'
 
-import * as types from '@/stores/mutation-types'
-import { AddClicked } from '@/stores/helpers/farms/crop'
-import { calculateNumberOfPages, pageLength } from '@/stores/constants'
-import FarmApi from '@/stores/api/farm'
+import * as types from '../../mutation-types'
+import { AddClicked } from '../../helpers/farms/crop'
+import { calculateNumberOfPages, pageLength } from '../../constants'
+import FarmApi from '../../api/farm'
 import moment from 'moment-timezone'
 
 const state = {
@@ -50,7 +50,7 @@ const actions = {
       } else if (payload.status == 'THISWEEK') {
         let due_start = moment().startOf('week').format('YYYY-MM-DD')
         let due_end = moment().endOf('week').format('YYYY-MM-DD')
-        query += 'due_start=' + due_start +'&due_end=' + due_end 
+        query += 'due_start=' + due_start +'&due_end=' + due_end
       }  else if (payload.status == 'THISMONTH') {
         let due_start = moment().startOf('month').format('YYYY-MM-DD')
         let due_end = moment().endOf('month').format('YYYY-MM-DD')

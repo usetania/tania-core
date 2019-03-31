@@ -5,18 +5,24 @@
     .wrapper-md
       a#reservoirsform.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
         i.fa.fa-plus
-        | Add Reservoir
-      h1.m-n.font-thin.h3.text-black Water Reservoir
+        translate Add Reservoir
+      h1.m-n.font-thin.h3.text-black
+        translate Water Reservoir
     .wrapper
       .panel.no-border
         table.table.m-b
           thead
             tr
-              th Name
-              th Created On
-              th Source Type
-              th Capacity
-              th Used In
+              th
+                translate Name
+              th
+                translate Created On
+              th
+                translate Source Type
+              th
+                translate Capacity
+              th
+                translate Used In
               th
           tbody
             tr(v-for="reservoir in reservoirs")
@@ -28,16 +34,16 @@
               td
                 span(v-for="(area, index) in reservoir.installed_to_area")
                   | {{ area.name }}
-                  span(v-if="index+1 < reservoir.installed_to_area.length") , 
+                  span(v-if="index+1 < reservoir.installed_to_area.length") ,
               td
                 a.pull-right(style="cursor: pointer;" @click="openModal(reservoir)")
                   i.fa.fa-edit
 </template>
 
 <script>
-import { FindReservoirType } from '@/stores/helpers/farms/reservoir'
+import { FindReservoirType } from '../../stores/helpers/farms/reservoir'
 import { mapGetters, mapActions } from 'vuex'
-import Modal from '@/components/modal'
+import Modal from '../../components/modal.vue'
 export default {
   name: "FarmReservoirs",
   computed : {

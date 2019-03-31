@@ -1,7 +1,7 @@
 import NProgress from 'nprogress'
 
-import * as types from '@/stores/mutation-types'
-import { http } from '@/services'
+import * as types from '../mutation-types'
+import { http } from '../../services'
 
 const state = {
   countries: [],

@@ -1,0 +1,1021 @@
+# Tania in Hungarian.
+# Copyright (C) 2019
+# This file is distributed under the same license as the Tania package.
+# Kornél Fülöp <fkornel@gmail.com>, 2019.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.6.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-03-19 13:44+0800\n"
+"PO-Revision-Date: 2019-03-25 15:23+0100\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.1\n"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:25
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:35
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:17
+#: resources/js/pages/inventories/materials-form-other.vue:27
+#: resources/js/pages/inventories/materials-form-plant.vue:53
+#: resources/js/pages/inventories/materials-form-potharvest.vue:27
+#: resources/js/pages/inventories/materials-form-seed.vue:53
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:29
+msgid "&euro;"
+msgstr "Ft"
+
+#: resources/js/components/aside.vue:48
+msgid "Account"
+msgstr "Felhasználói fiók"
+
+#: resources/js/pages/settings/account.vue:5
+msgid "Account Settings"
+msgstr "Felhasználói fiók beállításai"
+
+#: resources/js/pages/farms/crop.vue:128
+msgid "Activity"
+msgstr "Tevékenység"
+
+#: resources/js/pages/farms/crops-form.vue:5
+#: resources/js/pages/farms/crops.vue:35
+msgid "Add a New Batch"
+msgstr "Új köteg hozzáadása"
+
+#: resources/js/pages/farms/areas.vue:7
+msgid "Add Area"
+msgstr "Terület hozzáadása"
+
+#: resources/js/pages/inventories/materials.vue:7
+msgid "Add Material"
+msgstr "Alapanyag hozzáadása"
+
+#: resources/js/pages/inventories/materials-form.vue:5
+msgid "Add Material to Inventory"
+msgstr "Alapanyag hozzáadása a Készlethez"
+
+#: resources/js/pages/farms/areas-form.vue:5
+#: resources/js/pages/intro/area.vue:11
+msgid "Add New Area"
+msgstr "Új terület hozzáadása"
+
+#: resources/js/pages/farms/reservoirs-form.vue:5
+msgid "Add New Reservoir"
+msgstr "Új víztározó hozzáadása"
+
+#: resources/js/pages/farms/tasks/task-form.vue:11
+msgid "Add New Task"
+msgstr "Új feladat hozzáadása"
+
+#: resources/js/pages/farms/tasks/task-form.vue:8
+msgid "Add New Task on"
+msgstr "Új feladat hozzáadása a következőn:"
+
+#: resources/js/pages/farms/crop-notes.vue:48
+msgid "Add Notes"
+msgstr "Jegyzetek hozzáadása"
+
+#: resources/js/pages/farms/reservoirs.vue:7
+msgid "Add Reservoir"
+msgstr "Víztározó hozzáadása"
+
+#: resources/js/pages/farms/area.vue:11
+#: resources/js/pages/farms/crop-notes.vue:31
+#: resources/js/pages/farms/reservoir.vue:7
+#: resources/js/pages/tasks/task.vue:26
+msgid "Add Task"
+msgstr "Feladat hozzáadása"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:70
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:49
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:34
+#: resources/js/pages/inventories/materials-form-other.vue:44
+#: resources/js/pages/inventories/materials-form-plant.vue:70
+#: resources/js/pages/inventories/materials-form-potharvest.vue:44
+#: resources/js/pages/inventories/materials-form-seed.vue:70
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:54
+#: resources/js/pages/inventories/materials.vue:33
+msgid "Additional Notes"
+msgstr "Kiegészítő megjegyzések"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:31
+#: resources/js/pages/farms/crop.vue:189
+#: resources/js/pages/farms/tasks/water-task.vue:13
+#: resources/js/pages/tasks/task.vue:53 resources/js/pages/tasks/task.vue:80
+msgid "All"
+msgstr "Összes"
+
+#: resources/js/pages/farms/crops.vue:34
+msgid "All Growing Batches on This Farm"
+msgstr "Az összes növekvő köteg a gazdaságban"
+
+#: resources/js/pages/farms/crop.vue:217 resources/js/pages/farms/crop.vue:250
+#: resources/js/pages/farms/tasks/task-list.vue:57
+msgid "Apply"
+msgstr "Alkalmaz"
+
+#: resources/js/pages/farms/crops.vue:29
+msgid "Archives"
+msgstr "Archívum"
+
+#: resources/js/pages/farms/crop.vue:203
+#: resources/js/pages/farms/tasks/task-form.vue:57
+#: resources/js/pages/tasks/task.vue:56
+msgid "Area"
+msgstr "Terület"
+
+#: resources/js/pages/farms/tasks/task-label.vue:4
+msgid "AREA"
+msgstr "TERÜLET"
+
+#: resources/js/pages/farms/areas-form.vue:8
+#: resources/js/pages/intro/area.vue:16
+msgid "Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a"
+msgstr "Terület egy olyan tér, ahol a növenyek nevelkednek. Ez lehet egy palántatálca, egy kerti ágyás, egy"
+
+#: resources/js/pages/farms/areas-form.vue:17
+#: resources/js/pages/intro/area.vue:25
+msgid "Area Name"
+msgstr "Terület neve"
+
+#: resources/js/pages/farms/area.vue:24
+msgid "Area Size"
+msgstr "Terület mérete"
+
+#: resources/js/components/aside.vue:16 resources/js/pages/farms/areas.vue:9
+#: resources/js/pages/home.vue:22
+msgid "Areas"
+msgstr "Területek"
+
+#: resources/js/components/timestamp.vue:2 resources/js/pages/farms/crop.vue:88
+#: resources/js/pages/farms/crop.vue:95
+msgid "at"
+msgstr ""
+
+#: resources/js/pages/home.vue:15
+msgid "At A Glance"
+msgstr "Áttekintés"
+
+#: resources/js/pages/intro/reservoir.vue:4
+msgid "Awesome! Now let's create a new<br> water source for your farm."
+msgstr "Nagyszerű! Most hozzunk létre egy új<br>vízforrást a gazdaságban."
+
+#: resources/js/pages/intro/area.vue:98
+#: resources/js/pages/intro/reservoir.vue:42
+msgid "Back"
+msgstr "Vissza"
+
+#: resources/js/pages/farms/crop-notes.vue:9
+#: resources/js/pages/farms/crop.vue:18
+msgid "Back to Crop Batches"
+msgstr "Vissza a termés kötegekhez"
+
+#: resources/js/pages/farms/area.vue:20
+msgid "Basic info"
+msgstr "Alapinformációk"
+
+#: resources/js/pages/farms/crop-notes.vue:13
+#: resources/js/pages/farms/crop.vue:22
+#: resources/js/pages/farms/reservoir.vue:15
+msgid "Basic Info"
+msgstr "Alapinformációk"
+
+#: resources/js/pages/farms/crops.vue:27
+msgid "Batch"
+msgstr "Köteg"
+
+#: resources/js/pages/farms/crops-listing.vue:9
+msgid "Batch ID"
+msgstr "Köteg AZON"
+
+#: resources/js/pages/farms/area.vue:28
+msgid "Batches"
+msgstr "Kötegek"
+
+#: resources/js/pages/home.vue:64
+msgid "Batches Qty"
+msgstr "Köteg Menny."
+
+#: resources/js/components/upload.vue:5
+msgid "Browse"
+msgstr "Böngész"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:35
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:73
+#: resources/js/pages/farms/activities/move-crop-task.vue:40
+#: resources/js/pages/farms/activities/upload-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:112
+#: resources/js/pages/farms/tasks/task-form.vue:88
+#: resources/js/pages/farms/tasks/water-task.vue:36
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:79
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:58
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:43
+#: resources/js/pages/inventories/materials-form-other.vue:53
+#: resources/js/pages/inventories/materials-form-plant.vue:79
+#: resources/js/pages/inventories/materials-form-potharvest.vue:53
+#: resources/js/pages/inventories/materials-form-seed.vue:79
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:65
+msgid "Cancel"
+msgstr "Mégsem"
+
+#: resources/js/pages/farms/crops-form.vue:82
+#: resources/js/pages/farms/reservoirs-form.vue:35
+msgid "CANCEL"
+msgstr "MÉGSEM"
+
+#: resources/js/pages/farms/reservoir.vue:23
+#: resources/js/pages/farms/reservoirs.vue:27
+msgid "Capacity"
+msgstr "Kapacitás"
+
+#: resources/js/pages/farms/tasks/task-list.vue:11
+#: resources/js/pages/inventories/materials.vue:18
+#: resources/js/pages/tasks/task.vue:47
+msgid "Category"
+msgstr "Kategória"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:14
+msgid "Chemical Type"
+msgstr "Vegyszer Típusa"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:9
+msgid "Choose area"
+msgstr "Válassz területet"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:11
+msgid "Choose area to be harvested"
+msgstr "Válassz területet aratásra"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:9
+msgid "Choose photo"
+msgstr "Válassz képet"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:24
+msgid "Choose type of harvesting"
+msgstr "Válassza ki a betakarítás típusát"
+
+#: resources/js/pages/inventories/materials-form.vue:14
+msgid "Choose type of material"
+msgstr "Anyagtípus kiválasztása"
+
+#: resources/js/pages/farms/tasks/water-task.vue:9
+msgid "Choose type of watering"
+msgstr "Öntözési mód kiválasztása"
+
+#: resources/js/pages/intro/farm.vue:63
+msgid "City"
+msgstr "Város"
+
+#: resources/js/components/more-detail.vue:5
+msgid "Close details"
+msgstr "Részletek bezárása"
+
+#: resources/js/pages/tasks/task.vue:97
+msgid "Completed"
+msgstr "Elkészült"
+
+#: resources/js/pages/settings/account.vue:33
+msgid "Confirm Password"
+msgstr "Jelszó megerősítése"
+
+#: resources/js/pages/farms/create.vue:72 resources/js/pages/intro/farm.vue:71
+#: resources/js/pages/intro/reservoir.vue:39
+msgid "Continue"
+msgstr "Folytatás"
+
+#: resources/js/pages/farms/create.vue:13 resources/js/pages/intro/farm.vue:11
+msgid "Create Farm"
+msgstr "Farm létrehozása"
+
+#: resources/js/pages/intro/reservoir.vue:11
+msgid "Create Reservoir"
+msgstr "Víztározó létrehozása"
+
+#: resources/js/pages/farms/reservoir.vue:35
+#: resources/js/pages/farms/reservoirs.vue:21
+msgid "Created On"
+msgstr "Létrehozva"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:63
+#: resources/js/pages/tasks/task.vue:62
+msgid "Crop"
+msgstr "Termény"
+
+#: resources/js/pages/farms/tasks/task-label.vue:8
+msgid "CROP"
+msgstr "TERMÉNY"
+
+#: resources/js/pages/farms/crops-form.vue:8
+msgid "Crop Batch is a quantity or consignment of crops done at one time."
+msgstr "A termény köteg az egyidejűleg kihelyezezett vagy betakarított növények mennyisége"
+
+#: resources/js/pages/farms/area.vue:30
+#: resources/js/pages/farms/crops-listing.vue:6 resources/js/pages/home.vue:61
+msgid "Crop Variety"
+msgstr "Terményfajta"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:4
+msgid "Crop: Add New Task for"
+msgstr "Termény: Új feladat hozzáadása:"
+
+#: resources/js/components/aside.vue:20 resources/js/pages/farms/crops.vue:8
+msgid "Crops"
+msgstr "Termények"
+
+#: resources/js/pages/farms/crop.vue:106
+msgid "Current Quantity"
+msgstr "Jelenlegi mennyiség"
+
+#: resources/js/pages/farms/area.vue:39
+msgid "Current Status"
+msgstr "Jelenlegi állapot"
+
+#: resources/js/components/aside.vue:9 resources/js/pages/home.vue:5
+msgid "Dashboard"
+msgstr "Irányítópult"
+
+#: resources/js/pages/farms/crops-listing.vue:15
+msgid "Days Since Seeding"
+msgstr "Napok a vetés óta"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:15
+msgid "Describe a bit about this photo"
+msgstr "Mi látható a képen?"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:103
+#: resources/js/pages/farms/tasks/task-form.vue:79
+msgid "Description"
+msgstr "Leírás"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:11
+#: resources/js/pages/farms/tasks/task-form.vue:20
+msgid "Due Date"
+msgstr "Esedékes"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:56
+msgid "Dump"
+msgstr "Kidob"
+
+#: resources/js/pages/farms/crop.vue:45 resources/js/pages/farms/crop.vue:163
+#: resources/js/pages/farms/crops-listing.vue:59
+msgid "Dumped"
+msgstr "Kidobott"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:53
+#: resources/js/pages/inventories/materials-form-plant.vue:59
+#: resources/js/pages/inventories/materials-form-seed.vue:59
+msgid "Expiration date"
+msgstr "Lejárati dátum"
+
+#: resources/js/pages/farms/create.vue:24 resources/js/pages/intro/farm.vue:22
+msgid "Farm Description"
+msgstr "Gazdaság Leírása"
+
+#: resources/js/pages/farms/create.vue:18 resources/js/pages/intro/farm.vue:16
+msgid "Farm Name"
+msgstr "Gazdaság Neve"
+
+#: resources/js/pages/farms/create.vue:30 resources/js/pages/intro/farm.vue:28
+msgid "Farm Type"
+msgstr "Gazdaság Típusa"
+
+#: resources/js/pages/farms/tasks/task-label.vue:7
+msgid "FINANCE"
+msgstr "PÉNZÜGY"
+
+#: resources/js/pages/intro/area.vue:95
+msgid "Finish Setup"
+msgstr "Telepítés befejezése"
+
+#: resources/js/pages/farms/crop.vue:139
+msgid "from"
+msgstr "-tól"
+
+#: resources/js/pages/farms/tasks/task-form.vue:63
+#: resources/js/pages/tasks/task.vue:65
+msgid "General"
+msgstr "Általános"
+
+#: resources/js/pages/farms/tasks/task-label.vue:11
+msgid "GENERAL"
+msgstr "ÁLTALÁNOS"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:53
+#: resources/js/pages/farms/crop.vue:192
+msgid "Grams"
+msgstr "Gramm"
+
+#: resources/js/pages/farms/areas.vue:25
+msgid "Grow Batches"
+msgstr "Növekvő kötegek"
+
+#: resources/js/pages/farms/crop.vue:42
+#: resources/js/pages/farms/crops-listing.vue:55
+msgid "Growing"
+msgstr "Növesztés"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:51
+msgid "Harvest"
+msgstr "Betakarítás"
+
+#: resources/js/pages/farms/crop.vue:184
+msgid "Harvested"
+msgstr "Betakarított"
+
+#: resources/js/pages/intro/farm.vue:4
+msgid "Hello! Can you tell me a little <br> about your farm?"
+msgstr "Hello! Tudnál egy kicsit mesélni <br> a gazdaságodról?"
+
+#: resources/js/pages/farms/create.vue:5
+msgid "Home"
+msgstr "Kezdőlap"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:31
+msgid "How many plants do you want to move?"
+msgstr "Mennyi növényt akarsz mozgatni?"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:20
+msgid "How many plants you want to dump?"
+msgstr "Mennyi növényt akarsz kidobni?"
+
+#: resources/js/pages/tasks/task.vue:103
+msgid "Incomplete"
+msgstr "Hiányos"
+
+#: resources/js/pages/farms/crop.vue:100
+msgid "Initial Planting"
+msgstr "Első ültetés"
+
+#: resources/js/pages/farms/crops-listing.vue:21
+msgid "Initial Quantity"
+msgstr "Kiindulási mennyiség"
+
+#: resources/js/components/aside.vue:34
+msgid "Inventories"
+msgstr "Készletek"
+
+#: resources/js/pages/farms/tasks/task-form.vue:67
+msgid "Inventory"
+msgstr "Készlet"
+
+#: resources/js/pages/farms/tasks/task-label.vue:10
+msgid "INVENTORY"
+msgstr "KÉSZLET"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:22
+#: resources/js/pages/farms/tasks/task-form.vue:31
+msgid "Is this task urgent?"
+msgstr "Sürgős ez a feladat?"
+
+#: resources/js/pages/farms/tasks/task-list.vue:8
+msgid "Items"
+msgstr "Tételek"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:56
+msgid "Kilograms"
+msgstr "Kilógramm"
+
+#: resources/js/pages/farms/crop.vue:84
+#: resources/js/pages/farms/crops-listing.vue:27
+msgid "Last Watering"
+msgstr "Utolsó öntözés"
+
+#: resources/js/components/mapbox.vue:5 resources/js/pages/farms/area.vue:26
+msgid "Location"
+msgstr "Helyszín"
+
+#: resources/js/pages/intro/area.vue:62
+msgid "Locations"
+msgstr "Helyszínek"
+
+#: resources/js/pages/auth/login.vue:22
+msgid "Login"
+msgstr "Bejelentkezés"
+
+#: resources/js/components/footer.vue:4
+msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
+msgstr "&#9829; a növényeket &copy; 2019 Copyright."
+
+#: resources/js/pages/inventories/materials-form.vue:8
+msgid "Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on."
+msgstr "Az alapanyag egy a gazdaságban felhasználható termék, mint a magvak, műtrágya, növényvédőszerek, stb..."
+
+#: resources/js/components/aside.vue:39
+#: resources/js/pages/inventories/materials.vue:9
+msgid "Materials"
+msgstr "Alapanyagok"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:63
+msgid "Move"
+msgstr "Mozgat"
+
+#: resources/js/pages/farms/crop.vue:137
+msgid "Moved"
+msgstr "Mozgatva"
+
+#: resources/js/pages/farms/reservoirs.vue:18
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:6
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:6
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:6
+#: resources/js/pages/inventories/materials-form-other.vue:8
+#: resources/js/pages/inventories/materials-form-potharvest.vue:8
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:8
+#: resources/js/pages/inventories/materials.vue:21
+msgid "Name"
+msgstr "Név"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:33
+#: resources/js/pages/farms/tasks/task-form.vue:42
+msgid "No"
+msgstr "Nem"
+
+#: resources/js/pages/farms/crops-listing.vue:35
+msgid "No crops available."
+msgstr "Nincs rendelkezésre álló termény."
+
+#: resources/js/pages/home.vue:71
+msgid "No crops on production."
+msgstr "Nincs termő növény."
+
+#: resources/js/pages/inventories/materials.vue:41
+msgid "No Materials Available"
+msgstr "Nincs rendelkezésre álló alapanyag."
+
+#: resources/js/pages/farms/tasks/task-list.vue:19
+#: resources/js/pages/farms/tasks/task-list.vue:45
+msgid "No Task Created"
+msgstr "Nincs feladat létrehozva"
+
+#: resources/js/pages/tasks/task.vue:86
+msgid "Normal"
+msgstr "Normál"
+
+#: resources/js/pages/farms/tasks/task-label.vue:14
+msgid "NORMAL"
+msgstr "NORMÁL"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:26
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:64
+#: resources/js/pages/farms/area.vue:48
+#: resources/js/pages/farms/crop-notes.vue:39
+#: resources/js/pages/farms/reservoir.vue:45
+msgid "Notes"
+msgstr "Jegyzetek"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:66
+msgid "Nutrient"
+msgstr "Tápanyag"
+
+#: resources/js/pages/farms/tasks/task-label.vue:12
+msgid "NUTRIENT"
+msgstr "TÁPANYAG"
+
+#: resources/js/pages/farms/crop.vue:152 resources/js/pages/farms/crop.vue:191
+msgid "of"
+msgstr ""
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:32
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:70
+#: resources/js/pages/farms/activities/move-crop-task.vue:37
+#: resources/js/pages/farms/activities/upload-crop-task.vue:21
+#: resources/js/pages/farms/tasks/crop-task-form.vue:109
+#: resources/js/pages/farms/tasks/task-form.vue:85
+msgid "OK"
+msgstr "OK"
+
+#: resources/js/pages/settings/account.vue:21
+msgid "Old Password"
+msgstr "Korábbi jelszó"
+
+#: resources/js/pages/farms/crop.vue:104 resources/js/pages/farms/crop.vue:110
+#: resources/js/pages/farms/crop.vue:115 resources/js/pages/farms/crop.vue:153
+#: resources/js/pages/farms/crop.vue:165 resources/js/pages/farms/crop.vue:193
+#: resources/js/pages/farms/crop.vue:220 resources/js/pages/farms/crop.vue:230
+#: resources/js/pages/farms/crop.vue:240 resources/js/pages/farms/crop.vue:252
+#: resources/js/pages/farms/crop.vue:261
+#: resources/js/pages/farms/tasks/task-list.vue:60
+#: resources/js/pages/farms/tasks/task-list.vue:62
+msgid "on"
+msgstr ""
+
+#: resources/js/pages/tasks/task.vue:109
+msgid "Overdue"
+msgstr "Lejárt"
+
+#: resources/js/pages/farms/tasks/task-list.vue:34
+#: resources/js/pages/farms/tasks/task-list.vue:68
+msgid "Overdue!"
+msgstr "Lejárt!"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:28
+#: resources/js/pages/farms/crop.vue:186
+#: resources/js/pages/farms/tasks/water-task.vue:16
+msgid "Partial"
+msgstr "Részleges"
+
+#: resources/js/pages/auth/login.vue:16
+#: resources/js/pages/settings/account.vue:27
+msgid "Password"
+msgstr "Jelszó"
+
+#: resources/js/pages/intro/area.vue:4
+msgid "Perfect! Let's create a new area."
+msgstr "Tökéletes! Hozzunk létre egy új területet."
+
+#: resources/js/pages/farms/tasks/task-label.vue:2
+msgid "PEST CONTROL"
+msgstr "NÖVÉNYVÉDELEM"
+
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:27
+#: resources/js/pages/inventories/materials-form-other.vue:37
+#: resources/js/pages/inventories/materials-form-potharvest.vue:37
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:39
+msgid "Pieces"
+msgstr "Darab"
+
+#: resources/js/pages/farms/areas.vue:27
+msgid "Plant Quantity"
+msgstr "Növények Mennyisége"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:14
+#: resources/js/pages/inventories/materials-form-seed.vue:14
+msgid "Plant Type"
+msgstr "Növény Típus"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:13
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:15
+#: resources/js/pages/farms/activities/move-crop-task.vue:13
+#: resources/js/pages/farms/activities/move-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:47
+msgid "Please select area"
+msgstr "Kérjük, válasszon területet"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:60
+#: resources/js/pages/farms/tasks/task-form.vue:54
+msgid "Please select category"
+msgstr "Kérjük, válasszon kategóriát"
+
+#: resources/js/pages/intro/farm.vue:56
+msgid "Please select country"
+msgstr "Kérjük, válasszon országot"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:79
+msgid "Please select fertilizer"
+msgstr "Kérjük, válasszon műtrágyát"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:90
+msgid "Please select pesticide"
+msgstr "Kérjük, válasszon növényvédőszert"
+
+#: resources/js/pages/intro/area.vue:78
+msgid "Please select reservoir"
+msgstr "Kérjük, válasszon víztározót"
+
+#: resources/js/pages/farms/reservoirs-form.vue:22
+#: resources/js/pages/intro/reservoir.vue:29
+msgid "Please select source"
+msgstr "Kérjük, válasszon vízforrást"
+
+#: resources/js/pages/intro/farm.vue:32
+msgid "Please select type"
+msgstr "Kérjük, válasszon típust"
+
+#: resources/js/pages/farms/areas-form.vue:9
+#: resources/js/pages/intro/area.vue:17
+msgid "pot or anything that describes the different physical locations in your facility."
+msgstr "cserép vagy bármi, ami a egy megkülönböztetett hely a létesítményenben."
+
+#: resources/js/pages/inventories/materials.vue:24
+msgid "Price"
+msgstr "Ár"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:22
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:32
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:14
+#: resources/js/pages/inventories/materials-form-other.vue:24
+#: resources/js/pages/inventories/materials-form-plant.vue:50
+#: resources/js/pages/inventories/materials-form-potharvest.vue:24
+#: resources/js/pages/inventories/materials-form-seed.vue:50
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:26
+msgid "Price per Unit"
+msgstr "Egységár"
+
+#: resources/js/pages/tasks/task.vue:74
+msgid "Priority"
+msgstr "Fontosság"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:62
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:41
+#: resources/js/pages/inventories/materials-form-other.vue:14
+#: resources/js/pages/inventories/materials-form-plant.vue:22
+#: resources/js/pages/inventories/materials-form-potharvest.vue:14
+#: resources/js/pages/inventories/materials-form-seed.vue:22
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:48
+msgid "Produced by"
+msgstr "Gyártó:"
+
+#: resources/js/pages/inventories/materials.vue:27
+msgid "Produced By"
+msgstr "Gyártó:"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:41
+#: resources/js/pages/farms/crops-listing.vue:18
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:35
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:14
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:23
+#: resources/js/pages/inventories/materials-form-other.vue:33
+#: resources/js/pages/inventories/materials-form-plant.vue:32
+#: resources/js/pages/inventories/materials-form-potharvest.vue:33
+#: resources/js/pages/inventories/materials-form-seed.vue:32
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:35
+#: resources/js/pages/inventories/materials.vue:30
+msgid "Quantity"
+msgstr "Mennyiség"
+
+#: resources/js/components/more-detail.vue:6
+msgid "Read details"
+msgstr "Olvassa el a részleteket"
+
+#: resources/js/pages/farms/area.vue:32
+#: resources/js/pages/farms/tasks/task-form.vue:60
+#: resources/js/pages/tasks/task.vue:59
+msgid "Reservoir"
+msgstr "Víztároló"
+
+#: resources/js/pages/farms/tasks/task-label.vue:5
+msgid "RESERVOIR"
+msgstr "VÍZTÁROLÓ"
+
+#: resources/js/pages/farms/reservoirs-form.vue:7
+msgid "Reservoir is a water source for your farm. It can be a direct line from well, or water tank that has volume/capacity."
+msgstr "Víztározó a víz forrása a gazdaságban. Ez lehet egy vezezékes víz, vagy egy tartály, amelynek van kapacitása."
+
+#: resources/js/pages/farms/reservoirs-form.vue:12
+#: resources/js/pages/intro/reservoir.vue:19
+msgid "Reservoir Name"
+msgstr "Víztározó Neve"
+
+#: resources/js/components/aside.vue:24
+msgid "Reservoirs"
+msgstr "Víztározók"
+
+#: resources/js/pages/farms/tasks/task-label.vue:6
+msgid "SAFETY"
+msgstr "BIZTONSÁG"
+
+#: resources/js/pages/farms/tasks/task-label.vue:3
+msgid "SANITATION"
+msgstr "TAKARÍTÁS"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:76
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:55
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:40
+#: resources/js/pages/inventories/materials-form-other.vue:50
+#: resources/js/pages/inventories/materials-form-plant.vue:76
+#: resources/js/pages/inventories/materials-form-potharvest.vue:50
+#: resources/js/pages/inventories/materials-form-seed.vue:76
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:62
+msgid "Save"
+msgstr "Mentés"
+
+#: resources/js/pages/farms/crops-form.vue:79
+#: resources/js/pages/farms/reservoirs-form.vue:32
+#: resources/js/pages/farms/tasks/water-task.vue:33
+#: resources/js/pages/settings/account.vue:39
+msgid "SAVE"
+msgstr "MENTÉS"
+
+#: resources/js/pages/home.vue:53
+msgid "See all Crops"
+msgstr "Az összes termény megtekintése"
+
+#: resources/js/pages/home.vue:93
+msgid "See all Tasks"
+msgstr "Az összes feladat megtekintése"
+
+#: resources/js/pages/farms/crop.vue:150
+msgid "Seeded"
+msgstr "Elvetve"
+
+#: resources/js/pages/farms/crop.vue:39
+#: resources/js/pages/farms/crops-listing.vue:51
+msgid "Seeding"
+msgstr "Vetés"
+
+#: resources/js/pages/farms/crop.vue:82
+#: resources/js/pages/farms/crops-listing.vue:12
+msgid "Seeding Date"
+msgstr "Vetés dátuma"
+
+#: resources/js/pages/farms/crops-form.vue:14
+msgid "Select activity type of this crop batch"
+msgstr "Válasszon tevékenység típust a termény kötegen"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:43
+msgid "Select area to do your task"
+msgstr "Válasszon területet a feladat elvégzéséhez"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:20
+msgid "Select destination area"
+msgstr "Válassza ki a célterületet"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:75
+msgid "Select fertilizer you are going to use"
+msgstr "Válassza ki a műtrágyát amit használni készül"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:86
+msgid "Select pesticide you are going to use"
+msgstr "Válassza ki a növényvédőszert amit használni készül"
+
+#: resources/js/pages/intro/area.vue:87
+msgid "Select photo"
+msgstr "Fotó kiválasztása"
+
+#: resources/js/pages/intro/area.vue:74
+msgid "Select Reservoir"
+msgstr "Válassza ki a víztározót"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:9
+msgid "Select source area"
+msgstr "Válassza ki a forrásterületet"
+
+#: resources/js/components/header.vue:10
+msgid "Sign Out"
+msgstr "Kijelentkezés"
+
+#: resources/js/pages/farms/areas-form.vue:25
+#: resources/js/pages/intro/area.vue:33
+msgid "Size"
+msgstr "Méret"
+
+#: resources/js/pages/farms/reservoirs-form.vue:18
+#: resources/js/pages/intro/reservoir.vue:25
+msgid "Source"
+msgstr "Forrás"
+
+#: resources/js/pages/farms/reservoir.vue:19
+#: resources/js/pages/farms/reservoirs.vue:24
+msgid "Source Type"
+msgstr "Forrás Típus"
+
+#: resources/js/pages/farms/crops-listing.vue:24
+msgid "Status"
+msgstr "Állapot"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:4
+#: resources/js/pages/farms/crop.vue:68
+msgid "Take Picture"
+msgstr "Fotó készítése"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:56
+#: resources/js/pages/farms/tasks/task-form.vue:50
+msgid "Task Category"
+msgstr "Feladat Kategória"
+
+#: resources/js/components/aside.vue:31 resources/js/pages/farms/area.vue:70
+#: resources/js/pages/farms/crop-notes.vue:27
+#: resources/js/pages/farms/reservoir.vue:69 resources/js/pages/home.vue:36
+#: resources/js/pages/home.vue:95 resources/js/pages/tasks/task.vue:22
+msgid "Tasks"
+msgstr "Feldaatok"
+
+#: resources/js/pages/farms/crop-notes.vue:18
+#: resources/js/pages/farms/crop.vue:27
+msgid "Tasks & Notes"
+msgstr "Feladatok és Jegyzetek"
+
+#: resources/js/components/modal.vue:11
+msgid "This is the Modal Body"
+msgstr "Ez a Modal Body"
+
+#: resources/js/components/modal.vue:9
+msgid "This is the Modal Header"
+msgstr "Ez a Modal Fejrész"
+
+#: resources/js/pages/tasks/task.vue:127
+msgid "This Month"
+msgstr "Ebben a hónapban"
+
+#: resources/js/pages/tasks/task.vue:121
+msgid "This Week"
+msgstr "Ezen a héten"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:97
+#: resources/js/pages/farms/tasks/task-form.vue:73
+msgid "Title"
+msgstr "Cím"
+
+#: resources/js/pages/farms/crop.vue:140 resources/js/pages/farms/crop.vue:219
+#: resources/js/pages/farms/tasks/task-list.vue:59
+msgid "to"
+msgstr ""
+
+#: resources/js/pages/farms/tasks/task-list.vue:35
+#: resources/js/pages/tasks/task.vue:115
+msgid "Today"
+msgstr "Ma"
+
+#: resources/js/pages/farms/areas-form.vue:44
+#: resources/js/pages/intro/area.vue:52
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:14
+msgid "Type"
+msgstr "Típus"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:41
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:20
+#: resources/js/pages/inventories/materials-form-plant.vue:38
+#: resources/js/pages/inventories/materials-form-seed.vue:38
+msgid "Unit"
+msgstr "Egység"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:49
+msgid "Units"
+msgstr "Egységek"
+
+#: resources/js/pages/farms/areas-form.vue:4
+msgid "Update Area"
+msgstr "Terület frissítése"
+
+#: resources/js/pages/farms/crops-form.vue:4
+msgid "Update Crop"
+msgstr "Termény frissítése"
+
+#: resources/js/pages/inventories/materials-form.vue:4
+msgid "Update Material"
+msgstr "Alapanyag frissítése"
+
+#: resources/js/pages/farms/reservoirs-form.vue:4
+msgid "Update Reservoir"
+msgstr "Víztározó frissítése"
+
+#: resources/js/pages/farms/tasks/task-form.vue:5
+msgid "Update Task"
+msgstr "Feladat frissítése"
+
+#: resources/js/pages/tasks/task.vue:83
+msgid "Urgent"
+msgstr "Sürgős"
+
+#: resources/js/pages/farms/tasks/task-label.vue:13
+#: resources/js/pages/farms/tasks/task-list.vue:66
+msgid "URGENT"
+msgstr "SÜRGŐS"
+
+#: resources/js/pages/farms/reservoir.vue:29
+#: resources/js/pages/farms/reservoirs.vue:30
+msgid "Used In"
+msgstr "Felhasználva a "
+
+#: resources/js/pages/auth/login.vue:10
+#: resources/js/pages/settings/account.vue:15
+msgid "Username"
+msgstr "Felhasználónév"
+
+#: resources/js/pages/home.vue:29
+msgid "Varieties"
+msgstr "Fajták"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:6
+#: resources/js/pages/inventories/materials-form-seed.vue:6
+msgid "Variety Name"
+msgstr "Fajta Neve"
+
+#: resources/js/pages/farms/tasks/task-label.vue:9
+msgid "WATER"
+msgstr "VÍZ"
+
+#: resources/js/pages/farms/reservoirs.vue:9
+msgid "Water Reservoir"
+msgstr "Víztározó"
+
+#: resources/js/pages/farms/crop.vue:207
+msgid "Watered"
+msgstr "Öntözve"
+
+#: resources/js/pages/farms/area.vue:12
+#: resources/js/pages/farms/tasks/water-task.vue:4
+msgid "Watering"
+msgstr "Öntözés"
+
+#: resources/js/pages/home.vue:55
+msgid "What's On Production"
+msgstr "Mi fog termőre fordulni"
+
+#: resources/js/pages/farms/tasks/water-task.vue:22
+msgid "Which crop do you want to water?"
+msgstr "Melyik terményt szeretnéd megöntözni?"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:27
+#: resources/js/pages/farms/tasks/task-form.vue:36
+msgid "Yes"
+msgstr "Igen"
+
+#: resources/js/pages/home.vue:43
+msgid "You are using Tania 1.6 right now."
+msgstr "A Tania 1.6-ot használod."
