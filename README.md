@@ -14,7 +14,7 @@
 
 **Tania** is a free and open source farm management software. You can manage your farm areas, farm reservoirs, farm tasks, inventories, and the crop growing progress. It is designed for any type of farms.
 
-Download Tania for Windows x64 and Linux x64 on [the release page](https://github.com/Tanibox/tania-core/releases/tag/1.5.1).
+Download Tania for Windows x64 and Linux x64 on [the release page](https://github.com/Tanibox/tania-core/releases/tag/1.6.0).
 
 ![Screenshot](screenshot.PNG)
 
@@ -50,7 +50,7 @@ If your OS is not listed on our releases page, you have to build Tania for your 
     - https://golang.github.io/dep/docs/installation.html
     - https://gist.github.com/subfuzion/12342599e26f5094e4e2d08e9d4ad50d
 2. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
-3. Checkout the current stable version by using `git checkout tags/1.5.1 -b v1.5.1`
+3. Checkout the current stable version by using `git checkout tags/1.6.0 -b v1.6.0`
 4. From the project root, call `dep ensure` to install the Go dependencies
     - If you have an issue with `dep ensure`, you can call `go get` instead.
 5. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
@@ -69,6 +69,7 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 
 ```
 {
+  "app_port": "8080",
   "tania_persistence_engine": "sqlite",
   "demo_mode": true,
   "upload_path_area": "uploads/areas",
@@ -79,7 +80,10 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
   "mysql_dbname": "tania",
   "mysql_user": "root",
   "mysql_password": "root",
-  "redirect_uri": "http://localhost:8080/",
+  "redirect_uri": [
+      "http://localhost:8080",
+      "http://127.0.0.1:8080"
+  ],
   "client_id": "f0ece679-3f53-463e-b624-73e83049d6ac"
 }
 ```
