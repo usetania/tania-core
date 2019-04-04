@@ -13,7 +13,7 @@
     "unit": "cross-env NODE_ENV=test mocha-webpack --webpack-config webpack.config.js --mode development --require resources/tests/unit/setup.js --glob *.spec.js resources/tests/unit/ --recursive",
     "unit:coverage": "cross-env NODE_ENV=test nyc mocha-webpack --mode development --webpack-config webpack.config.js --require resources/tests/unit/setup.js --glob *.spec.js resources/tests/unit/ --recursive",
     "translation:extract": "node node_modules/vue-webpack-gettext/extract --output ./languages/template.pot --src ./resources/js/",
-    "translation:compile": "cross-env node_modules/.bin/gettext-compile --output ./languages/translations.json ./languages/locale/en_GB.po ./languages/locale/hu_HU.po ./languages/locale/id_ID.po"
+    "translation:compile": "cross-env node_modules/.bin/gettext-compile --output ./languages/translations.json ./languages/locale/en_GB.po ./languages/locale/hu_HU.po ./languages/locale/id_ID.po ./languages/locale/pt_BR.po"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
