@@ -36,7 +36,8 @@ Vue.use(GetTextPlugin, {
   availableLanguages: {
     en_GB: 'British English',
     id_ID: 'Bahasa Indonesia',
-    hu_HU: 'Magyar Nyelv'
+    hu_HU: 'Magyar Nyelv',
+    pt_BR: 'Brazilian Portuguese'
   },
   defaultLanguage: 'en_GB',
   translations: translations,
