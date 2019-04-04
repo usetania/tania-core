@@ -11,7 +11,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 
 	"github.com/Tanibox/tania-core/src/growth/domain"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 type CropListInArea struct {
