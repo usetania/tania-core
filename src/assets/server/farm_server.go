@@ -25,7 +25,7 @@ import (
 	"github.com/Tanibox/tania-core/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-core/src/helper/stringhelper"
 	"github.com/Tanibox/tania-core/src/helper/structhelper"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
 )
 

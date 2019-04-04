@@ -17,7 +17,7 @@ import (
 	repoMysql "github.com/Tanibox/tania-core/src/user/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-core/src/user/repository/sqlite"
 	"github.com/Tanibox/tania-core/src/user/storage"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
 )
 

@@ -26,7 +26,7 @@ import (
 	"github.com/Tanibox/tania-core/src/growth/repository"
 	storage "github.com/Tanibox/tania-core/src/growth/storage"
 	taskstorage "github.com/Tanibox/tania-core/src/tasks/storage"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	uuid "github.com/satori/go.uuid"
 )
 
