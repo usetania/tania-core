@@ -42,7 +42,7 @@ This software is built with [Go](https://golang.org) programming language. It me
 If your OS is not listed on our releases page, you have to build Tania for your OS by yourself. You can follow our instructions to build **Tania**.
 
 ### Prerequisites
-- [Go](https://golang.org) 1.11.x
+- [Go](https://golang.org) >= 1.11
 - [NodeJS](https://nodejs.org/en/) 8 or 10
 
 ### Building Instructions
@@ -50,18 +50,14 @@ If your OS is not listed on our releases page, you have to build Tania for your 
     - https://golang.github.io/dep/docs/installation.html
     - https://gist.github.com/subfuzion/12342599e26f5094e4e2d08e9d4ad50d
 2. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
-3. Checkout the current stable version by using `git checkout tags/1.6.0 -b v1.6.0`
-4. From the project root, call `dep ensure` to install the Go dependencies
-    - If you have an issue with `dep ensure`, you can call `go get` instead.
+3. Checkout the current stable version by using `git checkout tags/1.7.0 -b v1.7.0`
+4. From the project root, call `go get` to install the Go dependencies.
 5. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
-6. Issue `npm install` to install VueJS dependencies.
-7. To build the VueJS, just run `npm run dev` for development purpose or `npm run prod` for production purpose.
-8. Setup SQLite:
-    - Edit `SqlitePath` in `conf.json` to your sqlite DB file path (ex: /Users/user/Programs/sqlite/tania.db)
-    - Create an empty file with the exact filename and path that match the `SqlitePath` config.
-9. Compile the source code with `go build`. It will produces `tania-core.exe` (on Windows) or `tania-core` (on Linux and OSX.)
-10. Run the program from Terminal by issuing `./tania-core`, or from Windows Command Prompt by issuing `.\tania-core.exe`.
-11. The default username and password are `tania / tania`.
+6. Issue `npm install` to install Vue.js dependencies.
+7. To build the Vue.js, just run `npm run dev` for development purpose or `npm run prod` for production purpose.
+8. Compile the source code with `go build`. It will produces `tania-core.exe` (on Windows) or `tania-core` (on Linux and OSX.)
+9. Run the program from Terminal by issuing `./tania-core`, or from Windows Command Prompt by issuing `.\tania-core.exe`.
+10. The default username and password are `tania / tania`.
 
 ### Database Engine
 

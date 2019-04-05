@@ -5,38 +5,37 @@
 
     #content(role="main" :class="authenticated ? 'app-content': ''")
       .app-content-body.app-content-full
-        .hbox.hbox-auto-xs.hbox-auto-sm.bg-light
+        .hbox.hbox-auto-xs.hbox-auto-sm
           router-view
     AppFooterComponent(v-show="authenticated")
 </template>
 
 <script>
-import { event } from '../services/bus'
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'AppComponent',
-  data () {
-    return {
-      appReady: false,
-      folded: false
-    }
-  },
-  computed: {
-    ...mapGetters({
-      authenticated: 'IsUserAllowSeeNavigator'
-    })
-  },
   components: {
     AppHeaderComponent: () => import('./header.vue'),
     AppAsideComponent: () => import('./aside.vue'),
-    AppFooterComponent: () => import('./footer.vue')
+    AppFooterComponent: () => import('./footer.vue'),
+  },
+  data() {
+    return {
+      appReady: false,
+      folded: false,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      authenticated: 'IsUserAllowSeeNavigator',
+    }),
   },
 
   methods: {
-    setFolded (payload) {
-      this.folded = !this.folded
-    }
-  }
-}
+    setFolded() {
+      this.folded = !this.folded;
+    },
+  },
+};
 </script>
-

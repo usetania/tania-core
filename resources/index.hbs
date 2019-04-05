@@ -28,6 +28,13 @@
     </noscript>
 
     <div id="app"></div>
-    <%= htmlWebpackPlugin.options.serviceWorkerLoader %>
+
+    <script>
+    (function() {
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+      }
+    })();
+    </script>
   </body>
 </html>

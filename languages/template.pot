@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-19 13:44+0800\n"
+"POT-Creation-Date: 2019-04-05 18:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -146,7 +146,7 @@ msgid "Area Size"
 msgstr ""
 
 #: resources/js/components/aside.vue:16 resources/js/pages/farms/areas.vue:9
-#: resources/js/pages/home.vue:22
+#: resources/js/pages/home.vue:24
 msgid "Areas"
 msgstr ""
 
@@ -195,7 +195,7 @@ msgstr ""
 msgid "Batches"
 msgstr ""
 
-#: resources/js/pages/home.vue:64
+#: resources/js/pages/home.vue:70
 msgid "Batches Qty"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgid "Crop Batch is a quantity or consignment of crops done at one time."
 msgstr ""
 
 #: resources/js/pages/farms/area.vue:30
-#: resources/js/pages/farms/crops-listing.vue:6 resources/js/pages/home.vue:61
+#: resources/js/pages/farms/crops-listing.vue:6 resources/js/pages/home.vue:67
 msgid "Crop Variety"
 msgstr ""
 
@@ -539,7 +539,7 @@ msgstr ""
 msgid "No crops available."
 msgstr ""
 
-#: resources/js/pages/home.vue:71
+#: resources/js/pages/home.vue:77
 msgid "No crops on production."
 msgstr ""
 
@@ -791,11 +791,11 @@ msgstr ""
 msgid "SAVE"
 msgstr ""
 
-#: resources/js/pages/home.vue:53
+#: resources/js/pages/home.vue:59
 msgid "See all Crops"
 msgstr ""
 
-#: resources/js/pages/home.vue:93
+#: resources/js/pages/home.vue:99
 msgid "See all Tasks"
 msgstr ""
 
@@ -880,8 +880,8 @@ msgstr ""
 
 #: resources/js/components/aside.vue:31 resources/js/pages/farms/area.vue:70
 #: resources/js/pages/farms/crop-notes.vue:27
-#: resources/js/pages/farms/reservoir.vue:69 resources/js/pages/home.vue:36
-#: resources/js/pages/home.vue:95 resources/js/pages/tasks/task.vue:22
+#: resources/js/pages/farms/reservoir.vue:69 resources/js/pages/home.vue:42
+#: resources/js/pages/home.vue:101 resources/js/pages/tasks/task.vue:22
 msgid "Tasks"
 msgstr ""
 
@@ -977,7 +977,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: resources/js/pages/home.vue:29
+#: resources/js/pages/home.vue:33
 msgid "Varieties"
 msgstr ""
 
@@ -1003,7 +1003,7 @@ msgstr ""
 msgid "Watering"
 msgstr ""
 
-#: resources/js/pages/home.vue:55
+#: resources/js/pages/home.vue:61
 msgid "What's On Production"
 msgstr ""
 
@@ -1016,6 +1016,6 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: resources/js/pages/home.vue:43
+#: resources/js/pages/home.vue:49
 msgid "You are using Tania 1.6 right now."
 msgstr ""

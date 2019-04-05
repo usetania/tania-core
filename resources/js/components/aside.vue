@@ -55,19 +55,20 @@
 </template>
 
 <script>
-import AsideItemComponent from './aside-item.vue'
+import AsideItemComponent from './aside-item.vue';
+
 export default {
   name: 'AppAsideComponent',
   components: {
-    AsideItemComponent
+    AsideItemComponent,
   },
   props: {
-    folded: { type: Boolean, default: false }
+    folded: { type: Boolean, default: false },
   },
   methods: {
-    setFolded () {
-      this.$emit('header-folded')
-    }
-  }
-}
+    setFolded() {
+      this.$emit('header-folded');
+    },
+  },
+};
 </script>
