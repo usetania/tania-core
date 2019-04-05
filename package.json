@@ -82,7 +82,6 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.13",
     "vue-webpack-gettext": "^0.3.1",
-    "vue2-leaflet": "^0.0.58",
     "vuejs-datepicker": "^0.9.25",
     "webpack": "^4.29.0",
     "webpack-bundle-analyzer": "^2.9.1",
@@ -94,6 +93,7 @@
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.16",
     "cheerio": "^1.0.0-rc.2",
+    "leaflet": "^1.4.0",
     "moment-timezone": "^0.5.14",
     "nprogress": "^0.2.0",
     "vee-validate": "^2.0.0",
@@ -104,6 +104,7 @@
     "vue-server-renderer": "^2.6.9",
     "vue-test-utils": "^1.0.0-beta.11",
     "vue-toasted": "^1.1.24",
+    "vue2-leaflet": "^0.0.58",
     "vuex": "^2.4.1",
     "vuex-persistedstate": "^2.4.2"
   }
