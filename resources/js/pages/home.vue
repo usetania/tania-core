@@ -19,25 +19,25 @@
                     i.fa.fa-th-large
                     router-link(:to="{ name: 'FarmAreas' }")
                       | {{ areas.length }}
-                      | &nbsp;
+                      |
                       translate Areas
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-leaf
                     router-link(:to="{ name: 'FarmCrops' }")
                       | {{ cropInformation.total_plant_variety }}
-                      | &nbsp;
+                      |
                       translate Varieties
                 li.h4
                   .col-md-6.col-xs-6
                     i.fa.fa-clipboard
                     router-link(:to="{ name: 'Task' }")
                       | {{ tasksLength }}
-                      | &nbsp;
+                      |
                       translate Tasks
             .panel-footer.bg-light.lter.wrapper.no-border
               small.text-muted
-                translate You are using Tania 1.6 right now.
+                translate You are using Tania 1.7 right now.
                 // There's a new version recently released. <a href="#">Take a look!</a>
         .col-sm-8
           // CROPS STATUS
@@ -63,7 +63,9 @@
                     | &nbsp;
                     a(href="/#/crops") Add your first crops here.
                 tr(v-for="crop in crops")
-                  td: router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }") {{ crop.inventory.name }}
+                  td
+                    router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }")
+                      | {{ crop.inventory.name }}
                   td {{ crop.container.quantity }}
             Pagination(:pages="cropPages" @reload="getCrops")
       .row
@@ -82,18 +84,19 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import TaskLabel from './farms/tasks/task-label.vue'
-import TasksList from './farms/tasks/task-list.vue'
-import Pagination from '../components/pagination.vue'
+import { mapGetters, mapActions } from 'vuex';
+import TaskLabel from './farms/tasks/task-label.vue';
+import TasksList from './farms/tasks/task-list.vue';
+import Pagination from '../components/pagination.vue';
+
 export default {
   name: 'Home',
   components: {
     Pagination,
     TaskLabel,
-    TasksList
+    TasksList,
   },
-  computed : {
+  computed: {
     ...mapGetters({
       areas: 'getAllAreas',
       crops: 'getAllCrops',
@@ -102,7 +105,13 @@ export default {
       tasks: 'getTasks',
       taskPages: 'getTasksNumberOfPages',
       tasksLength: 'getNumberOfTasks',
-    })
+    }),
+  },
+  mounted() {
+    this.fetchAreas();
+    this.getCrops();
+    this.getTasks();
+    this.getInformation();
   },
   methods: {
     ...mapActions([
@@ -111,27 +120,20 @@ export default {
       'fetchTasks',
       'getInformation',
     ]),
-    getCrops () {
-      let pageId = 1
-      if (typeof this.$route.query.page != "undefined") {
-        pageId = parseInt(this.$route.query.page)
+    getCrops() {
+      let pageId = 1;
+      if (typeof this.$route.query.page !== 'undefined') {
+        pageId = parseInt(this.$route.query.page, 10);
       }
-      this.fetchCrops({ pageId : pageId, status : 'ACTIVE' })
+      this.fetchCrops({ pageId, status: 'ACTIVE' });
     },
-    getTasks () {
-      let pageId = 1
-      if (typeof this.$route.query.page != "undefined") {
-        pageId = parseInt(this.$route.query.page)
+    getTasks() {
+      let pageId = 1;
+      if (typeof this.$route.query.page !== 'undefined') {
+        pageId = parseInt(this.$route.query.page, 10);
       }
-      this.fetchTasks({ pageId : pageId })
+      this.fetchTasks({ pageId });
     },
   },
-  mounted () {
-    this.fetchAreas()
-    this.getCrops()
-    this.getTasks()
-    this.getInformation()
-  },
-}
+};
 </script>
-

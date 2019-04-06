@@ -1,13 +1,17 @@
 <template lang="pug">
-  .app.app-header-fixed(:class="folded == true ? 'app-aside-folded': ''")
-    AppHeaderComponent(v-show="authenticated")
-    AppAsideComponent(:folded="folded" v-on:header-folded="setFolded" v-show="authenticated")
+  #app
+    .row.no-gutters
+      .col-md-3.col-lg-2.d-none.d-md-block.left-column(v-show="authenticated")
+        AppAsideComponent(:folded="folded" v-on:header-folded="setFolded")
 
-    #content(role="main" :class="authenticated ? 'app-content': ''")
-      .app-content-body.app-content-full
-        .hbox.hbox-auto-xs.hbox-auto-sm
-          router-view
-    AppFooterComponent(v-show="authenticated")
+      .col-xs-12.col-sm-12.col-md-9.col-lg-10
+        .main-content(:style="{ 'min-height': `${window.height}px` }")
+          AppHeaderComponent(v-show="authenticated")
+
+          .app-content-body
+            .hbox.hbox-auto-xs.hbox-auto-sm
+              router-view
+          AppFooterComponent(v-show="authenticated")
 </template>
 
 <script>
@@ -24,6 +28,9 @@ export default {
     return {
       appReady: false,
       folded: false,
+      window: {
+        height: 0,
+      },
     };
   },
   computed: {
@@ -31,10 +38,21 @@ export default {
       authenticated: 'IsUserAllowSeeNavigator',
     }),
   },
-
+  created() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  },
   methods: {
     setFolded() {
       this.folded = !this.folded;
+    },
+
+    // Calculating browser height
+    handleResize() {
+      this.window.height = window.innerHeight;
     },
   },
 };

@@ -699,23 +699,9 @@ body {
   content: "";
 }
 
-.app-header-fixed {
-  padding-top: 50px;
-}
-
-.app-header-fixed .app-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
 .app-header {
   z-index: 1025;
   border-radius: 0;
-}
-
-.app-aside {
-  float: left;
 }
 
 .app-aside:before {
@@ -927,15 +913,6 @@ body {
 }
 
 @media (min-width: 768px) {
-  .app-aside,
-  .navbar-header {
-    width: 200px;
-  }
-  .navbar-collapse,
-  .app-content,
-  .app-footer {
-    margin-left: 200px;
-  }
   .app-aside-right {
     position: absolute;
     top: 50px;
