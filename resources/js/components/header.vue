@@ -10,31 +10,39 @@
         b-nav-item(href="#") {{ farm.name }}
 
       b-navbar-nav.d-md-none
-        b-nav-item(:to="{ name: 'Home' }" :class="active ? 'active': ''")
+        b-nav-item(:to="{ name: 'Home' }" :class="active ? 'active': ''" @click="clickHandler")
           i.fa.fa-home
           translate Dashboard
 
-        b-nav-item(:to="{name: 'FarmReservoirs'}" :class="active ? 'active': ''")
+        b-nav-item(
+          :to="{name: 'FarmReservoirs'}"
+          :class="active ? 'active': ''"
+          @click="clickHandler"
+        )
           i.fa.fa-tint
           translate Reservoirs
 
-        b-nav-item(:to="{name: 'FarmAreas'}" :class="active ? 'active': ''")
+        b-nav-item(:to="{name: 'FarmAreas'}" :class="active ? 'active': ''" @click="clickHandler")
           i.fa.fa-grip-horizontal
           translate Areas
 
-        b-nav-item(:to="{ name: 'InventoriesMaterials' }" :class="active ? 'active': ''")
+        b-nav-item(
+          :to="{ name: 'InventoriesMaterials' }"
+          :class="active ? 'active': ''"
+          @click="clickHandler"
+        )
           i.fa.fa-archive
           translate Inventories
 
-        b-nav-item(:to="{name: 'FarmCrops'}" :class="active ? 'active': ''")
+        b-nav-item(:to="{name: 'FarmCrops'}" :class="active ? 'active': ''" @click="clickHandler")
           i.fa.fa-leaf
           translate Crops
 
-        b-nav-item(:to="{ name: 'Task' }" :class="active ? 'active': ''")
+        b-nav-item(:to="{ name: 'Task' }" :class="active ? 'active': ''" @click="clickHandler")
           i.fa.fa-clipboard
           translate Tasks
 
-        b-nav-item(:to="{ name: 'Account' }" :class="active ? 'active': ''")
+        b-nav-item(:to="{ name: 'Account' }" :class="active ? 'active': ''" @click="clickHandler")
           i.fa.fa-user
           translate Account
 
@@ -55,6 +63,7 @@ export default {
   data() {
     return {
       dropdown: false,
+      active: false,
     };
   },
   computed: {
@@ -83,6 +92,9 @@ export default {
           this.$router.push({ name: 'AuthLogin' });
         })
         .catch(error => error);
+    },
+    clickHandler() {
+      this.active = !this.active;
     },
   },
 };

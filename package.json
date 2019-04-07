@@ -81,7 +81,6 @@
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.13",
     "vue-webpack-gettext": "^0.3.1",
-    "vuejs-datepicker": "^0.9.25",
     "webpack": "^4.29.0",
     "webpack-bundle-analyzer": "^2.9.1",
     "webpack-cli": "^3.2.1",
@@ -104,6 +103,7 @@
     "vue-test-utils": "^1.0.0-beta.11",
     "vue-toasted": "^1.1.24",
     "vue2-leaflet": "^0.0.58",
+    "vuejs-datepicker": "^0.9.25",
     "vuex": "^2.4.1",
     "vuex-persistedstate": "^2.4.2"
   }

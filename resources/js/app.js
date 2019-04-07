@@ -46,7 +46,7 @@ Vue.use(GetTextPlugin, {
   silent: false,
 });
 
-const App = new Vue({
+const App = () => new Vue({
   el: '#app',
   router: VueRouter,
   store: VuexStore,

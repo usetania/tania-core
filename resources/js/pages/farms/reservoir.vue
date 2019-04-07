@@ -30,13 +30,13 @@
                 small.text-muted
                   translate Capacity
                 h4 {{ reservoir.water_source.capacity }}
-            .row
+
               .col-xs-12.col-sm-12.col-md-6
                 small.text-muted
                   translate Used In
                 h4(v-for="area in reservoir.installed_to_area")
                   span.areatag {{ area.name }}
-            .row
+
               .col-xs-12.col-sm-12.col-md-6
                 small.text-muted
                   translate Created On
@@ -66,17 +66,20 @@
                 )
                   | {{ errors.first('note.content') }}
 
-          b-list-group
-            b-list-group-item(v-for="reservoirNote in reservoir.notes")
-              span {{ reservoirNote.content }}
-                small.text-muted.clear.text-ellipsis
-                  |
-                  | {{ reservoirNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+          b-list-group.list-notes
+            b-list-group-item(v-for="reservoirNote in reservoir.notes" :key="reservoirNote.uid")
+              .row
+                .col-xs-8.col-sm-8.col-md-9.col-lg-10
+                  span {{ reservoirNote.content }}
+                    small.text-muted.clear.text-ellipsis
+                      |
+                      | {{ reservoirNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
 
-              button.btn.btn-xs.btn-default.float-right(
-                v-on:click="deleteNote(reservoirNote.uid)"
-              )
-                i.fa.fa-trash
+                .col-xs-4.col-sm-4.col-md-3.col-lg-2
+                  button.btn.btn-xs.btn-default.text-center(
+                    v-on:click="deleteNote(reservoirNote.uid)"
+                  )
+                    i.fa.fa-trash
     .row
       .col-12
         b-card(
@@ -173,13 +176,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-i {
-  text-align: left;
-  width: 30px;
-}
-
 i.fa.fa-paper-plane {
   text-align: center;
+}
+
+i.fas.fa-plus {
+  text-align: left;
+  width: 30px;
 }
 
 .title-page {
@@ -201,5 +204,9 @@ i.fa.fa-paper-plane {
     display: block;
     margin-bottom: 15px;
   }
+}
+
+.list-notes {
+  margin-top: 20px;
 }
 </style>

@@ -1,97 +1,111 @@
 <template lang="pug">
-  .area-detail.col(v-if="loading === false")
+  .container-fluid.bottom-space(v-if="loading === false")
     modal(v-if="showModal" @close="closeModal")
       FarmAreaTaskForm(:data="area" :asset="'Area'")
     modal(v-if="showWaterTaskModal" @close="closeModal")
       WaterTaskModal(:crops="areaCrops" :area="area")
-    .wrapper-md
-      .pull-right
-        a#addTaskForm.btn.btn-sm.btn-addon.btn-primary.m-r(style="cursor: pointer;" @click="openModal()")
+
+    .row
+      .col
+        h3.title-page {{ area.name }}
+          |
+          |
+          small.text-muted {{ getType(area.type).label }}
+
+    .row
+      .col
+        a#addTaskForm.btn.btn-sm.btn-primary(style="cursor: pointer;" @click="openModal()")
           i.fas.fa-plus
           translate Add Task
-        a#waterAreaForm.btn.btn-sm.btn-addon.btn-info(v-if="areaCrops.length > 0" style="cursor: pointer;" @click="showWaterTaskModal = true")
+
+        a#waterAreaForm.btn.btn-sm.btn-info(
+          v-if="areaCrops.length > 0" style="cursor: pointer;"
+          @click="showWaterTaskModal = true"
+        )
           i.fas.fa-tint
           translate Watering
-      h1.m-n.font-thin.h3.text-primary {{ area.name }}
-      small.text-muted {{ getType(area.type).label }}
-    .wrapper-md
+
+    .cards-wrapper
       .row
-        .col-md-5.col-xs-12
-          .panel.basicinfo
-            .panel-heading
-              span.h4.text-lt
-                translate Basic info
-            .item
-              img.img-full(v-if="area.photo.filename.length > 0" :src="'/api/farms/' + farm.uid + '/areas/' + area.uid + '/photos'")
-              img.img-full(v-else src="../../../images/no-img.png")
-            .list-group.no-radius.alt
-              .list-group-item
+        .col-xs-12.col-sm-12.col-md-5
+          b-card(
+            :title="$gettext('Basic info')"
+            :img-src="areaImage"
+            class="card-ui"
+          )
+
+            b-list-group
+              b-list-group-item
                 span.col-sm-7.text-muted.point
                   translate Area Size
+                  |
                   | {{ getSizeUnit(area.size.unit.symbol).label }}
                 span {{ area.size.value }}
-              .list-group-item
+              b-list-group-item
                 span.col-sm-7.text-muted.point
                   translate Location
                 span {{ getLocation(area.location.code).label }}
-              .list-group-item
+              b-list-group-item
                 span.col-sm-7.text-muted.point
                   translate Batches
                 span {{ area.total_crop_batch }}
-              .list-group-item
+              b-list-group-item
                 span.col-sm-7.text-muted.point
                   translate Crop Variety
                 span {{ area.total_variety }}
-              .list-group-item
+              b-list-group-item
                 span.col-sm-7.text-muted.point
                   translate Reservoir
                 span {{ area.reservoir.name }}
-        .col-md-7.col-xs-12
-          .panel
-            .panel-heading
-              span.h4.text-lt
-                translate Current Status
+        .col-xs-12.col-sm-12.col-md-7
+          b-card(
+            :text="$gettext('Current Status')"
+            class="card-ui"
+          )
             FarmCropsListing(:crops="areaCrops" :domain="'AREA'")
       //- Ending row
 
       //- Starting row
       .row
         .col-md-6.col-xs-12
-          .panel
-            .panel-heading
-              span.h4.text-lt
-                translate Notes
-            .panel-body
-              form(@submit.prevent="validateBeforeSubmit")
-                .input-group
-                  input#content.form-control.input-sm(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
-                  span.input-group-btn
-                    button.btn.btn-sm.btn-success(type="submit")
-                      i.fas.fa-paper-plane
-                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('note.content') }}
-            ul.list-group.list-group-lg.no-bg.auto
-              li.list-group-item.row(v-for="areaNote in area.notes")
-                .col-sm-9
-                  span {{ areaNote.content }}
-                  small.text-muted.clear.text-ellipsis {{ areaNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                .col-sm-3
-                  button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(areaNote.uid)")
-                    i.fas.fa-trash
+          b-card(
+            :title="$gettext('Notes')"
+            class="card-ui"
+          )
+            b-form(@submit.prevent="validateBeforeSubmit")
+              .input-group
+                b-form-input#content.form-control.input-sm(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                b-input-group-append
+                  b-button.btn.btn-sm.btn-success(type="submit")
+                    i.fas.fa-paper-plane
+                span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('note.content') }}
+            b-list-group.list-notes
+              b-list-group-item(v-for="areaNote in area.notes" :key="areaNote.uid")
+                .row
+                  .col-xs-8.col-sm-8.col-md-9.col-lg-10
+                    span {{ areaNote.content }}
+                      small.text-muted.clear.text-ellipsis
+                        |
+                        | {{ areaNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                  .col-xs-4.col-sm-4.col-md-3.col-lg-2
+                    button.btn.btn-xs.btn-default.text-center(v-on:click="deleteNote(areaNote.uid)")
+                      i.fas.fa-trash
         .col-md-6.col-xs-12.task-list
-          .panel
-            .panel-heading
-              span.h4.text-lt
-                translate Tasks
+          b-card(
+            :title="$gettext('Tasks')"
+            class="card-ui"
+          )
             TasksList(:domain="'AREA'" :asset_id="area.uid" :reload="reload")
       //- Ending row
 </template>
 
 <script>
-import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '../../stores/helpers/farms/area'
-import { StubArea, StubNote } from '../../stores/stubs'
-import { mapActions, mapGetters } from 'vuex'
-import Modal from '../../components/modal.vue'
-import moment from 'moment-timezone'
+import { mapActions, mapGetters } from 'vuex';
+import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '../../stores/helpers/farms/area';
+import { StubArea, StubNote } from '../../stores/stubs';
+import Modal from '../../components/modal.vue';
+import noImage from '../../../images/no-img.png';
+
 export default {
   name: 'Area',
   components: {
@@ -99,27 +113,9 @@ export default {
     FarmCropsListing: () => import('./crops-listing.vue'),
     TasksList: () => import('./tasks/task-list.vue'),
     WaterTaskModal: () => import('./tasks/water-task.vue'),
-    Modal
+    Modal,
   },
-  computed: {
-    ...mapGetters({
-      farm: 'getCurrentFarm'
-    })
-  },
-  created () {
-    this.getAreaByUid(this.$route.params.id)
-      .then(({ data }) =>  {
-        this.area = data
-        this.loading = false
-        this.fetchAreaCrops(this.area.uid)
-          .then(({ data }) =>  {
-            this.areaCrops = data
-          })
-          .catch(error => console.log(error))
-      })
-      .catch(error => console.log(error))
-  },
-  data () {
+  data() {
     return {
       area: Object.assign({}, StubArea),
       areaNotes: [],
@@ -129,7 +125,33 @@ export default {
       reload: false,
       showModal: false,
       showWaterTaskModal: false,
-    }
+    };
+  },
+  computed: {
+    ...mapGetters({
+      farm: 'getCurrentFarm',
+    }),
+    areaImage() {
+      let image = noImage;
+      if (this.area.photo.filename.length > 0) {
+        image = `/api/farms/${this.farm.uid}/areas/${this.area.uid}/photos`;
+      }
+      return image;
+    },
+  },
+  created() {
+    this.getAreaByUid(this.$route.params.id)
+      .then(({ data }) => {
+        this.area = data;
+        this.loading = false;
+
+        this.fetchAreaCrops(this.area.uid)
+          .then(({ data }) => {
+            this.areaCrops = data;
+          })
+          .catch(error => error);
+      })
+      .catch(error => error);
   },
   methods: {
     ...mapActions([
@@ -138,48 +160,88 @@ export default {
       'fetchAreaCrops',
       'getAreaByUid',
     ]),
-    closeModal () {
-      this.showModal = false
-      this.showWaterTaskModal = false
-      this.reload = !this.reload
+    closeModal() {
+      this.showModal = false;
+      this.showWaterTaskModal = false;
+      this.reload = !this.reload;
     },
-    create () {
-      this.note.obj_uid = this.$route.params.id
+    create() {
+      this.note.obj_uid = this.$route.params.id;
       this.createAreaNotes(this.note)
-        .then(data => {
-          this.area = data
-          this.note.content = ''
-          this.$nextTick(() => this.$validator.reset())
+        .then((data) => {
+          this.area = data;
+          this.note.content = '';
+          this.$nextTick(() => this.$validator.reset());
         })
-        .catch(({ data }) => this.message = data)
+        .catch(({ data }) => {
+          this.message = data;
+        });
     },
-    deleteNote (note_uid) {
-      this.note.obj_uid = this.$route.params.id
-      this.note.uid = note_uid
+    deleteNote(noteUid) {
+      this.note.obj_uid = this.$route.params.id;
+      this.note.uid = noteUid;
       this.deleteAreaNote(this.note)
-        .then(data => this.area = data)
-        .catch(({ data }) => this.message = data)
+        .then((data) => {
+          this.area = data;
+        })
+        .catch(({ data }) => {
+          this.message = data;
+        });
     },
-    getLocation (key) {
-      return FindAreaLocation(key)
+    getLocation(key) {
+      return FindAreaLocation(key);
     },
-    getSizeUnit (key) {
-      return FindAreaSizeUnit(key)
+    getSizeUnit(key) {
+      return FindAreaSizeUnit(key);
     },
-    getType (key) {
-      return FindAreaType(key)
+    getType(key) {
+      return FindAreaType(key);
     },
     openModal() {
-      this.data = {}
-      this.showModal = true
+      this.data = {};
+      this.showModal = true;
     },
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then((result) => {
         if (result) {
-          this.create()
+          this.create();
         }
-      })
+      });
     },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+i.fas.fa-plus,
+i.fas.fa-tint {
+  text-align: left;
+  width: 30px;
+}
+
+#addTaskForm {
+  margin-right: 20px;
+}
+
+h3.title-page {
+  margin: 20px 0 30px 0;
+}
+
+.cards-wrapper {
+  margin-top: 20px;
+
+  .card-ui {
+    margin-bottom: 20px;
+
+    i {
+      width: 30px;
+    }
   }
 }
-</script>
+.bottom-space {
+  padding-bottom: 60px;
+}
+.list-notes {
+  margin-top: 20px;
+}
+</style>

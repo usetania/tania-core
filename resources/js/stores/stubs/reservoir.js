@@ -7,11 +7,11 @@ export default {
   water_source: {
     type: 'TAP',
     capacity: 0,
-    volume: 0
+    volume: 0,
   },
   type: 'TAP',
   capacity: 0,
   farm_id: '',
   installed_to_areas: [],
-  creation_date: ''
-}
+  creation_date: '',
+};
