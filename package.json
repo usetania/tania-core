@@ -92,6 +92,7 @@
     "bootstrap-vue": "^2.0.0-rc.16",
     "cheerio": "^1.0.0-rc.2",
     "leaflet": "^1.4.0",
+    "moment": "^2.24.0",
     "moment-timezone": "^0.5.14",
     "nprogress": "^0.2.0",
     "vee-validate": "^2.0.0",

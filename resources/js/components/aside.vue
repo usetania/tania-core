@@ -22,7 +22,7 @@ aside#aside.bg-dark
       @click="clickHandler"
     )
       i.fa.fa-archive
-      translate Inventories
+      translate Materials
 
     b-nav-item(:to="{name: 'FarmCrops'}" :class="active ? 'active': ''" @click="clickHandler")
       i.fa.fa-leaf

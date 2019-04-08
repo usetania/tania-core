@@ -1,101 +1,125 @@
 <template lang="pug">
-  .material.col
-    .wrapper-md
-      modal(v-if="showModal" @close="showModal = false")
-        InventoriesMaterialForm(:data="data")
-      a#materialsform.btn.m-b-xs.btn-primary.btn-addon.pull-right(@click="openModal()")
-        i.fa.fa-plus
-        translate Add Material
-      h1.m-t.font-thin.h3.text-black
-        translate Materials
+  .container-fluid.bottom-space
+    .row
+      .col
+        h3.title-page
+          translate Materials
 
-    .wrapper-md
-      .panel.no-border
-        table.table.m-b
-          thead
-            tr
-              th
-                translate Category
-              th
-                translate Name
-              th
-                translate Price
-              th
-                translate Produced By
-              th
-                translate Quantity
-              th
-                translate Additional Notes
-              th
-          tbody
-            tr(v-if="materials.length == 0")
-              td(colspan="7")
-                translate No Materials Available
-            tr(v-for="material in materials")
-              td {{ getType(material.type.code) }}
-              td {{ material.name }}
-              td {{ material.price_per_unit.amount }} {{ material.price_per_unit.symbol}}
-              td {{ material.produced_by }}
-              td {{ material.quantity.value }} {{ getQuantityUnit(material.quantity.unit) }}
-              td {{ material.notes }}
-              td
-                a(@click="openModal(material)")
-                  i.fa.fa-edit
-        Pagination(:pages="pages" @reload="getMaterials")
+    .row
+      .col
+        modal(v-if="showModal" @close="showModal = false")
+          InventoriesMaterialForm(:data="data")
+
+        a#materialsform.btn.btn-primary(@click="openModal()")
+          i.fa.fa-plus
+          translate Add Material
+
+    .table-responsive.table-wrapper
+      table.table
+        thead
+          tr
+            th
+              translate Category
+            th
+              translate Name
+            th
+              translate Price
+            th
+              translate Produced By
+            th
+              translate Quantity
+            th
+              translate Additional Notes
+            th
+        tbody
+          tr(v-if="materials.length == 0")
+            td(colspan="7")
+              translate No Inventories Available
+          tr(v-for="material in materials")
+            td {{ getType(material.type.code) }}
+            td {{ material.name }}
+            td {{ material.price_per_unit.amount }} {{ material.price_per_unit.symbol}}
+            td {{ material.produced_by }}
+            td {{ material.quantity.value }} {{ getQuantityUnit(material.quantity.unit) }}
+            td {{ material.notes }}
+            td
+              a(@click="openModal(material)")
+                i.fa.fa-edit
+      Pagination(:pages="pages" @reload="getMaterials")
 </template>
 
 <script>
-import Modal from '../../components/modal.vue'
-import Pagination from '../../components/pagination.vue'
-import { mapActions, mapGetters } from 'vuex'
-import { FindInventoryType, FindQuantityUnit } from '../../stores/helpers/inventories/inventory'
+import { mapActions, mapGetters } from 'vuex';
+import Modal from '../../components/modal.vue';
+import Pagination from '../../components/pagination.vue';
+import { FindInventoryType, FindQuantityUnit } from '../../stores/helpers/inventories/inventory';
+
 export default {
   name: 'InventoriesMaterial',
-  computed: {
-    ...mapGetters({
-      materials: 'getAllMaterials',
-      pages: 'getMaterialsNumberOfPages',
-    })
-  },
   components: {
     InventoriesMaterialForm: () => import('./materials-form.vue'),
     Modal,
     Pagination,
   },
-  data () {
+  data() {
     return {
       data: {},
       showModal: false,
-    }
+    };
+  },
+  computed: {
+    ...mapGetters({
+      materials: 'getAllMaterials',
+      pages: 'getMaterialsNumberOfPages',
+    }),
+  },
+  mounted() {
+    this.getMaterials();
   },
   methods: {
     ...mapActions([
-      'fetchMaterials'
+      'fetchMaterials',
     ]),
     getMaterials() {
-      let pageId = 1
-      if (typeof this.$route.query.page != "undefined") {
-        pageId = parseInt(this.$route.query.page)
+      let pageId = 1;
+      if (typeof this.$route.query.page !== 'undefined') {
+        pageId = parseInt(this.$route.query.page, 10);
       }
-      this.fetchMaterials({ pageId : pageId })
+      this.fetchMaterials({ pageId });
     },
     getType(key) {
-      return FindInventoryType(key)
+      return FindInventoryType(key);
     },
     getQuantityUnit(key) {
-      return FindQuantityUnit(key)
+      return FindQuantityUnit(key);
     },
     openModal(data) {
-      this.showModal = true
+      this.showModal = true;
       if (data) {
-        this.data = data
+        this.data = data;
       } else {
-        this.data = {}
+        this.data = {};
       }
     },
   },
-  mounted () {
-    this.getMaterials()
-  },
-}
+};
 </script>
+
+<style lang="scss" scoped>
+h3.title-page {
+  margin: 20px 0 30px 0;
+}
+
+i {
+  text-align: left;
+  width: 30px;
+}
+
+.table-wrapper {
+  margin-top: 20px;
+}
+
+.bottom-space {
+  padding-bottom: 60px;
+}
+</style>
