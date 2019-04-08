@@ -1,12 +1,12 @@
 language: go
 
-dist: trusty
+dist: xenial
 
 go:
-  - 1.11
+  - 1.12
 
 node_js:
-  - 10
+  - 11
 
 addons:
   chrome: stable
