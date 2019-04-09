@@ -38,7 +38,7 @@
           textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
           span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
-        button.btn.btn-addon.btn-success.pull-right(type="submit")
+        button.btn.btn-addon.btn-success.float-right(type="submit")
           i.fa.fa-plus
           translate Save
         button.btn.btn-default(type="button" style="cursor: pointer;" @click="closeModal()")

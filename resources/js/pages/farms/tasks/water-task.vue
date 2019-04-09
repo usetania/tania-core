@@ -27,7 +27,7 @@
               span.identifier-sm {{ crop.batch_id }}
           span.help-block.text-danger(v-show="errors.has('selected crops')") {{ errors.first('selected crops') }}
         .form-group
-          button.btn.btn-success.pull-right(type="submit")
+          button.btn.btn-success.float-right(type="submit")
             i.fa.fa-check
             translate SAVE
           button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")

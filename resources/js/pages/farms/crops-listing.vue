@@ -1,5 +1,5 @@
 <template lang="pug">
-.table-responsive
+.table-responsive.table-wrapper
   table.table
     thead
       tr
@@ -69,3 +69,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.table-wrapper {
+  margin-top: 20px;
+}
+</style>

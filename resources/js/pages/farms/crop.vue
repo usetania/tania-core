@@ -1,5 +1,5 @@
 <template lang="pug">
-  .crop-detail.col(v-if="loading === false")
+  .crop-detail(v-if="loading === false")
     modal(v-if="showMoveCropModal" @close="closeModal")
       moveCropTask(:crop="crop")
     modal(v-if="showDumpCropModal" @close="closeModal")
@@ -8,7 +8,7 @@
       harvestCropTask(:crop="crop")
     modal(v-if="showUploadCropModal" @close="closeModal")
       uploadCropTask(:crop="crop")
-    .row.wrapper-md
+    .row
       .col-xs-8.col-xs-offset-2
         .m-t.m-b
           a.h5.text-lt.m-b(href="#/crops")
@@ -21,7 +21,7 @@
           li
             router-link(:to="{ name: 'FarmCropNotes', params: { id: crop.uid } }")
               translate Tasks & Notes
-        .panel
+        b-card
           .panel-heading.b-b.b-light.wrapper
             .row
               .col-sm-6.m-t.m-b

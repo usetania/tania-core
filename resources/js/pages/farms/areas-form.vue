@@ -93,7 +93,7 @@
                 small.text-muted (if any)
               UploadComponent(@fileSelelected="fileSelelected")
         .form-group
-          button.btn.btn-addon.btn-success.pull-right(type="submit")
+          button.btn.btn-addon.btn-success.float-right(type="submit")
             translate SAVE
           button.btn.btn-default(
             type="button"

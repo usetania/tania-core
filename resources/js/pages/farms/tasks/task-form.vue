@@ -110,7 +110,7 @@
           span.help-block.text-danger(v-show="errors.has('description')")
             | {{ errors.first('description') }}
         .form-group
-          button.btn.btn-addon.btn-primary.pull-right(type="submit")
+          button.btn.btn-addon.btn-primary.float-right(type="submit")
             i.fas.fa-check
             translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
