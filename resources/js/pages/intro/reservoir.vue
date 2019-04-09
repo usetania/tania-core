@@ -1,11 +1,20 @@
 <template lang="pug">
-  .container.init.col-md-4.col-md-offset-4
-    a.navbar-brand.block.m-b.m-t.text-center
-      img(src="../../../images/logobig.png")
-    h3.text-lt.text-center.wrapper.m-t
-      translate Awesome! Now let's create a new water source for your farm.
-    .m-b-lg
-      .wrapper
+  .container-fluid
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
+        .text-center
+          img(
+            src="../../../images/logobig.png"
+            alt="Tania Logo"
+            width="200"
+          )
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
+        h3.text-center
+          translate Awesome! Now let's create a new water source for your farm.
+
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
         b-card(
           :title="$gettext('Create Reservoir')"
         )

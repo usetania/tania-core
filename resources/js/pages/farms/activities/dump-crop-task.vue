@@ -1,11 +1,11 @@
 <template lang="pug">
   .dump-crop-task
     .modal-header
-      span.h4.font-bold
+      h4
         translate Dump
         span.identifier {{ crop.batch_id }}
     .modal-body
-      form(@submit.prevent="validateBeforeSubmit")
+      b-form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label(for="type")
             translate Choose area
@@ -25,7 +25,7 @@
           textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" placeholder="Leave optional notes of the harvest" v-model="task.notes" name="notes" rows="2")
           span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
         .form-group
-          button.btn.btn-addon.btn-primary.pull-right(type="submit")
+          button.btn.btn-addon.btn-primary.float-right(type="submit")
             i.fas.fa-check
             translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
@@ -35,39 +35,40 @@
 
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '../../../stores/stubs'
 import vueSlider from 'vue-slider-component';
+import { mapGetters, mapActions } from 'vuex';
+import { StubTask } from '../../../stores/stubs';
+
 export default {
-  name: "DumpCropTask",
+  name: 'DumpCropTask',
   components: {
-    vueSlider
+    vueSlider,
   },
-  computed : {
+  props: ['crop'],
+  data() {
+    return {
+      max_value: 100,
+      current_areas: [],
+      task: Object.assign({}, StubTask),
+    };
+  },
+  computed: {
     ...mapGetters({
       areas: 'getAllAreas',
-    })
+    }),
   },
-  created () {
-    this.task.quantity = 1
+  created() {
+    this.task.quantity = 1;
     if (this.crop.initial_area.current_quantity > 0) {
-      this.current_areas.push(this.crop.initial_area)
+      this.current_areas.push(this.crop.initial_area);
     }
-    for (var i = 0; i < this.crop.moved_area.length; i++) {
+    for (let i = 0; i < this.crop.moved_area.length; i += 1) {
       if (this.crop.moved_area[i].current_quantity > 0) {
         this.current_areas.push(this.crop.moved_area[i])
       }
     }
   },
-  data () {
-    return {
-      max_value: 100,
-      current_areas: [],
-      task: Object.assign({}, StubTask),
-    }
-  },
-  props: ['crop'],
-  mounted () {
+  mounted() {
     this.fetchAreas()
   },
   methods: {
@@ -76,28 +77,28 @@ export default {
       'dumpCrop',
       'areaChange',
     ]),
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then((result) => {
         if (result) {
-          this.create()
+          this.create();
         }
-      })
+      });
     },
-    create () {
-      this.task.obj_uid = this.crop.uid
+    create() {
+      this.task.obj_uid = this.crop.uid;
       this.dumpCrop(this.task)
         .then(() => this.$parent.$emit('close'))
-        .catch(() => this.$toasted.error('Error in dump crop submission'))
+        .catch(() => this.$toasted.error('Error in dump crop submission'));
     },
-    areaChange (area_id) {
-      for (var i = 0; i < this.current_areas.length; i++) {
-        if (this.current_areas[i].area_id == area_id) {
-          this.max_value = this.current_areas[i].current_quantity
-          this.task.quantity = 1
-          break
+    areaChange(areaId) {
+      for (let i = 0; i < this.current_areas.length; i += 1) {
+        if (this.current_areas[i].area_id === areaId) {
+          this.max_value = this.current_areas[i].current_quantity;
+          this.task.quantity = 1;
+          break;
         }
       }
     },
-  }
-}
+  },
+};
 </script>

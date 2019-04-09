@@ -15,7 +15,7 @@
     .modal-body
       b-form(@submit.prevent="validateBeforeSubmit")
         .form-row
-          .col-xs-12.col-sm-12.col-md-6.col-lg-7
+          .col-xs-12.col-sm-12.col-md-8.col-lg-7
             .form-group
               label#label-due-date
                 translate Due Date
@@ -34,7 +34,7 @@
                     i.fas.fa-calendar-alt
               span.help-block.text-danger(v-show="errors.has('due date')")
                 | {{ errors.first('due date') }}
-          .col-xs-12.col-sm-12.col-md-6.col-lg-5
+          .col-xs-12.col-sm-12.col-md-4.col-lg-5
             .form-group
               label#label-priority
                 translate Is this task urgent?

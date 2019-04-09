@@ -40,72 +40,84 @@
           td(v-if="domain != 'AREA' && domain != 'RESERVOIR' && domain != 'HOME'")
             a.h3(style="cursor: pointer;" @click="openModal(task)")
               i.fas.fa-edit
-    div(v-else)
-      p(v-if="tasks.length == 0")
-        translate No Task Created
-      li.list-group-item.clearfix(v-for="task in tasks")
-        .row
-          .col-sm-1
-            .checkbox
-              label.i-checks
-                input(
-                  type="checkbox"
-                  v-on:change="setTaskStatus(task.uid, task.status)"
-                  :checked="isCompleted(task.status)"
-                )
-                i
-          .col-sm-8
-            span.h4.text-dark(v-if="task.category == 'PESTCONTROL' || task.category == 'NUTRIENT'")
-              translate Apply
-              u(v-if="task.domain_details.material")
-                | {{ task.domain_details.material.material_name }}
-              translate to
-              span.identifier-sm(v-if="task.domain_details.crop")
-                | {{ task.domain_details.crop.crop_batch_id }}
-              translate on
-              span.areatag-sm(v-if="task.domain_details.area")
-                | {{ task.domain_details.area.area_name }}
-            span.h4.text-dark(v-else-if="task.category == 'AREA'")
-              span.areatag-sm(v-if="task.domain_details.area")
-                |{{ task.domain_details.area.area_name }}
-              i.fas.fa-long-arrow-alt-right
-              |  {{ task.title }}
-            span.h4.text-dark(v-else-if="task.category == 'RESERVOIR'")
-              u(v-if="task.domain_details.reservoir")
-                | {{ task.domain_details.reservoir.reservoir_name }}
-              i.fas.fa-long-arrow-alt-right
-              |  {{ task.title }}
-            span.h4.text-dark(v-else-if="task.category == 'CROP'")
-              span.identifier-sm(v-if="task.domain_details.crop")
-                | {{ task.domain_details.crop.crop_batch_id }}
-              translate on
-              span.areatag-sm(v-if="task.domain_details.area")
-                | {{ task.domain_details.area.area_name }}
-              i.fas.fa-long-arrow-alt-right
-              |  {{ task.title }}
-            span.h4.text-dark(
-              v-else-if="task.category == 'SAFETY' || task.category == 'SANITATION'"
-            )
-              span.areatag-sm(v-if="task.domain_details.area")
-                | {{ task.domain_details.area.area_name }}
-              i.fas.fa-long-arrow-alt-right
-              |  {{ task.title }}
-            span.h4.text-dark(v-else) {{ task.title }}
-            MoreDetail(:data="task" :description="task.description")
-            div
-              small.text-muted Due date:
+
+    .wrapper(v-else)
+      b-list-group
+        b-list-group-item(v-if="tasks.length == 0")
+          translate No Task Created
+        b-list-group-item.clearfix(v-for="task in tasks" :key="task.uid")
+          .row
+            .col-sm-1.col-md-1.col-lg-1
+              .checkbox
+                label.i-checks
+                  input(
+                    type="checkbox"
+                    v-on:change="setTaskStatus(task.uid, task.status)"
+                    :checked="isCompleted(task.status)"
+                  )
+                  i
+            .col-sm-8.col-md-6.col-lg-8
+              span.h4.text-dark(v-if="task.category == 'PESTCONTROL' || task.category == 'NUTRIENT'")
+                translate Apply
                 |
-                | {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-              .status.status-urgent(v-if="task.priority == 'URGENT'")
-                translate URGENT
-              span.text-danger(v-if="task.is_due == true")
-                translate Overdue!
-          .col-sm-2
-            TaskLabel(:type="'CATEGORY'" :task="task")
-          .col-sm-1.text-right
-            a.h3(v-if="!isCompleted(task.status)" style="cursor: pointer;" @click="openModal(task)")
-              i.fas.fa-edit
-      Pagination(:pages="pages" @reload="getTasks")
+                |
+                u(v-if="task.domain_details.material")
+                  | {{ task.domain_details.material.material_name }}
+                |
+                |
+                translate to
+                |
+                |
+                span.identifier-sm(v-if="task.domain_details.crop")
+                  | {{ task.domain_details.crop.crop_batch_id }}
+                |
+                |
+                translate on
+                |
+                |
+                span.areatag-sm(v-if="task.domain_details.area")
+                  | {{ task.domain_details.area.area_name }}
+              span.h4.text-dark(v-else-if="task.category == 'AREA'")
+                span.areatag-sm(v-if="task.domain_details.area")
+                  |{{ task.domain_details.area.area_name }}
+                i.fas.fa-long-arrow-alt-right
+                |  {{ task.title }}
+              span.h4.text-dark(v-else-if="task.category == 'RESERVOIR'")
+                u(v-if="task.domain_details.reservoir")
+                  | {{ task.domain_details.reservoir.reservoir_name }}
+                i.fas.fa-long-arrow-alt-right
+                |  {{ task.title }}
+              span.h4.text-dark(v-else-if="task.category == 'CROP'")
+                span.identifier-sm(v-if="task.domain_details.crop")
+                  | {{ task.domain_details.crop.crop_batch_id }}
+                translate on
+                span.areatag-sm(v-if="task.domain_details.area")
+                  | {{ task.domain_details.area.area_name }}
+                i.fas.fa-long-arrow-alt-right
+                |  {{ task.title }}
+              span.h4.text-dark(
+                v-else-if="task.category == 'SAFETY' || task.category == 'SANITATION'"
+              )
+                span.areatag-sm(v-if="task.domain_details.area")
+                  | {{ task.domain_details.area.area_name }}
+                i.fas.fa-long-arrow-alt-right
+                |  {{ task.title }}
+              span.h4.text-dark(v-else) {{ task.title }}
+              MoreDetail(:data="task" :description="task.description")
+              div
+                small.text-muted Due date:
+                  |
+                  | {{ task.due_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                .status.status-urgent(v-if="task.priority == 'URGENT'")
+                  translate URGENT
+                span.text-danger(v-if="task.is_due == true")
+                  translate Overdue!
+            .col-sm-2.col-md-3.col-lg-2
+              TaskLabel(:type="'CATEGORY'" :task="task")
+            .col-sm-1.col-md-2.col-lg-1.text-right
+              a.h3(v-if="!isCompleted(task.status)" style="cursor: pointer;" @click="openModal(task)")
+                i.fas.fa-edit
+        Pagination(:pages="pages" @reload="getTasks")
 </template>
 
 <script>
@@ -198,3 +210,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.wrapper {
+  padding: 20px 0;
+}
+</style>

@@ -1,17 +1,22 @@
 <template lang="pug">
   #app
-    .row.no-gutters
-      .col-md-3.col-lg-2.d-none.d-md-block.left-column(v-show="authenticated")
-        AppAsideComponent(:folded="folded" v-on:header-folded="setFolded")
+    .row.no-gutters(v-if="authenticated")
+      .col-md-3.col-lg-2.d-none.d-md-block
+        AppAsideComponent(:folded="folded" v-on:header-folded="setFolded" v-show="authenticated")
 
       .col-xs-12.col-sm-12.col-md-9.col-lg-10
         .main-content(:style="{ 'min-height': `${window.height}px` }")
           AppHeaderComponent(v-show="authenticated")
 
           .app-content-body
-            .hbox.hbox-auto-xs.hbox-auto-sm
-              router-view
+            router-view
           AppFooterComponent(v-show="authenticated")
+
+    // When the user is not logged in
+    .row.no-gutters(v-else)
+      .col
+        .main-content(:style="{ 'height': `${window.height}px` }")
+          router-view
 </template>
 
 <script>

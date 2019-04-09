@@ -1,11 +1,21 @@
 <template lang="pug">
-  .container.init.col-md-4.col-md-offset-4
-    a.navbar-brand.block.m-b.m-t.text-center
-      img(src="../../../images/logobig.png")
-    h3.text-lt.text-center.wrapper.m-t
-      translate Hello! Can you tell me a little about your farm?
-    .m-b-lg
-      .wrapper
+  .container-fluid
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
+        .text-center
+          img(
+            src="../../../images/logobig.png"
+            alt="Tania Logo"
+            width="200"
+          )
+
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
+        h3.text-center
+          translate Hello! Can you tell me a little about your farm?
+
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
         b-form(@submit.prevent="validateBeforeSubmit")
           b-card(
             :title="$gettext('Create Farm')"
@@ -50,7 +60,7 @@
                 :longitude="farm.longitude"
                 @change="onLocationChange"
               )
-            .form-row
+            .form-row.form-group
               .col
                 input.form-control#latitude(
                   type="text" v-validate="'required|latitude'"
@@ -71,7 +81,7 @@
                 )
                 span.help-block.text-danger(v-show="errors.has('latitude')")
                   | {{ errors.first('latitude') }}
-            .form-row
+            .form-row.form-group
               .col
                 label#label-country(for="country") Country
                 select.form-control#country(
@@ -96,7 +106,7 @@
                 )
                 span.help-block.text-danger(v-show="errors.has('city')")
                   | {{ errors.first('city') }}
-            .form-group.text-center.m-t
+            .form-group.text-center
               button.btn.btn-addon.btn-primary(type="submit")
                 i.fas.fa-long-arrow-alt-right
                 translate Continue
