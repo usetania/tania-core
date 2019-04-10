@@ -13,7 +13,8 @@
     "unit": "cross-env NODE_ENV=test mocha-webpack --webpack-config webpack.config.js --mode development --require resources/tests/unit/setup.js --glob *.spec.js resources/tests/unit/ --recursive",
     "unit:coverage": "cross-env NODE_ENV=test nyc mocha-webpack --mode development --webpack-config webpack.config.js --require resources/tests/unit/setup.js --glob *.spec.js resources/tests/unit/ --recursive",
     "translation:extract": "node node_modules/vue-webpack-gettext/extract --output ./languages/template.pot --src ./resources/js/",
-    "translation:compile": "cross-env node_modules/.bin/gettext-compile --output ./languages/translations.json ./languages/locale/en_GB.po ./languages/locale/hu_HU.po ./languages/locale/id_ID.po ./languages/locale/pt_BR.po"
+    "translation:compile": "cross-env node_modules/.bin/gettext-compile --output ./languages/translations.json ./languages/locale/en_GB.po ./languages/locale/hu_HU.po ./languages/locale/id_ID.po ./languages/locale/pt_BR.po",
+    "storybook": "start-storybook"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
@@ -33,6 +34,7 @@
     "babel-plugin-lodash": "^3.3.2",
     "babel-plugin-module-resolver": "^3.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-vue": "^2.0.2",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
     "chalk": "^2.0.1",
@@ -86,6 +88,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "@storybook/vue": "^5.0.6",
     "@fortawesome/fontawesome-free": "^5.8.1",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.16",
