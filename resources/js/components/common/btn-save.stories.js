@@ -8,7 +8,7 @@ storiesOf('BtnSave', module)
       template: '<BtnSave />',
     }
   ))
-  .add('float-right', () => (
+  .add('with custom css', () => (
     {
       components: { BtnSave },
       template: '<BtnSave customClass="float-right" />',

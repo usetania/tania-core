@@ -3,7 +3,8 @@ b-button(
   variant="primary",
   size="md"
 )
-  i.fa.fa-plus {{ this.title }}
+  i.fa.fa-plus
+  | {{ this.title }}
 </template>
 
 <script>
@@ -13,6 +14,11 @@ export default {
     title: {
       type: String,
       required: true,
+    },
+    customClass: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
 };

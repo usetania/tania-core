@@ -8,7 +8,7 @@ storiesOf('BtnCancel', module)
       template: '<BtnCancel />',
     }
   ))
-  .add('float-right', () => (
+  .add('with custom css', () => (
     {
       components: { BtnCancel },
       template: '<BtnCancel customClass="float-right" />',
