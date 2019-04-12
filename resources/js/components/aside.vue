@@ -1,59 +1,148 @@
 <template lang="pug">
-aside#aside.bg-dark
+aside#aside
   .brand-image.text-center
     img(src="../../images/logo.png" alt="Tania Logo")
 
   b-nav(vertical="vertical")
-    b-nav-item(:to="{ name: 'Home' }" :class="active ? 'active': ''" @click="clickHandler")
-      i.fa.fa-home
-      translate Dashboard
-
-    b-nav-item(:to="{name: 'FarmReservoirs'}" :class="active ? 'active': ''" @click="clickHandler")
-      i.fa.fa-tint
-      translate Reservoirs
-
-    b-nav-item(:to="{name: 'FarmAreas'}" :class="active ? 'active': ''" @click="clickHandler")
-      i.fa.fa-grip-horizontal
-      translate Areas
-
-    b-nav-item(
-      :to="{ name: 'InventoriesMaterials' }"
-      :class="active ? 'active': ''"
-      @click="clickHandler"
+    AsideItem(
+      title="Dashboard"
+      fontawesome="fa fa-home"
+      :routeName="{ name: 'Home' }"
+      :isActive="homeActive"
+      v-on:click.native="homeClickHandler"
     )
-      i.fa.fa-archive
-      translate Materials
 
-    b-nav-item(:to="{name: 'FarmCrops'}" :class="active ? 'active': ''" @click="clickHandler")
-      i.fa.fa-leaf
-      translate Crops
+    AsideItem(
+      title="Reservoirs"
+      fontawesome="fa fa-tint"
+      :routeName="{ name: 'FarmReservoirs' }"
+      :isActive="reservoirsActive"
+      v-on:click.native="reservoirsClickHandler"
+    )
 
-    b-nav-item(:to="{ name: 'Task' }" :class="active ? 'active': ''" @click="clickHandler")
-      i.fa.fa-clipboard
-      translate Tasks
+    AsideItem(
+      title="Areas"
+      fontawesome="fa fa-grip-horizontal"
+      :routeName="{ name: 'FarmAreas' }"
+      :isActive="areasActive"
+      v-on:click.native="areasClickHandler"
+    )
 
-    b-nav-item(:to="{ name: 'Account' }" :class="active ? 'active': ''" @click="clickHandler")
-      i.fa.fa-user
-      translate Account
+    AsideItem(
+      title="Materials"
+      fontawesome="fa fa-archive"
+      :routeName="{ name: 'InventoriesMaterials' }"
+      :isActive="materialsActive"
+      v-on:click.native="materialsClickHandler"
+    )
+
+    AsideItem(
+      title="Crops"
+      fontawesome="fa fa-leaf"
+      :routeName="{ name: 'FarmCrops' }"
+      :isActive="cropsActive"
+      v-on:click.native="cropsClickHandler"
+    )
+
+    AsideItem(
+      title="Tasks"
+      fontawesome="fa fa-clipboard"
+      :routeName="{ name: 'Task' }"
+      :isActive="tasksActive"
+      v-on:click.native="tasksClickHandler"
+    )
+
+    AsideItem(
+      title="Account"
+      fontawesome="fa fa-user"
+      :routeName="{ name: 'Account' }"
+      :isActive="accountActive"
+      v-on:click.native="accountClickHandler"
+    )
 </template>
 
 <script>
+import AsideItem from './common/aside-item.vue';
+
 export default {
   name: 'AppAsideComponent',
-  props: {
-    folded: { type: Boolean, default: false },
+  components: {
+    AsideItem,
   },
   data() {
     return {
-      active: false,
+      homeActive: true,
+      reservoirsActive: false,
+      areasActive: false,
+      materialsActive: false,
+      cropsActive: false,
+      tasksActive: false,
+      accountActive: false,
     };
   },
   methods: {
-    setFolded() {
-      this.$emit('header-folded');
+    homeClickHandler() {
+      this.homeActive = true;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
     },
-    clickHandler() {
-      this.active = !this.active;
+    reservoirsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = true;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    areasClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = true;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    materialsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = true;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    cropsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = true;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    tasksClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = true;
+      this.accountActive = false;
+    },
+    accountClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = true;
     },
   },
 };
@@ -61,15 +150,8 @@ export default {
 
 <style lang="scss" scoped>
 aside#aside {
+  background-color: #513969;
   height: 100%;
-
-  .nav-link {
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  i {
-    width: 30px;
-  }
 
   .brand-image {
     padding: 15px 0;

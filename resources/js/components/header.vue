@@ -1,7 +1,7 @@
 <template lang="pug">
-  b-navbar(toggleable="lg" type="dark" variant="dark")
+  b-navbar(toggleable="lg" type="light" variant="light")
     b-navbar-brand(href="/")
-      img.mobile-brand.d-md-none(src="../../images/logo.png" alt="Tania Logo")
+      img.mobile-brand.d-md-none(src="../../images/logobig.png" alt="Tania Logo")
 
     b-navbar-toggle(target="nav-collapse")
 
@@ -10,41 +10,61 @@
         b-nav-item(href="#") {{ farm.name }}
 
       b-navbar-nav.d-md-none
-        b-nav-item(:to="{ name: 'Home' }" :class="active ? 'active': ''" @click="clickHandler")
-          i.fa.fa-home
-          translate Dashboard
-
-        b-nav-item(
-          :to="{name: 'FarmReservoirs'}"
-          :class="active ? 'active': ''"
-          @click="clickHandler"
+        AsideItem(
+          title="Dashboard"
+          fontawesome="fa fa-home"
+          :routeName="{ name: 'Home' }"
+          :isActive="homeActive"
+          v-on:click.native="homeClickHandler"
         )
-          i.fa.fa-tint
-          translate Reservoirs
 
-        b-nav-item(:to="{name: 'FarmAreas'}" :class="active ? 'active': ''" @click="clickHandler")
-          i.fa.fa-grip-horizontal
-          translate Areas
-
-        b-nav-item(
-          :to="{ name: 'InventoriesMaterials' }"
-          :class="active ? 'active': ''"
-          @click="clickHandler"
+        AsideItem(
+          title="Reservoirs"
+          fontawesome="fa fa-tint"
+          :routeName="{ name: 'FarmReservoirs' }"
+          :isActive="reservoirsActive"
+          v-on:click.native="reservoirsClickHandler"
         )
-          i.fa.fa-archive
-          translate Inventories
 
-        b-nav-item(:to="{name: 'FarmCrops'}" :class="active ? 'active': ''" @click="clickHandler")
-          i.fa.fa-leaf
-          translate Crops
+        AsideItem(
+          title="Areas"
+          fontawesome="fa fa-grip-horizontal"
+          :routeName="{ name: 'FarmAreas' }"
+          :isActive="areasActive"
+          v-on:click.native="areasClickHandler"
+        )
 
-        b-nav-item(:to="{ name: 'Task' }" :class="active ? 'active': ''" @click="clickHandler")
-          i.fa.fa-clipboard
-          translate Tasks
+        AsideItem(
+          title="Materials"
+          fontawesome="fa fa-archive"
+          :routeName="{ name: 'InventoriesMaterials' }"
+          :isActive="materialsActive"
+          v-on:click.native="materialsClickHandler"
+        )
 
-        b-nav-item(:to="{ name: 'Account' }" :class="active ? 'active': ''" @click="clickHandler")
-          i.fa.fa-user
-          translate Account
+        AsideItem(
+          title="Crops"
+          fontawesome="fa fa-leaf"
+          :routeName="{ name: 'FarmCrops' }"
+          :isActive="cropsActive"
+          v-on:click.native="cropsClickHandler"
+        )
+
+        AsideItem(
+          title="Tasks"
+          fontawesome="fa fa-clipboard"
+          :routeName="{ name: 'Task' }"
+          :isActive="tasksActive"
+          v-on:click.native="tasksClickHandler"
+        )
+
+        AsideItem(
+          title="Account"
+          fontawesome="fa fa-user"
+          :routeName="{ name: 'Account' }"
+          :isActive="accountActive"
+          v-on:click.native="accountClickHandler"
+        )
 
       b-dropdown-divider.d-md-none
 
@@ -57,13 +77,23 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { ls } from '../services';
+import AsideItem from './common/aside-item.vue';
 
 export default {
   name: 'AppHeaderComponent',
+  components: {
+    AsideItem,
+  },
   data() {
     return {
       dropdown: false,
-      active: false,
+      homeActive: true,
+      reservoirsActive: false,
+      areasActive: false,
+      materialsActive: false,
+      cropsActive: false,
+      tasksActive: false,
+      accountActive: false,
     };
   },
   computed: {
@@ -93,8 +123,68 @@ export default {
         })
         .catch(error => error);
     },
-    clickHandler() {
-      this.active = !this.active;
+    homeClickHandler() {
+      this.homeActive = true;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    reservoirsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = true;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    areasClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = true;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    materialsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = true;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    cropsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = true;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    tasksClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = true;
+      this.accountActive = false;
+    },
+    accountClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = true;
     },
   },
 };
@@ -105,7 +195,9 @@ export default {
   width: 100px;
 }
 
-i {
-  width: 30px;
+i.fa.fa-power-off {
+  text-align: left;
+  margin-right: 10px;
+  width: 20px;
 }
 </style>

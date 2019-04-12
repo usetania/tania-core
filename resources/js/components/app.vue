@@ -62,3 +62,9 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.main-content {
+  background-color: #fcfcfb;
+}
+</style>

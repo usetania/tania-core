@@ -1,6 +1,6 @@
 <template lang="pug">
   footer#footer(role="footer")
-    .wrapper.bg-light
+    .wrapper
       | Tania 1.7.0.
       |
       translate Made for the &#9829; of plants &copy; 2019 Copyright.
@@ -14,6 +14,7 @@ export default {
 
 <style lang="scss" scoped>
 #footer {
+  background-color: transparent;
   position: absolute;
   bottom: 0;
   width: 100%;

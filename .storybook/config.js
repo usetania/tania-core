@@ -1,10 +1,13 @@
-import { configure } from '@storybook/vue';
+import { configure, addParameters } from '@storybook/vue';
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 import GetTextPlugin from 'vue-gettext';
 import translations from '../languages/translations.json';
 
 import '../resources/sass/app.scss';
+
+// Storybook viewport addons for responsive development
+addParameters({ viewport: { defaultViewport: 'responsive' } });
 
 Vue.use(BootstrapVue);
 Vue.use(GetTextPlugin, {
