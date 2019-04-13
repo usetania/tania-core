@@ -17,11 +17,7 @@
           v-bind:class="{ active: isActive('BATCH') }"
           @click="statusSelected('BATCH')"
         )
-          h4.title-page
-            translate All Growing Batches on This Farm
-          a.btn.btn-sm.btn-primary(style="cursor: pointer;" id="show-modal" @click="showModal = true")
-            i.fa.fa-plus
-            translate Add a New Batch
+          BtnAddNew(:title="$gettext('Add New Batch')" v-on:click.native="showModal = true")
 
           FarmCropsListing(:crops="crops" :domain="'CROPS'" :batch="isActive('BATCH')" @editCrop="editCrop")
           Pagination(:pages="pages" :current="currentPage" @reload="getCrops")
@@ -37,14 +33,18 @@
 import { mapActions, mapGetters } from 'vuex';
 import Modal from '../../components/modal.vue';
 import Pagination from '../../components/pagination.vue';
+import FarmCropForm from './crops-form.vue';
+import FarmCropsListing from './crops-listing.vue';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
 
 export default {
   name: 'FarmCrops',
   components: {
-    FarmCropForm: () => import('./crops-form.vue'),
-    FarmCropsListing: () => import('./crops-listing.vue'),
+    FarmCropForm,
+    FarmCropsListing,
     Modal,
     Pagination,
+    BtnAddNew,
   },
   data() {
     return {

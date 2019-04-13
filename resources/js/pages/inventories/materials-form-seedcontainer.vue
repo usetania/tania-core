@@ -26,23 +26,19 @@
           b-input-group(:append="$gettext('Pieces')")
             input.form-control#quantity(type="text" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('quantity') }" v-model="inventory.quantity" name="quantity")
           span.help-block.text-danger(v-show="errors.has('quantity')") {{ errors.first('quantity') }}
-      .form-row
-        .col-6
-          label.control-label
-            translate Produced by
-          input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
-          span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
-        .col-6
-          label.control-label(for="notes")
-            translate Additional Notes
-          textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
-          span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
-        button.btn.btn-addon.btn-success.float-right(type="submit")
-          i.fa.fa-plus
-          translate Save
-        button.btn.btn-default(type="button" style="cursor: pointer;" @click="closeModal()")
-          translate Cancel
+        label.control-label
+          translate Produced by
+        input.form-control#produced_by(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('produced_by') }" v-model="inventory.produced_by" name="produced_by")
+        span.help-block.text-danger(v-show="errors.has('produced_by')") {{ errors.first('produced_by') }}
+      .form-group
+        label.control-label(for="notes")
+          translate Additional Notes
+        textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="2")
+        span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
+      .form-group
+        BtnCancel(v-on:click.native="closeModal()")
+        BtnSave(customClass="float-right")
 </template>
 
 <script>
@@ -50,9 +46,15 @@ import { mapActions } from 'vuex';
 import moment from 'moment';
 import { StubInventory } from '../../stores/stubs';
 import { Containers } from '../../stores/helpers/farms/crop';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
 
 export default {
   name: 'InventoriesMaterialsFormLabelCrop',
+  components: {
+    BtnCancel,
+    BtnSave,
+  },
   props: ['data'],
   data() {
     return {

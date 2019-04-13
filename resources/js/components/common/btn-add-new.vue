@@ -2,6 +2,7 @@
 b-button(
   variant="primary",
   size="md"
+  :class="customClass"
 )
   i.fa.fa-plus
   | {{ this.title }}
@@ -26,7 +27,8 @@ export default {
 
 <style lang="scss" scoped>
 i {
-  text-align: center;
+  text-align: left;
   margin-right: 10px;
+  width: 20px;
 }
 </style>

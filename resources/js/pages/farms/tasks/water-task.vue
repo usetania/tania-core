@@ -27,22 +27,24 @@
               span.identifier-sm {{ crop.batch_id }}
           span.help-block.text-danger(v-show="errors.has('selected crops')") {{ errors.first('selected crops') }}
         .form-group
-          button.btn.btn-success.float-right(type="submit")
-            i.fa.fa-check
-            translate SAVE
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
-            i.fa.fa-close
-            translate Cancel
+          BtnCancel(v-on:click.native="$parent.$emit('close')")
+          BtnSave(customClass="float-right")
 </template>
 
 <script>
 import { mapActions } from 'vuex';
 import moment from 'moment-timezone';
 import { StubTask } from '../../../stores/stubs';
+import BtnCancel from '../../../components/common/btn-cancel.vue';
+import BtnSave from '../../../components/common/btn-save.vue';
 
 export default {
   name: 'WaterTaskModal',
   props: ['crops', 'area'],
+  components: {
+    BtnCancel,
+    BtnSave,
+  },
   data() {
     return {
       task: Object.assign({}, StubTask),

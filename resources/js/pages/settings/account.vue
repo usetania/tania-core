@@ -30,16 +30,19 @@
               input.form-control#confirm_new_password(type="password" :class="{'input': true, 'text-danger': errors.has('password_confirmation') }" v-model="user.password_confirmation" name="password_confirmation" placeholder="")
               span.help-block.text-danger(v-show="errors.has('password_confirmation')") {{ errors.first('password_confirmation') }}
             .form-group
-              button.btn.btn-addon.btn-success(type="submit")
-                translate SAVE
+              BtnSave
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { StubUser } from '../../stores/stubs';
+import BtnSave from '../../components/common/btn-save.vue';
 
 export default {
   name: 'Account',
+  components: {
+    BtnSave,
+  },
   data() {
     return {
       user: Object.assign({}, StubUser),

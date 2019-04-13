@@ -52,11 +52,8 @@
         textarea.form-control#notes(type="text" :class="{'input': true, 'text-danger': errors.has('notes') }" v-model="inventory.notes" name="notes" rows="3")
         span.help-block.text-danger(v-show="errors.has('notes')") {{ errors.first('notes') }}
       .form-group
-        button.btn.btn-addon.btn-success.float-right(type="submit")
-          i.fa.fa-plus
-          translate Save
-        button.btn.btn-default(type="button" style="cursor: pointer;" @click="closeModal()")
-          translate Cancel
+        BtnCancel(v-on:click.native="closeModal()")
+        BtnSave(customClass="float-right")
 </template>
 
 <script>
@@ -66,11 +63,15 @@ import moment from 'moment';
 import { StubInventory } from '../../stores/stubs';
 import { PlantTypes } from '../../stores/helpers/farms/plant';
 import { PlantUnits } from '../../stores/helpers/inventories/inventory';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
 
 export default {
   name: 'InventoriesMaterialsFormPlant',
   components: {
     Datepicker,
+    BtnCancel,
+    BtnSave,
   },
   data() {
     return {

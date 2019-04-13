@@ -40,40 +40,38 @@
               span.help-block.text-danger(
                 v-show="errors.has('password')"
               ) {{ errors.first('password') }}
-            .form-group.text-center.m-t
-              button.btn.btn-addon.btn-primary(type="submit")
-                i.fas.fa-unlock
-                translate Login
+            .form-group.text-center
+              BtnLogin
 </template>
 
 <script>
 import Nprogres from 'nprogress';
 import { mapActions, mapGetters } from 'vuex';
+import BtnLogin from '../../components/common/btn-login.vue';
 
 export default {
   name: 'Login',
-
+  components: {
+    BtnLogin,
+  },
   data() {
     return {
       username: '',
       password: '',
     };
   },
-
   computed: {
     ...mapGetters({
       user: 'getCurrentUser',
       IsNewUser: 'IsNewUser',
     }),
   },
-
   mounted() {
     // redirect if the user already auntenticated
     if (this.user.uid !== '') {
       this.$router.push({ name: 'Home' });
     }
   },
-
   methods: {
     ...mapActions([
       'userLogin',

@@ -2,6 +2,7 @@
 b-button(
   variant="secondary"
   size="md"
+  type="submit"
   :class="this.customClass"
 )
   i.fa.fa-check

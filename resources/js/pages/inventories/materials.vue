@@ -10,9 +10,7 @@
         modal(v-if="showModal" @close="showModal = false")
           InventoriesMaterialForm(:data="data")
 
-        a#materialsform.btn.btn-primary(@click="openModal()")
-          i.fa.fa-plus
-          translate Add Material
+        BtnAddNew(:title="$gettext('Add Material')" v-on:click.native="openModal()")
 
     .table-responsive.table-wrapper
       table.table
@@ -53,13 +51,16 @@ import { mapActions, mapGetters } from 'vuex';
 import Modal from '../../components/modal.vue';
 import Pagination from '../../components/pagination.vue';
 import { FindInventoryType, FindQuantityUnit } from '../../stores/helpers/inventories/inventory';
+import InventoriesMaterialForm from './materials-form.vue';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
 
 export default {
   name: 'InventoriesMaterial',
   components: {
-    InventoriesMaterialForm: () => import('./materials-form.vue'),
+    InventoriesMaterialForm,
     Modal,
     Pagination,
+    BtnAddNew,
   },
   data() {
     return {

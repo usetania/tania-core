@@ -27,10 +27,8 @@
           input#capacity.form-control(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('capacity') }" v-model="reservoir.capacity" placeholder="Capacity (litre)" name="capacity")
           span.help-block.text-danger(v-show="errors.has('capacity')") {{ errors.first('capacity') }}
         .form-group
-          button.btn.btn-addon.btn-success.float-right(type="submit")
-            translate SAVE
-          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')")
-            translate CANCEL
+          BtnCancel(v-on:click.native="$parent.$emit('close')")
+          BtnSave(customClass="float-right")
 </template>
 
 
@@ -38,9 +36,15 @@
 import { mapActions } from 'vuex';
 import { ReservoirTypes } from '../../stores/helpers/farms/reservoir';
 import { StubReservoir, StubMessage } from '../../stores/stubs';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
 
 export default {
   name: 'FarmReservoirForm',
+  components: {
+    BtnCancel,
+    BtnSave,
+  },
   props: ['data'],
   data() {
     return {

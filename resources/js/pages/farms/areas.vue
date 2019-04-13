@@ -9,9 +9,7 @@
         modal(v-if="showModal" @close="showModal = false")
           farmAreaForm(:data="data")
 
-        a#areasform.btn.m-b-xs.btn-primary(style="cursor: pointer;" @click="openModal()")
-          i.fa.fa-plus
-          translate Add Area
+        BtnAddNew(:title="$gettext('Add Area')" v-on:click.native="openModal()")
 
     .cards-wrapper
       .row
@@ -49,12 +47,15 @@
 import { mapActions, mapGetters } from 'vuex';
 import { FindAreaType, FindAreaSizeUnit } from '../../stores/helpers/farms/area';
 import Modal from '../../components/modal.vue';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
+import FarmAreaForm from './areas-form.vue';
 
 export default {
   name: 'FarmAreas',
   components: {
-    FarmAreaForm: () => import('./areas-form.vue'),
+    FarmAreaForm,
     Modal,
+    BtnAddNew,
   },
   data() {
     return {

@@ -61,101 +61,104 @@
               input.form-control#container_cell(type="text" placeholder="How many cells your tray has?" v-validate="'required|decimal|min:0'" :class="{'input': true, 'text-danger': errors.has('container cell') }" v-model="crop.container_cell" name="container cell")
               span.help-block.text-danger(v-show="errors.has('container cell')") {{ errors.first('container cell') }}
         .form-group
-          button.btn.btn-addon.btn-success.float-right(type="submit")
-            translate SAVE
-          button.btn.btn-default(type="button" style="cursor: pointer;" @click="$parent.$emit('close')")
-            translate CANCEL
+          BtnCancel(v-on:click.native="$parent.$emit('close')")
+          BtnSave(customClass="float-right")
 </template>
 
 <script>
-import { AreaTypes } from '../../stores/helpers/farms/area'
-import { Containers } from '../../stores/helpers/farms/crop'
-import { StubCrop } from '../../stores/stubs'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex';
+import { AreaTypes } from '../../stores/helpers/farms/area';
+import { Containers } from '../../stores/helpers/farms/crop';
+import { StubCrop } from '../../stores/stubs';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
+
 export default {
-  name: "FarmCropForm",
-  computed: {
-    ...mapGetters({
-      areas: 'getAllAreas',
-    }),
-    cropVarieties: {
-      get() {
-        let cropVarieties = []
-        for (var inventory in this.inventories) {
-          if (this.inventories[inventory].plant_type === this.crop.plant_type) {
-            cropVarieties = this.inventories[inventory].names
-            if (!cropVarieties.includes(this.crop.name)) {
-              this.crop.name = ''
-            }
-            break
-          }
-        }
-        return cropVarieties
-      },
-      set(value) {
-      }
-    }
+  name: 'FarmCropForm',
+  components: {
+    BtnCancel,
+    BtnSave,
   },
-  data () {
+  props: ['data'],
+  data() {
     return {
       crop: Object.assign({}, StubCrop),
       inventories: [],
       loading: true,
       options: {
         areaTypes: Array.from(AreaTypes),
-        containers: Array.from(Containers)
-      }
-    }
+        containers: Array.from(Containers),
+      },
+    };
   },
-  created () {
+  computed: {
+    ...mapGetters({
+      areas: 'getAllAreas',
+    }),
+    cropVarieties: {
+      get() {
+        let cropVarieties = [];
+        for (let inventory in this.inventories) {
+          if (this.inventories[inventory].plant_type === this.crop.plant_type) {
+            cropVarieties = this.inventories[inventory].names;
+            if (!cropVarieties.includes(this.crop.name)) {
+              this.crop.name = '';
+            }
+            break;
+          }
+        }
+        return cropVarieties;
+      },
+    },
+  },
+  created() {
     this.fetchFarmInventories()
-      .then(({ data }) =>  {
-        this.loading = false
-        this.inventories = data
+      .then(({ data }) => {
+        this.loading = false;
+        this.inventories = data;
       })
-      .catch(error => console.log(error))
+      .catch(error => error);
+  },
+  mounted() {
+    if (typeof this.data.uid !== 'undefined') {
+      this.crop.uid = this.data.uid;
+      this.crop.crop_type = this.data.type;
+      this.crop.initial_area = this.data.initial_area.area_id;
+      this.crop.plant_type = this.data.inventory.plant_type;
+      this.crop.name = this.data.inventory.name;
+      this.crop.container_quantity = this.data.container.quantity;
+      this.crop.container_type = this.data.container.type;
+      this.crop.container_cell = this.data.container.cell;
+    }
   },
   methods: {
     ...mapActions([
       'submitCrop',
       'typeChanged',
-      'fetchFarmInventories'
+      'fetchFarmInventories',
     ]),
-    onChange: function () {
-      this.cropVarieties = this.cropVarieties
+    onChange: () => {
+      this.cropVarieties = this.cropVarieties;
     },
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then((result) => {
         if (result) {
-          this.submit()
+          this.submit();
         }
-      })
+      });
     },
-    submit () {
+    submit() {
       this.submitCrop(this.crop)
         .then(() => this.$parent.$emit('close'))
-        .catch(() => this.$toasted.error('Error in crop submission'))
+        .catch(() => this.$toasted.error('Error in crop submission'));
     },
-    typeChanged (type) {
+    typeChanged(type) {
       if (type === 'TRAY') {
-        this.crop.container_cell = ''
+        this.crop.container_cell = '';
       } else {
-        this.crop.container_cell = 0
+        this.crop.container_cell = 0;
       }
-    }
+    },
   },
-  mounted () {
-    if (typeof this.data.uid != "undefined") {
-      this.crop.uid = this.data.uid
-      this.crop.crop_type = this.data.type
-      this.crop.initial_area = this.data.initial_area.area_id
-      this.crop.plant_type = this.data.inventory.plant_type
-      this.crop.name = this.data.inventory.name
-      this.crop.container_quantity = this.data.container.quantity
-      this.crop.container_type = this.data.container.type
-      this.crop.container_cell = this.data.container.cell
-    }
-  },
-  props: ['data'],
-}
+};
 </script>

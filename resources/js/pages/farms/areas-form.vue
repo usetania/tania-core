@@ -93,14 +93,8 @@
                 small.text-muted (if any)
               UploadComponent(@fileSelelected="fileSelelected")
         .form-group
-          button.btn.btn-addon.btn-success.float-right(type="submit")
-            translate SAVE
-          button.btn.btn-default(
-            type="button"
-            style="cursor: pointer;"
-            @click="$parent.$emit('close')"
-          )
-            translate CANCEL
+          BtnCancel(v-on:click.native="$parent.$emit('close')")
+          BtnSave(customClass="float-right")
 </template>
 
 <script>
@@ -108,11 +102,15 @@ import { mapActions, mapGetters } from 'vuex';
 import { AreaTypes, AreaLocations, AreaSizeUnits } from '../../stores/helpers/farms/area';
 import { StubArea, StubMessage } from '../../stores/stubs';
 import UploadComponent from '../../components/upload.vue';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
 
 export default {
   name: 'FarmAreasForm',
   components: {
     UploadComponent,
+    BtnCancel,
+    BtnSave,
   },
   props: ['data'],
   data() {

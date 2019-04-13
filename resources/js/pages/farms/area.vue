@@ -14,9 +14,10 @@
 
     .row
       .col
-        a#addTaskForm.btn.btn-sm.btn-primary(style="cursor: pointer;" @click="openModal()")
-          i.fas.fa-plus
-          translate Add Task
+        BtnAddNew(
+          :title="$gettext('Add Task')"
+          v-on:click.native="openModal()"
+        )
 
         a#waterAreaForm.btn.btn-sm.btn-info(
           v-if="areaCrops.length > 0" style="cursor: pointer;"
@@ -105,15 +106,21 @@ import { FindAreaType, FindAreaSizeUnit, FindAreaLocation } from '../../stores/h
 import { StubArea, StubNote } from '../../stores/stubs';
 import Modal from '../../components/modal.vue';
 import noImage from '../../../images/no-img.png';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
+import FarmAreaTaskForm from './tasks/task-form.vue';
+import FarmCropsListing from './crops-listing.vue';
+import TasksList from './tasks/task-list.vue';
+import WaterTaskModal from './tasks/water-task.vue';
 
 export default {
   name: 'Area',
   components: {
-    FarmAreaTaskForm: () => import('./tasks/task-form.vue'),
-    FarmCropsListing: () => import('./crops-listing.vue'),
-    TasksList: () => import('./tasks/task-list.vue'),
-    WaterTaskModal: () => import('./tasks/water-task.vue'),
+    FarmAreaTaskForm,
+    FarmCropsListing,
+    TasksList,
+    WaterTaskModal,
     Modal,
+    BtnAddNew,
   },
   data() {
     return {

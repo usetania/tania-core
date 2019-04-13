@@ -12,9 +12,7 @@
 
   .row
     .col-xs-12.col-sm-12.col-md-8.col-lg-9
-      a#tasksform.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
-        i.fas.fa-plus
-        translate Add Task
+      BtnAddNew(:title="$gettext('Add Task')" v-on:click.native="openModal()")
 
       .cards-wrapper
         TasksList(:category="selected_category" :priority="selected_priority" :status="status" @openModal="openModal")
@@ -97,6 +95,7 @@ import TasksList from '../farms/tasks/task-list.vue';
 import TaskForm from '../farms/tasks/task-form.vue';
 import CropTaskForm from '../farms/tasks/crop-task-form.vue';
 import { TaskDomainCategories } from '../../stores/helpers/farms/task';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
 
 export default {
   name: 'Tasks',
@@ -105,6 +104,7 @@ export default {
     Modal,
     TaskForm,
     TasksList,
+    BtnAddNew,
   },
   data() {
     return {

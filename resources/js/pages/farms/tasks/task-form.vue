@@ -110,12 +110,8 @@
           span.help-block.text-danger(v-show="errors.has('description')")
             | {{ errors.first('description') }}
         .form-group
-          button.btn.btn-addon.btn-primary.float-right(type="submit")
-            i.fas.fa-check
-            translate OK
-          button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
-            i.fas.fa-times
-            translate Cancel
+          BtnCancel(v-on:click.native="$parent.$emit('close')")
+          BtnSave(customClass="float-right")
 </template>
 
 <script>
@@ -123,11 +119,15 @@ import { mapActions } from 'vuex';
 import Datepicker from 'vuejs-datepicker';
 import { StubTask } from '../../../stores/stubs';
 import { TaskDomainCategories } from '../../../stores/helpers/farms/task';
+import BtnCancel from '../../../components/common/btn-cancel.vue';
+import BtnSave from '../../../components/common/btn-save.vue';
 
 export default {
   name: 'FarmTasksForm',
   components: {
     Datepicker,
+    BtnCancel,
+    BtnSave,
   },
   props: {
     data: {

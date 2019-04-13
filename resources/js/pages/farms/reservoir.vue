@@ -5,12 +5,12 @@
     .row
       .col
         .title-page
-          a#addTaskForm.btn.btn-primary.float-right(
-            style="cursor: pointer;"
-            @click="openModal()"
+          BtnAddNew(
+            :title="$gettext('Add Task')"
+            customClass="float-right"
+            v-on:click.native="openModal()"
           )
-            i.fas.fa-plus
-            translate Add Task
+
           h3.title-page {{ reservoir.name }}
 
     // basic info
@@ -94,13 +94,21 @@ import { mapActions } from 'vuex';
 import { StubReservoir, StubNote } from '../../stores/stubs';
 import { FindReservoirType } from '../../stores/helpers/farms/reservoir';
 import Modal from '../../components/modal.vue';
+import FarmReservoirTaskForm from './tasks/task-form.vue';
+import TasksList from './tasks/task-list.vue';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
 
 export default {
   name: 'Reservoir',
   components: {
-    FarmReservoirTaskForm: () => import('./tasks/task-form.vue'),
-    TasksList: () => import('./tasks/task-list.vue'),
+    FarmReservoirTaskForm,
+    TasksList,
     Modal,
+    BtnAddNew,
+    BtnCancel,
+    BtnSave,
   },
   data() {
     return {

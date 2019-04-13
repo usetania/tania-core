@@ -9,12 +9,7 @@
       modal(v-if="showModal" @close="showModal = false")
         FarmReservoirForm(:data="data")
 
-      a#reservoirsform.btn.btn-primary(
-        style="cursor: pointer;"
-        @click="openModal()"
-      )
-        i.fa.fa-plus
-        translate Add Reservoir
+      BtnAddNew(:title="$gettext('Add Reservoir')" v-on:click.native="openModal()")
 
   .table-responsive.table-wrapper
     table.table
@@ -51,12 +46,15 @@
 import { mapGetters, mapActions } from 'vuex';
 import { FindReservoirType } from '../../stores/helpers/farms/reservoir';
 import Modal from '../../components/modal.vue';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
+import FarmReservoirForm from './reservoirs-form.vue';
 
 export default {
   name: 'FarmReservoirs',
   components: {
-    FarmReservoirForm: () => import('./reservoirs-form.vue'),
+    FarmReservoirForm,
     Modal,
+    BtnAddNew,
   },
   data() {
     return {
