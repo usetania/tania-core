@@ -1,9 +1,8 @@
-import ErrorMessage from './components/error.vue'
+import ErrorMessage from './components/error.vue';
 
 export default {
   ErrorMessage,
-
-  install (Vue) {
-    Vue.component('error-message', ErrorMessage)
-  }
-}
+  install(Vue) {
+    Vue.component('error-message', ErrorMessage);
+  },
+};

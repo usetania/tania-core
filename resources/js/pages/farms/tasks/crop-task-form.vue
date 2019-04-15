@@ -3,11 +3,13 @@
     .modal-header
       span.h4.font-bold
         translate Crop: Add New Task for
+        |
+        |
         span.identifier {{ batch_id }}
     .modal-body
-      form(@submit.prevent="validateBeforeSubmit")
-        .row
-          .col-xs-6
+      b-form(@submit.prevent="validateBeforeSubmit")
+        .form-row
+          .col-xs-12.col-sm-12.col-md-8
             .form-group
               label(for="due_date")
                 translate Due Date
@@ -15,9 +17,9 @@
                 datepicker#due_date(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('due_date') }" v-model="task.due_date" name="due_date" input-class="form-control" ref="openCal")
                 span.input-group-btn
                   button.btn.btn-primary(type="button" v-on:click="openPicker")
-                    i.glyphicon.glyphicon-calendar
+                    i.fas.fa-calendar-alt
               span.help-block.text-danger(v-show="errors.has('due_date')") {{ errors.first('due_date') }}
-          .col-xs-6
+          .col-xs-12.col-sm-12.col-md-4
             .form-group
               label(for="priority")
                 translate Is this task urgent?
@@ -32,8 +34,8 @@
                   i
                     translate No
               span.help-block.text-danger(v-show="errors.has('priority')") {{ errors.first('priority') }}
-        .row
-          .col-xs-6
+        .form-row
+          .col-xs-12.col-sm-12
             .form-group
               label(for="area_id")
                 translate Select area to do your task
@@ -42,7 +44,7 @@
                   translate Please select area
                 option(v-for="area in areas" :value="area.uid") {{ area.name }}
               span.help-block.text-danger(v-show="errors.has('area_id')") {{ errors.first('area_id') }}
-          .col-xs-6
+          .col-xs-12.col-sm-12
             .form-group
               label(for="category")
                 translate Task Category
@@ -82,7 +84,7 @@
           textarea.form-control#description(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('description') }" v-model="task.description" name="description" rows="3")
           span.help-block.text-danger(v-show="errors.has('description')") {{ errors.first('description') }}
         .form-group
-          button.btn.btn-addon.btn-primary.pull-right(type="submit")
+          button.btn.btn-addon.btn-primary.float-right(type="submit")
             i.fas.fa-check
             translate OK
           button.btn.btn-addon.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")

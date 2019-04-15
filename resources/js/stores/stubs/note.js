@@ -3,4 +3,4 @@ export default {
   obj_uid: '',
   content: '',
   created_date: '',
-}
+};

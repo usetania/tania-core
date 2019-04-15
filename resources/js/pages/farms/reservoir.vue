@@ -1,78 +1,116 @@
 <template lang="pug">
-  .reservoir-detail.col(v-if="loading === false")
+  .container-fluid.bottom-space(v-if="loading === false")
     modal(v-if="showModal" @close="closeModal")
       FarmReservoirTaskForm(:data="reservoir" :asset="asset")
-    .wrapper-md
-      a#addTaskForm.btn.m-b-xs.btn-primary.btn-addon.pull-right(style="cursor: pointer;" @click="openModal()")
-        i.fas.fa-plus
-        translate Add Task
-      h1.m-n.font-thin.h3.text-black {{ reservoir.name }}
-    .wrapper
-      .row.basicinfo
-        .col-md-6
-          .panel
-            .panel-heading
-              span.h4.text-lt
-                translate Basic Info
-            .panel-body
-              .row.m-b
-                .col-md-6
-                  small.text-muted
-                    translate Source Type
-                  .h4.text-lt {{ getReservoirType(reservoir.water_source.type).label }}
-                .col-md-6
-                  small.text-muted
-                    translate Capacity
-                  .h4.text-lt {{ reservoir.water_source.capacity }}
-              .row.m-b
-                .col-md-6
-                  small.text-muted
-                    translate Used In
-                  .h4.text-lt(v-for="area in reservoir.installed_to_area")
-                    span.areatag {{ area.name }}
-              .row.m-b
-                .col-md-6
-                  small.text-muted
-                    translate Created On
-                  .h4.text-lt {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-        .col-md-6
-          .panel
-            .panel-heading
-              span.h4.text-lt
-                translate Notes
-            .panel-body
-              form(@submit.prevent="validateBeforeSubmit")
-                .input-group
-                  input#content.form-control.input-sm(type="text" placeholder="Create a note" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
-                  span.input-group-btn
-                    button.btn.btn-sm.btn-success(type="submit")
-                      i.fa.fa-paper-plane
-                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('note.content') }}
-            ul.list-group.list-group-lg.no-bg.auto
-              li.list-group-item.row(v-for="reservoirNote in reservoir.notes")
-                .col-sm-9
+    .row
+      .col
+        .title-page
+          BtnAddNew(
+            :title="$gettext('Add Task')"
+            customClass="float-right"
+            v-on:click.native="openModal()"
+          )
+
+          h3.title-page {{ reservoir.name }}
+
+    // basic info
+    .row
+      .col-xs-12.col-sm-12.col-md-6
+        .basicinfo
+          b-card(
+            :title="$gettext('Basic Info')"
+            class="card-ui"
+          )
+            .row
+              .col-xs-12.col-sm-12.col-md-6
+                small.text-muted
+                  translate Source Type
+                h4 {{ getReservoirType(reservoir.water_source.type).label }}
+              .col-xs-12.col-sm-12.col-md-6
+                small.text-muted
+                  translate Capacity
+                h4 {{ reservoir.water_source.capacity }}
+
+              .col-xs-12.col-sm-12.col-md-6
+                small.text-muted
+                  translate Used In
+                h4(v-for="area in reservoir.installed_to_area")
+                  span.areatag {{ area.name }}
+
+              .col-xs-12.col-sm-12.col-md-6
+                small.text-muted
+                  translate Created On
+                h4 {{ reservoir.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+
+      .col-xs-12.col-sm-12.col-md-6
+        b-card(
+          :title="$gettext('Notes')"
+          class="card-ui"
+        )
+          .panel-body
+            b-form(@submit.prevent="validateBeforeSubmit")
+              .input-group
+                b-form-input#content.form-control.input-sm(
+                  type="text"
+                  placeholder="Create a note"
+                  v-validate="'required'"
+                  :class="{'input': true, 'text-danger': errors.has('note.content') }"
+                  v-model="note.content"
+                  name="note.content"
+                )
+                b-input-group-append
+                  b-button.btn.btn-sm.btn-success(type="submit")
+                    i.fa.fa-paper-plane
+                span.help-block.text-danger(
+                  v-show="errors.has('note.content')"
+                )
+                  | {{ errors.first('note.content') }}
+
+          b-list-group.list-notes
+            b-list-group-item(v-for="reservoirNote in reservoir.notes" :key="reservoirNote.uid")
+              .row
+                .col-xs-8.col-sm-8.col-md-9.col-lg-10
                   span {{ reservoirNote.content }}
-                  small.text-muted.clear.text-ellipsis {{ reservoirNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                .col-sm-3
-                  button.btn.btn-xs.btn-default.pull-right(v-on:click="deleteNote(reservoirNote.uid)")
+                    small.text-muted.clear.text-ellipsis
+                      |
+                      | {{ reservoirNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+
+                .col-xs-4.col-sm-4.col-md-3.col-lg-2
+                  button.btn.btn-xs.btn-default.text-center(
+                    v-on:click="deleteNote(reservoirNote.uid)"
+                  )
                     i.fa.fa-trash
-      .row
-        .task-list.col-xs-12
-          .panel
-            .panel-heading
-              span.h4.text-lt
-                translate Tasks
-            TasksList(:domain="'RESERVOIR'" :asset_id="reservoir.uid" :reload="reload")
+    .row
+      .col-12
+        b-card(
+          :title="$gettext('Tasks')"
+          class="card-ui"
+        )
+          TasksList(:domain="'RESERVOIR'" :asset_id="reservoir.uid" :reload="reload")
 </template>
 
 <script>
-import { StubReservoir, StubNote } from '../../stores/stubs'
-import { FindReservoirType } from '../../stores/helpers/farms/reservoir'
-import { mapActions } from 'vuex'
-import Modal from '../../components/modal.vue'
+import { mapActions } from 'vuex';
+import { StubReservoir, StubNote } from '../../stores/stubs';
+import { FindReservoirType } from '../../stores/helpers/farms/reservoir';
+import Modal from '../../components/modal.vue';
+import FarmReservoirTaskForm from './tasks/task-form.vue';
+import TasksList from './tasks/task-list.vue';
+import BtnAddNew from '../../components/common/btn-add-new.vue';
+import BtnCancel from '../../components/common/btn-cancel.vue';
+import BtnSave from '../../components/common/btn-save.vue';
+
 export default {
   name: 'Reservoir',
-  data () {
+  components: {
+    FarmReservoirTaskForm,
+    TasksList,
+    Modal,
+    BtnAddNew,
+    BtnCancel,
+    BtnSave,
+  },
+  data() {
     return {
       asset: 'Reservoir',
       loading: true,
@@ -81,20 +119,15 @@ export default {
       reservoir: Object.assign({}, StubReservoir),
       reservoirNotes: [],
       showModal: false,
-    }
+    };
   },
-  components: {
-    FarmReservoirTaskForm: () => import('./tasks/task-form.vue'),
-    TasksList: () => import('./tasks/task-list.vue'),
-    Modal
-  },
-  created () {
+  created() {
     this.getReservoirByUid(this.$route.params.id)
-      .then(({ data }) =>  {
-        this.loading = false
-        this.reservoir = data
+      .then(({ data }) => {
+        this.loading = false;
+        this.reservoir = data;
       })
-      .catch(error => console.log(error))
+      .catch(error => error);
   },
   methods: {
     ...mapActions([
@@ -102,42 +135,86 @@ export default {
       'createReservoirNotes',
       'deleteReservoirNote',
     ]),
-    closeModal () {
-      this.showModal = false
-      this.reload = !this.reload
+    closeModal() {
+      this.showModal = false;
+      this.reload = !this.reload;
     },
-    create () {
-      this.note.obj_uid = this.$route.params.id
+    create() {
+      this.note.obj_uid = this.$route.params.id;
       this.createReservoirNotes(this.note)
-        .then(data => {
-          this.reservoir = data
-          this.note.content = ''
-          this.$nextTick(() => this.$validator.reset())
+        .then((data) => {
+          this.reservoir = data;
+          this.note.content = '';
+          this.$nextTick(() => this.$validator.reset());
         })
-        .catch(({ data }) => this.message = data)
+        .catch(({ data }) => {
+          this.message = data;
+          return this.message;
+        });
     },
-    deleteNote(note_uid) {
-      this.note.obj_uid = this.$route.params.id
-      this.note.uid = note_uid
+    deleteNote(uidNote) {
+      this.note.obj_uid = this.$route.params.id;
+      this.note.uid = uidNote;
       this.deleteReservoirNote(this.note)
-        .then(data => this.reservoir = data)
-        .catch(({ data }) => this.message = data)
+        .then((data) => {
+          this.reservoir = data;
+          return this.reservoir;
+        })
+        .catch(({ data }) => {
+          this.message = data;
+          return this.message;
+        });
     },
     getReservoirType(key) {
-      return FindReservoirType(key)
+      return FindReservoirType(key);
     },
     openModal() {
-      this.data = {}
-      this.showModal = true
+      this.data = {};
+      this.showModal = true;
     },
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then((result) => {
         if (result) {
-          this.create()
+          this.create();
         }
-      })
+      });
     },
-  }
-}
+  },
+};
 </script>
 
+<style lang="scss" scoped>
+i.fa.fa-paper-plane {
+  text-align: center;
+}
+
+i.fas.fa-plus {
+  text-align: left;
+  width: 30px;
+}
+
+.title-page {
+  margin: 20px 0 30px 0;
+}
+
+.bottom-space {
+  padding-bottom: 60px;
+}
+
+.card-ui {
+  margin-bottom: 20px;
+
+  i {
+    width: 30px;
+  }
+
+  .see-all {
+    display: block;
+    margin-bottom: 15px;
+  }
+}
+
+.list-notes {
+  margin-top: 20px;
+}
+</style>

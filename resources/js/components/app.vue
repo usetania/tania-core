@@ -1,42 +1,70 @@
 <template lang="pug">
-  .app.app-header-fixed(:class="folded == true ? 'app-aside-folded': ''")
-    AppHeaderComponent(v-show="authenticated")
-    AppAsideComponent(:folded="folded" v-on:header-folded="setFolded" v-show="authenticated")
+  #app
+    .row.no-gutters(v-if="authenticated")
+      .col-md-3.col-lg-2.d-none.d-md-block
+        AppAsideComponent(:folded="folded" v-on:header-folded="setFolded" v-show="authenticated")
 
-    #content(role="main" :class="authenticated ? 'app-content': ''")
-      .app-content-body.app-content-full
-        .hbox.hbox-auto-xs.hbox-auto-sm.bg-light
+      .col-xs-12.col-sm-12.col-md-9.col-lg-10
+        .main-content(:style="{ 'min-height': `${window.height}px` }")
+          AppHeaderComponent(v-show="authenticated")
+
+          .app-content-body
+            router-view
+          AppFooterComponent(v-show="authenticated")
+
+    // When the user is not logged in
+    .row.no-gutters(v-else)
+      .col
+        .main-content(:style="{ 'min-height': `${window.height}px` }")
           router-view
-    AppFooterComponent(v-show="authenticated")
 </template>
 
 <script>
-import { event } from '../services/bus'
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'AppComponent',
-  data () {
-    return {
-      appReady: false,
-      folded: false
-    }
-  },
-  computed: {
-    ...mapGetters({
-      authenticated: 'IsUserAllowSeeNavigator'
-    })
-  },
   components: {
     AppHeaderComponent: () => import('./header.vue'),
     AppAsideComponent: () => import('./aside.vue'),
-    AppFooterComponent: () => import('./footer.vue')
+    AppFooterComponent: () => import('./footer.vue'),
   },
-
+  data() {
+    return {
+      appReady: false,
+      folded: false,
+      window: {
+        height: 0,
+      },
+    };
+  },
+  computed: {
+    ...mapGetters({
+      authenticated: 'IsUserAllowSeeNavigator',
+    }),
+  },
+  created() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  },
   methods: {
-    setFolded (payload) {
-      this.folded = !this.folded
-    }
-  }
-}
+    setFolded() {
+      this.folded = !this.folded;
+    },
+
+    // Calculating browser height
+    handleResize() {
+      this.window.height = window.innerHeight;
+    },
+  },
+};
 </script>
 
+<style lang="scss" scoped>
+.main-content {
+  background-color: #fcfcfb;
+}
+</style>

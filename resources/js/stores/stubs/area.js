@@ -7,5 +7,5 @@ export default {
   location: '',
   reservoir_id: '',
   farm_id: '',
-  photo: ''
-}
+  photo: '',
+};

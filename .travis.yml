@@ -1,12 +1,15 @@
 language: go
 
-dist: trusty
+dist: xenial
 
 go:
-  - 1.11
+  - "1.11.x"
+
+env:
+  - GO111MODULE=on
 
 node_js:
-  - 10
+  - 11
 
 addons:
   chrome: stable

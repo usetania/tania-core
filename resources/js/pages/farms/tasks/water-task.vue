@@ -1,10 +1,10 @@
 <template lang="pug">
   .upload-crop-task
     .modal-header
-      span.h4.font-bold
+      h4.font-bold
         translate Watering
     .modal-body
-      form(@submit.prevent="validateBeforeSubmit")
+      b-form(@submit.prevent="validateBeforeSubmit")
         .form-group
           label(for="type")
             translate Choose type of watering
@@ -22,63 +22,75 @@
               input(type="checkbox" name="selected crops" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('selected crops') }" v-model="task.crops" v-bind:value="crop.uid")
               i
               | {{ crop.inventory.name }}
-              .identifier-sm {{ crop.batch_id }}
+              |
+              |
+              span.identifier-sm {{ crop.batch_id }}
           span.help-block.text-danger(v-show="errors.has('selected crops')") {{ errors.first('selected crops') }}
         .form-group
-          button.btn.btn-success.pull-right(type="submit")
-            i.fa.fa-check
-            translate SAVE
-          button.btn.btn-default(style="cursor: pointer;" @click="$parent.$emit('close')")
-            i.fa.fa-close
-            translate Cancel
+          BtnCancel(v-on:click.native="$parent.$emit('close')")
+          BtnSave(customClass="float-right")
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { StubTask } from '../../../stores/stubs'
-import moment from 'moment-timezone'
+import { mapActions } from 'vuex';
+import moment from 'moment-timezone';
+import { StubTask } from '../../../stores/stubs';
+import BtnCancel from '../../../components/common/btn-cancel.vue';
+import BtnSave from '../../../components/common/btn-save.vue';
+
 export default {
-  name: "WaterTaskModal",
-  created () {
-    this.task.type = "PARTIAL"
-    this.task.crops = []
+  name: 'WaterTaskModal',
+  props: ['crops', 'area'],
+  components: {
+    BtnCancel,
+    BtnSave,
   },
-  data () {
+  data() {
     return {
       task: Object.assign({}, StubTask),
-    }
+    };
+  },
+  created() {
+    this.task.type = 'PARTIAL';
+    this.task.crops = [];
   },
   methods: {
     ...mapActions([
       'waterCrop',
     ]),
-    create () {
-      this.task.source_area_id = this.area.uid
-      this.task.watering_date = moment().format('YYYY-MM-DD HH:ss')
-      for (var i = 0; i < this.task.crops.length; i++) {
-        this.task.obj_uid = this.task.crops[i]
+    create() {
+      this.task.source_area_id = this.area.uid;
+      this.task.watering_date = moment().format('YYYY-MM-DD HH:ss');
+      for (let i = 0; i < this.task.crops.length; i += 1) {
+        this.task.obj_uid = this.task.crops[i];
         this.waterCrop(this.task)
           .then(() => this.$parent.$emit('close'))
-          .catch(() => this.$toasted.error('Error in water task submission'))
+          .catch(() => this.$toasted.error('Error in water task submission'));
       }
     },
-    typeChanged (type) {
+    typeChanged(type) {
       if (type === 'ALL') {
-        for (var i = 0; i < this.crops.length; i++) {
-          this.task.crops.push(this.crops[i].uid)
+        for (let i = 0; i < this.crops.length; i += 1) {
+          this.task.crops.push(this.crops[i].uid);
         }
       } else {
-        this.task.crops = []
+        this.task.crops = [];
       }
     },
-    validateBeforeSubmit () {
-      this.$validator.validateAll().then(result => {
+    validateBeforeSubmit() {
+      this.$validator.validateAll().then((result) => {
         if (result) {
-          this.create()
+          this.create();
         }
-      })
+      });
     },
   },
-  props: ['crops', 'area'],
-}
+};
 </script>
+
+<style lang="scss" scoped>
+i.fa.fa-check,
+i.fa.fa-close {
+  width: 30px;
+}
+</style>

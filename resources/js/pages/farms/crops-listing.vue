@@ -1,5 +1,6 @@
 <template lang="pug">
-  table.table.m-b
+.table-responsive.table-wrapper
+  table.table
     thead
       tr
         th
@@ -53,17 +54,24 @@
 </template>
 
 <script>
-import { FindContainer } from '../../stores/helpers/farms/crop'
+import { FindContainer } from '../../stores/helpers/farms/crop';
+
 export default {
-  name: "FarmCropsListing",
+  name: 'FarmCropsListing',
+  props: ['batch', 'crops', 'domain'],
   methods: {
-    editCropModal (crop) {
-      this.$emit('editCrop', crop)
+    editCropModal(crop) {
+      this.$emit('editCrop', crop);
     },
-    getCropContainer (key, count) {
-      return FindContainer(key).label + ((count != 1)? 's':'')
+    getCropContainer(key, count) {
+      return FindContainer(key).label + ((count !== 1) ? 's' : '');
     },
   },
-  props: ['batch', 'crops', 'domain'],
-}
+};
 </script>
+
+<style lang="scss" scoped>
+.table-wrapper {
+  margin-top: 20px;
+}
+</style>

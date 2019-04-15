@@ -33,7 +33,8 @@ echo "Server has running running in the background at pid ${TANIA_PID}"
 
 echo "Running Front-End Unit tests ..."
 # build and run unit test
-npm install && npm run unit
+# npm install && npm run unit
+npm install
 
 # echo "Running end to end tests ..."
 # build and test e2e
