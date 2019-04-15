@@ -37,11 +37,9 @@ export default {
   },
   props: {
     latitude: {
-      type: Number,
       default: -8.4960936,
     },
     longitude: {
-      type: Number,
       default: 115.2485298,
     },
   },

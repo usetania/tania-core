@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container-fluid
+  .container-fluid.container-intro
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
         .text-center
@@ -57,21 +57,23 @@
               span.help-block.text-danger(v-show="errors.has('capacity')")
                 | {{ errors.first('capacity') }}
             .form-group
-              button.btn.btn-addon.btn-primary.float-right(type="submit")
-                i.fas.fa-long-arrow-alt-right
-                translate Continue
-              router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroFarmCreate'}")
-                i.fas.fa-long-arrow-alt-left
-                translate Back
+              BtnContinue(title="Continue" customClass="float-right")
+              BtnBack(:route="{name: 'IntroFarmCreate'}")
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import { ReservoirTypes } from '../../stores/helpers/farms/reservoir';
 import { StubReservoir, StubMessage } from '../../stores/stubs';
+import BtnContinue from '../../components/common/btn-continue.vue';
+import BtnBack from '../../components/common/btn-back.vue';
 
 export default {
   name: 'ReservoirIntro',
+  components: {
+    BtnContinue,
+    BtnBack,
+  },
   data() {
     return {
       message: Object.assign({}, StubMessage),
@@ -121,3 +123,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.container-intro {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+</style>

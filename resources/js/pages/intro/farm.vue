@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container-fluid
+  .container-fluid.container-intro
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
         .text-center
@@ -106,10 +106,8 @@
                 )
                 span.help-block.text-danger(v-show="errors.has('city')")
                   | {{ errors.first('city') }}
-            .form-group.text-center
-              button.btn.btn-addon.btn-primary(type="submit")
-                i.fas.fa-long-arrow-alt-right
-                translate Continue
+            .form-group
+              BtnContinue(title="Continue" customClass="float-right")
 
 </template>
 
@@ -117,10 +115,12 @@
 import { mapActions, mapGetters } from 'vuex';
 import Mapbox from '../../components/mapbox.vue';
 import { StubFarm, StubMessage } from '../../stores/stubs';
+import BtnContinue from '../../components/common/btn-continue.vue';
 
 export default {
   components: {
     Mapbox,
+    BtnContinue,
   },
 
   data() {
@@ -178,5 +178,10 @@ export default {
 #map {
   width: 100%;
   height: 500px;
+}
+
+.container-intro {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 </style>

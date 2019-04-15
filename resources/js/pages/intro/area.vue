@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container-fluid
+  .container-fluid.container-intro
     .row
       .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
         .text-center
@@ -119,12 +119,8 @@
                     small.text-muted (if any)
                   UploadComponent(@fileSelelected="fileSelelected")
             .form-group
-              button.btn.btn-addon.btn-success.float-right(type="submit")
-                i.fas.fa-long-arrow-alt-right
-                translate Finish Setup
-              router-link#back.btn.btn-addon.btn-default(:to="{name: 'IntroReservoirCreate'}")
-                i.fas.fa-long-arrow-alt-left
-                translate Back
+              BtnContinue(title="Finish Setup" customClass="float-right")
+              BtnBack(:route="{name: 'IntroReservoirCreate'}")
 </template>
 
 <script>
@@ -132,11 +128,15 @@ import { mapActions, mapGetters } from 'vuex';
 import { AreaTypes, AreaLocations, AreaSizeUnits } from '../../stores/helpers/farms/area';
 import { StubArea, StubMessage } from '../../stores/stubs';
 import UploadComponent from '../../components/upload.vue';
+import BtnContinue from '../../components/common/btn-continue.vue';
+import BtnBack from '../../components/common/btn-back.vue';
 
 export default {
   name: 'AreaIntro',
   components: {
     UploadComponent,
+    BtnContinue,
+    BtnBack,
   },
   data() {
     return {
@@ -218,3 +218,11 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.container-intro {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+</style>
+

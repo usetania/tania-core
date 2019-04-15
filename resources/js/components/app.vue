@@ -15,7 +15,7 @@
     // When the user is not logged in
     .row.no-gutters(v-else)
       .col
-        .main-content(:style="{ 'height': `${window.height}px` }")
+        .main-content(:style="{ 'min-height': `${window.height}px` }")
           router-view
 </template>
 

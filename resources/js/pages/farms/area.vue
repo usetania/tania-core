@@ -19,12 +19,7 @@
           v-on:click.native="openModal()"
         )
 
-        a#waterAreaForm.btn.btn-sm.btn-info(
-          v-if="areaCrops.length > 0" style="cursor: pointer;"
-          @click="showWaterTaskModal = true"
-        )
-          i.fas.fa-tint
-          translate Watering
+        BtnWatering(v-if="areaCrops.length > 0" v-on:click.native="showWaterTaskModal")
 
     .cards-wrapper
       .row
@@ -107,6 +102,7 @@ import { StubArea, StubNote } from '../../stores/stubs';
 import Modal from '../../components/modal.vue';
 import noImage from '../../../images/no-img.png';
 import BtnAddNew from '../../components/common/btn-add-new.vue';
+import BtnWatering from '../../components/common/btn-watering.vue';
 import FarmAreaTaskForm from './tasks/task-form.vue';
 import FarmCropsListing from './crops-listing.vue';
 import TasksList from './tasks/task-list.vue';
@@ -121,6 +117,7 @@ export default {
     WaterTaskModal,
     Modal,
     BtnAddNew,
+    BtnWatering,
   },
   data() {
     return {
