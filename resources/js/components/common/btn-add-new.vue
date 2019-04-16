@@ -5,7 +5,7 @@ b-button(
   :class="customClass"
 )
   i.fa.fa-plus
-  | {{ this.title }}
+  | {{ title }}
 </template>
 
 <script>

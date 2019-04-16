@@ -119,7 +119,7 @@
                     small.text-muted (if any)
                   UploadComponent(@fileSelelected="fileSelelected")
             .form-group
-              BtnContinue(title="Finish Setup" customClass="float-right")
+              BtnContinue(:title="$gettext('Finish Setup')" customClass="float-right")
               BtnBack(:route="{name: 'IntroReservoirCreate'}")
 </template>
 

@@ -83,7 +83,8 @@
                   | {{ errors.first('latitude') }}
             .form-row.form-group
               .col
-                label#label-country(for="country") Country
+                label#label-country(for="country")
+                  translate Country
                 select.form-control#country(
                   v-validate="'required'"
                   :class="{'input': true, 'text-danger': errors.has('country') }"
@@ -107,7 +108,7 @@
                 span.help-block.text-danger(v-show="errors.has('city')")
                   | {{ errors.first('city') }}
             .form-group
-              BtnContinue(title="Continue" customClass="float-right")
+              BtnContinue(:title="$gettext('Continue')" customClass="float-right")
 
 </template>
 

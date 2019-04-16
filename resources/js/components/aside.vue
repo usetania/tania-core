@@ -5,7 +5,7 @@ aside#aside
 
   b-nav(vertical="vertical")
     AsideItem(
-      title="Dashboard"
+      :title="$gettext('Dashboard')"
       fontawesome="fa fa-home"
       :routeName="{ name: 'Home' }"
       :isActive="homeActive"
@@ -13,7 +13,7 @@ aside#aside
     )
 
     AsideItem(
-      title="Reservoirs"
+      :title="$gettext('Reservoirs')"
       fontawesome="fa fa-tint"
       :routeName="{ name: 'FarmReservoirs' }"
       :isActive="reservoirsActive"
@@ -21,7 +21,7 @@ aside#aside
     )
 
     AsideItem(
-      title="Areas"
+      :title="$gettext('Areas')"
       fontawesome="fa fa-grip-horizontal"
       :routeName="{ name: 'FarmAreas' }"
       :isActive="areasActive"
@@ -29,7 +29,7 @@ aside#aside
     )
 
     AsideItem(
-      title="Materials"
+      :title="$gettext('Materials')"
       fontawesome="fa fa-archive"
       :routeName="{ name: 'InventoriesMaterials' }"
       :isActive="materialsActive"
@@ -37,7 +37,7 @@ aside#aside
     )
 
     AsideItem(
-      title="Crops"
+      :title="$gettext('Crops')"
       fontawesome="fa fa-leaf"
       :routeName="{ name: 'FarmCrops' }"
       :isActive="cropsActive"
@@ -45,7 +45,7 @@ aside#aside
     )
 
     AsideItem(
-      title="Tasks"
+      :title="$gettext('Tasks')"
       fontawesome="fa fa-clipboard"
       :routeName="{ name: 'Task' }"
       :isActive="tasksActive"
@@ -53,7 +53,7 @@ aside#aside
     )
 
     AsideItem(
-      title="Account"
+      :title="$gettext('Account')"
       fontawesome="fa fa-user"
       :routeName="{ name: 'Account' }"
       :isActive="accountActive"
@@ -155,6 +155,7 @@ aside#aside {
 
   .brand-image {
     padding: 15px 0;
+    margin-bottom: 30px;
 
     img {
       width: 100px;

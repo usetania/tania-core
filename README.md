@@ -1,10 +1,10 @@
 <div align="center">
-    <img src="logo.png" alt="Tania Farm Management System" width="200">
-    <h1>Farm Management Software</h1>
+    <img src="resources/images/logobig.png" alt="Tania The Farmer Journal" width="200">
+    <h1>The Farmer Journal</h1>
     <img src="https://opencollective.com/tania/tiers/backer/badge.svg?label=backer&color=brightgreen" />
     <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
     <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
-    <img src="https://img.shields.io/badge/semver-1.6.0-green.svg?maxAge=2592000" alt="semver">
+    <img src="https://img.shields.io/badge/semver-1.7.0-green.svg?maxAge=2592000" alt="semver">
     <a href="https://travis-ci.com/Tanibox/tania-core">
       <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
     </a>
@@ -14,7 +14,7 @@
 
 **Tania** is a free and open source farm management software. You can manage your farm areas, farm reservoirs, farm tasks, inventories, and the crop growing progress. It is designed for any type of farms.
 
-Download Tania for Windows x64 and Linux x64 on [the release page](https://github.com/Tanibox/tania-core/releases/tag/1.6.0).
+Download Tania for Windows x64 and Linux x64 on [the release page](https://github.com/Tanibox/tania-core/releases/tag/1.7.0).
 
 ![Screenshot](screenshot.PNG)
 
@@ -46,18 +46,15 @@ If your OS is not listed on our releases page, you have to build Tania for your 
 - [NodeJS](https://nodejs.org/en/) 8 or 10
 
 ### Building Instructions
-1. Make sure you have installed `golang/dep`
-    - https://golang.github.io/dep/docs/installation.html
-    - https://gist.github.com/subfuzion/12342599e26f5094e4e2d08e9d4ad50d
-2. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
-3. Checkout the current stable version by using `git checkout tags/1.7.0 -b v1.7.0`
-4. From the project root, call `go get` to install the Go dependencies.
-5. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
-6. Issue `npm install` to install Vue.js dependencies.
-7. To build the Vue.js, just run `npm run dev` for development purpose or `npm run prod` for production purpose.
-8. Compile the source code with `go build`. It will produces `tania-core.exe` (on Windows) or `tania-core` (on Linux and OSX.)
-9. Run the program from Terminal by issuing `./tania-core`, or from Windows Command Prompt by issuing `.\tania-core.exe`.
-10. The default username and password are `tania / tania`.
+1. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
+2. Checkout the current stable version by using `git checkout tags/1.7.0 -b v1.7.0`
+3. From the project root, call `go get` to install the Go dependencies.
+4. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
+5. Issue `npm install` to install Vue.js dependencies.
+6. To build the Vue.js, just run `npm run dev` for development purpose or `npm run prod` for production purpose.
+7. Compile the source code with `go build`. It will produces `tania-core.exe` (on Windows) or `tania-core` (on Linux and OSX.)
+8. Run the program from Terminal by issuing `./tania-core`, or from Windows Command Prompt by issuing `.\tania-core.exe`.
+9. The default username and password are `tania / tania`.
 
 ### Database Engine
 

@@ -6,7 +6,7 @@ b-button(
   :class="customClass"
 )
   i.fa.fa-long-arrow-alt-right
-  translate {{ title }}
+  | {{ title }}
 </template>
 
 <script>

@@ -1,9 +1,9 @@
-import FarmArea from './farms/area'
-import FarmCrop from './farms/crop'
-import FarmFarm from './farms/farm'
-import FarmInventories from './farms/inventories'
-import FarmReservoir from './farms/reservoir'
-import Task from './farms/task'
+import FarmArea from './farms/area';
+import FarmCrop from './farms/crop';
+import FarmFarm from './farms/farm';
+import FarmInventories from './farms/inventories';
+import FarmReservoir from './farms/reservoir';
+import Task from './farms/task';
 
 const state = Object.assign({},
   FarmArea.state,
@@ -11,8 +11,7 @@ const state = Object.assign({},
   FarmFarm.state,
   FarmInventories.state,
   FarmReservoir.state,
-  Task.state
-)
+  Task.state);
 
 const getters = Object.assign({},
   FarmArea.getters,
@@ -20,8 +19,7 @@ const getters = Object.assign({},
   FarmFarm.getters,
   FarmInventories.getters,
   FarmReservoir.getters,
-  Task.getters
-)
+  Task.getters);
 
 const actions = Object.assign({},
   FarmArea.actions,
@@ -29,8 +27,7 @@ const actions = Object.assign({},
   FarmFarm.actions,
   FarmInventories.actions,
   FarmReservoir.actions,
-  Task.actions
-)
+  Task.actions);
 
 const mutations = Object.assign({},
   FarmArea.mutations,
@@ -38,9 +35,8 @@ const mutations = Object.assign({},
   FarmFarm.mutations,
   FarmInventories.mutations,
   FarmReservoir.mutations,
-  Task.mutations
-)
+  Task.mutations);
 
 export default {
-  state, getters, actions, mutations
-}
+  state, getters, actions, mutations,
+};

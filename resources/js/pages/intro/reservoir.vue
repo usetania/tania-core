@@ -57,7 +57,7 @@
               span.help-block.text-danger(v-show="errors.has('capacity')")
                 | {{ errors.first('capacity') }}
             .form-group
-              BtnContinue(title="Continue" customClass="float-right")
+              BtnContinue(:title="$gettext('Continue')" customClass="float-right")
               BtnBack(:route="{name: 'IntroFarmCreate'}")
 </template>
 
