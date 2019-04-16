@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-15 20:53+0800\n"
+"POT-Creation-Date: 2019-04-16 14:10+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,12 +17,19 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: resources/js/components/common/aside-item.vue:3
-msgid "{{ this.title }}"
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:19
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:25
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:37
+#: resources/js/pages/inventories/materials-form-potharvest.vue:19
+#: resources/js/pages/inventories/materials-form-seed.vue:37
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:20
+msgid "€"
 msgstr ""
 
-#: resources/js/components/common/btn-continue.vue:3
-msgid "{{ title }}"
+#: resources/js/components/aside.vue:56
+msgid "Account"
 msgstr ""
 
 #: resources/js/pages/settings/account.vue:6
@@ -33,16 +40,37 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
+#: resources/js/pages/farms/areas.vue:12
+msgid "Add Area"
+msgstr ""
+
+#: resources/js/pages/farms/reservoirs.vue:12
+msgid "Add Reservoir"
+msgstr ""
+
+#: resources/js/pages/home.vue:12
+msgid "At A Glance"
+msgstr ""
+
 #: resources/js/pages/farms/crops-form.vue:5
 msgid "Add a New Batch"
+msgstr ""
+
+#: resources/js/pages/inventories/materials.vue:13
+msgid "Add Material"
 msgstr ""
 
 #: resources/js/pages/inventories/materials-form.vue:8
 msgid "Add Material to Inventory"
 msgstr ""
 
+#: resources/js/pages/intro/area.vue:19
 #: resources/js/pages/farms/areas-form.vue:5
 msgid "Add New Area"
+msgstr ""
+
+#: resources/js/pages/farms/crops.vue:20
+msgid "Add New Batch"
 msgstr ""
 
 #: resources/js/pages/farms/reservoirs-form.vue:5
@@ -61,7 +89,10 @@ msgstr ""
 msgid "Add Notes"
 msgstr ""
 
+#: resources/js/pages/farms/area.vue:18
 #: resources/js/pages/farms/crop-notes.vue:31
+#: resources/js/pages/farms/reservoir.vue:9
+#: resources/js/pages/tasks/task.vue:15
 msgid "Add Task"
 msgstr ""
 
@@ -87,6 +118,10 @@ msgstr ""
 #: resources/js/pages/farms/crop.vue:245 resources/js/pages/farms/crop.vue:278
 #: resources/js/pages/farms/tasks/task-list.vue:60
 msgid "Apply"
+msgstr ""
+
+#: resources/js/pages/farms/crops.vue:25
+msgid "Archives"
 msgstr ""
 
 #: resources/js/pages/farms/crop.vue:229
@@ -121,6 +156,7 @@ msgstr ""
 msgid "Area Size"
 msgstr ""
 
+#: resources/js/components/aside.vue:24
 #: resources/js/pages/farms/areas.vue:6 resources/js/pages/home.vue:19
 msgid "Areas"
 msgstr ""
@@ -143,9 +179,15 @@ msgstr ""
 msgid "Back to Crop Batches"
 msgstr ""
 
+#: resources/js/pages/farms/area.vue:28
 #: resources/js/pages/farms/crop-notes.vue:15
 #: resources/js/pages/farms/crop.vue:24
+#: resources/js/pages/farms/reservoir.vue:21
 msgid "Basic Info"
+msgstr ""
+
+#: resources/js/pages/farms/crops.vue:16
+msgid "Batch"
 msgstr ""
 
 #: resources/js/pages/farms/crops-listing.vue:10
@@ -172,6 +214,10 @@ msgstr ""
 #: resources/js/pages/farms/reservoir.vue:25
 #: resources/js/pages/farms/reservoirs.vue:32
 msgid "Capacity"
+msgstr ""
+
+#: resources/js/pages/intro/reservoir.vue:54
+msgid "Capacity (litre)"
 msgstr ""
 
 #: resources/js/pages/farms/tasks/task-list.vue:11
@@ -224,12 +270,23 @@ msgstr ""
 msgid "Confirm Password"
 msgstr ""
 
+#: resources/js/pages/intro/farm.vue:110
+#: resources/js/pages/intro/reservoir.vue:60
 #: resources/js/pages/farms/create.vue:72
 msgid "Continue"
 msgstr ""
 
+#: resources/js/pages/intro/farm.vue:87
+msgid "Country"
+msgstr ""
+
+#: resources/js/pages/intro/farm.vue:21
 #: resources/js/pages/farms/create.vue:13
 msgid "Create Farm"
+msgstr ""
+
+#: resources/js/pages/intro/reservoir.vue:19
+msgid "Create Reservoir"
 msgstr ""
 
 #: resources/js/pages/farms/reservoir.vue:33
@@ -259,6 +316,7 @@ msgstr ""
 msgid "Crop: Add New Task for"
 msgstr ""
 
+#: resources/js/components/aside.vue:40
 #: resources/js/pages/farms/crops.vue:6
 msgid "Crops"
 msgstr ""
@@ -267,8 +325,17 @@ msgstr ""
 msgid "Current Quantity"
 msgstr ""
 
+#: resources/js/pages/farms/area.vue:58
+msgid "Current Status"
+msgstr ""
+
+#: resources/js/components/aside.vue:8
 #: resources/js/pages/home.vue:6
 msgid "Dashboard"
+msgstr ""
+
+#: resources/js/components/aside.vue:16
+msgid "Reservoirs"
 msgstr ""
 
 #: resources/js/pages/farms/crops-listing.vue:16
@@ -319,6 +386,10 @@ msgstr ""
 
 #: resources/js/pages/farms/tasks/task-label.vue:7
 msgid "FINANCE"
+msgstr ""
+
+#: resources/js/pages/intro/area.vue:122
+msgid "Finish Setup"
 msgstr ""
 
 #: resources/js/pages/farms/crop.vue:147
@@ -381,6 +452,10 @@ msgstr ""
 msgid "Initial Quantity"
 msgstr ""
 
+#: resources/js/pages/auth/login.vue:23
+msgid "Input your username here"
+msgstr ""
+
 #: resources/js/pages/farms/tasks/task-form.vue:70
 msgid "Inventory"
 msgstr ""
@@ -427,6 +502,7 @@ msgstr ""
 msgid "Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on."
 msgstr ""
 
+#: resources/js/components/aside.vue:32
 #: resources/js/pages/inventories/materials.vue:6
 msgid "Materials"
 msgstr ""
@@ -481,9 +557,11 @@ msgstr ""
 msgid "NORMAL"
 msgstr ""
 
+#: resources/js/pages/farms/area.vue:68
 #: resources/js/pages/farms/activities/dump-crop-task.vue:29
 #: resources/js/pages/farms/activities/harvest-crop-task.vue:68
 #: resources/js/pages/farms/crop-notes.vue:41
+#: resources/js/pages/farms/reservoir.vue:47
 msgid "Notes"
 msgstr ""
 
@@ -548,6 +626,13 @@ msgstr ""
 
 #: resources/js/pages/farms/tasks/task-label.vue:2
 msgid "PEST CONTROL"
+msgstr ""
+
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:19
+#: resources/js/pages/inventories/materials-form-other.vue:25
+#: resources/js/pages/inventories/materials-form-potharvest.vue:25
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:26
+msgid "Pieces"
 msgstr ""
 
 #: resources/js/pages/inventories/materials-form-plant.vue:13
@@ -767,6 +852,11 @@ msgstr ""
 msgid "Task Category"
 msgstr ""
 
+#: resources/js/pages/home.vue:72
+#: resources/js/pages/farms/crop-notes.vue:24
+#: resources/js/pages/farms/area.vue:91
+#: resources/js/pages/farms/reservoir.vue:86
+#: resources/js/components/aside.vue:48
 #: resources/js/pages/home.vue:33 resources/js/pages/tasks/task.vue:12
 msgid "Tasks"
 msgstr ""
@@ -889,6 +979,10 @@ msgstr ""
 msgid "Watering"
 msgstr ""
 
+#: resources/js/pages/home.vue:41
+msgid "What is On Production"
+msgstr ""
+
 #: resources/js/pages/farms/tasks/water-task.vue:25
 msgid "Which crop do you want to water?"
 msgstr ""
@@ -896,4 +990,12 @@ msgstr ""
 #: resources/js/pages/farms/tasks/crop-task-form.vue:28
 #: resources/js/pages/farms/tasks/task-form.vue:39
 msgid "Yes"
+msgstr ""
+
+#: resources/js/pages/home.vue:13
+msgid "You are using Tania 1.7 right now"
+msgstr ""
+
+#: resources/js/pages/auth/login.vue:37
+msgid "Your password here"
 msgstr ""

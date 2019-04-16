@@ -1,7 +1,7 @@
 <template lang="pug">
 b-nav-item(:to="this.routeName" :class="isActive ? 'active' : ''")
   i(:class="this.fontawesome")
-  translate {{ this.title }}
+  | {{ this.title }}
 </template>
 
 <script>
