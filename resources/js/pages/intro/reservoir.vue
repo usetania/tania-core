@@ -126,6 +126,7 @@ export default {
 
 <style lang="scss" scoped>
 .container-intro {
+  background-color: #f6f8f8;
   padding-top: 20px;
   padding-bottom: 20px;
 }

@@ -19,12 +19,7 @@
           :title="$gettext('Add New Area')"
         )
           b-card-text
-            translate
-              | Area is a space where you grow your plants.
-              |
-              | It could be a seeding tray, a garden bed, or a pot or anything
-              |
-              | that describes the different physical locations in your facility.
+            translate Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a pot or anything that describes the different physical locations in your facility.
           b-form(@submit.prevent="validateBeforeSubmit")
             .line.line-dashed.b-b.line-lg
             .form-row
@@ -221,6 +216,7 @@ export default {
 
 <style lang="scss" scoped>
 .container-intro {
+  background-color: #f6f8f8;
   padding-top: 20px;
   padding-bottom: 20px;
 }

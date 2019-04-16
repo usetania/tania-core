@@ -15,7 +15,7 @@
     // When the user is not logged in
     .row.no-gutters(v-else)
       .col
-        .main-content(:style="{ 'min-height': `${window.height}px` }")
+        .main-content(:style="{ 'height': `${window.height}px` }")
           router-view
 </template>
 
@@ -65,6 +65,6 @@ export default {
 
 <style lang="scss" scoped>
 .main-content {
-  background-color: #fcfcfb;
+  background-color: #f6f8f8;
 }
 </style>
