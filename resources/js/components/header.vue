@@ -1,5 +1,5 @@
 <template lang="pug">
-  b-navbar(toggleable="lg" type="light" variant="light")
+  b-navbar(toggleable="lg" type="light" variant="white")
     b-navbar-brand(href="/")
       img.mobile-brand.d-md-none(src="../../images/logobig.png" alt="Tania Logo")
 
@@ -199,5 +199,9 @@ i.fa.fa-power-off {
   text-align: left;
   margin-right: 10px;
   width: 20px;
+}
+
+.bg-white {
+  background-color: #fcfcfc !important;
 }
 </style>

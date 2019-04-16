@@ -135,14 +135,6 @@ msgid "AREA"
 msgstr ""
 
 #: resources/js/pages/intro/area.vue:19
-msgid ""
-"Area is a space where you grow your plants.\n"
-"            \n"
-"            It could be a seeding tray, a garden bed, or a pot or anything\n"
-"            \n"
-"            that describes the different physical locations in your facility."
-msgstr ""
-
 #: resources/js/pages/farms/areas-form.vue:8
 msgid "Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a pot or anything that describes the different physical locations in your facility."
 msgstr ""
