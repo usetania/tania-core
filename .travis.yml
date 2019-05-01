@@ -1,12 +1,15 @@
 language: go
 
-dist: trusty
+dist: xenial
 
 go:
-  - 1.11
+  - "1.11.x"
+
+env:
+  - GO111MODULE=on
 
 node_js:
-  - 10
+  - 11
 
 addons:
   chrome: stable
@@ -36,17 +39,13 @@ cache:
 
 before_install:
   - go get -u github.com/bookerzzz/gocovmerge
-  - go get -u github.com/golang/dep/cmd/dep
   - wget -q "https://releases.linaro.org/components/toolchain/binaries/6.4-2017.11/arm-linux-gnueabihf/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz"
   - tar xJf gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz
   - export PATH=$(pwd)/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH
   - arm-linux-gnueabihf-gcc --version
-  - bash scripts/fetch_osxcross.sh
-  - export PATH=~/osx_tools/bin:$PATH
-  - o64-clang --version && o64-clang++ --version
 
 install:
-  - dep ensure
+  - go get
   - npm install -g npm@latest
   - yarn
 

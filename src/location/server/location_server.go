@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"sort"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/pariz/gountries"
 )
 

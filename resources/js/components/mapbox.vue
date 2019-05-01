@@ -11,95 +11,100 @@
 </template>
 
 <script>
-import L from 'leaflet'
-import Vue2Leaflet from 'vue2-leaflet'
-import { map } from 'bluebird';
+import L from 'leaflet';
+import Vue2Leaflet from 'vue2-leaflet';
+
+const iconRetina = require('../../images/marker-icon-2x.png');
+const iconMarker = require('../../images/marker-icon.png');
+const iconShadow = require('../../images/marker-shadow.png');
+
 // Build icon assets.
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.imagePath = ''
+/* eslint no-underscore-dangle: ["error", { "allow": ["_getIconUrl"] }] */
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.imagePath = '';
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('../../images/marker-icon-2x.png'),
-  iconUrl: require('../../images/marker-icon.png'),
-  shadowUrl: require('../../images/marker-shadow.png')
-})
+  iconRetinaUrl: iconRetina,
+  iconUrl: iconMarker,
+  shadowUrl: iconShadow,
+});
 
 export default {
-  name: "MapboxComponent",
-  data () {
-    return {
-      location: [-8.4960936, 115.2485298]
-    }
-  },
+  name: 'MapboxComponent',
   components: {
     'v-map': Vue2Leaflet.Map,
     'v-tile-layer': Vue2Leaflet.TileLayer,
-    'v-marker': Vue2Leaflet.Marker
+    'v-marker': Vue2Leaflet.Marker,
   },
   props: {
     latitude: {
-      default:-8.4960936,
+      default: -8.4960936,
     },
     longitude: {
-      default: 115.2485298
-    }
+      default: 115.2485298,
+    },
+  },
+  data() {
+    return {
+      location: [-8.4960936, 115.2485298],
+    };
   },
   // watcher props if the props value is not equal location state
   // whe need to change the location data from the props
-  watch : {
-    latitude (value, before) {
+  watch: {
+    latitude(value) {
       if (value && value !== this.location[0] && this.isFloat(value)) {
-        this.location = [parseFloat(value), parseFloat(this.location[1])]
+        this.location = [parseFloat(value), parseFloat(this.location[1])];
       }
     },
-    longitude (value, before) {
+    longitude(value) {
       if (value && value !== this.location[1] && this.isFloat(value)) {
-        this.location = [parseFloat(this.location[0]), parseFloat(value)]
+        this.location = [parseFloat(this.location[0]), parseFloat(value)];
       }
-    }
+    },
   },
-  created () {
+  created() {
     this.location = Array.from([
       this.latitude !== '' ? parseFloat(this.latitude) : -8.4960936,
-      this.longitude !== '' ? parseFloat(this.longitude) : 115.2485298
-    ])
+      this.longitude !== '' ? parseFloat(this.longitude) : 115.2485298,
+    ]);
   },
-  mounted () {
-    this.$refs.map.mapObject.on('click', this.onMapClick)
+  mounted() {
+    this.$refs.map.mapObject.on('click', this.onMapClick);
   },
 
   methods: {
-    onMapClick (e) {
-      this.location = [e.latlng.lat, e.latlng.lng]
-      this.publish()
+    onMapClick(e) {
+      this.location = [e.latlng.lat, e.latlng.lng];
+      this.publish();
     },
 
     // publish the change event, so the parent component can trigger and catch the data
-    publish () {
+    publish() {
       this.$emit('change', {
         latitude: this.location[0],
-        longitude: this.location[1]
-      })
+        longitude: this.location[1],
+      });
     },
 
-    findMe () {
+    findMe() {
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
+        navigator.geolocation.getCurrentPosition((position) => {
           this.location = [
             position.coords.latitude,
-            position.coords.longitude
-          ]
-          this.publish()
-        }, error => console.log(error))
+            position.coords.longitude,
+          ];
+          this.publish();
+        }, error => error);
       }
     },
 
-    isFloat (value) {
-      let regexp = /^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$/
-      return value.search(regexp) === 0
-    }
+    isFloat(value) {
+      const regexp = /^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$/;
+      return value.search(regexp) === 0;
+    },
 
-  }
-}
+  },
+};
 </script>
 
 
@@ -111,5 +116,8 @@ export default {
     margin-top: 10px;
     height: 400px;
     width: 100%;
+  }
+  #label-location {
+    margin-right: 20px;
   }
 </style>

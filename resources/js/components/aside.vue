@@ -1,73 +1,165 @@
 <template lang="pug">
-  aside#aside.app-aside.hidden-xs.bg-dark
-    .aside-wrap
-      .navi-wrap
-        nav.navi.clearfix
-          ul.nav
-            aside-item-component
-              router-link(:to="{ name: 'Home' }")
-                i.fa.fa-home
-                span
-                  translate Dashboard
-            aside-item-component
-              a.auto#production(@click.prevent="")
-                span.pull-right.text-muted
-                  i.fa.fa-fw.fa-angle-right.text
-                  i.fa.fa.fw.fa-angle-down.text-active
-                i.fa.fa-leaf
-                span Production
-              slot(name="item")
-                ul.nav.nav-sub.dk
-                  li: router-link#areas(:to="{name: 'FarmAreas'}")
-                    span
-                      translate Areas
-                  li: router-link#crops(:to="{name: 'FarmCrops'}")
-                    span
-                      translate Crops
-                  li: router-link#reservoirs(:to="{name: 'FarmReservoirs'}")
-                    span
-                      translate Reservoirs
-            aside-item-component
-              router-link#tasks(:to="{name: 'Task'}")
-                i.fa.fa-clipboard
-                span
-                  translate Tasks
-            aside-item-component
-              a#inventories.auto(@click.prevent="")
-                span.pull-right.text-muted
-                  i.fa.fa-fw.fa-angle-right.text
-                  i.fa.fa.fw.fa-angle-down.text-active
-                i.fa.fa-archive
-                span
-                  translate Inventories
-              slot(name="item")
-                ul.nav.nav-sub.dk
-                  li: router-link#materials(:to="{name: 'InventoriesMaterials'}")
-                    span
-                      translate Materials
-            //li.hidden-folded.padder.m-t.m-b-sm.text-muted.text-xs
-              span Settings
-            aside-item-component
-              router-link#account(:to="{ name: 'Account' }")
-                i.fa.fa-user
-                span
-                  translate Account
+aside#aside
+  .brand-image.text-center
+    img(src="../../images/logo.png" alt="Tania Logo")
+
+  b-nav(vertical="vertical")
+    AsideItem(
+      :title="$gettext('Dashboard')"
+      fontawesome="fa fa-home"
+      :routeName="{ name: 'Home' }"
+      :isActive="homeActive"
+      v-on:click.native="homeClickHandler"
+    )
+
+    AsideItem(
+      :title="$gettext('Reservoirs')"
+      fontawesome="fa fa-tint"
+      :routeName="{ name: 'FarmReservoirs' }"
+      :isActive="reservoirsActive"
+      v-on:click.native="reservoirsClickHandler"
+    )
+
+    AsideItem(
+      :title="$gettext('Areas')"
+      fontawesome="fa fa-grip-horizontal"
+      :routeName="{ name: 'FarmAreas' }"
+      :isActive="areasActive"
+      v-on:click.native="areasClickHandler"
+    )
+
+    AsideItem(
+      :title="$gettext('Materials')"
+      fontawesome="fa fa-archive"
+      :routeName="{ name: 'InventoriesMaterials' }"
+      :isActive="materialsActive"
+      v-on:click.native="materialsClickHandler"
+    )
+
+    AsideItem(
+      :title="$gettext('Crops')"
+      fontawesome="fa fa-leaf"
+      :routeName="{ name: 'FarmCrops' }"
+      :isActive="cropsActive"
+      v-on:click.native="cropsClickHandler"
+    )
+
+    AsideItem(
+      :title="$gettext('Tasks')"
+      fontawesome="fa fa-clipboard"
+      :routeName="{ name: 'Task' }"
+      :isActive="tasksActive"
+      v-on:click.native="tasksClickHandler"
+    )
+
+    AsideItem(
+      :title="$gettext('Account')"
+      fontawesome="fa fa-user"
+      :routeName="{ name: 'Account' }"
+      :isActive="accountActive"
+      v-on:click.native="accountClickHandler"
+    )
 </template>
 
 <script>
-import AsideItemComponent from './aside-item.vue'
+import AsideItem from './common/aside-item.vue';
+
 export default {
   name: 'AppAsideComponent',
   components: {
-    AsideItemComponent
+    AsideItem,
   },
-  props: {
-    folded: { type: Boolean, default: false }
+  data() {
+    return {
+      homeActive: true,
+      reservoirsActive: false,
+      areasActive: false,
+      materialsActive: false,
+      cropsActive: false,
+      tasksActive: false,
+      accountActive: false,
+    };
   },
   methods: {
-    setFolded () {
-      this.$emit('header-folded')
+    homeClickHandler() {
+      this.homeActive = true;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    reservoirsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = true;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    areasClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = true;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    materialsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = true;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    cropsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = true;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    tasksClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = true;
+      this.accountActive = false;
+    },
+    accountClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = true;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+aside#aside {
+  background-color: #513969;
+  height: 100%;
+
+  .brand-image {
+    padding: 15px 0;
+    margin-bottom: 30px;
+
+    img {
+      width: 100px;
     }
   }
 }
-</script>
+</style>

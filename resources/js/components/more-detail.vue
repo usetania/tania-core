@@ -15,16 +15,16 @@
 <script>
 export default {
   name: 'MoreDetail',
-  data () {
+  props: ['description'],
+  data() {
     return {
       clicked: false,
-    }
+    };
   },
   methods: {
-    toggle () {
-      this.clicked = !this.clicked
+    toggle() {
+      this.clicked = !this.clicked;
     },
   },
-  props: ['description'],
-}
+};
 </script>

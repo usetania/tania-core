@@ -34,5 +34,5 @@
 export default {
   name: 'TaskLabel',
   props: ['type', 'task'],
-}
+};
 </script>

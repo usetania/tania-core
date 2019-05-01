@@ -1,56 +1,77 @@
 <template lang="pug">
-  .container.init.col-md-4.col-md-offset-4
-    a.navbar-brand.block.m-b.m-t.text-center
-      img(src="../../../images/logobig.png")
-
-    .m-b-lg
-      .wrapper
-        .panel.panel-default
-          .panel-body
-            form(@submit.prevent="validateBeforeSubmit")
-              .form-group(:class="{ 'control': true }")
-                label#label-username
-                  translate Username
-                input.form-control#username(type="text" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('username') }" placeholder="Input your username here" v-model="username" name="username")
-                span.help-block.text-danger(v-show="errors.has('username')") {{ errors.first('username') }}
-              .form-group(:class="{ 'control': true }")
-                label#label-password
-                  translate Password
-                input.form-control#password(type="password" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('password') }" placeholder="Your password here" v-model="password" name="password")
-                span.help-block.text-danger(v-show="errors.has('password')") {{ errors.first('password') }}
-              .form-group.text-center.m-t
-                  button.btn.btn-addon.btn-primary(type="submit")
-                    i.fas.fa-unlock
-                    translate Login
+.login-wrapper
+  .container-fluid
+    .row
+      .col-xs-12.col-sm-12.col-md-6.offset-md-3.col-lg-4.offset-lg-4
+        b-card(
+          class="card-block"
+        )
+          .text-center
+            img(
+              src="../../../images/logobig.png"
+              alt="Tania Logo"
+              width="200"
+            )
+          b-form(@submit.prevent="validateBeforeSubmit")
+            .form-group(:class="{ 'control': true }")
+              label#label-username
+                translate Username
+              input.form-control#username(
+                type="text"
+                v-validate="'required'"
+                :class="{'input': true, 'text-danger': errors.has('username') }"
+                :placeholder="$gettext('Input your username here')"
+                v-model="username"
+                name="username"
+              )
+              span.help-block.text-danger(
+                v-show="errors.has('username')"
+              ) {{ errors.first('username') }}
+            .form-group(:class="{ 'control': true }")
+              label#label-password
+                translate Password
+              input.form-control#password(
+                type="password"
+                v-validate="'required'"
+                :class="{'input': true, 'text-danger': errors.has('password') }"
+                :placeholder="$gettext('Your password here')"
+                v-model="password" name="password"
+              )
+              span.help-block.text-danger(
+                v-show="errors.has('password')"
+              ) {{ errors.first('password') }}
+            .form-group.text-center
+              BtnLogin
 </template>
 
 <script>
-import Nprogres from 'nprogress'
-import { mapActions, mapGetters } from 'vuex'
+import Nprogres from 'nprogress';
+import { mapActions, mapGetters } from 'vuex';
+import BtnLogin from '../../components/common/btn-login.vue';
+
 export default {
   name: 'Login',
-
-  data () {
+  components: {
+    BtnLogin,
+  },
+  data() {
     return {
       username: '',
-      password: ''
-    }
+      password: '',
+    };
   },
-
-  computed : {
+  computed: {
     ...mapGetters({
       user: 'getCurrentUser',
-      IsNewUser: 'IsNewUser'
-    })
+      IsNewUser: 'IsNewUser',
+    }),
   },
-
-  mounted () {
+  mounted() {
     // redirect if the user already auntenticated
     if (this.user.uid !== '') {
-      this.$router.push({ name: 'Home' })
+      this.$router.push({ name: 'Home' });
     }
   },
-
   methods: {
     ...mapActions([
       'userLogin',
@@ -60,11 +81,11 @@ export default {
       'fetchFarmInventories',
     ]),
     validateBeforeSubmit() {
-      this.$validator.validateAll().then(result => {
+      this.$validator.validateAll().then((result) => {
         if (result) {
-          this.login()
+          this.login();
         }
-      })
+      });
     },
     login() {
       this.userLogin({
@@ -72,26 +93,34 @@ export default {
         password: this.password,
         client_id: process.env.CLIENT_ID,
         response_type: 'token',
-        redirect_uri: location.protocol+"//"+location.host,
+        redirect_uri: `${window.location.protocol}//${window.location.host}`,
         state: 'random-string',
       }).then(this.redirector)
-      .catch(() => this.$toasted.error('Incorrect Username and/or password'))
+        .catch(() => this.$toasted.error('Incorrect Username and/or password'));
     },
-    redirector (response) {
+    redirector() {
       Promise.all([
         this.fetchCountries(),
         this.fetchFarm(),
         this.fetchFarmTypes(),
-        this.fetchFarmInventories()
-      ]).then(response => {
+        this.fetchFarmInventories(),
+      ]).then(() => {
         if (this.IsNewUser === true) {
-          this.$router.push({ name: 'IntroFarmCreate' })
+          this.$router.push({ name: 'IntroFarmCreate' });
         } else {
-          this.$router.push({ name: 'Home' })
+          this.$router.push({ name: 'Home' });
         }
-        Nprogres.done()
-      }).catch(error => console.log(error))
-    }
-  }
-}
+        Nprogres.done();
+      }).catch(error => error);
+    },
+  },
+};
 </script>
+
+<style lang="scss" scoped>
+.login-wrapper {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+</style>

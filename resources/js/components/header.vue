@@ -1,74 +1,207 @@
 <template lang="pug">
-  header#header.app-header.navbar(role="menu")
-    .navbar-header.bg-dark
-      button.pull-right.visible-xs.dk()
-      button.pull-right.visible-xs()
-      a.navbar-brand.text-lt(href="/")
-        img(src="../../images/logo.png")
-    .collapse.pos-rlt.navbar-collapse.box-shadow.bg-white-only
-      ul.nav.navbar-nav.navbar-right
-        li
-          a#signout(href="#" @click.prevent="signout")
-            translate Sign Out
-      ul.nav.navbar-nav.hidden-xs
-        li
-          a {{ farm.name }}
-        //li.dropdown.farmswitch(:class="dropdown === true ? 'open': 'closed'")
-          a.farm-current(href="#" @click.prevent="dropdownToggle")
-            span {{ farm.name }}
-            span.caret
-          ul.dropdown-menu
-            li.m-l.m-r.text-muted Switch Farm
-            li(v-for="f in farms" :class="f.uid === farm.uid ? 'active': ''")
-              a(href="#" @click.prevent="setFarm(f.uid)" :id="f.name")
-                span
-                  i.fa.fa-leaf(:class="f.uid === farm.uid ? 'text-success': ''")
-                  | {{ f.name }}
+  b-navbar(toggleable="lg" type="light" variant="white")
+    b-navbar-brand(href="/")
+      img.mobile-brand.d-md-none(src="../../images/logobig.png" alt="Tania Logo")
+
+    b-navbar-toggle(target="nav-collapse")
+
+    b-collapse(id="nav-collapse" is-nav="is-nav")
+      b-navbar-nav.d-none.d-md-block
+        b-nav-item(href="#") {{ farm.name }}
+
+      b-navbar-nav.d-md-none
+        AsideItem(
+          title="Dashboard"
+          fontawesome="fa fa-home"
+          :routeName="{ name: 'Home' }"
+          :isActive="homeActive"
+          v-on:click.native="homeClickHandler"
+        )
+
+        AsideItem(
+          title="Reservoirs"
+          fontawesome="fa fa-tint"
+          :routeName="{ name: 'FarmReservoirs' }"
+          :isActive="reservoirsActive"
+          v-on:click.native="reservoirsClickHandler"
+        )
+
+        AsideItem(
+          title="Areas"
+          fontawesome="fa fa-grip-horizontal"
+          :routeName="{ name: 'FarmAreas' }"
+          :isActive="areasActive"
+          v-on:click.native="areasClickHandler"
+        )
+
+        AsideItem(
+          title="Materials"
+          fontawesome="fa fa-archive"
+          :routeName="{ name: 'InventoriesMaterials' }"
+          :isActive="materialsActive"
+          v-on:click.native="materialsClickHandler"
+        )
+
+        AsideItem(
+          title="Crops"
+          fontawesome="fa fa-leaf"
+          :routeName="{ name: 'FarmCrops' }"
+          :isActive="cropsActive"
+          v-on:click.native="cropsClickHandler"
+        )
+
+        AsideItem(
+          title="Tasks"
+          fontawesome="fa fa-clipboard"
+          :routeName="{ name: 'Task' }"
+          :isActive="tasksActive"
+          v-on:click.native="tasksClickHandler"
+        )
+
+        AsideItem(
+          title="Account"
+          fontawesome="fa fa-user"
+          :routeName="{ name: 'Account' }"
+          :isActive="accountActive"
+          v-on:click.native="accountClickHandler"
+        )
+
+      b-dropdown-divider.d-md-none
+
+      b-navbar-nav.ml-auto
+        b-nav-item(href="#" @click.prevent="signout")
+          i.fa.fa-power-off
+          translate Sign Out
 </template>
 
 <script>
-import { ls } from '../services'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex';
+import { ls } from '../services';
+import AsideItem from './common/aside-item.vue';
+
 export default {
   name: 'AppHeaderComponent',
-  data () {
+  components: {
+    AsideItem,
+  },
+  data() {
     return {
-      dropdown: false
-    }
+      dropdown: false,
+      homeActive: true,
+      reservoirsActive: false,
+      areasActive: false,
+      materialsActive: false,
+      cropsActive: false,
+      tasksActive: false,
+      accountActive: false,
+    };
   },
   computed: {
     ...mapGetters({
       farm: 'getCurrentFarm',
-      farms: 'getAllFarms'
-    })
+      farms: 'getAllFarms',
+    }),
   },
   methods: {
     ...mapActions([
       'setCurrentFarm',
-      'userSignOut'
+      'userSignOut',
     ]),
-    setFarm (farmId) {
+    setFarm(farmId) {
       this.setCurrentFarm(farmId)
-        .then(data => this.dropdownToggle())
-        .catch(error => console.log('Farm '+farmId+' is not found in the data'))
+        .then(() => this.dropdownToggle())
+        .catch(() => `Farm ${farmId} is not found in the data`);
     },
     dropdownToggle() {
-      this.dropdown = !this.dropdown
+      this.dropdown = !this.dropdown;
     },
-    signout () {
+    signout() {
       this.userSignOut()
-        .then(data => {
-          ls.remove('vuex')
-          this.$router.push({ name: 'AuthLogin' })
+        .then(() => {
+          ls.remove('vuex');
+          this.$router.push({ name: 'AuthLogin' });
         })
-        .catch(err => console.log(error))
-    }
-  }
-}
+        .catch(error => error);
+    },
+    homeClickHandler() {
+      this.homeActive = true;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    reservoirsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = true;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    areasClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = true;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    materialsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = true;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    cropsClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = true;
+      this.tasksActive = false;
+      this.accountActive = false;
+    },
+    tasksClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = true;
+      this.accountActive = false;
+    },
+    accountClickHandler() {
+      this.homeActive = false;
+      this.reservoirsActive = false;
+      this.areasActive = false;
+      this.materialsActive = false;
+      this.cropsActive = false;
+      this.tasksActive = false;
+      this.accountActive = true;
+    },
+  },
+};
 </script>
 
-<style type="sccs" scoped>
-  i.fa.fa-leaf {
-    padding-right: 15px;
-  }
+<style lang="scss" scoped>
+.mobile-brand {
+  width: 100px;
+}
+
+i.fa.fa-power-off {
+  text-align: left;
+  margin-right: 10px;
+  width: 20px;
+}
+
+.bg-white {
+  background-color: #fcfcfc !important;
+}
 </style>
