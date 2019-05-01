@@ -43,7 +43,6 @@ before_install:
   - tar xJf gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf.tar.xz
   - export PATH=$(pwd)/gcc-linaro-6.4.1-2017.11-x86_64_arm-linux-gnueabihf/bin:$PATH
   - arm-linux-gnueabihf-gcc --version
-  - o64-clang --version && o64-clang++ --version
 
 install:
   - go get
