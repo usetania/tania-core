@@ -4,7 +4,7 @@
     <img src="https://opencollective.com/tania/tiers/backer/badge.svg?label=backer&color=brightgreen" />
     <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
     <a href="https://t.me/usetania"><img src="https://img.shields.io/badge/Telegram-blue.svg?logo=telegram&style=flat&label=chat%20on" alt="telegram"></a>
-    <img src="https://img.shields.io/badge/semver-1.7.0-green.svg?maxAge=2592000" alt="semver">
+    <img src="https://img.shields.io/badge/semver-1.7.1-green.svg?maxAge=2592000" alt="semver">
     <a href="https://travis-ci.com/Tanibox/tania-core">
       <img src="https://travis-ci.com/Tanibox/tania-core.svg?branch=master" alt="Build Status">
     </a>
@@ -14,7 +14,7 @@
 
 **Tania** is a free and open source farm management software. You can manage your farm areas, farm reservoirs, farm tasks, inventories, and the crop growing progress. It is designed for any type of farms.
 
-Download Tania for Windows x64 and Linux x64 on [the release page](https://github.com/Tanibox/tania-core/releases/tag/1.7.0).
+Download Tania for Windows x64 and Linux x64 on [the release page](https://github.com/Tanibox/tania-core/releases/tag/1.7.1).
 
 ![Screenshot](screenshot.PNG)
 
@@ -47,7 +47,7 @@ If your OS is not listed on our releases page, you have to build Tania for your 
 
 ### Building Instructions
 1. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
-2. Checkout the current stable version by using `git checkout tags/1.7.0 -b v1.7.0`
+2. Checkout the current stable version by using `git checkout tags/1.7.1 -b v1.7.1`
 3. From the project root, call `go get` to install the Go dependencies.
 4. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
 5. Issue `npm install` to install Vue.js dependencies.
