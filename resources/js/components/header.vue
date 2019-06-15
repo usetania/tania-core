@@ -66,8 +66,6 @@
           v-on:click.native="accountClickHandler"
         )
 
-      b-dropdown-divider.d-md-none
-
       b-navbar-nav.ml-auto
         b-nav-item(href="#" @click.prevent="signout")
           i.fa.fa-power-off
