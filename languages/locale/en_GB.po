@@ -497,7 +497,7 @@ msgstr "Locations"
 msgid "Login"
 msgstr "Login"
 
-#: resources/js/components/footer.vue:4
+#: resources/js/components/footer.vue:6
 msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
 msgstr "Made for the &#9829; of plants &copy; 2019 Copyright."
 
@@ -1016,6 +1016,18 @@ msgstr "Which crop do you want to water?"
 msgid "Yes"
 msgstr "Yes"
 
-#: resources/js/pages/home.vue:43
-msgid "You are using Tania 1.6 right now."
-msgstr "You are using Tania 1.6 right now."
+#: resources/js/pages/home.vue:41
+msgid "What is On Production"
+msgstr "What is On Production"
+
+#: resources/js/pages/home.vue:13
+msgid "You are using Tania 1.7 right now"
+msgstr "You are using Tania 1.7 right now"
+
+#: resources/js/pages/home.vue:52
+msgid "Qty"
+msgstr "Qty"
+
+#: resources/js/pages/farms/crops.vue:20
+msgid "Add New Batch"
+msgstr "Add New Batch"
