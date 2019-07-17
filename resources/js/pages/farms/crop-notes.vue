@@ -6,58 +6,59 @@
 
     .row
       .col
-        router-link(:to="{name: 'FarmCrops'}")
-          i.fa.fa-long-arrow-alt-left
+        router-link(:to="{name: 'FarmCrops'}" style="padding: 8px 0; display: block;")
+          i.fa.fa-long-arrow-alt-left(style="margin-right: 8px")
           translate Back to Crop Batches
-
-        b-nav
-          b-nav-item
-            router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }")
-              translate Basic Info
-          b-nav-item
-            router-link(:to="{ name: 'FarmCropNotes', params: { id: crop.uid } }")
-              translate Tasks &amp; Notes
 
     .row
       .col
-        b-card(
-          :title="$gettext('Tasks')"
-        )
-          .row
-            .col
-              a.btn.btn-sm.btn-primary.btn-addon(style="cursor: pointer;" @click="openModal()")
-                i.fa.fa-plus
-                translate Add Task
-          .row
-            .col
-              TasksList(:domain="'CROP'" :asset_id="crop.uid" :reload="reload" @openModal="openModal")
+        b-card(no-body="no-body")
+          .card-header
+            b-nav.card-header-tabs(tabs="tabs")
+              b-nav-item
+                router-link(:to="{ name: 'FarmCrop', params: { id: crop.uid } }")
+                  translate Basic Info
+              b-nav-item(active="active")
+                router-link(:to="{ name: 'FarmCropNotes', params: { id: crop.uid } }")
+                  translate Tasks &amp; Notes
+          .card-body
+            h4
+              translate Tasks
+            .row
+              .col
+                b-button(variant="primary" @click="openModal()")
+                  i.fa.fa-plus(style="margin-right: 4px")
+                  translate Add Task
+            .row
+              .col
+                TasksList(:domain="'CROP'" :asset_id="crop.uid" :reload="reload" @openModal="openModal")
 
-          .row
-            .col
-              h4
-                translate Notes
+            .row
+              .col
+                h4
+                  translate Notes
 
-              b-form(@submit.prevent="validateBeforeSubmit")
-                .form-group
-                  textarea.form-control#content(placeholder="Leave a note here..." rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
-                  span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
-                .form-group
-                  button.btn.btn-success.pull-right.m-b(type="submit")
-                    translate Add Notes
-              b-list-group
-                b-list-group-item(v-for="cropNote in crop.notes" :key="cropNote.uid")
-                  .row
-                    .col-10
-                      i.fa.fa-file
-                      |
-                      |
-                      span {{ cropNote.content }}
-                      |
-                      |
-                      small.text-muted {{ cropNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
-                    .col-2
-                      button.btn.btn-xs.btn-default.float-right(v-on:click="deleteNote(cropNote.uid)")
-                        i.fa.fa-trash
+                b-form(@submit.prevent="validateBeforeSubmit")
+                  .form-group
+                    textarea.form-control#content(placeholder="Leave a note here..." rows="2" v-validate="'required'" :class="{'input': true, 'text-danger': errors.has('note.content') }" v-model="note.content" name="note.content")
+                    span.help-block.text-danger(v-show="errors.has('note.content')") {{ errors.first('crop.container_cell') }}
+                  .form-group
+                    button.btn.btn-success.pull-right.m-b(type="submit")
+                      translate Add Notes
+                b-list-group
+                  b-list-group-item(v-for="cropNote in crop.notes" :key="cropNote.uid")
+                    .row
+                      .col-10
+                        i.fa.fa-file
+                        |
+                        |
+                        span {{ cropNote.content }}
+                        |
+                        |
+                        small.text-muted {{ cropNote.created_date | moment('timezone', 'Asia/Jakarta').format('DD/MM/YYYY') }}
+                      .col-2
+                        button.btn.btn-xs.btn-default.float-right(v-on:click="deleteNote(cropNote.uid)")
+                          i.fa.fa-trash
 </template>
 
 <script>
