@@ -47,21 +47,21 @@
               .col-xs-12.col-sm-12.col-md-6
                 .row
                   .col-md-6
-                    button.btn.btn-success.btn-block(style="cursor: pointer;" @click="showHarvestCropModal = true")
-                      i.fa.fa-cut
+                    button.btn.btn-success.btn-block(style="cursor: pointer; color: #fff" @click="showHarvestCropModal = true")
+                      i.fa.fa-cut(style="margin-right: 4px;")
                       translate Harvest
                   .col-md-6
                     button.btn.btn-danger.btn-block(style="cursor: pointer;" @click="showDumpCropModal = true")
-                      i.fa.fa-trash
+                      i.fa.fa-trash(style="margin-right: 4px;")
                       translate Dump
                 .row
                   .col-md-6
-                    button.btn.btn-primary.btn-block(style="cursor: pointer;" @click="showMoveCropModal = true")
-                      i.fa.fa-exchange-alt
+                    button.btn.btn-primary.btn-block(style="cursor: pointer; margin-top: 4px;" @click="showMoveCropModal = true")
+                      i.fa.fa-exchange-alt(style="margin-right: 4px;")
                       translate Move
                   .col-md-6
-                    button.btn.btn-default.btn-block(style="cursor: pointer;" @click="showUploadCropModal = true")
-                      i.fa.fa-camera
+                    button.btn.btn-outline-primary.btn-block(style="cursor: pointer; margin-top: 4px;" @click="showUploadCropModal = true")
+                      i.fa.fa-camera(style="margin-right: 4px;")
                       translate Take Picture
 
           .row
