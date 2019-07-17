@@ -1031,3 +1031,11 @@ msgstr "Qty"
 #: resources/js/pages/farms/crops.vue:20
 msgid "Add New Batch"
 msgstr "Add New Batch"
+
+#: resources/js/pages/auth/login.vue:23
+msgid "Input your username here"
+msgstr "Input your username here"
+
+#: resources/js/pages/auth/login.vue:37
+msgid "Your password here"
+msgstr "Your password here"
