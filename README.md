@@ -140,7 +140,7 @@ This project exists thanks to all the people who contribute.
 
 ### Backers
 
-Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
+Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/backers.svg?width=890&button=false" alt="backers"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
 
 ### Sponsors
 
