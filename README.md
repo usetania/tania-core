@@ -30,6 +30,7 @@ Download Tania for Windows x64 and Linux x64 on [the release page](https://githu
 * [Contributing to Tania](#contributing-to-tania)
     * [Localisation](#localisation)
 * [Support Us](#support-us)
+    * [Contributors](#contributors)
     * [Backers](#backers)
     * [Sponsors](#sponsors)
 * [Authors](#authors)
@@ -132,9 +133,14 @@ You can become a backer or a sponsor for Tania through our [Open Collective page
 
 You can also support Tania development by buying the merchandise from [Tania Swag Store](https://teespring.com/stores/usetania).
 
+### Contributors
+
+This project exists thanks to all the people who contribute.
+<a href="https://github.com/tanibox/tania-core/graphs/contributors"><img src="https://opencollective.com/tania/contributors.svg?width=890&button=false" /></a>
+
 ### Backers
 
-Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
+Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/backers.svg?width=890&button=false" alt="backers"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
 
 ### Sponsors
 
