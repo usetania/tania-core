@@ -281,11 +281,6 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 func (s *FarmServer) SaveFarm(c echo.Context) error {
 	farm, err := domain.CreateFarm(
 		c.FormValue("name"),
-		c.FormValue("farm_type"),
-		c.FormValue("latitude"),
-		c.FormValue("longitude"),
-		c.FormValue("country"),
-		c.FormValue("city"),
 	)
 	if err != nil {
 		return Error(c, err)
@@ -311,11 +306,6 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 	}
 
 	name := c.FormValue("name")
-	farmType := c.FormValue("farm_type")
-	latitude := c.FormValue("latitude")
-	longitude := c.FormValue("longitude")
-	country := c.FormValue("country")
-	city := c.FormValue("city")
 
 	// Validate //
 	queryResult := <-s.FarmReadQuery.FindByID(farmUID)
@@ -330,22 +320,6 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 
 	if farmRead.UID == (uuid.UUID{}) {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
-	}
-
-	if latitude != "" && longitude == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "longitude"))
-	}
-
-	if longitude != "" && latitude == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "latitude"))
-	}
-
-	if country != "" && city == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "city"))
-	}
-
-	if city != "" && country == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "country"))
 	}
 
 	// Process //
@@ -363,27 +337,6 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 
 	if name != "" {
 		err = farm.ChangeName(name)
-		if err != nil {
-			return Error(c, err)
-		}
-	}
-
-	if farmType != "" {
-		err = farm.ChangeType(farmType)
-		if err != nil {
-			return Error(c, err)
-		}
-	}
-
-	if latitude != "" && longitude != "" {
-		err = farm.ChangeGeoLocation(latitude, longitude)
-		if err != nil {
-			return Error(c, err)
-		}
-	}
-
-	if country != "" && city != "" {
-		err = farm.ChangeRegion(country, city)
 		if err != nil {
 			return Error(c, err)
 		}

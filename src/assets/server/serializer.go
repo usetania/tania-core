@@ -139,11 +139,6 @@ func MapToFarmRead(farm *domain.Farm) *storage.FarmRead {
 	farmRead := &storage.FarmRead{}
 	farmRead.UID = farm.UID
 	farmRead.Name = farm.Name
-	farmRead.Type = farm.Type
-	farmRead.Latitude = farm.Latitude
-	farmRead.Longitude = farm.Longitude
-	farmRead.Country = farm.Country
-	farmRead.City = farm.City
 	farmRead.CreatedDate = farm.CreatedDate
 	farmRead.IsActive = farm.IsActive
 
@@ -687,7 +682,6 @@ func (sf SimpleFarm) MarshalJSON() ([]byte, error) {
 	}{
 		UID:  sf.UID.String(),
 		Name: sf.Name,
-		Type: sf.Type,
 	})
 }
 
