@@ -8,7 +8,7 @@
         <div class="main-content">
           <div class="app-content-body">
             <router-view/>
-
+            <Footer />
           </div>
         </div>
       </div>
@@ -18,10 +18,12 @@
 
 <script>
 import AppAside from '@/components/AppAside.vue';
+import Footer from '@/components/Footer.vue';
 
 export default {
   components: {
     AppAside,
+    Footer,
   },
 };
 </script>
