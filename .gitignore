@@ -4,6 +4,8 @@
 *.so
 *.dylib
 tania-core
+tania.linux.amd64
+tania.linux.arm
 
 # Test binary, build with `go test -c`
 *.test

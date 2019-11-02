@@ -1,5 +1,7 @@
 SHELL = /bin/bash
 NODE_BINDIR = ./node_modules/.bin
+DISTRIBUTION_DIR = distribution
+BACKEND_DIR = backend
 export PATH := $(NODE_BINDIR):$(PATH)
 LOGNAME ?= $(shell logname)
 
@@ -28,10 +30,10 @@ GETTEXT_SOURCES ?= $($(INPUT_FILES) 2> /dev/null)
 all: osx linux-amd64 linux-arm windows
 
 clean:
-	@[ -f tania.osx.amd64 ] && rm -f tania.osx.amd64 || true
-	@[ -f tania.linux.arm ] && rm -f tania.linux.arm || true
-	@[ -f tania.linux.amd64 ] && rm -f tania.linux.amd64 || true
-	@[ -f tania.win.amd64.exe ] && rm -f tania.win.amd64.exe || true
+	@[ -f $(DISTRIBUTION_DIR)/tania.osx.amd64 ] && rm -f $(DISTRIBUTION_DIR)/tania.osx.amd64 || true
+	@[ -f $(DISTRIBUTION_DIR)/tania.linux.arm ] && rm -f $(DISTRIBUTION_DIR)/tania.linux.arm || true
+	@[ -f $(DISTRIBUTION_DIR)/tania.linux.amd64 ] && rm -f $(DISTRIBUTION_DIR)/tania.linux.amd64 || true
+	@[ -f $(DISTRIBUTION_DIR)/tania.windows.amd64.exe ] && rm -f $(DISTRIBUTION_DIR)/tania.windows.amd64.exe || true
 
 clean-osx: tania.osx.amd64
 	rm -rf $^
@@ -42,48 +44,48 @@ clean-linux-arm: tania.linux.arm
 clean-linux-amd64: tania.linux.amd64
 	rm -rf $^
 
-clean-win64: tania.win.amd64.exe
+clean-win64: tania.windows.amd64.exe
 	rm -rf $^
 
-tania.osx.amd64: main.go
-	CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags '-s -w' -o $@
-	file $@
+tania.osx.amd64:
+	cd $(BACKEND_DIR); CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 go build -ldflags '-s -w' -o ../$(DISTRIBUTION_DIR)/$@
+	file $(DISTRIBUTION_DIR)/$@
 
 osx: tania.osx.amd64
 
-osxcross: main.go
-	CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 \
+osxcross:
+	cd $(BACKEND_DIR); CGO_ENABLED=1 GOOS=darwin GOARCH=amd64 \
 		CC=o64-clang	\
 		CXX=o64-clang++ \
-		go build -ldflags '-s -w' -o tania.osx.amd64
-	file tania.osx.amd64
+		go build -ldflags '-s -w' -o ../$(DISTRIBUTION_DIR)/$@
+	file $(DISTRIBUTION_DIR)/$@
 
-tania.linux.arm: main.go
-	CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 \
+tania.linux.arm:
+	cd $(BACKEND_DIR); CGO_ENABLED=1 GOOS=linux GOARCH=arm GOARM=7 \
 		CC=arm-linux-gnueabihf-gcc	\
 		CXX=arm-linux-gnueabihf-g++ \
-		go build -ldflags '-s -w' -o $@
-	file $@
+		go build -ldflags '-s -w' -o ../$(DISTRIBUTION_DIR)/$@
+	file $(DISTRIBUTION_DIR)/$@
 
 linux-arm: tania.linux.arm
 
-tania.linux.amd64: main.go
-	CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags '-s -w' -o $@
-	file $@
+tania.linux.amd64:
+	cd $(BACKEND_DIR); CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -ldflags '-s -w' -o ../$(DISTRIBUTION_DIR)/$@
+	file $(DISTRIBUTION_DIR)/$@
 
 linux-amd64: tania.linux.amd64
 
-tania.windows.amd64.exe: main.go
-	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
+tania.windows.amd64.exe:
+	cd $(BACKEND_DIR); CGO_ENABLED=1 GOOS=windows GOARCH=amd64 \
 		CC=x86_64-w64-mingw32-gcc \
 		CXX=x86_64-w64-mingw32-g++ \
-		go build -ldflags '-s -w' -o $@
-	file $@
+		go build -ldflags '-s -w' -o ../$(DISTRIBUTION_DIR)/$@
+	file $(DISTRIBUTION_DIR)/$@
 
 windows: tania.windows.amd64.exe
 
-fetch-dep: Gopkg.toml Gopke.lock
-	dep ensure
+fetch-dep:
+	cd $(BACKEND_DIR); go get
 
 run: main.go
 	go run $^
