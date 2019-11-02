@@ -49,11 +49,11 @@ If your OS is not listed on our releases page, you have to build Tania for your 
 ### Building Instructions
 1. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
 2. Checkout the current stable version by using `git checkout tags/1.8.0 -b v1.8.0`
-3. From the project root, call `go get` to install the Go dependencies.
+3. From the project root, call `make fetch-dep` to install the Go dependencies.
 4. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
 5. Issue `npm install` to install Vue.js dependencies.
 6. To build the Vue.js, just run `npm run dev` for development purpose or `npm run prod` for production purpose.
-7. Compile the source code with `go build`. It will produces `tania-core.exe` (on Windows) or `tania-core` (on Linux and OSX.)
+7. Compile the source code to your OS. You can choose: `make linux-amd64`, `make linux-arm`, `make windows`, `make osx`, or `make osxcross`.
 8. Run the program from Terminal by issuing `./tania-core`, or from Windows Command Prompt by issuing `.\tania-core.exe`.
 9. The default username and password are `tania / tania`.
 
