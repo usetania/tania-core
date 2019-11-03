@@ -1,33 +1,19 @@
 <template>
   <div id="app">
-    <div class="row">
-      <div class="col-md-3 col-lg-2 d-none d-md-block">
-        <AppAside />
-      </div>
-      <div class="col-xs-12 col-sm-12 col-md-9 col-lg-10">
-        <div class="main-content">
-          <div class="app-content-body">
-            <router-view/>
-            <Footer />
-          </div>
-        </div>
-      </div>
-    </div>
+    <component :is="layout">
+      <router-view />
+    </component>
   </div>
 </template>
 
 <script>
-import AppAside from '@/components/AppAside.vue';
-import Footer from '@/components/Footer.vue';
+const defaultLayout = 'default';
 
 export default {
-  components: {
-    AppAside,
-    Footer,
+  computed: {
+    layout() {
+      return `${(this.$route.meta.layout || defaultLayout)}-layout`;
+    },
   },
 };
 </script>
-
-<style lang="scss">
-
-</style>
