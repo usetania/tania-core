@@ -8,12 +8,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-16 14:10+0800\n"
-"PO-Revision-Date: 2019-11-24 13:47+0200\n"
+"PO-Revision-Date: 2019-11-24 15:34+0200\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Last-Translator: \n"
+"Last-Translator: kosnick <kosnickx@gmail.com>\n"
 "Language-Team: \n"
 "X-Generator: Poedit 2.2.4\n"
 
@@ -26,7 +26,7 @@ msgstr ""
 #: resources/js/pages/inventories/materials-form-seed.vue:37
 #: resources/js/pages/inventories/materials-form-seedcontainer.vue:20
 msgid "€"
-msgstr ""
+msgstr "€"
 
 #: resources/js/components/aside.vue:56
 msgid "Account"
@@ -934,7 +934,7 @@ msgstr "ΕΠΕΙΓΟΝ"
 #: resources/js/pages/farms/reservoir.vue:29
 #: resources/js/pages/farms/reservoirs.vue:35
 msgid "Used In"
-msgstr "Χρησιμοποιείται σε "
+msgstr "Χρησιμοποιείται σε"
 
 #: resources/js/pages/auth/login.vue:11
 #: resources/js/pages/settings/account.vue:16
