@@ -1,0 +1,989 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-16 14:10+0800\n"
+"PO-Revision-Date: 2019-11-24 15:34+0200\n"
+"Language: el\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: kosnick <kosnickx@gmail.com>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.4\n"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:19
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:25
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:37
+#: resources/js/pages/inventories/materials-form-potharvest.vue:19
+#: resources/js/pages/inventories/materials-form-seed.vue:37
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:20
+msgid "€"
+msgstr "€"
+
+#: resources/js/components/aside.vue:56
+msgid "Account"
+msgstr "Λογαριασμός"
+
+#: resources/js/pages/settings/account.vue:6
+msgid "Account Settings"
+msgstr "Ρυθμίσεις Λογαριασμού"
+
+#: resources/js/pages/farms/crop.vue:134
+msgid "Activity"
+msgstr "Δραστηριότητα"
+
+#: resources/js/pages/farms/areas.vue:12
+msgid "Add Area"
+msgstr "Προσθήκη Περιοχής"
+
+#: resources/js/pages/farms/reservoirs.vue:12
+msgid "Add Reservoir"
+msgstr "Προσθήκη Ταμιευτήρα"
+
+#: resources/js/pages/home.vue:12
+msgid "At A Glance"
+msgstr "Με μια Ματιά"
+
+#: resources/js/pages/farms/crops-form.vue:5
+msgid "Add a New Batch"
+msgstr "Προσθήκη μίας Νέας Παρτίδα"
+
+#: resources/js/pages/inventories/materials.vue:13
+msgid "Add Material"
+msgstr "Προσθήκη Υλικού"
+
+#: resources/js/pages/inventories/materials-form.vue:8
+msgid "Add Material to Inventory"
+msgstr "Προσθήκη Υλικού στο Απόθεμα"
+
+#: resources/js/pages/intro/area.vue:19
+#: resources/js/pages/farms/areas-form.vue:5
+msgid "Add New Area"
+msgstr "Προσθήκη Νέας Περιοχής"
+
+#: resources/js/pages/farms/crops.vue:20
+msgid "Add New Batch"
+msgstr "Προσθήκη Νέας Παρτίδα"
+
+#: resources/js/pages/farms/reservoirs-form.vue:5
+msgid "Add New Reservoir"
+msgstr "Προσθήκη Νέου Ταμιευτήρα"
+
+#: resources/js/pages/farms/tasks/task-form.vue:14
+msgid "Add New Task"
+msgstr "Προσθήκη Νέας Εργασίας"
+
+#: resources/js/pages/farms/tasks/task-form.vue:10
+msgid "Add New Task on"
+msgstr "Προσθήκη Νέας Εργασίας σε"
+
+#: resources/js/pages/farms/crop-notes.vue:49
+msgid "Add Notes"
+msgstr "Προσθήκη Σημειώσεων"
+
+#: resources/js/pages/farms/area.vue:18
+#: resources/js/pages/farms/crop-notes.vue:31
+#: resources/js/pages/farms/reservoir.vue:9
+#: resources/js/pages/tasks/task.vue:15
+msgid "Add Task"
+msgstr "Προσθήκη Εργασίας"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:63
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:44
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:30
+#: resources/js/pages/inventories/materials-form-other.vue:38
+#: resources/js/pages/inventories/materials-form-plant.vue:63
+#: resources/js/pages/inventories/materials-form-potharvest.vue:38
+#: resources/js/pages/inventories/materials-form-seed.vue:63
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:46
+#: resources/js/pages/inventories/materials.vue:38
+msgid "Additional Notes"
+msgstr "Επιπρόσθετες Σημείωσεις"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:35
+#: resources/js/pages/farms/crop.vue:210
+#: resources/js/pages/farms/tasks/water-task.vue:16
+#: resources/js/pages/tasks/task.vue:33 resources/js/pages/tasks/task.vue:56
+msgid "All"
+msgstr "Όλα"
+
+#: resources/js/pages/farms/crop.vue:245 resources/js/pages/farms/crop.vue:278
+#: resources/js/pages/farms/tasks/task-list.vue:60
+msgid "Apply"
+msgstr "Εφαρμογή"
+
+#: resources/js/pages/farms/crops.vue:25
+msgid "Archives"
+msgstr "Αρχεία"
+
+#: resources/js/pages/farms/crop.vue:229
+#: resources/js/pages/farms/tasks/task-form.vue:60
+#: resources/js/pages/tasks/task.vue:36
+msgid "Area"
+msgstr "Περιοχή"
+
+#: resources/js/pages/farms/tasks/task-label.vue:4
+msgid "AREA"
+msgstr "ΠΕΡΙΟΧΗ"
+
+#: resources/js/pages/intro/area.vue:19
+#: resources/js/pages/farms/areas-form.vue:8
+msgid "Area is a space where you grow your plants. It could be a seeding tray, a garden bed, or a pot or anything that describes the different physical locations in your facility."
+msgstr "Η Περιοχή είναι ένας χώρος όπου καλλιεργείτε τα φυτά σας. Θα μπορούσε να είναι ένας δίσκος σποράς, ένα παρτέρι κήπου, ή μία γλάστρα ή οτιδήποτε το οποία περιγράφει τις διάφορες φυσικές τοποθεσίες της εγκατάστασής σας."
+
+#: resources/js/pages/farms/areas-form.vue:14
+#: resources/js/pages/intro/area.vue:33
+msgid "Area Name"
+msgstr "Όνομα Περιοχής"
+
+#: resources/js/pages/farms/area.vue:29
+msgid "Area Size"
+msgstr "Μέγθος Περιοχής"
+
+#: resources/js/components/aside.vue:24 resources/js/pages/farms/areas.vue:6
+#: resources/js/pages/home.vue:19
+msgid "Areas"
+msgstr "Περιοχές"
+
+#: resources/js/components/timestamp.vue:4 resources/js/pages/farms/crop.vue:88
+#: resources/js/pages/farms/crop.vue:97
+msgid "at"
+msgstr "σε"
+
+#: resources/js/pages/intro/reservoir.vue:11
+msgid "Awesome! Now let's create a new water source for your farm."
+msgstr "Τέλεια! Τώρα ας δημιουργήσουμε μία νέα πηγή νερού για τη φάρμα σας."
+
+#: resources/js/components/common/btn-back.vue:3
+msgid "Back"
+msgstr "Επιστροφή"
+
+#: resources/js/pages/farms/crop-notes.vue:10
+#: resources/js/pages/farms/crop.vue:19
+msgid "Back to Crop Batches"
+msgstr "Επιστροφή στις Παρτίδες Παραγωγής"
+
+#: resources/js/pages/farms/area.vue:28
+#: resources/js/pages/farms/crop-notes.vue:15
+#: resources/js/pages/farms/crop.vue:24
+#: resources/js/pages/farms/reservoir.vue:21
+msgid "Basic Info"
+msgstr "Βασικές Πληροφορίες"
+
+#: resources/js/pages/farms/crops.vue:16
+msgid "Batch"
+msgstr "Παρτίδα"
+
+#: resources/js/pages/farms/crops-listing.vue:10
+msgid "Batch ID"
+msgstr "Ταυτότητα Παρτίδας"
+
+#: resources/js/pages/farms/area.vue:34 resources/js/pages/farms/areas.vue:34
+msgid "Batches"
+msgstr "Παρτίδες"
+
+#: resources/js/components/upload.vue:5
+msgid "Browse"
+msgstr "Περιήγηση"
+
+#: resources/js/components/common/btn-cancel.vue:3
+#: resources/js/pages/farms/activities/dump-crop-task.vue:38
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:77
+#: resources/js/pages/farms/activities/move-crop-task.vue:44
+#: resources/js/pages/farms/activities/upload-crop-task.vue:27
+#: resources/js/pages/farms/tasks/crop-task-form.vue:113
+msgid "Cancel"
+msgstr "Ακύρωση"
+
+#: resources/js/pages/farms/reservoir.vue:25
+#: resources/js/pages/farms/reservoirs.vue:32
+msgid "Capacity"
+msgstr "Χωρητικότητα"
+
+#: resources/js/pages/intro/reservoir.vue:54
+msgid "Capacity (litre)"
+msgstr "Χωρητικότητα (λίτρα)"
+
+#: resources/js/pages/farms/tasks/task-list.vue:11
+#: resources/js/pages/inventories/materials.vue:23
+#: resources/js/pages/tasks/task.vue:27
+msgid "Category"
+msgstr "Κατηγορία"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:13
+msgid "Chemical Type"
+msgstr "Τύπος Χημικού"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:12
+msgid "Choose area"
+msgstr "Επιλέξτε περιοχή"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:15
+msgid "Choose area to be harvested"
+msgstr "Επιλέξτε περιοχή για συγκομιδή"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:12
+msgid "Choose photo"
+msgstr "Επιλέξτε φωτογραφία"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:28
+msgid "Choose type of harvesting"
+msgstr "Επιλέξτε τύπο συγκομιδής"
+
+#: resources/js/pages/inventories/materials-form.vue:18
+msgid "Choose type of material"
+msgstr "Επιλέξτε τύπο υλικού"
+
+#: resources/js/pages/farms/tasks/water-task.vue:12
+msgid "Choose type of watering"
+msgstr "Επιλέξτε τύπο ποτίσματος"
+
+#: resources/js/pages/intro/farm.vue:66
+msgid "City"
+msgstr "Πόλη"
+
+#: resources/js/components/more-detail.vue:5
+msgid "Close details"
+msgstr "Κλείσιμο λεπτομερειών"
+
+#: resources/js/pages/tasks/task.vue:71
+msgid "Completed"
+msgstr "Ολοκήρωση"
+
+#: resources/js/pages/settings/account.vue:34
+msgid "Confirm Password"
+msgstr "Επιβεβαιώστε τον Κωδικό"
+
+#: resources/js/pages/intro/farm.vue:110
+#: resources/js/pages/intro/reservoir.vue:60
+#: resources/js/pages/farms/create.vue:72
+msgid "Continue"
+msgstr "Συνέχεια"
+
+#: resources/js/pages/intro/farm.vue:87
+msgid "Country"
+msgstr "Χώρα"
+
+#: resources/js/pages/intro/farm.vue:21 resources/js/pages/farms/create.vue:13
+msgid "Create Farm"
+msgstr "Δημιουργία Φάρμας"
+
+#: resources/js/pages/intro/reservoir.vue:19
+msgid "Create Reservoir"
+msgstr "Δημιουργία Ταμιευτήρα"
+
+#: resources/js/pages/farms/reservoir.vue:33
+#: resources/js/pages/farms/reservoirs.vue:26
+msgid "Created On"
+msgstr "Δημιουργήθηκε την"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:64
+#: resources/js/pages/tasks/task.vue:42
+msgid "Crop"
+msgstr "Παραγωγή"
+
+#: resources/js/pages/farms/tasks/task-label.vue:8
+msgid "CROP"
+msgstr "ΠΑΡΑΓΩΓΗ"
+
+#: resources/js/pages/farms/crops-form.vue:8
+msgid "Crop Batch is a quantity or consignment of crops done at one time."
+msgstr "Η Παρτίδα Παραγωγής είναι μία ποσότητα ή ένα φορτίο παραγωγών που γίνονται κάθε φορά."
+
+#: resources/js/pages/farms/area.vue:36
+#: resources/js/pages/farms/crops-listing.vue:7
+msgid "Crop Variety"
+msgstr "Ποικιλία Παραγωγών"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:4
+msgid "Crop: Add New Task for"
+msgstr "Παραγωγή: Προσθήκη Νέας Εργασίας για"
+
+#: resources/js/components/aside.vue:40 resources/js/pages/farms/crops.vue:6
+msgid "Crops"
+msgstr "Παραγωγές"
+
+#: resources/js/pages/farms/crop.vue:111
+msgid "Current Quantity"
+msgstr "Τρέχουσα Παραγωγή"
+
+#: resources/js/pages/farms/area.vue:58
+msgid "Current Status"
+msgstr "Τρέχουσα Κατάσταση"
+
+#: resources/js/components/aside.vue:8 resources/js/pages/home.vue:6
+msgid "Dashboard"
+msgstr "Πίνακας"
+
+#: resources/js/components/aside.vue:16
+msgid "Reservoirs"
+msgstr "Ταμιευτήρες"
+
+#: resources/js/pages/farms/crops-listing.vue:16
+msgid "Days Since Seeding"
+msgstr "Μέρες Από τη Σπορά"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:18
+msgid "Describe a bit about this photo"
+msgstr "Περιγράψτε λιγάκι αυτή τη φωτογραφία"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:104
+#: resources/js/pages/farms/tasks/task-form.vue:82
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:12
+#: resources/js/pages/farms/tasks/task-form.vue:23
+msgid "Due Date"
+msgstr "Ημέρα Ολοκλήρωσης"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:58
+msgid "Dump"
+msgstr "Απόρριψη"
+
+#: resources/js/pages/farms/crop.vue:47 resources/js/pages/farms/crop.vue:179
+#: resources/js/pages/farms/crops-listing.vue:60
+msgid "Dumped"
+msgstr "Απορρίφτηκε"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:47
+#: resources/js/pages/inventories/materials-form-plant.vue:53
+#: resources/js/pages/inventories/materials-form-seed.vue:53
+msgid "Expiration date"
+msgstr "Ημερομηνία Λήξης"
+
+#: resources/js/pages/farms/create.vue:24 resources/js/pages/intro/farm.vue:28
+msgid "Farm Description"
+msgstr "Περιγραφή Φάρμας"
+
+#: resources/js/pages/farms/create.vue:18 resources/js/pages/intro/farm.vue:22
+msgid "Farm Name"
+msgstr "Όνομα Φάρμας"
+
+#: resources/js/pages/farms/create.vue:30 resources/js/pages/intro/farm.vue:34
+msgid "Farm Type"
+msgstr "Τύπος Φάρμας"
+
+#: resources/js/pages/farms/tasks/task-label.vue:7
+msgid "FINANCE"
+msgstr "ΟΙΚΟΝΟΜΙΚΑ"
+
+#: resources/js/pages/intro/area.vue:122
+msgid "Finish Setup"
+msgstr "Ολοκλήρωση Διαμόρφωσης"
+
+#: resources/js/pages/farms/crop.vue:147
+msgid "from"
+msgstr "από"
+
+#: resources/js/pages/farms/tasks/task-form.vue:66
+#: resources/js/pages/tasks/task.vue:45
+msgid "General"
+msgstr "Γενικά"
+
+#: resources/js/pages/farms/tasks/task-label.vue:11
+msgid "GENERAL"
+msgstr "ΓΕΝΙΚΑ"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:57
+#: resources/js/pages/farms/crop.vue:216
+msgid "Grams"
+msgstr "Γραμμάρια"
+
+#: resources/js/pages/farms/crop.vue:44
+#: resources/js/pages/farms/crops-listing.vue:56
+msgid "Growing"
+msgstr "Ανάπτυξη"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:53
+msgid "Harvest"
+msgstr "Συγκομιδή"
+
+#: resources/js/pages/farms/crop.vue:204
+msgid "Harvested"
+msgstr "Συγκομίστηκε"
+
+#: resources/js/pages/intro/farm.vue:11
+msgid "Hello! Can you tell me a little about your farm?"
+msgstr "Γεια σας! Μπορείτε να μου πείτε λίγα πράγματα για τη φάρμα σας;"
+
+#: resources/js/pages/farms/create.vue:5
+msgid "Home"
+msgstr "Αρχική"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:35
+msgid "How many plants do you want to move?"
+msgstr "Πόσα φυτά επιθυμείτε να μετακινήσετε;"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:23
+msgid "How many plants you want to dump?"
+msgstr "Πόσα φυτά επιθυμείτε να απορρίψετε;"
+
+#: resources/js/pages/tasks/task.vue:76
+msgid "Incomplete"
+msgstr "Ελλιπής"
+
+#: resources/js/pages/farms/crop.vue:104
+msgid "Initial Planting"
+msgstr "Αρχική Φύτευση"
+
+#: resources/js/pages/farms/crops-listing.vue:22
+msgid "Initial Quantity"
+msgstr "Αρχική Ποσότητα"
+
+#: resources/js/pages/auth/login.vue:23
+msgid "Input your username here"
+msgstr "Εισάγετε εδώ το όνομα χρήστη"
+
+#: resources/js/pages/farms/tasks/task-form.vue:70
+msgid "Inventory"
+msgstr "Απόθεμα"
+
+#: resources/js/pages/farms/tasks/task-label.vue:10
+msgid "INVENTORY"
+msgstr "ΑΠΟΘΕΜΑ"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:23
+#: resources/js/pages/farms/tasks/task-form.vue:34
+msgid "Is this task urgent?"
+msgstr "Αυτή η εργασία είναι επείγουσα;"
+
+#: resources/js/pages/farms/tasks/task-list.vue:8
+msgid "Items"
+msgstr "Κομμάτια"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:60
+msgid "Kilograms"
+msgstr "Κιλά"
+
+#: resources/js/pages/farms/crop.vue:84
+#: resources/js/pages/farms/crops-listing.vue:28
+msgid "Last Watering"
+msgstr "Τελευταίο Πότισμα"
+
+#: resources/js/components/mapbox.vue:5 resources/js/pages/farms/area.vue:32
+msgid "Location"
+msgstr "Περιοχή"
+
+#: resources/js/pages/intro/area.vue:70
+msgid "Locations"
+msgstr "Περιοχές"
+
+#: resources/js/components/common/btn-login.vue:3
+msgid "Login"
+msgstr "Είσοδος"
+
+#: resources/js/components/footer.vue:6
+msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
+msgstr "Φτιάχτηκε για το &#9829;  των φυτών &copy;  2019 Copyright."
+
+#: resources/js/pages/inventories/materials-form.vue:13
+msgid "Material is a consumable product using in your farm such as seeds, growing medium, fertilizer, pesticide, and so on."
+msgstr "Το υλικό είναι ένα καταναλώσιμο προϊόν το οποίο χρησιμοποιείται στη δική σας φάρμα όπως σπόροι, μέσα ανάπτυξης, λίπασμα, φυτοφάρμακο, κ.ο.κ."
+
+#: resources/js/components/aside.vue:32
+#: resources/js/pages/inventories/materials.vue:6
+msgid "Materials"
+msgstr "Υλικά"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:65
+msgid "Move"
+msgstr "Μετακίνηση"
+
+#: resources/js/pages/farms/crop.vue:143
+msgid "Moved"
+msgstr "Μετακινήθηκε"
+
+#: resources/js/pages/farms/reservoirs.vue:23
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:6
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:6
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:6
+#: resources/js/pages/inventories/materials-form-other.vue:7
+#: resources/js/pages/inventories/materials-form-potharvest.vue:7
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:7
+#: resources/js/pages/inventories/materials.vue:26
+msgid "Name"
+msgstr "Όνομα"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:34
+#: resources/js/pages/farms/tasks/task-form.vue:45
+msgid "No"
+msgstr "Όχι"
+
+#: resources/js/pages/farms/crops-listing.vue:36
+msgid "No crops available."
+msgstr "Καμία παραγωγή διαθέσιμη."
+
+#: resources/js/pages/home.vue:59
+msgid "No crops on production."
+msgstr "Καμία παραγωγή ενεργή."
+
+#: resources/js/pages/inventories/materials.vue:46
+msgid "No Inventories Available"
+msgstr "Κανένα Απόθεμα Διαθέσιμο"
+
+#: resources/js/pages/farms/tasks/task-list.vue:19
+#: resources/js/pages/farms/tasks/task-list.vue:48
+msgid "No Task Created"
+msgstr "Δεν Δημιουργήθηκε Εργασία"
+
+#: resources/js/pages/tasks/task.vue:62
+msgid "Normal"
+msgstr "Φυσιολογικό"
+
+#: resources/js/pages/farms/tasks/task-label.vue:14
+msgid "NORMAL"
+msgstr "ΦΥΣΙΟΛΟΓΙΚΟ"
+
+#: resources/js/pages/farms/area.vue:68
+#: resources/js/pages/farms/activities/dump-crop-task.vue:29
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:68
+#: resources/js/pages/farms/crop-notes.vue:41
+#: resources/js/pages/farms/reservoir.vue:47
+msgid "Notes"
+msgstr "Σημειώσεις"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:67
+msgid "Nutrient"
+msgstr "Συστατικό"
+
+#: resources/js/pages/farms/tasks/task-label.vue:12
+msgid "NUTRIENT"
+msgstr "ΣΥΣΤΑΤΙΚΟ"
+
+#: resources/js/pages/farms/crop.vue:165 resources/js/pages/farms/crop.vue:213
+msgid "of"
+msgstr "από"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:35
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:74
+#: resources/js/pages/farms/activities/move-crop-task.vue:41
+#: resources/js/pages/farms/activities/upload-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:110
+msgid "OK"
+msgstr "ΟΚ"
+
+#: resources/js/pages/settings/account.vue:22
+msgid "Old Password"
+msgstr "Παλιός Κωδικός"
+
+#: resources/js/pages/farms/crop.vue:108 resources/js/pages/farms/crop.vue:115
+#: resources/js/pages/farms/crop.vue:121 resources/js/pages/farms/crop.vue:168
+#: resources/js/pages/farms/crop.vue:183 resources/js/pages/farms/crop.vue:218
+#: resources/js/pages/farms/crop.vue:248 resources/js/pages/farms/crop.vue:258
+#: resources/js/pages/farms/crop.vue:268 resources/js/pages/farms/crop.vue:280
+#: resources/js/pages/farms/crop.vue:289
+#: resources/js/pages/farms/tasks/task-list.vue:67
+#: resources/js/pages/farms/tasks/task-list.vue:70
+msgid "on"
+msgstr "σε"
+
+#: resources/js/pages/tasks/task.vue:81
+msgid "Overdue"
+msgstr "Εκπρόθεσμο"
+
+#: resources/js/pages/farms/tasks/task-list.vue:36
+#: resources/js/pages/farms/tasks/task-list.vue:78
+msgid "Overdue!"
+msgstr "Εκπρόθεσμο!"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:32
+#: resources/js/pages/farms/crop.vue:207
+#: resources/js/pages/farms/tasks/water-task.vue:19
+msgid "Partial"
+msgstr "Μερικό"
+
+#: resources/js/pages/auth/login.vue:17
+#: resources/js/pages/settings/account.vue:28
+msgid "Password"
+msgstr "Κωδικός"
+
+#: resources/js/pages/intro/area.vue:11
+msgid "Perfect! Let's create a new area."
+msgstr "Τέλεια! Ας δημιουργήσουμε μία νέα περιοχή."
+
+#: resources/js/pages/farms/tasks/task-label.vue:2
+msgid "PEST CONTROL"
+msgstr "ΕΛΕΓΧΟΣ ΖΗΖΑΝΙΩΝ"
+
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:19
+#: resources/js/pages/inventories/materials-form-other.vue:25
+#: resources/js/pages/inventories/materials-form-potharvest.vue:25
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:26
+msgid "Pieces"
+msgstr "Κομμάτια"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:13
+#: resources/js/pages/inventories/materials-form-seed.vue:13
+msgid "Plant Type"
+msgstr "Τύπος Φυτού"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:16
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:19
+#: resources/js/pages/farms/activities/move-crop-task.vue:17
+#: resources/js/pages/farms/activities/move-crop-task.vue:28
+#: resources/js/pages/farms/tasks/crop-task-form.vue:48
+msgid "Please select area"
+msgstr "Παρακαλείσθε να επιλέξετε περιοχή"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:61
+#: resources/js/pages/farms/tasks/task-form.vue:57
+msgid "Please select category"
+msgstr "Παρακαλείσθε να επιλέξετε κατηγορία"
+
+#: resources/js/pages/intro/farm.vue:59
+msgid "Please select country"
+msgstr "Παρακαλείσθε να επιλέξετε χώρα"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:80
+msgid "Please select fertilizer"
+msgstr "Παρακαλείσθε να επιλέξετε λίπασμα"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:91
+msgid "Please select pesticide"
+msgstr "Παρακαλείσθε να επιλέξετε φυτοφάρμακο"
+
+#: resources/js/pages/intro/area.vue:86
+msgid "Please select reservoir"
+msgstr "Παρακαλείσθε να επιλέξετε ταμιευτήρα"
+
+#: resources/js/pages/farms/reservoirs-form.vue:22
+#: resources/js/pages/intro/reservoir.vue:32
+msgid "Please select source"
+msgstr "Παρακαλείσθε να επιλέξετε πηγή"
+
+#: resources/js/pages/intro/farm.vue:38
+msgid "Please select type"
+msgstr "Παρακαλείσθε να επιλέξετε τύπο"
+
+#: resources/js/pages/inventories/materials.vue:29
+msgid "Price"
+msgstr "Τιμή"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:21
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:29
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:21
+#: resources/js/pages/inventories/materials-form-plant.vue:45
+#: resources/js/pages/inventories/materials-form-potharvest.vue:21
+#: resources/js/pages/inventories/materials-form-seed.vue:45
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:23
+msgid "Price per Unit"
+msgstr "Τιμή ανά Μονάδα"
+
+#: resources/js/pages/tasks/task.vue:52
+msgid "Priority"
+msgstr "Προτεραιότητα"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:56
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:37
+#: resources/js/pages/inventories/materials-form-other.vue:13
+#: resources/js/pages/inventories/materials-form-plant.vue:21
+#: resources/js/pages/inventories/materials-form-potharvest.vue:13
+#: resources/js/pages/inventories/materials-form-seed.vue:21
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:40
+msgid "Produced by"
+msgstr "Παράχθηκε από"
+
+#: resources/js/pages/inventories/materials.vue:32
+msgid "Produced By"
+msgstr "Παράχθηκε Από"
+
+#: resources/js/pages/home.vue:52
+msgid "Qty"
+msgstr "Ποσότητα"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:45
+#: resources/js/pages/farms/areas.vue:39
+#: resources/js/pages/farms/crops-listing.vue:19
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:31
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:13
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:21
+#: resources/js/pages/inventories/materials-form-other.vue:29
+#: resources/js/pages/inventories/materials-form-plant.vue:29
+#: resources/js/pages/inventories/materials-form-potharvest.vue:29
+#: resources/js/pages/inventories/materials-form-seed.vue:29
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:31
+#: resources/js/pages/inventories/materials.vue:35
+msgid "Quantity"
+msgstr "Ποσότητα"
+
+#: resources/js/components/more-detail.vue:6
+msgid "Read details"
+msgstr "Διαβάστε λεπτομέρειες"
+
+#: resources/js/pages/farms/area.vue:38
+#: resources/js/pages/farms/tasks/task-form.vue:63
+#: resources/js/pages/tasks/task.vue:39
+msgid "Reservoir"
+msgstr "Ταμιευτήρας"
+
+#: resources/js/pages/farms/tasks/task-label.vue:5
+msgid "RESERVOIR"
+msgstr "ΤΑΜΙΕΥΤΗΡΑΣ"
+
+#: resources/js/pages/farms/reservoirs-form.vue:7
+msgid "Reservoir is a water source for your farm. It can be a direct line from well, or water tank that has volume/capacity."
+msgstr "Ο ταμιευτήρας είναι μία πηγή νερού για τη δική σας φάρμα. Μπορεί να είναι μία γραμμή παροχής απευθείας από πηγάδι, ή δεξαμενή νερού η οποία έχει όγκο/χωρητικότητα."
+
+#: resources/js/pages/farms/reservoirs-form.vue:12
+#: resources/js/pages/intro/reservoir.vue:22
+msgid "Reservoir Name"
+msgstr "Όνομα Ταμιευτήρα"
+
+#: resources/js/pages/farms/tasks/task-label.vue:6
+msgid "SAFETY"
+msgstr "ΑΣΦΑΛΕΙΑ"
+
+#: resources/js/pages/farms/tasks/task-label.vue:3
+msgid "SANITATION"
+msgstr "ΑΠΟΛΥΜΑΝΣΗ"
+
+#: resources/js/components/common/btn-save.vue:3
+msgid "Save"
+msgstr "Αποθήκευση"
+
+#: resources/js/pages/home.vue:43
+msgid "See all Crops"
+msgstr "Δείτε όλες τις Παραγωγές"
+
+#: resources/js/pages/home.vue:81
+msgid "See all Tasks"
+msgstr "Δείτε όλες τις Εργασίες"
+
+#: resources/js/pages/farms/crop.vue:161
+msgid "Seeded"
+msgstr "Σπάρθηκε"
+
+#: resources/js/pages/farms/crop.vue:41
+#: resources/js/pages/farms/crops-listing.vue:52
+msgid "Seeding"
+msgstr "Σπέρνεται"
+
+#: resources/js/pages/farms/crop.vue:82
+#: resources/js/pages/farms/crops-listing.vue:13
+msgid "Seeding Date"
+msgstr "Ημερομηνία Σποράς"
+
+#: resources/js/pages/farms/crops-form.vue:14
+msgid "Select activity type of this crop batch"
+msgstr "Επιλέξτε τύπο δραστηριότητας για αυτή την παρτίδα παραγωγής"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:44
+msgid "Select area to do your task"
+msgstr "Επιλέξτε περιοχή για να κάνετε την εργασία σας"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:24
+msgid "Select destination area"
+msgstr "Επιλέξτε περιοχή προορισμού"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:76
+msgid "Select fertilizer you are going to use"
+msgstr "Επιλέξτε το λίπασμα που πρόκειται να χρησιμοποιήσετε"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:87
+msgid "Select pesticide you are going to use"
+msgstr "Επιλέξτε το φυτοφάρμακο που πρόκειται να χρησιμοποιήσετε"
+
+#: resources/js/pages/intro/area.vue:95
+msgid "Select photo"
+msgstr "Επιλέξτε φωτογραφία"
+
+#: resources/js/pages/intro/area.vue:82
+msgid "Select Reservoir"
+msgstr "Επιλέξτε Ταμιευτήρα"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:13
+msgid "Select source area"
+msgstr "Επιλέξτε περιοχή πηγής"
+
+#: resources/js/components/header.vue:21
+msgid "Sign Out"
+msgstr "Έξοδος"
+
+#: resources/js/pages/farms/areas-form.vue:20
+#: resources/js/pages/intro/area.vue:41
+msgid "Size"
+msgstr "Μέγεθος"
+
+#: resources/js/pages/farms/reservoirs-form.vue:18
+#: resources/js/pages/intro/reservoir.vue:28
+msgid "Source"
+msgstr "Πηγή"
+
+#: resources/js/pages/farms/reservoir.vue:21
+#: resources/js/pages/farms/reservoirs.vue:29
+msgid "Source Type"
+msgstr "Τύπος Πηγής"
+
+#: resources/js/pages/farms/crops-listing.vue:25
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:70
+msgid "Take Picture"
+msgstr "Λήψη Φωτογραφίας"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:57
+#: resources/js/pages/farms/tasks/task-form.vue:53
+msgid "Task Category"
+msgstr "Κατηγορία Εργασίας"
+
+#: resources/js/pages/home.vue:72 resources/js/pages/farms/crop-notes.vue:24
+#: resources/js/pages/farms/area.vue:91
+#: resources/js/pages/farms/reservoir.vue:86
+#: resources/js/components/aside.vue:48 resources/js/pages/home.vue:33
+#: resources/js/pages/tasks/task.vue:12
+msgid "Tasks"
+msgstr "Εργασίες"
+
+#: resources/js/pages/farms/crop-notes.vue:20
+#: resources/js/pages/farms/crop.vue:29
+msgid "Tasks &amp; Notes"
+msgstr "Εργασίες &amp; Σημειώσεις"
+
+#: resources/js/components/modal.vue:11
+msgid "This is the Modal Body"
+msgstr "Αυτό είναι το Modal Body"
+
+#: resources/js/components/modal.vue:9
+msgid "This is the Modal Header"
+msgstr "Αυτό είναι το Modal Header"
+
+#: resources/js/pages/tasks/task.vue:96
+msgid "This Month"
+msgstr "Τρέχων Μήνας"
+
+#: resources/js/pages/tasks/task.vue:91
+msgid "This Week"
+msgstr "Τρέχουσα Εβδομάδα"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:98
+#: resources/js/pages/farms/tasks/task-form.vue:76
+msgid "Title"
+msgstr "Τίτλος"
+
+#: resources/js/pages/farms/crop.vue:150 resources/js/pages/farms/crop.vue:247
+#: resources/js/pages/farms/tasks/task-list.vue:64
+msgid "to"
+msgstr "να"
+
+#: resources/js/pages/farms/tasks/task-list.vue:37
+#: resources/js/pages/tasks/task.vue:86
+msgid "Today"
+msgstr "Σήμερα"
+
+#: resources/js/pages/farms/areas-form.vue:37
+#: resources/js/pages/intro/area.vue:60
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:13
+msgid "Type"
+msgstr "Τύπος"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:37
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:35
+#: resources/js/pages/inventories/materials-form-seed.vue:35
+msgid "Unit"
+msgstr "Μονάδα"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:53
+msgid "Units"
+msgstr "Μονάδες"
+
+#: resources/js/pages/farms/areas-form.vue:4
+msgid "Update Area"
+msgstr "Ενημέρωση Περιοχής"
+
+#: resources/js/pages/farms/crops-form.vue:4
+msgid "Update Crop"
+msgstr "Ενημέρωση Παραγωγής"
+
+#: resources/js/pages/inventories/materials-form.vue:5
+msgid "Update Material"
+msgstr "Ενημέρωση Υλικού"
+
+#: resources/js/pages/farms/reservoirs-form.vue:4
+msgid "Update Reservoir"
+msgstr "Ενημέρωση Ταμιευτήρα"
+
+#: resources/js/pages/farms/tasks/task-form.vue:5
+msgid "Update Task"
+msgstr "Ενημέρωση Εργασίας"
+
+#: resources/js/pages/tasks/task.vue:59
+msgid "Urgent"
+msgstr "Επείγον"
+
+#: resources/js/pages/farms/tasks/task-label.vue:13
+#: resources/js/pages/farms/tasks/task-list.vue:76
+msgid "URGENT"
+msgstr "ΕΠΕΙΓΟΝ"
+
+#: resources/js/pages/farms/reservoir.vue:29
+#: resources/js/pages/farms/reservoirs.vue:35
+msgid "Used In"
+msgstr "Χρησιμοποιείται σε"
+
+#: resources/js/pages/auth/login.vue:11
+#: resources/js/pages/settings/account.vue:16
+msgid "Username"
+msgstr "Όνομα χρήστη"
+
+#: resources/js/pages/home.vue:26 resources/js/pages/home.vue:49
+msgid "Varieties"
+msgstr "Ποικιλίες"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:6
+#: resources/js/pages/inventories/materials-form-seed.vue:6
+msgid "Variety Name"
+msgstr "Όνομα ποικιλίας"
+
+#: resources/js/pages/farms/tasks/task-label.vue:9
+msgid "WATER"
+msgstr "ΝΕΡΟ"
+
+#: resources/js/pages/farms/reservoirs.vue:6
+msgid "Water Reservoir"
+msgstr "Ταμιευτήρας Νερού"
+
+#: resources/js/pages/farms/crop.vue:235
+msgid "Watered"
+msgstr "Ποτισμένο"
+
+#: resources/js/components/common/btn-watering.vue:3
+#: resources/js/pages/farms/tasks/water-task.vue:5
+msgid "Watering"
+msgstr "Ποτίζεται"
+
+#: resources/js/pages/home.vue:41
+msgid "What is On Production"
+msgstr "Τι είναι Σε Παραγωγή"
+
+#: resources/js/pages/farms/tasks/water-task.vue:25
+msgid "Which crop do you want to water?"
+msgstr "Ποια παραγωγή θέλετε να ποτίσετε;"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:28
+#: resources/js/pages/farms/tasks/task-form.vue:39
+msgid "Yes"
+msgstr "Ναι"
+
+#: resources/js/pages/home.vue:13
+msgid "You are using Tania 1.7 right now"
+msgstr "Αυτή τη στιγμή χρησιμοποιείτε την Tania 1.7"
+
+#: resources/js/pages/auth/login.vue:37
+msgid "Your password here"
+msgstr "Ο κωδικός σας εδώ"
