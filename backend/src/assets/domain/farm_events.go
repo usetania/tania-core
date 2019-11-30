@@ -8,6 +8,7 @@ import (
 
 type FarmCreated struct {
 	UID         uuid.UUID
+	UserID      uuid.UUID
 	Name        string
 	Type        string
 	Latitude    string

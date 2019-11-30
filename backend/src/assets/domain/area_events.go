@@ -14,12 +14,18 @@ type AreaCreated struct {
 	Size         AreaSize
 	FarmUID      uuid.UUID
 	ReservoirUID uuid.UUID
+	Polygon      string
 	CreatedDate  time.Time
 }
 
 type AreaNameChanged struct {
 	AreaUID uuid.UUID
 	Name    string
+}
+
+type AreaPolygonChanged struct {
+	AreaUID uuid.UUID
+	Polygon string
 }
 
 type AreaSizeChanged struct {

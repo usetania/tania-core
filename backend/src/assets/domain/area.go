@@ -14,6 +14,7 @@ type Area struct {
 	Type         AreaType               `json:"type"`
 	Location     AreaLocation           `json:"location"`
 	Photo        AreaPhoto              `json:"photo"`
+	Polygon      string                 `json:"polygon"`
 	CreatedDate  time.Time              `json:"created_date"`
 	Notes        map[uuid.UUID]AreaNote `json:"-"`
 	ReservoirUID uuid.UUID              `json:"-"`
@@ -153,6 +154,7 @@ func (state *Area) Transition(event interface{}) {
 		state.Type = e.Type
 		state.Location = e.Location
 		state.Size = e.Size
+		state.Polygon = e.Polygon
 		state.CreatedDate = e.CreatedDate
 		state.FarmUID = e.FarmUID
 		state.ReservoirUID = e.ReservoirUID
@@ -171,6 +173,9 @@ func (state *Area) Transition(event interface{}) {
 
 	case AreaReservoirChanged:
 		state.ReservoirUID = e.ReservoirUID
+
+	case AreaPolygonChanged:
+		state.Polygon = e.Polygon
 
 	case AreaPhotoAdded:
 		state.Photo = AreaPhoto{
@@ -205,6 +210,7 @@ func CreateArea(
 	name string,
 	areaType string,
 	size AreaSize,
+	polygon string,
 	locationCode string) (*Area, error) {
 
 	err := validateAreaName(name)
@@ -254,6 +260,7 @@ func CreateArea(
 		Location:     al,
 		Size:         size,
 		FarmUID:      farm.UID,
+		Polygon:      polygon,
 		ReservoirUID: reservoir.UID,
 		CreatedDate:  time.Now(),
 	}
@@ -265,6 +272,7 @@ func CreateArea(
 		Location:     initial.Location,
 		Size:         initial.Size,
 		FarmUID:      initial.FarmUID,
+		Polygon:      initial.Polygon,
 		ReservoirUID: initial.ReservoirUID,
 		CreatedDate:  initial.CreatedDate,
 	})
@@ -345,6 +353,17 @@ func (a *Area) ChangeReservoir(reservoirUID uuid.UUID) error {
 	a.TrackChange(AreaReservoirChanged{
 		AreaUID:      a.UID,
 		ReservoirUID: reservoirUID,
+	})
+
+	return nil
+}
+
+func (a *Area) ChangePolygon(polygon string) error {
+	a.Polygon = polygon
+
+	a.TrackChange(AreaPolygonChanged{
+		AreaUID: a.UID,
+		Polygon: polygon,
 	})
 
 	return nil
