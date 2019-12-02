@@ -44,7 +44,7 @@ func (state *Farm) Transition(event interface{}) {
 }
 
 // CreateFarm registers a new farm to Tania
-func CreateFarm(name string, userID uuid.UUID) (*Farm, error) {
+func CreateFarm(name string, userID string) (*Farm, error) {
 	err := validateFarmName(name)
 	if err != nil {
 		return nil, err
@@ -55,11 +55,16 @@ func CreateFarm(name string, userID uuid.UUID) (*Farm, error) {
 		return nil, err
 	}
 
+	parsedUserID, err := uuid.FromString(userID)
+	if err != nil {
+		return nil, err
+	}
+
 	initial := &Farm{}
 
 	initial.TrackChange(FarmCreated{
 		UID:         uid,
-		UserID:      userID,
+		UserID:      parsedUserID,
 		Name:        name,
 		IsActive:    true,
 		CreatedDate: time.Now(),

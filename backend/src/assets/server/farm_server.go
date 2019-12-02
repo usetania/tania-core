@@ -281,6 +281,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 func (s *FarmServer) SaveFarm(c echo.Context) error {
 	farm, err := domain.CreateFarm(
 		c.FormValue("name"),
+		c.FormValue("user_id"),
 	)
 	if err != nil {
 		return Error(c, err)
@@ -743,7 +744,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	// Process //
-	area, err := domain.CreateArea(s.AreaService, farm.UID, reservoir.UID, c.FormValue("name"), c.FormValue("type"), size, location)
+	area, err := domain.CreateArea(s.AreaService, farm.UID, reservoir.UID, c.FormValue("name"), c.FormValue("type"), size, c.FormValue("polygon"), location)
 	if err != nil {
 		return Error(c, err)
 	}
