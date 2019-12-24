@@ -143,7 +143,7 @@ export default {
       this.task.domain = "CROP"
       this.submitTask(this.task)
         .then(() => this.$parent.$emit('close'))
-        .catch(() => this.$toasted.error('Error in task submission'))
+        .catch(() => this.$toasted.error('Task due date cannot be earlier than the current date.'))
     },
     openPicker () {
       this.$refs.openCal.showCalendar()
