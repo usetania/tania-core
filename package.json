@@ -101,7 +101,7 @@
     "vee-validate": "^2.0.0",
     "vue": "2.6.10",
     "vue-gettext": "^2.1.2",
-    "vue-moment": "^3.1.0",
+    "vue-moment": "^4.1.0",
     "vue-router": "^2.7.0",
     "vue-server-renderer": "^2.6.9",
     "vue-slider-component": "^2.5.3",
