@@ -66,7 +66,7 @@
     "mini-css-extract-plugin": "^0.5.0",
     "mocha": "^5.2.0",
     "nightwatch": "^1.0.18",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "nyc": "^11.4.1",
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
