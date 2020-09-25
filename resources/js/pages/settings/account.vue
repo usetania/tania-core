@@ -22,12 +22,12 @@
             .form-group
               label(for="password")
                 translate Password
-              input.form-control#new_password(type="password" v-validate="'required|confirmed|min:5|max:100'" :class="{'input': true, 'text-danger': errors.has('password') }" v-model="user.password" name="password" placeholder="")
+              input.form-control#new_password(type="password" v-validate="'required|min:5|max:100'" ref="password" :class="{'input': true, 'text-danger': errors.has('password') }" v-model="user.password" name="password" placeholder="")
               span.help-block.text-danger(v-show="errors.has('password')") {{ errors.first('password') }}
             .form-group
               label(for="password_confirmation")
                 translate Confirm Password
-              input.form-control#confirm_new_password(type="password" :class="{'input': true, 'text-danger': errors.has('password_confirmation') }" v-model="user.password_confirmation" name="password_confirmation" placeholder="")
+              input.form-control#confirm_new_password(type="password" v-validate="'required|confirmed:password'" data-vv-as="password confirmation" :class="{'input': true, 'text-danger': errors.has('password_confirmation') }" v-model="user.password_confirmation" name="password_confirmation" placeholder="")
               span.help-block.text-danger(v-show="errors.has('password_confirmation')") {{ errors.first('password_confirmation') }}
             .form-group
               BtnSave
@@ -56,6 +56,10 @@ export default {
   mounted() {
     this.user.username = this.current_user.username;
     this.user.uid = this.current_user.uid;
+    const dict = {
+      custom: { password_confirmation: { confirmed: 'The password confirmation does not match.' } }
+    }
+    this.$validator.localize('en', dict);
   },
   methods: {
     ...mapActions([
