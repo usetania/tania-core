@@ -1,0 +1,1559 @@
+@font-face {
+  font-family: "cryptocoins";
+  src: url('cryptocoins/cryptocoins.woff2') format('woff2'),
+    url('cryptocoins/cryptocoins.woff') format('woff'),
+    url('cryptocoins/cryptocoins.ttf') format('truetype');
+}
+
+/* .cc:before { */
+.cc::before {
+  font-family: "cryptocoins";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  /* speak: none; only necessary if not using the private unicode range (firstGlyph option) */
+  text-decoration: none;
+  text-transform: none;
+}
+
+
+.cc.ADA-alt::before {
+  content: "\E001";
+}
+
+.cc.ADA::before {
+  content: "\E002";
+}
+
+.cc.ADC-alt::before {
+  content: "\E003";
+}
+
+.cc.ADC::before {
+  content: "\E004";
+}
+
+.cc.AEON-alt::before {
+  content: "\E005";
+}
+
+.cc.AEON::before {
+  content: "\E006";
+}
+
+.cc.AMP-alt::before {
+  content: "\E007";
+}
+
+.cc.AMP::before {
+  content: "\E008";
+}
+
+.cc.ANC-alt::before {
+  content: "\E009";
+}
+
+.cc.ANC::before {
+  content: "\E00A";
+}
+
+.cc.ARCH-alt::before {
+  content: "\E00B";
+}
+
+.cc.ARCH::before {
+  content: "\E00C";
+}
+
+.cc.ARDR-alt::before {
+  content: "\E00D";
+}
+
+.cc.ARDR::before {
+  content: "\E00E";
+}
+
+.cc.ARK-alt::before {
+  content: "\E00F";
+}
+
+.cc.ARK::before {
+  content: "\E010";
+}
+
+.cc.AST::before {
+  content: "\E011";
+}
+
+.cc.AUR-alt::before {
+  content: "\E012";
+}
+
+.cc.AUR::before {
+  content: "\E013";
+}
+
+.cc.BANX-alt::before {
+  content: "\E014";
+}
+
+.cc.BANX::before {
+  content: "\E015";
+}
+
+.cc.BAT-alt::before {
+  content: "\E016";
+}
+
+.cc.BAT::before {
+  content: "\E017";
+}
+
+.cc.BAY-alt::before {
+  content: "\E018";
+}
+
+.cc.BAY::before {
+  content: "\E019";
+}
+
+.cc.BC-alt::before {
+  content: "\E01A";
+}
+
+.cc.BLK-alt::before {
+  content: "\E01A";
+}
+
+.cc.BC::before {
+  content: "\E01B";
+}
+
+.cc.BLK::before {
+  content: "\E01B";
+}
+
+.cc.BCH-alt::before {
+  content: "\E01C";
+}
+
+.cc.BCC-alt::before {
+  content: "\E01C";
+}
+
+.cc.BCH::before {
+  content: "\E01D";
+}
+
+.cc.BCC::before {
+  content: "\E01D";
+}
+
+.cc.BCN-alt::before {
+  content: "\E01E";
+}
+
+.cc.BCN::before {
+  content: "\E01F";
+}
+
+.cc.BCY::before {
+  content: "\E020";
+}
+
+.cc.BELA::before {
+  content: "\E021";
+}
+
+.cc.BFT-alt::before {
+  content: "\E022";
+}
+
+.cc.BFT::before {
+  content: "\E023";
+}
+
+.cc.BLZ::before {
+  content: "\E024";
+}
+
+.cc.BNB::before {
+  content: "\E025";
+}
+
+.cc.BRK-alt::before {
+  content: "\E026";
+}
+
+.cc.BRK::before {
+  content: "\E027";
+}
+
+.cc.BRX-alt::before {
+  content: "\E028";
+}
+
+.cc.BRX::before {
+  content: "\E029";
+}
+
+.cc.BSD-alt::before {
+  content: "\E02A";
+}
+
+.cc.BSD::before {
+  content: "\E02B";
+}
+
+.cc.BTA::before {
+  content: "\E02C";
+}
+
+.cc.BTC-alt::before {
+  content: "\E02D";
+}
+
+.cc.BTC::before {
+  content: "\E02E";
+}
+
+.cc.BTCD-alt::before {
+  content: "\E02F";
+}
+
+.cc.BTCD::before {
+  content: "\E030";
+}
+
+.cc.BTCP-alt::before {
+  content: "\E031";
+}
+
+.cc.BTCP::before {
+  content: "\E032";
+}
+
+.cc.BTG::before {
+  content: "\E033";
+}
+
+.cc.BTM-alt::before {
+  content: "\E034";
+}
+
+.cc.BTM::before {
+  content: "\E035";
+}
+
+.cc.BTS-alt::before {
+  content: "\E036";
+}
+
+.cc.BTS::before {
+  content: "\E037";
+}
+
+.cc.BURST::before {
+  content: "\E038";
+}
+
+.cc.CLAM-alt::before {
+  content: "\E039";
+}
+
+.cc.CLAM::before {
+  content: "\E03A";
+}
+
+.cc.CLOAK-alt::before {
+  content: "\E03B";
+}
+
+.cc.CLOAK::before {
+  content: "\E03C";
+}
+
+.cc.CVC-alt::before {
+  content: "\E03D";
+}
+
+.cc.CVC::before {
+  content: "\E03E";
+}
+
+.cc.DAO-alt::before {
+  content: "\E03F";
+}
+
+.cc.DAO::before {
+  content: "\E040";
+}
+
+.cc.DASH-alt::before {
+  content: "\E041";
+}
+
+.cc.DASH::before {
+  content: "\E042";
+}
+
+.cc.DCR-alt::before {
+  content: "\E043";
+}
+
+.cc.DCR::before {
+  content: "\E044";
+}
+
+.cc.DCT-alt::before {
+  content: "\E045";
+}
+
+.cc.DCT::before {
+  content: "\E046";
+}
+
+.cc.DGB-alt::before {
+  content: "\E047";
+}
+
+.cc.DGB::before {
+  content: "\E048";
+}
+
+.cc.DGD::before {
+  content: "\E049";
+}
+
+.cc.DGX::before {
+  content: "\E04A";
+}
+
+.cc.DMD-alt::before {
+  content: "\E04B";
+}
+
+.cc.DMD::before {
+  content: "\E04C";
+}
+
+.cc.DOGE-alt::before {
+  content: "\E04D";
+}
+
+.cc.DOGE::before {
+  content: "\E04E";
+}
+
+.cc.EMC-alt::before {
+  content: "\E04F";
+}
+
+.cc.EMC::before {
+  content: "\E050";
+}
+
+.cc.EMC2-alt::before {
+  content: "\E051";
+}
+
+.cc.EMC2::before {
+  content: "\E052";
+}
+
+.cc.EOS-alt::before {
+  content: "\E053";
+}
+
+.cc.EOS::before {
+  content: "\E054";
+}
+
+.cc.ERC-alt::before {
+  content: "\E055";
+}
+
+.cc.ERC::before {
+  content: "\E056";
+}
+
+.cc.ETC-alt::before {
+  content: "\E057";
+}
+
+.cc.ETC::before {
+  content: "\E058";
+}
+
+.cc.ETH-alt::before {
+  content: "\E059";
+}
+
+.cc.ETH::before {
+  content: "\E05A";
+}
+
+.cc.EXP-alt::before {
+  content: "\E05B";
+}
+
+.cc.EXP::before {
+  content: "\E05C";
+}
+
+.cc.FC2-alt::before {
+  content: "\E05D";
+}
+
+.cc.FC2::before {
+  content: "\E05E";
+}
+
+.cc.FCT-alt::before {
+  content: "\E05F";
+}
+
+.cc.FCT::before {
+  content: "\E060";
+}
+
+.cc.FLDC-alt::before {
+  content: "\E061";
+}
+
+.cc.FLDC::before {
+  content: "\E062";
+}
+
+.cc.FLO-alt::before {
+  content: "\E063";
+}
+
+.cc.FLO::before {
+  content: "\E064";
+}
+
+.cc.FRK-alt::before {
+  content: "\E065";
+}
+
+.cc.FRK::before {
+  content: "\E066";
+}
+
+.cc.FTC-alt::before {
+  content: "\E067";
+}
+
+.cc.FTC::before {
+  content: "\E068";
+}
+
+.cc.FUN::before {
+  content: "\E069";
+}
+
+.cc.GAME-alt::before {
+  content: "\E06A";
+}
+
+.cc.GAME::before {
+  content: "\E06B";
+}
+
+.cc.GBYTE-alt::before {
+  content: "\E06C";
+}
+
+.cc.GBYTE::before {
+  content: "\E06D";
+}
+
+.cc.GDC-alt::before {
+  content: "\E06E";
+}
+
+.cc.GDC::before {
+  content: "\E06F";
+}
+
+.cc.GEMZ-alt::before {
+  content: "\E070";
+}
+
+.cc.GEMZ::before {
+  content: "\E071";
+}
+
+.cc.GLD-alt::before {
+  content: "\E072";
+}
+
+.cc.GLD::before {
+  content: "\E073";
+}
+
+.cc.GNO-alt::before {
+  content: "\E074";
+}
+
+.cc.GNO::before {
+  content: "\E075";
+}
+
+.cc.GNT-alt::before {
+  content: "\E076";
+}
+
+.cc.GNT::before {
+  content: "\E077";
+}
+
+.cc.GOLOS-alt::before {
+  content: "\E078";
+}
+
+.cc.GOLOS::before {
+  content: "\E079";
+}
+
+.cc.GRC-alt::before {
+  content: "\E07A";
+}
+
+.cc.GRC::before {
+  content: "\E07B";
+}
+
+.cc.GRS::before {
+  content: "\E07C";
+}
+
+.cc.HEAT-alt::before {
+  content: "\E07D";
+}
+
+.cc.HEAT::before {
+  content: "\E07E";
+}
+
+.cc.HSR::before {
+  content: "\E07F";
+}
+
+.cc.HUC-alt::before {
+  content: "\E080";
+}
+
+.cc.HUC::before {
+  content: "\E081";
+}
+
+.cc.ICN-alt::before {
+  content: "\E082";
+}
+
+.cc.ICN::before {
+  content: "\E083";
+}
+
+.cc.ICX::before {
+  content: "\E084";
+}
+
+.cc.IFC-alt::before {
+  content: "\E085";
+}
+
+.cc.IFC::before {
+  content: "\E086";
+}
+
+.cc.INCNT-alt::before {
+  content: "\E087";
+}
+
+.cc.INCNT::before {
+  content: "\E088";
+}
+
+.cc.IOC-alt::before {
+  content: "\E089";
+}
+
+.cc.IOC::before {
+  content: "\E08A";
+}
+
+.cc.IOTA-alt::before {
+  content: "\E08B";
+}
+
+.cc.IOTA::before {
+  content: "\E08C";
+}
+
+.cc.JBS-alt::before {
+  content: "\E08D";
+}
+
+.cc.JBS::before {
+  content: "\E08E";
+}
+
+.cc.KMD-alt::before {
+  content: "\E08F";
+}
+
+.cc.KMD::before {
+  content: "\E090";
+}
+
+.cc.KOBO::before {
+  content: "\E091";
+}
+
+.cc.KORE-alt::before {
+  content: "\E092";
+}
+
+.cc.KORE::before {
+  content: "\E093";
+}
+
+.cc.LBC-alt::before {
+  content: "\E094";
+}
+
+.cc.LBC::before {
+  content: "\E095";
+}
+
+.cc.LDOGE-alt::before {
+  content: "\E096";
+}
+
+.cc.LDOGE::before {
+  content: "\E097";
+}
+
+.cc.LSK-alt::before {
+  content: "\E098";
+}
+
+.cc.LSK::before {
+  content: "\E099";
+}
+
+.cc.LTC-alt::before {
+  content: "\E09A";
+}
+
+.cc.LTC::before {
+  content: "\E09B";
+}
+
+.cc.MAID-alt::before {
+  content: "\E09C";
+}
+
+.cc.MAID::before {
+  content: "\E09D";
+}
+
+.cc.MARKS-alt::before {
+  content: "\E09E";
+}
+
+.cc.MARKS::before {
+  content: "\E09F";
+}
+
+.cc.Bitmark::before {
+  content: "\E09F";
+}
+
+.cc.MCO-alt::before {
+  content: "\E0A0";
+}
+
+.cc.MCO::before {
+  content: "\E0A1";
+}
+
+.cc.MINT-alt::before {
+  content: "\E0A2";
+}
+
+.cc.MINT::before {
+  content: "\E0A3";
+}
+
+.cc.MONA-alt::before {
+  content: "\E0A4";
+}
+
+.cc.MONA::before {
+  content: "\E0A5";
+}
+
+.cc.MRC::before {
+  content: "\E0A6";
+}
+
+.cc.MSC-alt::before {
+  content: "\E0A7";
+}
+
+.cc.MSC::before {
+  content: "\E0A8";
+}
+
+.cc.MTL-alt::before {
+  content: "\E0A9";
+}
+
+.cc.MTL::before {
+  content: "\E0AA";
+}
+
+.cc.MTR-alt::before {
+  content: "\E0AB";
+}
+
+.cc.MTR::before {
+  content: "\E0AC";
+}
+
+.cc.MUE-alt::before {
+  content: "\E0AD";
+}
+
+.cc.MUE::before {
+  content: "\E0AE";
+}
+
+.cc.MYST-alt::before {
+  content: "\E0AF";
+}
+
+.cc.MYST::before {
+  content: "\E0B0";
+}
+
+.cc.NAV-alt::before {
+  content: "\E0B1";
+}
+
+.cc.NAV::before {
+  content: "\E0B2";
+}
+
+.cc.NBT::before {
+  content: "\E0B3";
+}
+
+.cc.USNBT::before {
+  content: "\E0B3";
+}
+
+.cc.NEO-alt::before {
+  content: "\E0B4";
+}
+
+.cc.NEO::before {
+  content: "\E0B5";
+}
+
+.cc.GAS::before {
+  content: "\E0B5";
+}
+
+.cc.NEOS-alt::before {
+  content: "\E0B6";
+}
+
+.cc.NEOS::before {
+  content: "\E0B7";
+}
+
+.cc.NEU-alt::before {
+  content: "\E0B8";
+}
+
+.cc.NEU::before {
+  content: "\E0B9";
+}
+
+.cc.NLG-alt::before {
+  content: "\E0BA";
+}
+
+.cc.NLG::before {
+  content: "\E0BB";
+}
+
+.cc.NMC-alt::before {
+  content: "\E0BC";
+}
+
+.cc.NMC::before {
+  content: "\E0BD";
+}
+
+.cc.NMR::before {
+  content: "\E0BE";
+}
+
+.cc.NOTE-alt::before {
+  content: "\E0BF";
+}
+
+.cc.NOTE::before {
+  content: "\E0C0";
+}
+
+.cc.NVC-alt::before {
+  content: "\E0C1";
+}
+
+.cc.NVC::before {
+  content: "\E0C2";
+}
+
+.cc.NXT-alt::before {
+  content: "\E0C3";
+}
+
+.cc.NXT::before {
+  content: "\E0C4";
+}
+
+.cc.OK-alt::before {
+  content: "\E0C5";
+}
+
+.cc.OK::before {
+  content: "\E0C6";
+}
+
+.cc.OMG-alt::before {
+  content: "\E0C7";
+}
+
+.cc.OMG::before {
+  content: "\E0C8";
+}
+
+.cc.OMNI-alt::before {
+  content: "\E0C9";
+}
+
+.cc.OMNI::before {
+  content: "\E0CA";
+}
+
+.cc.OPAL-alt::before {
+  content: "\E0CB";
+}
+
+.cc.OPAL::before {
+  content: "\E0CC";
+}
+
+.cc.PART-alt::before {
+  content: "\E0CD";
+}
+
+.cc.PART::before {
+  content: "\E0CE";
+}
+
+.cc.PASC::before {
+  content: "\E0CF";
+}
+
+.cc.PIGGY-alt::before {
+  content: "\E0D0";
+}
+
+.cc.PIGGY::before {
+  content: "\E0D1";
+}
+
+.cc.PINK-alt::before {
+  content: "\E0D2";
+}
+
+.cc.PINK::before {
+  content: "\E0D3";
+}
+
+.cc.PIVX-alt::before {
+  content: "\E0D4";
+}
+
+.cc.PIVX::before {
+  content: "\E0D5";
+}
+
+.cc.POT-alt::before {
+  content: "\E0D6";
+}
+
+.cc.POT::before {
+  content: "\E0D7";
+}
+
+.cc.PPC-alt::before {
+  content: "\E0D8";
+}
+
+.cc.PPC::before {
+  content: "\E0D9";
+}
+
+.cc.PPT::before {
+  content: "\E0DA";
+}
+
+.cc.QRK-alt::before {
+  content: "\E0DB";
+}
+
+.cc.QRK::before {
+  content: "\E0DC";
+}
+
+.cc.QTUM-alt::before {
+  content: "\E0DD";
+}
+
+.cc.QTUM::before {
+  content: "\E0DE";
+}
+
+.cc.RADS-alt::before {
+  content: "\E0DF";
+}
+
+.cc.RADS::before {
+  content: "\E0E0";
+}
+
+.cc.RBIES-alt::before {
+  content: "\E0E1";
+}
+
+.cc.RBIES::before {
+  content: "\E0E2";
+}
+
+.cc.RBT-alt::before {
+  content: "\E0E3";
+}
+
+.cc.RBT::before {
+  content: "\E0E4";
+}
+
+.cc.RBY-alt::before {
+  content: "\E0E5";
+}
+
+.cc.RBY::before {
+  content: "\E0E6";
+}
+
+.cc.RDD-alt::before {
+  content: "\E0E7";
+}
+
+.cc.RDD::before {
+  content: "\E0E8";
+}
+
+.cc.REP-alt::before {
+  content: "\E0E9";
+}
+
+.cc.REP::before {
+  content: "\E0EA";
+}
+
+.cc.RHOC::before {
+  content: "\E0EB";
+}
+
+.cc.RIC-alt::before {
+  content: "\E0EC";
+}
+
+.cc.RIC::before {
+  content: "\E0ED";
+}
+
+.cc.RISE-alt::before {
+  content: "\E0EE";
+}
+
+.cc.RISE::before {
+  content: "\E0EF";
+}
+
+.cc.SALT-alt::before {
+  content: "\E0F0";
+}
+
+.cc.SALT::before {
+  content: "\E0F1";
+}
+
+.cc.SAR-alt::before {
+  content: "\E0F2";
+}
+
+.cc.SAR::before {
+  content: "\E0F3";
+}
+
+.cc.SCOT-alt::before {
+  content: "\E0F4";
+}
+
+.cc.SCOT::before {
+  content: "\E0F5";
+}
+
+.cc.SDC-alt::before {
+  content: "\E0F6";
+}
+
+.cc.SDC::before {
+  content: "\E0F7";
+}
+
+.cc.SIA-alt::before {
+  content: "\E0F8";
+}
+
+.cc.SIA::before {
+  content: "\E0F9";
+}
+
+.cc.SC::before {
+  content: "\E0F9";
+}
+
+.cc.SJCX-alt::before {
+  content: "\E0FA";
+}
+
+.cc.SJCX::before {
+  content: "\E0FB";
+}
+
+.cc.STORJ::before {
+  content: "\E0FB";
+}
+
+.cc.SLG-alt::before {
+  content: "\E0FC";
+}
+
+.cc.SLG::before {
+  content: "\E0FD";
+}
+
+.cc.SLS-alt::before {
+  content: "\E0FE";
+}
+
+.cc.SLS::before {
+  content: "\E0FF";
+}
+
+.cc.SNRG-alt::before {
+  content: "\E100";
+}
+
+.cc.SNRG::before {
+  content: "\E101";
+}
+
+.cc.SNT::before {
+  content: "\E102";
+}
+
+.cc.START-alt::before {
+  content: "\E103";
+}
+
+.cc.START::before {
+  content: "\E104";
+}
+
+.cc.STEEM-alt::before {
+  content: "\E105";
+}
+
+.cc.STEEM::before {
+  content: "\E106";
+}
+
+.cc.SBD::before {
+  content: "\E106";
+}
+
+.cc.STRAT-alt::before {
+  content: "\E107";
+}
+
+.cc.STRAT::before {
+  content: "\E108";
+}
+
+.cc.SWIFT-alt::before {
+  content: "\E109";
+}
+
+.cc.SWIFT::before {
+  content: "\E10A";
+}
+
+.cc.SYNC-alt::before {
+  content: "\E10B";
+}
+
+.cc.SYNC::before {
+  content: "\E10C";
+}
+
+.cc.SYS-alt::before {
+  content: "\E10D";
+}
+
+.cc.SYS::before {
+  content: "\E10E";
+}
+
+.cc.TRIG-alt::before {
+  content: "\E10F";
+}
+
+.cc.TRIG::before {
+  content: "\E110";
+}
+
+.cc.TRX::before {
+  content: "\E111";
+}
+
+.cc.TX-alt::before {
+  content: "\E112";
+}
+
+.cc.TX::before {
+  content: "\E113";
+}
+
+.cc.UBQ-alt::before {
+  content: "\E114";
+}
+
+.cc.UBQ::before {
+  content: "\E115";
+}
+
+.cc.UNITY-alt::before {
+  content: "\E116";
+}
+
+.cc.UNITY::before {
+  content: "\E117";
+}
+
+.cc.USDT-alt::before {
+  content: "\E118";
+}
+
+.cc.USDT::before {
+  content: "\E119";
+}
+
+.cc.VERI::before {
+  content: "\E11A";
+}
+
+.cc.VET::before {
+  content: "\E11B";
+}
+
+.cc.VIA-alt::before {
+  content: "\E11C";
+}
+
+.cc.VIA::before {
+  content: "\E11D";
+}
+
+.cc.VIOR-alt::before {
+  content: "\E11E";
+}
+
+.cc.VIOR::before {
+  content: "\E11F";
+}
+
+.cc.VNL-alt::before {
+  content: "\E120";
+}
+
+.cc.VNL::before {
+  content: "\E121";
+}
+
+.cc.VPN-alt::before {
+  content: "\E122";
+}
+
+.cc.VPN::before {
+  content: "\E123";
+}
+
+.cc.VRC-alt::before {
+  content: "\E124";
+}
+
+.cc.VRC::before {
+  content: "\E125";
+}
+
+.cc.VTC-alt::before {
+  content: "\E126";
+}
+
+.cc.VTC::before {
+  content: "\E127";
+}
+
+.cc.WAVES-alt::before {
+  content: "\E128";
+}
+
+.cc.WAVES::before {
+  content: "\E129";
+}
+
+.cc.XAI-alt::before {
+  content: "\E12A";
+}
+
+.cc.XAI::before {
+  content: "\E12B";
+}
+
+.cc.XBC::before {
+  content: "\E12C";
+}
+
+.cc.XBS-alt::before {
+  content: "\E12D";
+}
+
+.cc.XBS::before {
+  content: "\E12E";
+}
+
+.cc.XCP-alt::before {
+  content: "\E12F";
+}
+
+.cc.XCP::before {
+  content: "\E130";
+}
+
+.cc.XEM-alt::before {
+  content: "\E131";
+}
+
+.cc.XEM::before {
+  content: "\E132";
+}
+
+.cc.XLM-alt::before {
+  content: "\E133";
+}
+
+.cc.XLM::before {
+  content: "\E134";
+}
+
+.cc.XMR::before {
+  content: "\E135";
+}
+
+.cc.XMY::before {
+  content: "\E136";
+}
+
+.cc.XPM-alt::before {
+  content: "\E137";
+}
+
+.cc.XPM::before {
+  content: "\E138";
+}
+
+.cc.XRB::before {
+  content: "\E139";
+}
+
+.cc.XRP-alt::before {
+  content: "\E13A";
+}
+
+.cc.XRP::before {
+  content: "\E13B";
+}
+
+.cc.XTZ-alt::before {
+  content: "\E13C";
+}
+
+.cc.XTZ::before {
+  content: "\E13D";
+}
+
+.cc.XVC-alt::before {
+  content: "\E13E";
+}
+
+.cc.XVC::before {
+  content: "\E13F";
+}
+
+.cc.XVG-alt::before {
+  content: "\E140";
+}
+
+.cc.XVG::before {
+  content: "\E141";
+}
+
+.cc.XZC-alt::before {
+  content: "\E142";
+}
+
+.cc.XZC::before {
+  content: "\E143";
+}
+
+.cc.YBC-alt::before {
+  content: "\E144";
+}
+
+.cc.YBC::before {
+  content: "\E145";
+}
+
+.cc.ZEC-alt::before {
+  content: "\E146";
+}
+
+.cc.ZEC::before {
+  content: "\E147";
+}
+
+.cc.ZEIT-alt::before {
+  content: "\E148";
+}
+
+.cc.ZEIT::before {
+  content: "\E149";
+}
+
+.cc.ZRX-alt::before {
+  content: "\E14A";
+}
+
+.cc.ZRX::before {
+  content: "\E14B";
+}
+
+
+.ADA { color: #3CC8C8; }
+.ADC { color: #3CB0E5; }
+.AEON { color: #164450; }
+.AMP { color: #048DD2; }
+.ANC { color: #000; }
+.ARCH { color: #002652; }
+.ARDR { color: #1162a1; }
+.ARK { color: #F70000; }
+.AST { color: #18F18F; }
+.AUR { color: #136c5e; }
+.BANX { color: #225BA6; }
+.BAT { color: #9e1f63; }
+.BAY { color: #584ba1; }
+.BC { color: #202121; }
+.BCN { color: #964F51; }
+.BCY { color: #123A5A; }
+.BELA { color: #009EF9; }
+.BFT { color: #4fc3f7; }
+.BLZ { color: #6BE6BE }
+.BRK { color: #194fa0; }
+.BRX { color: #a8c300; }
+.BSD { color: #1186E7; }
+.BTA { color: #210094; }
+.BTC, .BCH { color: #F7931A; }
+.BTG { color: #eba809; }
+.BTCD { color: #2A72DC; }
+.BTCP { color: #272D63; }
+.BTM { color: #9FA8B4; }
+.BTS { color: #03A9E0; }
+.BURST { color: #2D2D2D; }
+.CLAM { color: #D6AB31; }
+.CLOAK { color: #DF3F1E; }
+.CVC { color: #3AB03E }
+.DAO { color: #FF3B3B; }
+.DASH { color: #1c75bc; }
+.DCR { color: #3b7cfb; }
+.DCT { color: #008770; }
+.DGB { color: #0066cc; }
+.DGD, .DGX { color: #D8A24A; }
+.DMD { color: #5497b2; }
+.DOGE { color: #BA9F33; }
+.EMC { color: #674c8c; }
+.EMC2 { color: #00CCFF; }
+.EOS { color: #19191A; }
+.ERC { color: #101E84; }
+.ETC { color: #669073; }
+.ETH { color: #282828; }
+.EXP { color: #FFAA5C; }
+.FC2 { color: #040405; }
+.FCT { color: #2175BB; }
+.FLDC { color: #C40E09; }
+.FLO { color: #1358C8; }
+.FRK { color: #0633cd; }
+.FTC { color: #679EF1; }
+.FUN { color: #EF3A5C; }
+.GAME { color: #ed1b24; }
+.GBYTE { color: #2C3E50; }
+.GDC { color: #E9A226; }
+.GEMZ { color: #e86060; }
+.GLD { color: #E8BE24; }
+.GNO { color: #00A6C4; }
+.GNT { color: #00d6e3; }
+.GOLOS { color: #2670B7; }
+.GRC { color: #88A13C; }
+.GRS { color: #648FA0; }
+.HEAT { color: #ff5606; }
+.HUC { color: #FFC018; }
+.ICN { color: #4c6f8c; }
+.ICX { color: #22C8CC; }
+.IFC { color: #ed272d; }
+.INCNT { color: #f2932f; }
+.IOC { color: #2fa3de; }
+.IOTA { color: #FFFFFF; }
+.JBS { color: #1A8BCD; }
+.KMD { color: #326464; }
+.KOBO { color: #80C342; }
+.KORE { color: #DF4124; }
+.LBC { color: #015C47; }
+.LDOGE { color: #ffcc00; }
+.LSK { color: #0D4EA0; }
+.LTC { color: #838383; }
+.MAID { color: #5492D6; }
+.MARKS { color: #504C4C; }
+.MCO { color: #0D3459; }
+.MINT { color: #006835; }
+.MONA { color: #a99364; }
+.MRC { color: #4279bd; }
+.MSC { color: #1D4983; }
+.MTL { color: #242424; }
+.MTR { color: #b92429; }
+.MUE { color: #f5a10e; }
+.NAV { color: #7D59B5; }
+.MYST { color: #f5a10e; }
+.NBT { color: #FFC93D; }
+.NEO { color: #58BF00; }
+.NEOS { color: #1d1d1b; }
+.NEU { color: #2983c0; }
+.NLG { color: #003E7E; }
+.NMC { color: #6787B7; }
+.NMR { color: #8DE8DE; }
+.NOTE { color: #42daff; }
+.NVC { color: #ecab41; }
+.NXT { color: #008FBB; }
+.OK { color: #0165A4; }
+.OMG { color: #1A53F0; }
+.OMNI { color: #18347E; }
+.OPAL { color: #7193AA; }
+.PART { color: #05D5A3; }
+.PASC { color: #F7931E; }
+.PIGGY { color: #F27A7A; }
+.PINK { color: #ED31CA; }
+.PIVX { color: #3b2f4d; }
+.POT { color: #105B2F; }
+.PPC { color: #3FA30C; }
+.PPT { color: #5a9ef6; }
+.QRK { color: #22AABF; }
+.QTUM { color: #359BCE; }
+.RADS { color: #924cea; }
+.RBIES { color: #C62436; }
+.RBT { color: #0d4982; }
+.RBY { color: #D31F26; }
+.RDD { color: #ED1C24; }
+.REP { color: #40a2cb; }
+.RIC { color: #60E4DD; }
+.RHOC { color: #C26C26; }
+.RISE { color: #43CEA2; }
+.SALT { color: #373C43; }
+.SAR { color: #1B72B8; }
+.SCOT { color: #3498DB; }
+.SDC { color: #981D2D; }
+.SIA { color: #00CBA0; }
+.SJCX { color: #003366; }
+.SLG { color: #5A6875; }
+.SLS { color: #1EB549; }
+.SNRG { color: #160363; }
+.START { color: #01AEF0; }
+.STEEM { color: #1A5099; }
+.STRAT { color: #2398dd; }
+.SWIFT { color: #428BCA; }
+.SYNC { color: #008DD2; }
+.SYS { color: #0098DA; }
+.TRIG { color: #1fbff4; }
+.TRX { color: #c62734; }
+.TX { color: #1F8BCC; }
+.UBQ { color: #00ec8d; }
+.UNITY { color: #ED8527; }
+.USDT { color: #2CA07A; }
+.VEN { color: #15BDFF; }
+.VIA { color: #565656; }
+.VIOR { color: #1F52A4; }
+.VNL { color: #404249; }
+.VPN { color: #589700; }
+.VRC { color: #418bca; }
+.VTC { color: #1b5c2e; }
+.WAVES { color: #24aad6; }
+.XAI { color: #2ef99f; }
+.XBC { color: #F7931A; }
+.XBS { color: #d3261d; }
+.XCP { color: #EC1550; }
+.XEM { color: #41bf76; }
+.XLM { color: #08B5E5; }
+.XMR { color: #FF6600; }
+.XMY { color: #BC3182; }
+.XPM { color: #e5b625; }
+.XRP { color: #346AA9; }
+.XTZ { color: #A6DF00; }
+.XVC { color: #B50126; }
+.XVG { color: #42AFB2; }
+.XZC { color: #23B852; }
+.YBC { color: #D6C154; }
+.ZEC { color: #e5a93d; }
+.ZEIT { color: #ACACAC; }
+.ZRX { color: #302C2C; }

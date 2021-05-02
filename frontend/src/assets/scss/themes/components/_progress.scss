@@ -1,0 +1,16 @@
+// ============================
+//     Progress css start
+// ============================
+
+.progress {
+    overflow: visible;
+
+    .progress-bar {
+        @each $color, $value in $theme-colors {
+            &.bg-#{$color} {
+                box-shadow: 0 8px 8px -1px transparentize($value, 0.7);
+            }
+        }
+    }
+}
+// Progress css end

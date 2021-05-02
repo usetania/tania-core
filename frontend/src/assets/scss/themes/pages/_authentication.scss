@@ -1,0 +1,253 @@
+/**  =====================
+      Authentication css start
+==========================  **/
+
+.auth-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    min-width: 100%;
+    min-height: 100vh;
+    background: $primary;
+    @media (min-width: 1200px) {
+        .container {
+            max-width: 1140px;
+        }
+    }
+    @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+        display: block;
+        margin: 0 auto;
+
+        > .row {
+            min-height: 100vh;
+
+            > .aut-bg-img {
+                min-height: 100vh;
+            }
+        }
+    }
+
+    .saprator {
+        position: relative;
+        margin: 8px 0;
+
+        span {
+            background: #fff;
+            position: relative;
+            padding: 0 10px;
+            z-index: 5;
+            font-size: 20px;
+        }
+
+        &:after {
+            content: "";
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: $border-color;
+            z-index: 1;
+        }
+    }
+
+    a,
+    p > a {
+        color: $header-color;
+        font-weight: 600;
+    }
+
+    .input-group {
+        background: transparent;
+    }
+
+    .card {
+        margin-bottom: 0;
+        padding: 8px;
+
+        .card-body {
+            padding: 20px 25px 20px 40px;
+        }
+        @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            display: block;
+        }
+    }
+
+    > div {
+        z-index: 5;
+    }
+
+    .auth-content {
+        position: relative;
+        padding: 15px;
+        z-index: 5;
+
+        &:not(.container) {
+            width: 400px;
+
+            .card-body {
+                padding: 40px 35px;
+            }
+        }
+        @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            margin: 0 auto;
+        }
+    }
+
+    &.auth-v3 {
+        background: linear-gradient(to right , $primary 50%, #fff 0);
+
+        .auth-content {
+            width: 800px;
+
+            .card {
+                overflow: hidden;
+                padding: 0;
+                box-shadow: 0 5px 30px 1px rgba(0, 0, 0, .1);
+
+                .card-body {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    height: 100%;
+                }
+            }
+
+            .img-card-side {
+                position: relative;
+                padding: 0;
+
+                .img-card-side-content {
+                    position: absolute;
+                    top: 30px;
+                    left: 45px;
+                }
+            }
+        }
+
+        &.lockscreen {
+            .auth-content {
+                width: 340px;
+
+                .card {
+                    overflow: visible;
+                }
+
+                .card-body {
+                    img {
+                        margin-top: -100px;
+                        margin-bottom: 30px;
+                        border-radius: 10px;
+                        box-shadow: 0 5px 30px 1px rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
+        }
+        @media only screen and (max-width: 767px) {
+            .img-card-side {
+                display: none;
+            }
+        }
+    }
+
+    .auth-side-img {
+        padding-right: 400px;
+        position: absolute;
+        width: 100%;
+        top: 0;
+        left: 0;
+        justify-content: center;
+        @media only screen and (max-width: 991px) {
+            display: none;
+        }
+    }
+
+    .auth-side-form {
+        position: relative;
+        min-height: 100%;
+        background: #fff;
+        display: inline-flex;
+        align-items: center;
+        left: auto;
+        float: right;
+
+        > * {
+            position: relative;
+            z-index: 5;
+        }
+        @media only screen and (max-width: 991px) {
+            width: 100%;
+            justify-content: center;
+
+            .auth-content:not(.container) {
+                max-width: 350px;
+            }
+        }
+    }
+
+    &.aut-bg-img {
+        .auth-side-form {
+            @media (-ms-high-contrast: none), (-ms-high-contrast: active) {
+                height: 100vh;
+            }
+        }
+    }
+    @media only screen and (max-width: 767px) {
+        .card {
+            .card-body {
+                padding: 30px 15px;
+            }
+        }
+    }
+
+    &.offline {
+        background-image: none;
+
+        h1 {
+            font-size: 87px;
+            font-weight: 700;
+        }
+
+        &:before {
+            display: none;
+        }
+    }
+
+    .card-body .carousel-indicators {
+        margin: 15px 0 10px;
+        bottom: 0;
+
+        li {
+            width: 50px;
+            background-color: transparentize($primary, 0.6);
+            border-radius: 5px;
+            height: 4px;
+
+            &.active {
+                background-color: $primary;
+            }
+        }
+    }
+
+    .img-logo-overlay {
+        position: absolute;
+        top: 40px;
+        left: 50px;
+    }
+}
+/* image varient start */
+
+.aut-bg-img {
+    background-image: url("../../../images/auth/img-auth-big.jpg");
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+
+    .auth-content {
+        padding: 70px 40px;
+    }
+}
+/* image varient End */
+/**====== Authentication css end ======**/

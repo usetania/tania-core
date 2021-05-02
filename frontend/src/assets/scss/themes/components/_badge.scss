@@ -1,0 +1,13 @@
+// ============================
+//     Badge css start
+// ============================
+
+.badge {
+    @each $color, $value in $theme-colors {
+        &.bg-light-#{$color} {
+            background: scale-color($value, $soft-bg-level);
+            color: $value;
+            border-color: scale-color($value, $soft-bg-level);
+        }
+    }
+}

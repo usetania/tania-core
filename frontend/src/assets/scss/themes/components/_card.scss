@@ -1,0 +1,128 @@
+// ============================
+//     Card css start
+// ============================
+
+.card {
+    box-shadow: $card-shadow;
+    margin-bottom: 24px;
+    transition: box-shadow 0.2s ease-in-out;
+
+    .card-header {
+        border-bottom: 1px solid $border-color;
+
+        h5 {
+            margin-bottom: 0;
+            color: #525f71;
+            font:{
+                size:14px;
+                weight: 600;
+            }
+
+            +p,
+            +small {
+                margin-top: 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
+        .card-header-right {
+            right: 10px;
+            top: 10px;
+            display: inline-block;
+            float: right;
+            padding: 0;
+            position: absolute;
+            @media only screen and (max-width: 575px) {
+                display: none;
+            }
+
+            .dropdown-menu {
+                margin-top: 0;
+
+                li {
+                    cursor: pointer;
+
+                    a {
+                        font-size: 14px;
+                        text-transform: capitalize;
+                    }
+                }
+            }
+
+            .btn.dropdown-toggle {
+                border: none;
+                background: transparent;
+                box-shadow: none;
+                color: #888;
+
+                i {
+                    margin-right: 0;
+                }
+
+                &:after {
+                    display: none;
+                }
+
+                &:focus {
+                    box-shadow: none;
+                    outline: none;
+                }
+            }
+            // custom toggler
+            .btn.dropdown-toggle {
+                border: none;
+                background: transparent;
+                box-shadow: none;
+                padding: 0;
+                width: 20px;
+                height: 20px;
+                right: 8px;
+                top: 8px;
+
+                &.mobile-menu span {
+                    background-color: #888;
+                    height: 2px;
+                    border-radius: 5px;
+
+                    &:after,
+                    &:before {
+                        border-radius: 5px;
+                        height: 2px;
+                        background-color: #888;
+                    }
+                }
+            }
+
+            .nav-pills {
+                padding: 0;
+                box-shadow: none;
+                background: transparent;
+            }
+        }
+    }
+
+    .card-footer {
+        transition: box-shadow 0.2s ease-in-out;
+        border-top: 1px solid $border-color;
+    }
+
+    &:hover {
+        .card-footer[class*="bg-"] {
+            box-shadow: none;
+        }
+    }
+    @each $color, $value in $theme-colors {
+        // .card-footer.bg-#{$color},
+        &.bg-#{$color} {
+            box-shadow: 0 9px 9px -1px transparentize($value, 0.7);
+        }
+    }
+}
+@include media-breakpoint-down(sm) {
+    .card {
+        margin-bottom: 20px;
+    }
+}
+// Card css end

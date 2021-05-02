@@ -1,0 +1,1318 @@
+@import "../variables";
+/* ===================== to do page start ======================================= */
+#task-container {
+    ul {
+        overflow: hidden;
+        padding: 0;
+    }
+
+    li {
+        float: left;
+        width: 49%;
+        overflow: auto;
+        height: auto;
+        min-height: 10px;
+        background: #fff;
+        display: inline-block;
+        padding: 20px;
+        border: 1px solid #ccc;
+        color: #666;
+        border-top: 5px solid $primary;
+        cursor: pointer;
+        margin-bottom: 20px;
+        margin-right: 2%;
+        transition: all 0.3s;
+        position: relative;
+
+        &:nth-child(2n) {
+            margin-right: 0;
+        }
+    }
+
+    li.complete {
+        opacity: 1;
+        border-top: 9px solid $danger;
+        transition: all ease-in 0.3s;
+
+        &:before {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            content: "";
+            width: 55px;
+            height: 55px;
+            background-size: 100%;
+        }
+
+        p {
+            text-decoration: line-through;
+        }
+    }
+    @media screen and (max-width:580px) {
+        li {
+            width: 100%;
+        }
+    }
+}
+
+.new-task {
+    .to-do-list {
+        .cr {
+            float: left;
+            top: 0;
+            margin-right: 16px;
+        }
+    }
+
+    label input[type=checkbox] {
+        display: none;
+    }
+}
+
+.checkbox-fade {
+    .cr {
+        border-radius: 6px;
+        border: 1px solid #e3e3e3;
+        cursor: pointer;
+        display: inline-block;
+        float: left;
+        height: 24px;
+        margin-right: 0.5em;
+        position: relative;
+        width: 24px;
+        margin-right: 16px;
+        top: 0;
+    }
+}
+
+.task-panel {
+    .to-do-label {
+        margin-bottom: 15px;
+
+        &:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding: 0;
+        }
+    }
+}
+
+.done-task .captions,
+.done-task span {
+    color: #919aa3;
+    text-decoration: line-through;
+}
+
+.to-do-list {
+    i {
+        color: #ccc;
+        font-size: 17px;
+        opacity: 0;
+    }
+
+    &:hover {
+        i {
+            opacity: 1;
+            transition: opacity ease-in 0.3s;
+        }
+    }
+}
+
+.to-do-list {
+    h6 {
+        display: inline-block;
+    }
+
+    .done-task {
+        opacity: 0.7;
+
+        > div {
+            filter: grayscale(0.8);
+        }
+
+        h6,
+        p,
+        span {
+            text-decoration: line-through;
+        }
+    }
+
+    .checkbox-fade {
+        .check-task {
+            display: block;
+        }
+
+        .to-content {
+            display: inline-block;
+        }
+
+        .cr {
+            border-radius: 6px;
+            border: 1px solid #e3e3e3;
+            cursor: pointer;
+            display: inline-block;
+            float: left;
+            height: 24px;
+            margin-right: 0.5em;
+            position: relative;
+            width: 24px;
+            margin: 0;
+            top: 5px;
+
+            .cr-icon {
+                color: #fff;
+                font-size: 0.8em;
+                left: 0;
+                line-height: 0;
+                position: absolute;
+                right: 0;
+                text-align: center;
+                top: 50%;
+            }
+        }
+
+        label input[type=checkbox] {
+            display: none;
+        }
+
+        label input[type=checkbox]+.cr > .cr-icon {
+            transform: scale(3) rotateZ(-20deg);
+            opacity: 0;
+            transition: all 0.3s ease-in;
+        }
+
+        label input[type=checkbox]:checked+.cr > .cr-icon {
+            transform: scale(1) rotateZ(0deg);
+            opacity: 1;
+        }
+
+        label input[type=checkbox]:checked+.cr {
+            background: $primary;
+            border: 0;
+        }
+    }
+}
+
+new-task {
+    .to-do-list {
+        .cr {
+            float: left;
+            top: 0;
+            margin-right: 16px;
+        }
+    }
+
+    label input[type=checkbox] {
+        display: none;
+    }
+}
+/* ===================== to do page end =========================================*/
+/* ===================== Note page start ========================================*/
+.note-card {
+    .note-box-aside {
+        border-right: 1px solid #ddd;
+    }
+
+    .Note-header {
+        padding: 20px 0;
+    }
+
+    #Note-pad {
+        border: none;
+        resize: none;
+        background: 0 0;
+        padding: 0 20px 0 50px;
+        line-height: 35px;
+    }
+
+    .note-write {
+        position: relative;
+        background: -webkit-linear-gradient(top,#98dcfa 0%,#e1f5fe 5%) 0 0;
+        background-size: 100% 35px;
+
+        &:before {
+            content: '';
+            position: absolute;
+            width: 0;
+            top: 0;
+            left: 32px;
+            bottom: 0;
+            border-left: 1px solid #4fc3f7;
+        }
+
+        &:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            top: 0;
+            left: 34px;
+            bottom: 0;
+            border-left: 1px solid #4fc3f7;
+        }
+    }
+
+    .Note-delete {
+        margin-bottom: 0;
+        opacity: 0;
+        background: rgba(0,0,0,.6);
+        border: none;
+        position: absolute;
+        right: 20px;
+        color: #fff;
+        transition: all ease-in 0.3s;
+        border-radius: 2px;
+        cursor: pointer;
+        transform: translateX(10px);
+    }
+
+    #Note-list {
+        li:hover {
+            .Note-delete {
+                opacity: 1;
+                transform: translateX(0px);
+            }
+        }
+    }
+}
+
+.list-group-item.active {
+    background-color: $primary;
+    border-color: $primary;
+}
+/* ===================== Note page start ======================================== */
+/* ===================== Gallery-masonry page start ============================= */
+.gallery-masonry {
+    .card-columns {
+        column-count: 4;
+    }
+}
+@media screen and (max-width: 1400px) {
+    .gallery-masonry {
+        .card-columns {
+            column-count: 3;
+        }
+    }
+}
+@media screen and (max-width: 992px) {
+    .gallery-masonry {
+        .card-columns {
+            column-count: 2;
+        }
+    }
+}
+@media screen and (max-width: 575px) {
+    .gallery-masonry {
+        .card-columns {
+            column-count: 1;
+        }
+    }
+}
+
+.job-meta-data {
+    i {
+        margin-right: 5px;
+        color: $primary;
+    }
+}
+/* ===================== Gallery-masonry page end ============================= */
+/* ===================== Task-list page start ============================= */
+.task-data {
+    img {
+        width: 40px;
+        box-shadow: none;
+    }
+
+    i {
+        color: $header-color;
+    }
+
+    .dropdown-toggle {
+        &:after {
+            color: $header-color;
+        }
+    }
+}
+
+.task-board-left {
+    .task-right-header-revision,
+    .task-right-header-status,
+    .task-right-header-users {
+        padding-bottom: 10px;
+        padding-top: 10px;
+        border-bottom: 1px solid #f1f1f1;
+        cursor: pointer;
+    }
+
+    .taskboard-right-progress,
+    .taskboard-right-revision,
+    .taskboard-right-users {
+        padding-top: 10px;
+    }
+
+    .taskboard-right-progress {
+        .progress {
+            height: 9px;
+            margin-bottom: 25px;
+        }
+    }
+
+    .user-box {
+        .media-object {
+            height: 50px;
+            width: 50px;
+            cursor: pointer;
+        }
+
+        .media-left {
+            position: relative;
+        }
+
+        .btn.btn-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+
+    .live-status {
+        height: 8px;
+        width: 8px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        border-radius: 100%;
+        top: 5px;
+    }
+}
+
+.filter-bar {
+    .navbar {
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
+        padding: 0.5rem 1rem;
+        @media screen and (max-width:557px) {
+            .f-text {
+                display: block;
+                width: 100%;
+            }
+
+            .f-view {
+                padding-left: 24px;
+
+                span {
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+
+    .label {
+        border-radius: 4px;
+        font-size: 13px;
+        padding: 3px 7px;
+    }
+
+    .task-detail {
+        margin-bottom: 5px;
+    }
+
+    .card-task {
+        .task-list-table {
+            display: inline-block;
+
+            img {
+                width: 40px;
+                box-shadow: none;
+            }
+
+            i {
+                color: $header-color;
+            }
+        }
+
+        .task-board {
+            float: right;
+            margin-top: 5px;
+
+            .dropdown {
+                display: inline-block;
+            }
+
+            .btn {
+                padding: 4px 10px;
+                font-size: 10px;
+                margin: 0;
+            }
+        }
+    }
+}
+
+.assign-user,
+.task-comment {
+    img {
+        width: 45px;
+        box-shadow: none;
+    }
+}
+/* ===================== Task-list page end ===================================== */
+/* ===================== Invoice page start ===================================== */
+.invoice-contact {
+    display: flex;
+    margin-bottom: 30px;
+    padding-top: 30px;
+    align-items: center;
+        @media screen and (max-width:767px) {
+            margin-bottom: 0;
+        }
+}
+
+.invoice-table.table {
+    td {
+        border: 0;
+        padding: 4px 0;
+    }
+}
+
+.invoive-info {
+    display: flex;
+    margin-bottom: 30px;
+
+
+    h6 {
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .invoice-order.table {
+        padding-left: 0;
+
+        th {
+            border: 0;
+            padding: 4px 0;
+
+            &:first-child {
+                padding-left: 0;
+                width: 80px;
+            }
+        }
+    }
+}
+
+.invoice-total.table {
+    background: #f3f3f3;
+    padding: 30px 0;
+
+    th {
+        border: 0;
+        padding: 4px 0;
+        text-align: right;
+    }
+
+    td {
+        text-align: right;
+    }
+
+    tbody {
+        padding-right: 20px;
+        float: right;
+    }
+}
+
+.invoice-summary {
+    .label {
+        border-radius: 5px;
+        padding: 3px 10px;
+        font-size: 12px;
+    }
+}
+
+.invoice-list {
+    .btn {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+
+    .task-list-table {
+        display: inline-block;
+    }
+}
+/* ===================== Invoice page end ======================================= */
+/*  ================ new css ==================================================== */
+.datepicker-dropdown {
+    padding: 20px;
+    color: #fff;
+    background: #3f4d67;
+    font-size: 14px;
+    z-index: 10001;
+
+    &:after {
+        border-bottom: 6px solid #3f4d67;
+    }
+}
+
+.datepicker-dropdown.datepicker-orient-top:after {
+    border-top: 6px solid #3f4d67;
+}
+
+.datepicker .datepicker-switch:hover,
+.datepicker .next:hover,
+.datepicker .prev:hover,
+.datepicker table tr td.active.active,
+.datepicker table tr td.active.highlighted.active,
+.datepicker table tr td.active.highlighted:active,
+.datepicker table tr td.active:active,
+.datepicker table tr td.day:hover,
+.datepicker table tr td.focused,
+.datepicker table tr td.highlighted,
+.datepicker table tr td.today,
+.datepicker tfoot tr th:hover {
+    background-color: #333f54;
+    color: #fff;
+}
+
+.datepicker table tr td.disabled,
+.datepicker table tr td.disabled:hover,
+.datepicker table tr td.new,
+.datepicker table tr td.old {
+    color: #ffffff94;
+}
+
+.syntax-output {
+    border-radius: 0.25rem;
+    border: 1px solid $border-color;
+}
+
+.owl-carousel {
+    .owl-nav {
+        button {
+            &.owl-next,
+            &.owl-prev {
+                padding: 3px 9px !important;
+                background-color: $primary;
+                color: #fff;
+            }
+        }
+    }
+
+    button:focus {
+        outline: none;
+        color: #fff;
+    }
+}
+
+.owl-theme .owl-nav [class*=owl-]:hover {
+    background-color: $primary;
+    color: #fff;
+}
+
+.counter b {
+    font-size: 24px;
+}
+
+.tour-mobile .error-block {
+    display: none;
+}
+
+.message-mobile {
+    span {
+        font-size: 16px;
+    }
+
+    .task-right-header-status {
+        margin-bottom: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f1f1f1;
+        cursor: pointer;
+        @media screen and (min-width: 992px) {
+            display: none;
+        }
+    }
+}
+
+.fullcalendar-card {
+    .fc-button {
+        background-color: $primary;
+        border-color: #fff;
+        color: #fff;
+        background-image: none;
+        box-shadow: none;
+        text-shadow: none;
+        height: 37px;
+        padding: 0 15px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+    @media screen and (max-width:768px) {
+        .fc .fc-toolbar > * > * {
+            float: none;
+        }
+
+        .fc-toolbar .fc-center,
+        .fc-toolbar .fc-left,
+        .fc-toolbar .fc-right {
+            float: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            text-align: center;
+            margin: 0 auto 10px;
+        }
+    }
+}
+
+.msg-user-list.scroll-div {
+    height: calc(100vh - 300px);
+    position: relative;
+}
+
+.msg-user-chat.scroll-div {
+    height: calc(100vh - 330px);
+    position: relative;
+}
+@media screen and (max-width: 1199px) {
+    .note-card .note-box-aside {
+        border: none !important;
+    }
+}
+@media screen and (max-width: 991px) {
+    .ch-block {
+        display: none;
+    }
+
+    .msg-block {
+        &.dis-chat {
+            .taskboard-right-progress {
+                display: none;
+            }
+
+            .ch-block {
+                display: block;
+            }
+        }
+    }
+}
+@media screen and (max-width: 992px) {
+    .tour-mobile .error-block {
+        display: block;
+    }
+
+    .tour-mobile .page-wrapper {
+        display: none;
+    }
+}
+@media screen and (min-width: 768px) {
+    .horizontal-mobile {
+        display: none;
+    }
+}
+/* ==============================================================
+                     email-page  Start
+====================================================== */
+.email-card {
+    .tab-content {
+        box-shadow: none;
+
+        .btn {
+            border: none;
+
+            i {
+                font-size: 18px;
+                line-height: 1.4;
+            }
+        }
+
+        .table {
+            background: transparentize($body-bg ,0.7);
+
+            tr {
+                transition: all 0.12s ease-in-out;
+
+                td,
+                th {
+                    padding: 0.65rem 0.75rem;
+
+                    .checkbox {
+                        padding: 12px 0;
+                    }
+
+                    label {
+                        margin-bottom: 0;
+                    }
+                }
+
+                &.unread {
+                    background: transparentize($body-bg ,0.3);
+                }
+
+                &:hover {
+                    background: $body-bg;
+                    box-shadow: 0 1px 3px 0 #e2e5e8;
+                }
+            }
+        }
+
+        .nav-pills {
+            margin-left: 0;
+            border-top: 1px solid $border-color;
+            padding: 15px 0 0;
+
+            > li {
+                .nav-link {
+                    border-radius: 0;
+                    border: none;
+                    padding: 5px 12px 22px;
+                    position: relative;
+
+                    &::after {
+                        content: "";
+                        width: calc(100% - 24px);
+                        height: 3px;
+                        position: absolute;
+                        left: 12px;
+                        bottom: 0;
+                        border-radius: 3px 3px 0 0;
+                    }
+
+                    &.active {
+                        background: transparent;
+                        color: $danger;
+
+                        &:after {
+                            background: $danger;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .nav-pills {
+        padding: 0;
+        margin-left: -25px;
+
+        > li {
+            .nav-link {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-size: $font-size-base;
+                padding: 8px 25px;
+                border-radius: 0 20px 20px 0;
+                text-transform: capitalize;
+                border: 1px solid transparent;
+                border-left: none;
+
+                i {
+                    padding: 0;
+                    margin-right: 10px;
+                    font-size: 16px;
+                    display: inline-block;
+                    position: relative;
+                    top: 2px;
+                }
+            }
+
+            .nav-link.active,
+            .show > .nav-link {
+                font-weight: 600;
+                background: transparentize($danger, 0.9);
+                color: $danger;
+                border-color: transparentize($danger, 0.9);
+            }
+        }
+    }
+
+    .email-more-link {
+        font-size: 16px;
+
+        i {
+            line-height: 1.1;
+        }
+    }
+
+    .mail-body-content {
+        a {
+            color: $body-color;
+        }
+
+        .mail-attach {
+            display: inline-block;
+            border: 1px solid $border-color;
+            border-radius: 50px;
+            padding: 5px 15px;
+            margin-top: 10px;
+        }
+    }
+
+    .email-btn {
+        .btn {
+            border: none;
+        }
+    }
+    @media screen and (max-width:767px) {
+        .input-group {
+            margin-top: 20px;
+        }
+    }
+}
+
+.email-content {
+    border-bottom: 1px solid $border-color;
+    padding-bottom: 15px;
+}
+
+.email-read {
+    display: flex;
+    align-items: flex-start;
+}
+@media screen and (max-width:575px) {
+    .email-read {
+        display: inline-block;
+
+        .photo-table {
+            margin-bottom: 10px;
+        }
+    }
+
+    .email-contant {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+/* ==================  email-page  End  =================== */
+/* ==============================================================
+                     image-cropper  Start
+====================================================== */
+.docs-buttons {
+    .btn {
+        margin-bottom: 10px !important;
+    }
+}
+
+.docs-data {
+    .input-group {
+        background: transparent;
+        margin-bottom: 10px;
+    }
+
+    > .input-group > label {
+        min-width: 80px;
+    }
+
+    .input-group > span {
+        min-width: 50px;
+    }
+}
+
+.img-container {
+    min-height: 200px;
+    max-height: 516px;
+    margin-bottom: 20px;
+
+    > img {
+        max-width: 100%;
+    }
+    @media (min-width: 768px) {
+        min-height: 516px;
+    }
+}
+
+.docs-preview {
+    margin-right: -15px;
+
+    .img-preview {
+        float: left;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+
+        > img {
+            max-width: 100%;
+        }
+    }
+
+    .preview-lg {
+        width: 100% !important;
+    }
+
+    .preview-md {
+        width: 139px;
+        height: 78px;
+    }
+
+    .preview-sm {
+        width: 69px;
+        height: 39px;
+    }
+
+    .preview-xs {
+        width: 35px;
+        height: 20px;
+        margin-right: 0;
+    }
+}
+
+.docs-buttons > .btn,
+.docs-buttons > .btn-group,
+.docs-buttons > .form-control {
+    margin-right: 5px;
+}
+
+.docs-toggles > .btn,
+.docs-toggles > .btn-group,
+.docs-toggles > .dropdown {
+    margin-bottom: 10px;
+}
+
+.docs-tooltip {
+    display: block;
+    margin: -6px -12px;
+    padding: 6px 12px;
+
+    > .icon {
+        margin: 0 -3px;
+        vertical-align: top;
+    }
+}
+
+.tooltip-inner {
+    white-space: normal;
+}
+
+.btn-upload {
+    .tooltip-inner {
+        white-space: nowrap;
+    }
+}
+@media (max-width: 400px) {
+    .btn-group-crop {
+        margin-right: -15px !important;
+
+        > .btn {
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .docs-tooltip {
+            margin-left: -5px;
+            margin-right: -5px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+    }
+}
+
+.docs-options {
+    .dropdown-menu {
+        width: 100%;
+
+        > li {
+            padding: 3px 20px;
+            font-size: 14px;
+
+            &:hover {
+                background-color: #f7f7f7;
+            }
+
+            > label {
+                display: block;
+            }
+        }
+    }
+}
+
+.docs-cropped {
+    .modal-body {
+        text-align: center;
+
+        > img,
+        > canvas {
+            max-width: 100%;
+        }
+    }
+}
+
+.card-body {
+    .docs-options {
+        .dropdown-menu {
+            top: inherit;
+        }
+    }
+}
+/* ==================  image-cropper end  ======================================= */
+/* ==================  Editable start  ======================================= */
+.tabledit-input:disabled {
+    display: none;
+}
+/* ==================  Editable end  ======================================= */
+/* ==================  priceing start  ======================================= */
+
+.price-1 {
+    border-radius: 5px;
+    border-top: 5px solid $primary;
+
+    sub {
+        font-size: 14px;
+    }
+
+    .btn {
+        display: block;
+        margin: 0 auto;
+    }
+
+    ul {
+        li {
+            position: relative;
+
+            &:after {
+                content: "\e83f";
+                color: #fff;
+                position: absolute;
+                width: 18px;
+                font-family: "feather";
+                height: 18px;
+                background: $primary;
+                border-radius: 50px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+            }
+        }
+    }
+
+    &.active {
+        border-top: 5px solid $success-color;
+
+        ul {
+            li {
+                &:after {
+                    background: $success-color;
+                }
+            }
+        }
+    }
+}
+
+.price-2 {
+    padding-bottom: 70px;
+
+    sub {
+        font-size: 14px;
+    }
+
+    .price-badge {
+        position: absolute;
+        top: -8px;
+        background: $warning;
+        text-align: center;
+        color: #fff;
+        font-size: 10px;
+        padding: 2px 12px;
+        line-height: 12px;
+        border-radius: 2px;
+        left: 50%;
+        margin-left: -44px;
+    }
+
+    .btn {
+        display: block;
+        margin: 0 auto;
+    }
+
+    ul {
+        li {
+            position: relative;
+
+            &:after {
+                content: "\e83f";
+                color: $success-color;
+                position: absolute;
+                width: 16px;
+                font-family: "feather";
+                height: 16px;
+                border: 1px solid $success-color;
+                border-radius: 50px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                background: #fff;
+            }
+        }
+    }
+
+    .price-button {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+    }
+    /*&.active {
+        transform: scale(1.05);
+        z-index: 1;
+    }*/
+    &.enterprise {
+        background: $primary;
+
+        li {
+            color: #fff;
+
+            &:after {
+                background: transparent;
+                border-color: #fff;
+                font-size: 0;
+                left: -1px;
+            }
+        }
+
+        .btn {
+            background: #fff;
+            color: #000;
+            border-color: transparent;
+        }
+    }
+}
+
+.price-3 {
+    .card-body {
+        background: $primary;
+    }
+
+    ul {
+        li {
+            color: #fff;
+
+            &:after {
+                content: "\e83f";
+                color: #fff;
+                position: absolute;
+                font-family: "feather";
+                font-size: 20px;
+            }
+        }
+    }
+
+    h2 {
+        font-size: 70px;
+
+        sub {
+            font-weight: normal;
+        }
+    }
+
+    .card-footer {
+        h5 {
+            color: $primary;
+        }
+    }
+}
+
+.price-4 {
+    padding-bottom: 80px;
+
+    sub {
+        font-size: 18px;
+    }
+
+    h2 {
+        font-size: 60px;
+    }
+
+    .btn {
+        display: block;
+        margin: 0 auto;
+    }
+
+    ul {
+        li {
+            position: relative;
+
+            &:after {
+                content: "\e83f";
+                color: $success-color;
+                position: absolute;
+                width: 16px;
+                font-family: "feather";
+                height: 16px;
+                border: 1px solid $success-color;
+                border-radius: 50px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                background: #fff;
+            }
+        }
+    }
+
+    .price-button {
+        position: absolute;
+        bottom: 30px;
+        left: 0;
+        right: 0;
+    }
+
+    &.active {
+        transform: scale(1.05);
+        z-index: 1;
+        border: 2px solid $success-color;
+        border-left: 2px solid $success-color !important;
+    }
+    @media screen and (max-width:991px) {
+        &.active {
+            transform: none;
+        }
+    }
+}
+
+.price-5 {
+    border-radius: 0 0 8px 8px;
+
+    .btn {
+        width: 100%;
+    }
+
+    &.price-b1 {
+        border-top: 5px solid $secondary-color;
+    }
+
+    &.price-b2 {
+        border-top: 5px solid $success-color;
+
+        hr {
+            border-color: $success-color;
+        }
+    }
+
+    &.price-b3 {
+        border-top: 5px solid $warning;
+    }
+}
+
+.price-6 {
+    transition: all 0.25s ease-in-out;
+
+    .card-body {
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
+
+    img {
+        width: 70px;
+    }
+    /*  &:hover {
+        transform: scale(1.05);
+    }*/
+}
+/* ==================  priceing end  ======================================= */

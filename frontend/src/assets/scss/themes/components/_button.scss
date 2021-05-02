@@ -1,0 +1,71 @@
+// ============================
+//     Button css start
+// ============================
+
+.btn {
+    font-size: 14px;
+
+    i {
+        font-size: 18px;
+    }
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    &[class*="btn-light-"] {
+        box-shadow: none;
+    }
+
+    &[class*="btn-outline-"]:not(:hover) {
+        box-shadow: none;
+    }
+
+    &.btn-shadow {
+        box-shadow: 0 6px 7px -1px rgba(80, 86, 175, 0.3);
+    }
+
+    &.btn-sm {
+        i {
+            font-size: 14px;
+        }
+    }
+}
+@each $color, $value in $theme-colors {
+    .btn-light-#{$color} {
+        background: scale-color($value, $soft-bg-level);
+        color: $value;
+        border-color: scale-color($value, $soft-bg-level);
+
+        &:hover {
+            background: $value;
+            color: #fff;
+            border-color: $value;
+        }
+
+        &.focus,
+        &:focus {
+            background: $value;
+            color: #fff;
+            border-color: $value;
+        }
+
+        &:not(:disabled):not(.disabled).active,
+        &:not(:disabled):not(.disabled):active,
+        .show > &.dropdown-toggle {
+            background: $value;
+            color: #fff;
+            border-color: $value;
+        }
+    }
+
+    .btn-check:active,
+    .btn-check:checked {
+        + .btn-light-#{$color} {
+            background: $value;
+            color: #fff;
+            border-color: $value;
+        }
+    }
+}
