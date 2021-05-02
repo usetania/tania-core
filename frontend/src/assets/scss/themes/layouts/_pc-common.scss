@@ -1,0 +1,414 @@
+// ============================
+//     Common layout css start
+// ============================
+
+.pc-container {
+    position: relative;
+    top: $header-height;
+    margin-left: $sidebar-width;
+    min-height: calc(100vh - #{$header-height});
+
+    .pcoded-content {
+        padding-left: 30px;
+        padding-right: 30px;
+        padding-top: 30px;
+    }
+
+    .page-header + .row{
+        padding-top: 50px;
+    }
+    .page-header + .pcoded-content {
+        padding-top: calc(30px + 55px);
+    }
+}
+
+.minimenu {
+    .pc-container {
+        margin-left: $sidebar-collapsed-width;
+    }
+
+    .page-header {
+        left: $sidebar-collapsed-width;
+    }
+}
+
+.page-header {
+    background: $header-background;
+    box-shadow: $header-shadow;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    top: $header-height;
+    left: $sidebar-width;
+    right: 0;
+    z-index: 1023;
+    min-height: 55px;
+    padding: 13px 30px;
+
+    .page-block {
+        width: 100%;
+    }
+
+    .page-header-title {
+        display: inline-block;
+    }
+
+    h5 {
+        margin-bottom: 0;
+        margin-right: 8px;
+        padding-right: 8px;
+        font-weight: 500;
+        border-right: 1px solid darken($body-bg, 10%);
+    }
+
+    +.row {
+        // margin-top: 55px;
+    }
+
+    .breadcrumb {
+        padding: 0;
+        display: inline-flex;
+        margin-bottom: 0;
+        background: transparent;
+        font-size: 13px;
+
+        a {
+            color: $body-color;
+        }
+
+        .breadcrumb-item {
+            a:hover {
+                color: $primary;
+            }
+
+            + .breadcrumb-item::before {
+                position: relative;
+                top: 2px;
+            }
+
+            &:last-child {
+                opacity: 0.75;
+            }
+        }
+
+        svg {
+            width: 14px;
+            height: 14px;
+            vertical-align: baseline;
+        }
+    }
+}
+
+.upgrade-card {
+    .card-body {
+        padding-bottom: 100px;
+        z-index: 1;
+        position: relative;
+    }
+
+    > .container {
+        z-index: 5;
+        position: relative;
+        margin-top: -60px;
+    }
+
+    .up-price-table {
+        td {
+            border-color: $body-bg;
+        }
+
+        th {
+            border: none;
+
+            +th {
+                border-radius: 5px 5px 0 0;
+                padding: 20px 0;
+            }
+        }
+
+        tbody {
+            tr {
+                &:first-child td {
+                    border-top: none;
+                }
+            }
+        }
+
+        td,
+        th {
+            text-align: right;
+
+            +td,
+            +th {
+                text-align: center;
+            }
+
+            +td {
+                border-left: 1px solid $body-bg;
+            }
+        }
+    }
+}
+// ======= Burgur menu start
+
+.hamburger {
+    display: inline-block;
+    cursor: pointer;
+    transition: filter 0.15s linear;
+    width: 20px;
+    height: 20px;
+
+    &.is-active {
+        .hamburger-inner {
+            background-color: #000;
+
+            &::after,
+            &::before {
+                background-color: #000;
+            }
+        }
+    }
+}
+
+.hamburger-inner {
+    display: block;
+    top: 50%;
+    margin-top: -2px;
+    width: 18px;
+    height: 2px;
+    background-color: $header-color;
+    border-radius: 4px;
+    position: absolute;
+    transition: transform 0.15s ease;
+
+    &::after,
+    &::before {
+        width: 18px;
+        height: 2px;
+        background-color: $header-color;
+        border-radius: 4px;
+        position: absolute;
+        transition: transform 0.15s ease;
+    }
+
+    &::after,
+    &::before {
+        content: "";
+        display: block;
+    }
+
+    &::before {
+        top: -6px;
+    }
+
+    &::after {
+        bottom: -6px;
+    }
+}
+
+.hamburger--arrowturn.is-active .hamburger-inner {
+    transform: rotate(-180deg);
+}
+
+.hamburger--arrowturn.is-active .hamburger-inner::before {
+    transform: translate3d(4px, 2px, 0) rotate(45deg) scale(0.7, 1);
+}
+
+.hamburger--arrowturn.is-active .hamburger-inner::after {
+    transform: translate3d(4px, -2px, 0) rotate(-45deg) scale(0.7, 1);
+}
+// ======= Burgur menu End
+@media (max-width: 1024px) {
+    .pc-container {
+        margin-left: 0;
+        .page-header + .row,
+        .page-header + .pcoded-content,
+        .pcoded-content {
+            padding-top: 30px;
+        }
+    }
+
+    .page-header {
+        position: relative;
+        left: 0;
+        top: 0;
+    }
+
+    .minimenu {
+        .page-header {
+            left: 0;
+        }
+
+        .pc-container {
+            margin-left: 0;
+        }
+    }
+}
+@include media-breakpoint-down(sm) {
+    .pc-container {
+        .pcoded-content {
+            padding: 20px;
+        }
+
+        .container {
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+
+    .page-header {
+        padding: 13px 20px;
+
+        h5 {
+            padding-bottom: 5px;
+            margin-bottom: 0;
+            border-right: none;
+            font-size: 14px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            margin-bottom: 0;
+            font-size: 11px;
+        }
+
+        .text-md-right {
+            margin-top: 5px;
+        }
+    }
+}
+
+.ps {
+    overflow: hidden !important;
+    overflow-anchor: none;
+    touch-action: auto;
+}
+
+.ps__rail-x {
+    display: none;
+    opacity: 0;
+    transition: background-color 0.2s linear, opacity 0.2s linear;
+    height: 15px;
+    bottom: 0;
+    position: absolute;
+}
+
+.ps__rail-y {
+    display: none;
+    opacity: 0;
+    transition: background-color 0.2s linear, opacity 0.2s linear;
+    width: 15px;
+    right: 0;
+    position: absolute;
+}
+
+.ps--active-x > .ps__rail-x,
+.ps--active-y > .ps__rail-y {
+    display: block;
+    background-color: transparent;
+}
+
+.ps:hover > {
+    .ps__rail-x,
+    .ps__rail-y {
+        opacity: 0.6;
+    }
+}
+
+.ps--focus > {
+    .ps__rail-x,
+    .ps__rail-y {
+        opacity: 0.6;
+    }
+}
+
+.ps--scrolling-x > .ps__rail-x,
+.ps--scrolling-y > .ps__rail-y {
+    opacity: 0.6;
+}
+
+.ps {
+    .ps__rail-x.ps--clicking,
+    .ps__rail-x:focus,
+    .ps__rail-x:hover,
+    .ps__rail-y.ps--clicking,
+    .ps__rail-y:focus,
+    .ps__rail-y:hover {
+        background-color: #eee;
+        opacity: 0.9;
+    }
+}
+
+.ps__thumb-x {
+    background-color: #aaa;
+    border-radius: 6px;
+    transition: background-color 0.2s linear, height 0.2s ease-in-out;
+    height: 6px;
+    bottom: 2px;
+    position: absolute;
+}
+
+.ps__thumb-y {
+    background-color: #aaa;
+    border-radius: 6px;
+    transition: background-color 0.2s linear, width 0.2s ease-in-out;
+    width: 6px;
+    right: 2px;
+    position: absolute;
+}
+
+.ps__rail-x {
+    &.ps--clicking .ps__thumb-x,
+    &:focus > .ps__thumb-x,
+    &:hover > .ps__thumb-x {
+        background-color: #999;
+        height: 11px;
+    }
+}
+
+.ps__rail-y {
+    &.ps--clicking .ps__thumb-y,
+    &:focus > .ps__thumb-y,
+    &:hover > .ps__thumb-y {
+        background-color: #999;
+        width: 11px;
+    }
+}
+@supports (-ms-overflow-style: none) {
+    .ps {
+        overflow: auto !important;
+    }
+}
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .ps {
+        overflow: auto !important;
+    }
+}
+
+.navbar-content {
+    position: relative;
+}
+
+.ps__rail-y {
+    z-index: 5;
+}
+
+.ps .ps__rail-x.ps--clicking,
+.ps .ps__rail-x:focus,
+.ps .ps__rail-x:hover,
+.ps .ps__rail-y.ps--clicking,
+.ps .ps__rail-y:focus,
+.ps .ps__rail-y:hover {
+    background: transparent;
+}
+
+.ps__thumb-y {
+    background: darken($body-bg,25%);
+}
+
+.ps__rail-y.ps--clicking .ps__thumb-y,
+.ps__rail-y:focus > .ps__thumb-y,
+.ps__rail-y:hover > .ps__thumb-y {
+    background: darken($body-bg,20%);
+}
+// Common layout css end

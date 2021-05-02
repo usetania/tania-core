@@ -1,0 +1,161 @@
+[ui-pnotify].ui-pnotify {
+    &.stack-bar-top {
+        width: 100%;
+    }
+
+    &.stack-bar-bottom {
+        width: 100%;
+    }
+
+    .brighttheme-notice {
+        background-color: lighten($warning,25%);
+
+        div,
+        h4 {
+            color: darken($warning,30%);
+        }
+    }
+
+    .brighttheme-info {
+        background-color: lighten($primary,25%);
+
+        div,
+        h4 {
+            color: darken($primary,30%);
+        }
+    }
+
+    .brighttheme-success {
+        background-color: lighten($success,25%);
+
+        div,
+        h4 {
+            color: darken($success,30%);
+        }
+    }
+
+    .brighttheme-error {
+        background-color: lighten($danger,25%);
+        background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+        background-size: 1rem 1rem;
+
+        div,
+        h4 {
+            color: danger($danger,30%);
+        }
+    }
+
+    .brighttheme-icon-notice {
+        background-color: darken($warning,30%);
+        color: lighten($warning,25%);
+    }
+
+    .brighttheme-icon-info {
+        background-color: darken($primary,30%);
+        color: lighten($primary,25%);
+    }
+
+    .brighttheme-icon-success {
+        background-color: darken($success,30%);
+        color: lighten($success,25%);
+    }
+
+    .brighttheme-icon-error {
+        width: 0;
+        height: 0;
+        font-size: 0;
+        line-height: 0;
+        border-radius: 0;
+        border-left: 0.6rem solid transparent;
+        border-right: 0.6rem solid transparent;
+        border-bottom: 1.2rem solid danger($danger,30%);
+        color: lighten($danger,25%);
+
+        &:after {
+            position: absolute;
+            top: 0.1rem;
+            left: -.25rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            line-height: 1.4rem;
+            font-family: "Courier New", Courier, monospace;
+            content: "!";
+        }
+    }
+}
+// ===================================================================================================
+// ===================================================================================================
+// ===================================================================================================
+// ===================================================================================================
+// ===================================================================================================
+// ===================================================================================================
+
+[ui-pnotify] {
+    &.ui-pnotify .brighttheme {
+        -webkit-border-radius: 0;
+        -moz-border-radius: 0;
+        border-radius: 0;
+
+        &.ui-pnotify-container {
+            padding: 1.3rem;
+        }
+    }
+
+    &.ui-pnotify-with-icon .brighttheme {
+        .ui-pnotify-confirm,
+        .ui-pnotify-text,
+        .ui-pnotify-title {
+            margin-left: 1.8rem;
+        }
+    }
+}
+
+[dir=rtl] [ui-pnotify].ui-pnotify-with-icon .brighttheme {
+    .ui-pnotify-confirm,
+    .ui-pnotify-text,
+    .ui-pnotify-title {
+        margin-right: 1.8rem;
+        margin-left: 0;
+    }
+}
+
+[ui-pnotify].ui-pnotify {
+    .brighttheme-icon-notice {
+        &:after {
+            content: "!";
+        }
+    }
+
+    .brighttheme-icon-info {
+        &:after {
+            content: "i";
+        }
+    }
+
+    .brighttheme-icon-success {
+        &:after {
+            content: "\002713";
+        }
+    }
+
+    .brighttheme-icon-error {
+        &:after {
+            content: "!";
+        }
+    }
+
+    .brighttheme-icon-closer:after {
+        content: "\002715";
+    }
+
+    .brighttheme-icon-sticker {
+        &:after {
+            top: -1px;
+            content: "\002016";
+        }
+
+        &.brighttheme-icon-stuck:after {
+            content: "\00003E";
+        }
+    }
+}

@@ -1,0 +1,308 @@
+/**  =====================
+      Data Tables css start
+==========================  **/
+
+.table {
+    td,
+    th {
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+        white-space: nowrap;
+        // padding: 1.05rem 0.75rem;
+        padding: 0.7rem 0.75rem;
+    }
+
+    thead th {
+        border-bottom: 1px solid $border-color;
+        font-size: 13px;
+        color: $headings-color;
+        background: $body-bg;
+        text-transform: uppercase;
+    }
+
+    tbody + tbody {
+        border-top: 2px solid $border-color;
+    }
+
+    &.table-dark {
+        thead th {
+            background-color: #11171a;
+        }
+    }
+
+    &.dataTable[class*="table-"] {
+        thead th {
+            background: $body-bg;
+        }
+    }
+    > :not(:last-child) > :last-child > *{
+        border-bottom-color: $border-color;
+    }
+}
+/* Border versions */
+.table-bordered {
+    border: 1px solid $border-color;
+
+    td,
+    th {
+        border: 1px solid $border-color;
+    }
+}
+/* Zebra-striping */
+.table-striped {
+    tbody tr:nth-of-type(2n+1) {
+        background-color: transparentize($primary,0.97);
+    }
+}
+/* Hover effect */
+.table-hover {
+    tbody tr {
+        &:hover {
+            background-color: transparentize($primary,0.97);
+        }
+    }
+}
+/* Table backgrounds */
+.table {
+    .thead-dark {
+        th {
+            color: #fff;
+            background-color: $dark;
+            border-color: darken($dark,10%);
+        }
+    }
+}
+
+.table-dark {
+    color: #fff;
+    background-color: $dark;
+
+    td,
+    th,
+    thead th {
+        border-color: darken($dark,10%);
+    }
+
+    &.table-striped {
+        tbody tr:nth-of-type(odd) {
+            background-color: darken($dark,2%);
+        }
+    }
+
+    &.table-hover {
+        tbody tr {
+            &:hover {
+                background-color: darken($dark,5%);
+            }
+        }
+    }
+
+    thead th {
+        // background-color: $dark;
+        color: #fff;
+    }
+}
+/* fixed header position */
+table.dataTable.fixedHeader-floating {
+    top: 0 !important;
+    @media screen and (max-width:992px) {
+        display: none !important;
+    }
+}
+@media screen and (max-width:992px) {
+    .fixedHeader-locked {
+        display: none !important;
+    }
+}
+/**  =====================
+      Foo-table css start
+==========================  **/
+.footable .pagination > {
+    .active > {
+        a,
+        span {
+            background-color: $primary;
+            border-color: $primary;
+
+            &:focus,
+            &:hover {
+                background-color: $primary;
+                border-color: $primary;
+            }
+        }
+    }
+
+    li > {
+        a,
+        span {
+            color: #222;
+        }
+    }
+}
+
+.footable-details.table,
+.footable.table {
+    margin-bottom: 0;
+}
+
+table {
+    &.footable > tfoot > tr.footable-paging > td > span.label {
+        margin-bottom: 0;
+    }
+
+    &.footable-paging-center > tfoot > tr.footable-paging > td {
+        padding-bottom: 0;
+    }
+}
+
+.table-columned > {
+    tbody > {
+        tr > {
+            td {
+                border: 0;
+                border-left: 1px solid $border-color;
+            }
+
+            th {
+                border: 0;
+            }
+        }
+    }
+}
+/**====== Foo-table css end ======**/
+/**======= basic table css start =======**/
+
+.table.table-xl {
+    td,
+    th {
+        padding: 1.25rem 0.8rem;
+    }
+}
+
+.table.table-lg {
+    td,
+    th {
+        padding: 0.9rem 0.8rem;
+    }
+}
+
+.table.table-de {
+    td,
+    th {
+        padding: 0.75rem 0.8rem;
+    }
+}
+
+.table.table-sm {
+    td,
+    th {
+        padding: 0.6rem 0.8rem;
+    }
+}
+
+.table.table-xs {
+    td,
+    th {
+        padding: 0.4rem 0.8rem;
+    }
+}
+/**======= basic table css end ======**/
+#row-delete,
+#row-select {
+    .selected {
+        background-color: $primary;
+        color: #fff;
+    }
+}
+
+table {
+    &.dataTable {
+        tbody {
+            > tr {
+                > .selected,
+                &.selected {
+                    background: $primary;
+
+                    table.dataTable tbody > tr > .selected td,
+                    table.dataTable tbody > tr.selected,
+                    th {
+                        &.select-checkbox {
+                            &:after {
+                                text-shadow: 1px 1px #e4f2fe, -1px -1px #e4f2fe, 1px -1px #e4f2fe, -1px 1px #e4f2fe;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+div.dataTables_wrapper div.dataTables_length select {
+    padding-right: 2rem;
+}
+
+table.dataTable tbody .selected td.select-checkbox:before,
+table.dataTable tbody .selected th.select-checkbox:before {
+    border-color: #fff;
+}
+
+table.dataTable tbody > tr > .selected td.select-checkbox:after,
+table.dataTable tbody > tr > .selected th.select-checkbox:after,
+table.dataTable tbody > tr.selected td.select-checkbox:after,
+table.dataTable tbody > tr.selected th.select-checkbox:after {
+    content: '\2714';
+    margin-top: -11px;
+    margin-left: -4px;
+    text-align: center;
+}
+
+div.dt-button-info {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    margin-top: -100px;
+    margin-left: -200px;
+    background-color: lighten($primary,30%);
+    color: $primary;
+    border: 2px solid $primary;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+    text-align: center;
+    z-index: 21;
+
+    h2 {
+        padding: 0.5em;
+        margin: 0;
+        font-weight: normal;
+        color: #fff;
+        border-bottom: 1px solid $primary;
+        background-color: $primary;
+    }
+
+    > div {
+        padding: 1em;
+    }
+}
+
+.dt-buttons {
+    margin-bottom: 5px;
+}
+
+table.dataTable tbody {
+    td.focus,
+    th.focus {
+        box-shadow: inset 0 0 1px 2px $primary;
+    }
+}
+
+div.dtk-focus-alt table.dataTable tbody {
+    td.focus,
+    th.focus {
+        box-shadow: inset 0 0 1px 2px $warning;
+        background: transparentize($warning,0.85);
+        color: $warning;
+    }
+}
+/**====== Data Tables css end ======**/

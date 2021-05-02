@@ -1,0 +1,15 @@
+.bootstrap-maxlength {
+    background: $primary;
+    border-radius: $card-border-radius;
+    padding: 5px 10px;
+    color: #fff;
+    &.label-danger{
+        background: theme-color("danger");
+    }
+    &.label-success{
+        background: theme-color("success");
+    }
+    &.label-warning{
+        background: theme-color("warning");
+    }
+}

@@ -5,7 +5,8 @@ import {
 } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import "./scss/application.scss";
+import "./assets/scss/style.scss";
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 const App = () : JSX.Element => {
   return (

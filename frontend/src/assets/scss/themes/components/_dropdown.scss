@@ -1,0 +1,80 @@
+// ============================
+//     dropdown css start
+// ============================
+
+.dropdown-toggle {
+    &.arrow-none {
+        &:after {
+            display: none;
+        }
+    }
+}
+
+.dropdown-menu {
+    padding: 15px 0;
+    box-shadow: 0 4px 24px 0 rgba(62, 57, 107, 0.18);
+    border: none;
+    border-radius: 2px;
+}
+
+.pc-header {
+    .dropdown-menu {
+        animation: 0.4s ease-in-out 0s normal forwards 1 fadein;
+    }
+}
+@keyframes fadein {
+    from {
+        transform: translate3d(0, 8px, 0);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+
+.dropdown .dropdown-item {
+    &.active,
+    &:active,
+    &:focus,
+    &:hover {
+        i {
+            &.material-icons-two-tone {
+                background-color: $dropdown-link-hover-color;
+            }
+        }
+    }
+}
+
+.dropdown {
+    .dropdown-item {
+        padding: 10px 25px;
+
+        i {
+            font-size: 18px;
+            margin-right: 10px;
+
+            &.material-icons-two-tone {
+                vertical-align: bottom;
+                font-size: 22px;
+                background-color: $header-color;
+            }
+        }
+
+        svg {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            fill: #f2f2f2;
+        }
+
+        .float-right {
+            svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+    }
+}
+// dropdown css end

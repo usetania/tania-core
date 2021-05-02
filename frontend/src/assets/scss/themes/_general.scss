@@ -1,0 +1,551 @@
+/**  =====================
+      Custom css start
+==========================  **/
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../../fonts/inter/Inter-Regular.woff2?v=3.13") format("woff2"), url("../../fonts/inter/Inter-Regular.woff?v=3.13") format("woff");
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../../fonts/inter/Inter-Medium.woff2?v=3.13") format("woff2"), url("../../fonts/inter/Inter-Medium.woff?v=3.13") format("woff");
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url("../../fonts/inter/Inter-SemiBold.woff2?v=3.13") format("woff2"), url("../../fonts/inter/Inter-SemiBold.woff?v=3.13") format("woff");
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../../fonts/inter/Inter-Bold.woff2?v=3.13") format("woff2"), url("../../fonts/inter/Inter-Bold.woff?v=3.13") format("woff");
+}
+
+body {}
+
+* {
+    &:focus {
+        outline: none;
+    }
+}
+
+a {
+    &:hover {
+        outline: none;
+        text-decoration: none;
+    }
+
+    &:not([href]) {
+        color: inherit;
+    }
+}
+
+p {
+    font-size: 14px;
+}
+
+b,
+strong {
+    font-weight: 600;
+}
+
+.ie-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999999;
+    background: #000000;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    color: #fff;
+    font-family: "Courier New", Courier, monospace;
+    padding: 50px 0;
+
+    p {
+        font-size: 17px;
+    }
+
+    h1 {
+        color: #fff;
+    }
+
+    .iew-container {
+        min-width: 1024px;
+        width: 100%;
+        height: 200px;
+        background: #fff;
+        margin: 50px 0;
+    }
+
+    .iew-download {
+        list-style: none;
+        padding: 30px 0;
+        margin: 0 auto;
+        width: 720px;
+
+        > li {
+            float: left;
+            vertical-align: top;
+
+            > a {
+                display: block;
+                color: #000;
+                width: 140px;
+                font-size: 15px;
+                padding: 15px 0;
+
+                > div {
+                    margin-top: 10px;
+                }
+
+                &:hover {
+                    background-color: #eee;
+                }
+            }
+        }
+    }
+}
+
+.btn-page {
+    .btn-group{
+        .btn {
+            margin-right: 0;
+            margin-bottom: 0;
+        }
+    }
+    .btn {
+        margin-right: 5px;
+        margin-bottom: 5px;
+    }
+}
+
+.material-icons-two-tone {
+    background-color: $body-color;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    vertical-align: text-bottom;
+
+    &.text-white {
+        background-color: #fff;
+    }
+}
+// ==============  highlight code css start  ================
+
+.hljs {
+    display: block;
+    overflow-x: auto;
+    padding: 0.5em;
+    color: #abb2bf;
+    background: #282c34;
+}
+
+.hljs-comment,
+.hljs-quote {
+    color: #5c6370;
+    font-style: italic;
+}
+
+.hljs-doctag,
+.hljs-formula,
+.hljs-keyword {
+    color: #c678dd;
+}
+
+.hljs-deletion,
+.hljs-name,
+.hljs-section,
+.hljs-selector-tag,
+.hljs-subst {
+    color: #e06c75;
+}
+
+.hljs-literal {
+    color: #56b6c2;
+}
+
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta-string,
+.hljs-regexp,
+.hljs-string {
+    color: #98c379;
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title {
+    color: #e6c07b;
+}
+
+.hljs-attr,
+.hljs-number,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-pseudo,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable {
+    color: #d19a66;
+}
+
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-symbol,
+.hljs-title {
+    color: #61aeee;
+}
+
+.hljs-emphasis {
+    font-style: italic;
+}
+
+.hljs-strong {
+    font-weight: bold;
+}
+
+.hljs-link {
+    text-decoration: underline;
+}
+// ==============  highlight code css end  ================
+// ==============  code exaple css start  ================
+
+.pc-example {
+    position: relative;
+
+    .pc-example-btns {
+        position: absolute;
+        right: 0;
+        top: -10px;
+        opacity: 0;
+        transform: rotateX(-90deg);
+        transition: all 0.3s ease-in-out;
+
+        .pc-example-btn {
+            display: inline-block;
+            line-height: 1;
+            font-weight: 600;
+            background: $primary;
+            color: #fff;
+            padding: 0.1875rem 0.3125rem;
+            border-radius: 2px;
+            white-space: nowrap;
+            font-size: 11px;
+            margin: 0;
+
+            &.copy::before {
+                content: "COPY";
+            }
+
+            &.copied {
+                background: $success !important;
+                color: #fff !important;
+
+                &::before {
+                    content: "COPIED!";
+                }
+            }
+        }
+    }
+
+    &:hover .pc-example-btns {
+        top: 0;
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+/* Modal */
+.pc-example-modal {
+    position: fixed;
+    z-index: 1099;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #282c34;
+    transform-origin: 50% 0;
+    transform: scale(0.0);
+    transition: all 0.3s ease-in-out;
+}
+
+.pc-example-modal-opened {
+    overflow: hidden !important;
+
+    .pc-example-modal {
+        transform: scale(1);
+    }
+}
+
+.pc-example-modal-content {
+    max-width: 100vw;
+    margin: auto;
+    padding: 50px;
+    height: 100vh;
+    overflow: auto;
+
+    > pre {
+        overflow: hidden;
+        width: fit-content;
+
+        > code {
+            padding: 0;
+            background: none;
+            font-size: 16px;
+        }
+    }
+}
+
+.md-pc-example-modal-copy {
+    display: block;
+    position: fixed;
+    top: 90px;
+    right: 30px;
+    margin-right: 8px;
+    border-radius: 50%;
+    padding: 15px;
+    background: $primary;
+    color: #fff;
+    box-shadow: 0 10px 20px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    white-space: nowrap;
+
+    &:hover {
+        box-shadow: 0 10px 20px 0 rgba(0,0,0,0.2);
+        color: #fff;
+    }
+
+    &.copied::before {
+        content: "Copied to Clipboard Successfully ! . . .";
+        position: absolute;
+        display: block;
+        right: 100%;
+        margin-right: 10px;
+        font-size: 14px;
+        background: $primary;
+        line-height: 24px;
+        height: 24px;
+        border-radius: 3px;
+        padding: 0 6px;
+        top: 50%;
+        margin-top: -12px;
+    }
+}
+
+.pc-example-modal-close {
+    display: block;
+    position: fixed;
+    top: 40px;
+    right: 52px;
+    color: #fff;
+    opacity: 0.2;
+    transition: all 0.3s ease-in-out;
+    z-index: 1;
+
+    > svg {
+        width: 35px;
+        height: 35px;
+    }
+
+    &:hover {
+        color: $danger;
+        opacity: 0.9;
+    }
+}
+// ==============  code exaple css end  ================
+/* ========================================================
+ ===============     document      ======================
+ ========================================================
+
+ Grid examples
+*/
+.bd-example-row {
+    background: $body-bg;
+    padding: 15px;
+    margin-bottom: 15px;
+
+    .row {
+        > [class^="col-"],
+         > .col {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            background-color: rgba(86, 61, 124, .15);
+            border: 1px solid rgba(86, 61, 124, .2);
+        }
+    }
+
+    .row + .row {
+        margin-top: 1rem;
+    }
+
+    .flex-items-bottom,
+    .flex-items-middle,
+    .flex-items-top {
+        min-height: 6rem;
+        background-color: rgba(255, 0, 0, .1);
+    }
+}
+
+.bd-example-row-flex-cols .row {
+    min-height: 10rem;
+    background-color: rgba(255, 0, 0, .1);
+}
+/* Docs examples */
+.bd-example {
+    position: relative;
+    padding: 1rem;
+    margin: 1rem;
+    border: solid #ddd;
+    border-width: 0.2rem 0 0;
+    @media only screen and (max-height: 575px) {
+        padding: 1.5rem;
+        margin-right: 0;
+        margin-left: 0;
+        border-width: 0.2rem;
+    }
+}
+/* Example modals */
+.modal {
+    z-index: 1072;
+
+    .popover,
+    .tooltip {
+        z-index: 1073;
+    }
+}
+
+.modal-backdrop {
+    z-index: 1071;
+}
+
+.bd-example-modal {
+    background-color: #fafafa;
+
+    .modal {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        z-index: 1;
+        display: block;
+    }
+
+    .modal-dialog {
+        left: auto;
+        margin-right: auto;
+        margin-left: auto;
+    }
+}
+/* Example tabbable tabs */
+.bd-example-tabs .nav-tabs {
+    margin-bottom: 1rem;
+}
+/* Code snippets */
+.highlight {
+    padding: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    background-color: #f3f2fb;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    @media only screen and (max-height: 575px) {
+        padding: 1.5rem;
+    }
+}
+
+.bd-content .highlight {
+    margin-right: 15px;
+    margin-left: 15px;
+    @media only screen and (max-height: 575px) {
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+.highlight {
+    pre {
+        padding: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        background-color: transparent;
+        border: 0;
+    }
+
+    pre code {
+        font-size: inherit;
+        color: #333;
+    }
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+    background: transparent;
+}
+/* ================================    Blockquote Start  ===================== */
+
+svg.feather {
+    &:not([class*='wid-']){
+        width: 20px;
+    }
+    &:not([class*='hei-']){
+        height: 20px;
+    }
+}
+@media (min-width: 1600px) {
+    .container {
+        max-width: 1540px;
+    }
+}
+pre[class*="language-"]:before, pre[class*="language-"]:after{
+    display: none;
+}
+:not(pre) > code[class*="language-"], pre[class*="language-"]{
+    display: flex;
+    margin: 0;
+}
+pre[class*="language-"]>code{
+    width: 100%;
+}
+.media {
+    display: flex;
+
+    .media-body {
+        flex: 1;
+    }
+}
+
+.blockquote {
+    border-left: 0.25rem solid $border-color;
+    padding: 0.5rem 1rem;
+
+    &.text-right {
+        border-left: none;
+        border-right: 0.25rem solid $border-color;
+    }
+}
+/* ================================    Blockquote End  ===================== */
+
+.fixed-button {
+    position: fixed;
+    bottom: -50px;
+    right: 30px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    z-index: 9;
+    transition: all 0.5s ease;
+}
+
+.fixed-button.active {
+    bottom: 50px;
+    opacity: 1;
+}

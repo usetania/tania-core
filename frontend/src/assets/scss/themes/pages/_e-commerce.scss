@@ -1,0 +1,300 @@
+/**  =====================
+      e-commerce css start
+==========================  **/
+
+.prod-likes {
+    position: relative;
+    padding: 0;
+
+    .prod-likes-icon {
+        stroke: transparentize($body-color, .5);
+        fill: transparentize($body-color, .8);
+        z-index: 3;
+    }
+
+    .form-check-input {
+        width: 20px;
+        height: 20px;
+        margin: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        z-index: 5;
+        cursor: pointer;
+
+        &:checked {
+            + .prod-likes-icon {
+                stroke: $danger;
+                fill: transparentize($danger, .2);
+                animation: _26Tc6u 0.2s ease 0.3s forwards;
+            }
+        }
+    }
+}
+
+.product-sticky {
+    top: calc(#{$header-height} + 60px);
+}
+#checkoutaddress{
+    .form-check{
+        .h-nonchecked{
+            display: none;
+        }
+        .form-check-input{
+            &:checked{
+                + .form-check-label{
+                    .h-nonchecked{
+                        display: block;
+                    }
+                }
+            }
+        }
+    }
+}
+.ecomm-desc-btn {
+    margin-left: -#{$card-spacer-x};
+    margin-right: -#{$card-spacer-x};
+}
+
+.e-comm-card {
+    overflow: hidden;
+
+    .prod-content {
+        transition: all 0.2s ease-in-out;
+        background: $card-bg;
+
+        .h-data {
+            position: absolute;
+            top: calc(100% - 5px);
+        }
+    }
+
+    &:hover {
+        .prod-content {
+            transform: translateY(-70px);
+        }
+    }
+}
+
+.filter-data {
+    position: relative;
+
+    .overlay-div {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: transparentize($card-bg,0.2);
+        padding: 100px 0;
+        text-align: center;
+    }
+}
+// ================================
+
+.pc-like {
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 10px;
+
+    .pc-dots {
+        &:nth-child(4) {
+            &:before {
+                transform: translate3d(-4px, -5px, 0);
+            }
+
+            &:after {
+                transform: translate3d(4px, -5px, 0) scale(0.7);
+            }
+        }
+
+        &:nth-child(3) {
+            &:before {
+                transform: translate3d(-5px, -4px, 0);
+            }
+
+            &:after {
+                transform: translate3d(-5px, 4px, 0) scale(0.7);
+            }
+        }
+
+        &:nth-child(2) {
+            &:before {
+                transform: translate3d(-4px, 5px, 0);
+            }
+
+            &:after {
+                transform: translate3d(4px, 5px, 0) scale(0.7);
+            }
+        }
+
+        &:first-child {
+            &:before {
+                transform: translate3d(5px, -4px, 0);
+            }
+
+            &:after {
+                transform: translate3d(5px, 4px, 0) scale(0.7);
+            }
+        }
+
+        &:after {
+            background: $danger;
+        }
+
+        &:before {
+            background: $warning;
+        }
+    }
+
+    .like-wrapper {
+        position: relative;
+        display: inline-flex;
+    }
+
+    .pc-group {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        opacity: 0;
+    }
+
+    .pc-dots {
+        &:after,
+        &:before {
+            content: "";
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            margin: -2px;
+            border-radius: 50%;
+        }
+    }
+
+    &.pc-like-animate {
+        .pc-dots {
+            &:first-child:after {
+                animation: _3z13ic 0.6s ease 0.3s;
+            }
+
+            &:nth-child(4) {
+                &:before {
+                    animation: u9Mhrv 0.6s ease 0.3s;
+                }
+
+                &:after {
+                    animation: _2ERa1V 0.6s ease 0.3s;
+                }
+            }
+
+            &:nth-child(3) {
+                &:before {
+                    animation: _3TtatR 0.6s ease 0.3s;
+                }
+
+                &:after {
+                    animation: _3UC1np 0.6s ease 0.3s;
+                }
+            }
+
+            &:nth-child(2) {
+                &:before {
+                    animation: _33IoP_ 0.6s ease 0.3s;
+                }
+
+                &:after {
+                    animation: _2D5htx 0.6s ease 0.3s;
+                }
+            }
+        }
+
+        .pc-group {
+            animation: r9OBmc 0.6s ease 0.3s;
+        }
+
+        .pc-dots:first-child:before {
+            animation: _18Xo9B 0.6s ease 0.3s;
+        }
+    }
+}
+@keyframes _26Tc6u {
+    0% {
+        transform: translateZ(0) scale(0);
+    }
+
+    40% {
+        transform: translateZ(0) scale(1.2);
+    }
+
+    to {
+        transform: translateZ(0) scale(1);
+    }
+}
+@keyframes _3d25CI {
+    0% {
+        transform: translateZ(0) scale(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateZ(0) scale(1);
+        opacity: 0;
+    }
+}
+@keyframes r9OBmc {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+@keyframes _18Xo9B {
+    to {
+        transform: translate3d(22px, -4px, 0);
+    }
+}
+@keyframes _3z13ic {
+    to {
+        transform: translate3d(14px, 4px, 0) scale(0.7);
+    }
+}
+@keyframes _33IoP_ {
+    to {
+        transform: translate3d(-4px, 22px, 0);
+    }
+}
+@keyframes _2D5htx {
+    to {
+        transform: translate3d(4px, 18px, 0) scale(0.7);
+    }
+}
+@keyframes _3TtatR {
+    to {
+        transform: translate3d(-22px, -4px, 0);
+    }
+}
+@keyframes _3UC1np {
+    to {
+        transform: translate3d(-18px, 4px, 0) scale(0.7);
+    }
+}
+@keyframes u9Mhrv {
+    to {
+        transform: translate3d(-4px, -22px, 0);
+    }
+}
+@keyframes _2ERa1V {
+    to {
+        transform: translate3d(4px, -18px, 0) scale(0.7);
+    }
+}
+// ================================
+/**====== e-commerce css end ======**/

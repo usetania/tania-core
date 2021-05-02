@@ -1,0 +1,242 @@
+.br-theme-bars-1to10 {
+    .br-widget {
+        a {
+            background-color: lighten($warning,30%);
+
+            &.br-active,
+            &.br-selected {
+                background-color: $warning;
+            }
+        }
+
+        .br-current-rating {
+            color: $warning;
+        }
+    }
+
+    .br-readonly {
+        a {
+            &.br-active,
+            &.br-selected {
+                background-color: $warning;
+            }
+        }
+
+        .br-current-rating {
+            color: lighten($warning,20%);
+        }
+    }
+}
+
+.br-theme-bars-horizontal {
+    .br-widget {
+        a {
+            background-color: lighten($warning,30%);
+
+            &.br-active,
+            &.br-selected {
+                background-color: $warning;
+            }
+        }
+
+        .br-current-rating {
+            color: $warning;
+        }
+    }
+
+    .br-readonly {
+        a {
+            &.br-active,
+            &.br-selected {
+                background-color: lighten($warning,30%);
+            }
+        }
+
+        .br-current-rating {
+            color: lighten($warning,30%);
+        }
+    }
+}
+
+.br-theme-bars-movie {
+    .br-widget {
+        height: auto;
+
+        a {
+            background-color: lighten($primary,30%);
+
+            &.br-active,
+            &.br-selected {
+                background-color: $primary;
+            }
+        }
+
+        .br-current-rating {
+            color: $primary;
+        }
+    }
+
+    .br-readonly {
+        a {
+            &.br-active,
+            &.br-selected {
+                background-color: lighten($primary,20%);
+            }
+        }
+
+        .br-current-rating {
+            color: lighten($primary,20%);
+        }
+    }
+}
+
+.br-theme-bars-pill {
+    .br-widget {
+        a {
+            background-color: lighten($success,45%);
+            color: $success;
+
+            &.br-active,
+            &.br-selected {
+                background-color: $success;
+            }
+        }
+    }
+
+    .br-readonly a {
+        &.br-active,
+        &.br-selected {
+            background-color: lighten($success,10%);
+        }
+    }
+}
+
+.br-theme-bars-reversed {
+    .br-widget {
+        a {
+            background-color: lighten($info,45%);
+            color: $info;
+
+            &.br-active,
+            &.br-selected {
+                background-color: $info;
+            }
+        }
+
+        .br-current-rating {
+            color: $info;
+            width: 100%;
+            padding: 0;
+            margin-top: 15px;
+        }
+    }
+
+    .br-readonly {
+        a {
+            &.br-active,
+            &.br-selected {
+                background-color: lighten($info,10%);
+            }
+        }
+
+        .br-current-rating {
+            color: lighten($info,10%);
+        }
+    }
+}
+
+.br-theme-bars-square {
+    .br-widget {
+        a {
+            border: 2px solid lighten($danger,25%);
+            color: lighten($danger,25%);
+
+            &.br-active,
+            &.br-selected {
+                border: 2px solid $danger;
+                color: $danger;
+            }
+        }
+    }
+
+    .br-readonly a {
+
+        &.br-active,
+        &.br-selected {
+            border: 2px solid lighten($danger,10%);
+            color: lighten($danger,10%);
+        }
+    }
+}
+
+.br-theme-bootstrap-stars {
+    .br-widget {
+        a {
+            &:after {
+                color: darken($body-bg,3%);
+            }
+
+            &.br-active:after,
+            &.br-selected:after {
+                color: $warning;
+            }
+        }
+    }
+}
+
+.br-theme-css-stars {
+    .br-widget {
+        a {
+            &:after {
+                color: darken($body-bg,3%);
+            }
+
+            &.br-active:after,
+            &.br-selected:after {
+                color: $warning;
+            }
+        }
+    }
+}
+
+.br-theme-fontawesome-stars {
+    .br-widget {
+
+        a {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            font-size: 18px;
+            &:after {
+                content: "\f005";
+                color: darken($body-bg,3%);
+            }
+
+            &.br-active:after,
+            &.br-selected:after {
+                color: $warning;
+            }
+        }
+    }
+}
+
+.br-theme-fontawesome-stars-o .br-widget {
+    a {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 18px;
+        &:after {
+            content: "\f005";
+            color: darken($body-bg,3%);
+        }
+
+        &.br-active:after,
+        &.br-selected:after {
+            color: $success;
+        }
+
+        &.br-fractional:after {
+            content: "\f5c0";
+            color: $success;
+        }
+    }
+}
