@@ -8,13 +8,13 @@ import (
 
 func TestFindAllFarmTypes(t *testing.T) {
 	types := []FarmType{
-		FarmType{Code: "organic", Name: "Organic / Soil-Based"},
-		FarmType{Code: "hydroponic", Name: "Hydroponic"},
-		FarmType{Code: "aquaponic", Name: "Aquaponic"},
-		FarmType{Code: "mushroom", Name: "Mushroom"},
-		FarmType{Code: "livestock", Name: "Livestock"},
-		FarmType{Code: "fisheries", Name: "Fisheries"},
-		FarmType{Code: "permaculture", Name: "Permaculture"},
+		{Code: "organic", Name: "Organic / Soil-Based"},
+		{Code: "hydroponic", Name: "Hydroponic"},
+		{Code: "aquaponic", Name: "Aquaponic"},
+		{Code: "mushroom", Name: "Mushroom"},
+		{Code: "livestock", Name: "Livestock"},
+		{Code: "fisheries", Name: "Fisheries"},
+		{Code: "permaculture", Name: "Permaculture"},
 	}
 
 	farmTypes := FindAllFarmTypes()
