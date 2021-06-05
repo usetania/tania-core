@@ -127,7 +127,7 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead = taskReadFromRepo
 
 	default:
-		return errors.New("Unknown task event")
+		return errors.New("unknown task event")
 	}
 
 	err := <-s.TaskReadRepo.Save(taskRead)

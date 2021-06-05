@@ -315,21 +315,6 @@ func validateTaskPriority(priority string) error {
 	return nil
 }
 
-// validateTaskStatus
-func validateTaskStatus(status string) error {
-
-	if status == "" {
-		return TaskError{TaskErrorStatusEmptyCode}
-	}
-
-	_, err := FindTaskStatusByCode(status)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 // validateTaskCategory
 func validateTaskCategory(taskcategory string) error {
 

@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+
 	"github.com/Tanibox/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 )
@@ -26,7 +27,7 @@ func (s MaterialQuerySqlite) FindMaterialByID(uid uuid.UUID) <-chan query.QueryR
 		}{}
 		material := query.TaskMaterialQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA 
+		s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA 
 			FROM MATERIAL_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name, &rowsData.Type, &rowsData.TypeData)
 
 		materialUID, err := uuid.FromString(rowsData.UID)
