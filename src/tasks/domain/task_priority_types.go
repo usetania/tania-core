@@ -12,8 +12,8 @@ type TaskPriority struct {
 
 func FindAllTaskPriority() []TaskPriority {
 	return []TaskPriority{
-		TaskPriority{Code: TaskPriorityUrgent, Name: "Urgent"},
-		TaskPriority{Code: TaskPriorityNormal, Name: "Normal"},
+		{Code: TaskPriorityUrgent, Name: "Urgent"},
+		{Code: TaskPriorityNormal, Name: "Normal"},
 	}
 }
 
