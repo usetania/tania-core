@@ -13,9 +13,9 @@ type TaskStatus struct {
 
 func FindAllTaskStatus() []TaskStatus {
 	return []TaskStatus{
-		TaskStatus{Code: TaskStatusCreated, Name: "Created"},
-		TaskStatus{Code: TaskStatusCancelled, Name: "Cancelled"},
-		TaskStatus{Code: TaskStatusCompleted, Name: "Completed"},
+		{Code: TaskStatusCreated, Name: "Created"},
+		{Code: TaskStatusCancelled, Name: "Cancelled"},
+		{Code: TaskStatusCompleted, Name: "Completed"},
 	}
 }
 
