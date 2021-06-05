@@ -186,7 +186,7 @@ func (s *AuthServer) Register(c echo.Context) error {
 	confirmPassword := c.FormValue("confirm_password")
 
 	if password != confirmPassword {
-		return Error(c, errors.New("Confirm password didn't match"))
+		return Error(c, errors.New("confirm password didn't match"))
 	}
 
 	user, _, err := s.RegisterNewUser(username, password, confirmPassword)

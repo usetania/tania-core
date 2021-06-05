@@ -38,7 +38,7 @@ func TestCreateUser(t *testing.T) {
 	})
 
 	// When
-	user, err = CreateUser(userServiceMock2, "username", "password", "password")
+	_, err = CreateUser(userServiceMock2, "username", "password", "password")
 
 	// Then
 	assert.NotNil(t, err)
