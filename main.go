@@ -13,8 +13,6 @@ import (
 	"github.com/asaskevich/EventBus"
 	"golang.org/x/term"
 
-	"github.com/go-sql-driver/mysql"
-
 	"github.com/Tanibox/tania-core/config"
 	assetsserver "github.com/Tanibox/tania-core/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-core/src/assets/storage"
@@ -24,7 +22,7 @@ import (
 	tasksserver "github.com/Tanibox/tania-core/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-core/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-core/src/user/server"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	colorable "github.com/mattn/go-colorable"
@@ -131,6 +129,9 @@ func main() {
 
 	// Initialize user
 	err = initUser(authServer)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
 
 	// Initialize Echo Middleware
 	e.Use(middleware.Recover())
