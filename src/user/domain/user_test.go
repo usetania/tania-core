@@ -12,7 +12,7 @@ type UserServiceMock struct {
 	mock.Mock
 }
 
-func (m UserServiceMock) FindUserByUsername(username string) (UserServiceResult, error) {
+func (m *UserServiceMock) FindUserByUsername(username string) (UserServiceResult, error) {
 	args := m.Called(username)
 	return args.Get(0).(UserServiceResult), nil
 }
