@@ -11,7 +11,7 @@ import (
 
 	"github.com/Tanibox/tania-core/src/eventbus"
 	"github.com/asaskevich/EventBus"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 
 	"github.com/go-sql-driver/mysql"
 
@@ -34,7 +34,7 @@ import (
 )
 
 func init() {
-	if terminal.IsTerminal(int(os.Stdout.Fd())) {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
 		log.SetFormatter(&log.TextFormatter{ForceColors: true})
 
 		// We need this for Windows to get coloured
