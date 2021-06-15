@@ -648,7 +648,7 @@ func MapToMaterialSimpleFromRead(materials []storage.MaterialRead) []MaterialSim
 }
 
 func MapToAvailableMaterialPlantType(materials []storage.MaterialRead) []AvailableMaterialPlantType {
-	ai := make(map[string]AvailableMaterialPlantType, 0)
+	ai := make(map[string]AvailableMaterialPlantType)
 
 	// Convert domain.Material to AvailableMaterialPlantType first with Map
 	for _, v := range materials {

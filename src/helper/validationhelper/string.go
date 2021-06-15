@@ -17,7 +17,7 @@ func IsNumeric(val string) bool {
 
 // IsFloat check if the string is a float.
 func IsFloat(val string) bool {
-	regexFloat := regexp.MustCompile("^(?:[-+]?(?:[0-9]+))?(?:\\.[0-9]*)?(?:[eE][\\+\\-]?(?:[0-9]+))?$")
+	regexFloat := regexp.MustCompile(`^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$`)
 
 	return regexFloat.MatchString(val)
 }

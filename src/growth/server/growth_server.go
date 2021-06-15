@@ -895,9 +895,7 @@ func (s *GrowthServer) FindAllCrops(c echo.Context) error {
 	}
 
 	temp := []storage.CropRead{}
-	for _, v := range crops {
-		temp = append(temp, v)
-	}
+	temp = append(temp, crops...)
 
 	data["data"] = temp
 	data["total_rows"] = total
@@ -957,9 +955,8 @@ func (s *GrowthServer) FindAllCropArchives(c echo.Context) error {
 	data := make(map[string]interface{})
 
 	temp := []storage.CropRead{}
-	for _, v := range crops {
-		temp = append(temp, v)
-	}
+	temp = append(temp, crops...)
+
 	data["data"] = temp
 	data["total"] = total
 	data["page"] = pageInt
@@ -1049,9 +1046,7 @@ func (s *GrowthServer) GetBatchQuantity(c echo.Context) error {
 
 	data := make(map[string][]query.CountTotalBatchQueryResult)
 	data["data"] = []query.CountTotalBatchQueryResult{}
-	for _, v := range varQty {
-		data["data"] = append(data["data"], v)
-	}
+	data["data"] = append(data["data"], varQty...)
 
 	return c.JSON(http.StatusOK, data)
 }
