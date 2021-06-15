@@ -728,7 +728,7 @@ func (c *Crop) Harvest(
 		}
 	}
 
-	// Check source area existance. If already exist, then just update it
+	// Check source area existence. If already exist, then just update it
 	harvestedStorage := HarvestedStorage{}
 	isExist := false
 	for _, v := range c.HarvestedStorage {
@@ -858,7 +858,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 		return CropError{Code: CropDumpErrorInvalidQuantity}
 	}
 
-	// Check source area existance. If already exist, then just update it
+	// Check source area existence. If already exist, then just update it
 	var dumpedArea interface{}
 	updatedTrash := Trash{}
 	dumpDate := time.Now()

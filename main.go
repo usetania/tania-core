@@ -49,7 +49,7 @@ func main() {
 	e := echo.New()
 
 	// Initialize DB.
-	log.Print("Using " + *config.Config.TaniaPersistenceEngine + " persistance engine")
+	log.Print("Using " + *config.Config.TaniaPersistenceEngine + " persistence engine")
 
 	// InMemory DB will always be initialized.
 	inMem := initInMemory()
