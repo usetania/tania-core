@@ -105,7 +105,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 
 	userRead, ok := queryResult.Result.(storage.UserRead)
 	if !ok {
-		return Error(c, errors.New("Error type assertion"))
+		return Error(c, errors.New("error type assertion"))
 	}
 
 	queryResult = <-s.UserAuthQuery.FindByUserID(userRead.UID)
@@ -115,7 +115,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 
 	userAuth, ok := queryResult.Result.(storage.UserAuth)
 	if !ok {
-		return Error(c, errors.New("Error type assertion"))
+		return Error(c, errors.New("error type assertion"))
 	}
 
 	if userRead.UID == (uuid.UUID{}) {

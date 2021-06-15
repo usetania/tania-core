@@ -95,7 +95,7 @@ func (s *UserServer) ChangePassword(c echo.Context) error {
 
 	userRead, ok := queryResult.Result.(storage.UserRead)
 	if !ok {
-		return Error(c, errors.New("Error type assertion"))
+		return Error(c, errors.New("error type assertion"))
 	}
 
 	if userRead.UID == (uuid.UUID{}) {

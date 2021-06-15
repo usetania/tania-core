@@ -60,7 +60,7 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("Error type assertion")}
+				result <- query.QueryResult{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromString(rowsData.CropUID)
@@ -99,7 +99,7 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 
 		at, ok := activityType.(storage.ActivityType)
 		if !ok {
-			result <- query.QueryResult{Error: errors.New("Wrong activity type")}
+			result <- query.QueryResult{Error: errors.New("wrong activity type")}
 		}
 
 		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY
@@ -125,7 +125,7 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("Error type assertion")}
+				result <- query.QueryResult{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromString(rowsData.CropUID)

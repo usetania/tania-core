@@ -21,7 +21,7 @@ func (w *CropActivityTypeWrapper) UnmarshalJSON(b []byte) error {
 
 	mapped, ok := wrapper.Data.(map[string]interface{})
 	if !ok {
-		return errors.New("Error type assertion")
+		return errors.New("error type assertion")
 	}
 
 	f := mapstructure.ComposeDecodeHookFunc(

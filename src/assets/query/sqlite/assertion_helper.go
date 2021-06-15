@@ -32,7 +32,7 @@ func makeTime(v interface{}) (time.Time, error) {
 func makeWaterSource(v interface{}) (domain.WaterSource, error) {
 	ws, ok := v.(map[string]interface{})
 	if !ok {
-		return nil, errors.New("Internal server error. Error type assertion")
+		return nil, errors.New("internal server error. error type assertion")
 	}
 
 	convertedMap := map[string]float64{}
@@ -50,7 +50,7 @@ func makeWaterSource(v interface{}) (domain.WaterSource, error) {
 func makeAreaSize(v interface{}) (domain.AreaSize, error) {
 	s, ok := v.(map[string]interface{})
 	if !ok {
-		return domain.AreaSize{}, errors.New("Internal server error. Error type assertion")
+		return domain.AreaSize{}, errors.New("internal server error. error type assertion")
 	}
 
 	size := float32(0)
@@ -71,7 +71,7 @@ func makeAreaSize(v interface{}) (domain.AreaSize, error) {
 		if i == "value" {
 			size64, ok := v.(float64)
 			if !ok {
-				return domain.AreaSize{}, errors.New("Internal server error. Error type assertion")
+				return domain.AreaSize{}, errors.New("internal server error. error type assertion")
 			}
 
 			size = float32(size64)
@@ -87,7 +87,7 @@ func makeAreaSize(v interface{}) (domain.AreaSize, error) {
 func makeAreaType(v interface{}) (domain.AreaType, error) {
 	t, ok := v.(map[string]interface{})
 	if !ok {
-		return domain.AreaType{}, errors.New("Internal server error. Error type assertion")
+		return domain.AreaType{}, errors.New("internal server error. error type assertion")
 	}
 
 	convertedMap := map[string]string{}
@@ -101,7 +101,7 @@ func makeAreaType(v interface{}) (domain.AreaType, error) {
 func makeAreaLocation(v interface{}) (domain.AreaLocation, error) {
 	l, ok := v.(map[string]interface{})
 	if !ok {
-		return domain.AreaLocation{}, errors.New("Internal server error. Error type assertion")
+		return domain.AreaLocation{}, errors.New("internal server error. error type assertion")
 	}
 
 	convertedMap := map[string]string{}

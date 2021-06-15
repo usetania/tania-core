@@ -37,7 +37,7 @@ func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 				if val.Domain == "CROP" {
 					tdc, ok := val.DomainDetails.(tasksdomain.TaskDomainCrop)
 					if !ok {
-						result <- query.QueryResult{Error: errors.New("Error type assertion")}
+						result <- query.QueryResult{Error: errors.New("error type assertion")}
 					}
 
 					task.AreaUID = *tdc.AreaID
