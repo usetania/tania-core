@@ -35,6 +35,9 @@ func (f *FarmEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, events
 				EventName: structhelper.GetName(v),
 				EventData: v,
 			})
+			if err != nil {
+				result <- err
+			}
 
 			_, err = stmt.Exec(uid.Bytes(), latestVersion, time.Now(), e)
 			if err != nil {

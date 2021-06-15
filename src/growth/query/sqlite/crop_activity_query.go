@@ -54,6 +54,9 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
 			json.Unmarshal(rowsData.ActivityType, &wrapper)
@@ -119,6 +122,9 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
 			json.Unmarshal(rowsData.ActivityType, &wrapper)

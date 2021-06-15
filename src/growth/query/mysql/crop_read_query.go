@@ -444,6 +444,9 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 		rows, err = s.DB.Query(`SELECT UID FROM CROP_READ
 			LEFT JOIN CROP_READ_MOVED_AREA ON CROP_READ.UID = CROP_READ_MOVED_AREA.CROP_UID
 			WHERE CROP_READ_MOVED_AREA.AREA_UID = ?`, areaUID.Bytes())
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
 
 		for rows.Next() {
 			cropRead := storage.CropRead{}
@@ -908,6 +911,9 @@ func (s CropReadQueryMysql) populateCropHarvestedStorage(uid uuid.UUID, cropRead
 			&harvestedRowsData.SourceAreaName,
 			&harvestedRowsData.CreatedDate,
 			&harvestedRowsData.LastUpdated)
+		if err != nil {
+			return err
+		}
 
 		sourceAreaUID, err := uuid.FromBytes(harvestedRowsData.SourceAreaUID)
 		if err != nil {
@@ -947,6 +953,9 @@ func (s CropReadQueryMysql) populateCropTrash(uid uuid.UUID, cropRead *storage.C
 			&trashRowsData.SourceAreaName,
 			&trashRowsData.CreatedDate,
 			&trashRowsData.LastUpdated)
+		if err != nil {
+			return err
+		}
 
 		sourceAreaUID, err := uuid.FromBytes(trashRowsData.SourceAreaUID)
 		if err != nil {

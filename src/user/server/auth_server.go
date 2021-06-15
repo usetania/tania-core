@@ -220,6 +220,9 @@ func (s *AuthServer) RegisterNewUser(username, password, confirmPassword string)
 	}
 
 	err = <-s.UserAuthRepo.Save(&userAuth)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	s.publishUncommittedEvents(user)
 

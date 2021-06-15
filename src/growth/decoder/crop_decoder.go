@@ -365,51 +365,6 @@ func makeTime(v interface{}) (time.Time, error) {
 	return date, nil
 }
 
-func makeCropContainer(v interface{}) (domain.CropContainer, error) {
-	mapped, ok := v.(map[string]interface{})
-	if !ok {
-		return domain.CropContainer{}, errors.New("error type assertion")
-	}
-
-	var containerType domain.CropContainerType
-	quantity := 0
-
-	if v, ok := mapped["Quantity"]; ok {
-		qty, ok2 := v.(float64)
-		if !ok2 {
-			return domain.CropContainer{}, errors.New("error type assertion")
-		}
-
-		quantity = int(qty)
-	}
-	if v, ok := mapped["Type"]; ok {
-		mapped2, ok2 := v.(map[string]interface{})
-		if !ok2 {
-			return domain.CropContainer{}, errors.New("error type assertion")
-		}
-
-		if v2, ok2 := mapped2["Cell"]; ok2 {
-			cell, ok3 := v2.(float64)
-			if !ok3 {
-				return domain.CropContainer{}, errors.New("error type assertion")
-			}
-
-			cellInt := int(cell)
-
-			if cellInt != 0 {
-				containerType = domain.Tray{Cell: cellInt}
-			}
-		} else {
-			containerType = domain.Pot{}
-		}
-	}
-
-	return domain.CropContainer{
-		Quantity: quantity,
-		Type:     containerType,
-	}, nil
-}
-
 func makeCropInitialArea(v interface{}) (domain.InitialArea, error) {
 	initialArea := domain.InitialArea{}
 	mapped, ok := v.(map[string]interface{})

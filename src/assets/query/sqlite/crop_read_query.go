@@ -148,6 +148,9 @@ func (q CropReadQuerySqlite) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Q
 		rows, err = q.DB.Query(`SELECT UID FROM CROP_READ
 			LEFT JOIN CROP_READ_MOVED_AREA ON CROP_READ.UID = CROP_READ_MOVED_AREA.CROP_UID
 			WHERE CROP_READ_MOVED_AREA.AREA_UID = ?`, areaUID)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
 
 		for rows.Next() {
 			cropRead := storage.CropRead{}

@@ -54,6 +54,9 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Quer
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
 			json.Unmarshal(rowsData.ActivityType, &wrapper)
@@ -114,6 +117,9 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
 			json.Unmarshal(rowsData.ActivityType, &wrapper)
