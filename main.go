@@ -25,7 +25,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	colorable "github.com/mattn/go-colorable"
+	"github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	deadlock "github.com/sasha-s/go-deadlock"
+	"github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
 )
 
