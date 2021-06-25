@@ -25,7 +25,7 @@ func (s AreaQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		}{}
 		area := query.TaskAreaQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME
+		s.DB.QueryRow(`SELECT UID, NAME
 			FROM AREA_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name)
 
 		areaUID, err := uuid.FromString(rowsData.UID)

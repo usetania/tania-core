@@ -132,12 +132,12 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 
 		sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 		if sizeUnit == (domain.AreaUnit{}) {
-			result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidSizeUnitCode}}
+			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 		}
 
 		location := domain.GetAreaLocation(rowsData.Location)
 		if location == (domain.AreaLocation{}) {
-			result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidAreaLocationCode}}
+			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 		}
 
 		areaRead = storage.AreaRead{
@@ -261,12 +261,12 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Query
 
 			sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 			if sizeUnit == (domain.AreaUnit{}) {
-				result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidSizeUnitCode}}
+				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 			}
 
 			location := domain.GetAreaLocation(rowsData.Location)
 			if location == (domain.AreaLocation{}) {
-				result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidAreaLocationCode}}
+				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 			}
 
 			areaReads = append(areaReads, storage.AreaRead{
@@ -393,12 +393,12 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 
 		sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 		if sizeUnit == (domain.AreaUnit{}) {
-			result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidSizeUnitCode}}
+			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 		}
 
 		location := domain.GetAreaLocation(rowsData.Location)
 		if location == (domain.AreaLocation{}) {
-			result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidAreaLocationCode}}
+			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 		}
 
 		areaRead = storage.AreaRead{
@@ -522,12 +522,12 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 
 			sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 			if sizeUnit == (domain.AreaUnit{}) {
-				result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidSizeUnitCode}}
+				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 			}
 
 			location := domain.GetAreaLocation(rowsData.Location)
 			if location == (domain.AreaLocation{}) {
-				result <- query.QueryResult{Error: domain.AreaError{domain.AreaErrorInvalidAreaLocationCode}}
+				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 			}
 
 			areaReads = append(areaReads, storage.AreaRead{

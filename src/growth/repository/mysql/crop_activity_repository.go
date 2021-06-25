@@ -25,6 +25,9 @@ func (f *CropActivityRepositoryMysql) Save(cropActivity *storage.CropActivity, i
 			Name: cropActivity.ActivityType.Code(),
 			Data: cropActivity.ActivityType,
 		})
+		if err != nil {
+			result <- err
+		}
 
 		if isUpdate {
 			_, err = f.DB.Exec(`UPDATE CROP_ACTIVITY

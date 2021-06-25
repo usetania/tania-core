@@ -25,7 +25,7 @@ func (s CropQueryMysql) FindCropByID(uid uuid.UUID) <-chan query.QueryResult {
 		}{}
 		crop := query.TaskCropQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, BATCH_ID
+		s.DB.QueryRow(`SELECT UID, BATCH_ID
 			FROM CROP_READ WHERE UID = ?`, uid.Bytes()).Scan(&rowsData.UID, &rowsData.BatchID)
 
 		cropUID, err := uuid.FromBytes(rowsData.UID)

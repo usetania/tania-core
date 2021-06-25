@@ -15,7 +15,7 @@ type ReservoirServiceMock struct {
 	mock.Mock
 }
 
-func (m ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarmServiceResult, error) {
+func (m *ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarmServiceResult, error) {
 	args := m.Called(uid)
 	return args.Get(0).(domain.ReservoirFarmServiceResult), nil
 }

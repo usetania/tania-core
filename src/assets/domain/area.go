@@ -79,8 +79,8 @@ type AreaLocation struct {
 
 func AreaLocations() []AreaLocation {
 	return []AreaLocation{
-		AreaLocation{Code: AreaLocationOutdoor, Name: "Field (Outdoor)"},
-		AreaLocation{Code: AreaLocationIndoor, Name: "Greenhouse (Indoor)"},
+		{Code: AreaLocationOutdoor, Name: "Field (Outdoor)"},
+		{Code: AreaLocationIndoor, Name: "Greenhouse (Indoor)"},
 	}
 }
 

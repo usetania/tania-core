@@ -12,17 +12,17 @@ type AreaServiceMock struct {
 	mock.Mock
 }
 
-func (m AreaServiceMock) FindFarmByID(uid uuid.UUID) (AreaFarmServiceResult, error) {
+func (m *AreaServiceMock) FindFarmByID(uid uuid.UUID) (AreaFarmServiceResult, error) {
 	args := m.Called(uid)
 	return args.Get(0).(AreaFarmServiceResult), nil
 }
 
-func (m AreaServiceMock) FindReservoirByID(uid uuid.UUID) (AreaReservoirServiceResult, error) {
+func (m *AreaServiceMock) FindReservoirByID(uid uuid.UUID) (AreaReservoirServiceResult, error) {
 	args := m.Called(uid)
 	return args.Get(0).(AreaReservoirServiceResult), nil
 }
 
-func (m AreaServiceMock) CountCropsByAreaID(areaUID uuid.UUID) (int, error) {
+func (m *AreaServiceMock) CountCropsByAreaID(areaUID uuid.UUID) (int, error) {
 	args := m.Called(areaUID)
 	return args.Get(0).(int), nil
 }

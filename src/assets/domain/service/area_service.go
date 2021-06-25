@@ -69,7 +69,7 @@ func (s AreaServiceInMemory) CountCropsByAreaID(areaUID uuid.UUID) (int, error) 
 
 	totals, ok := result.Result.(query.CountAreaCropQueryResult)
 	if !ok {
-		return 0, errors.New("Internal server error")
+		return 0, errors.New("internal server error")
 	}
 
 	return totals.TotalCropBatch, nil

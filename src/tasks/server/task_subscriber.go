@@ -127,7 +127,7 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead = taskReadFromRepo
 
 	default:
-		return errors.New("Unknown task event")
+		return errors.New("unknown task event")
 	}
 
 	err := <-s.TaskReadRepo.Save(taskRead)
@@ -145,7 +145,7 @@ func (s *TaskServer) getTaskReadFromID(uid uuid.UUID) (*storage.TaskRead, error)
 	taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
 
 	if taskReadFromRepo.UID != uid {
-		return &storage.TaskRead{}, domain.TaskError{domain.TaskErrorTaskNotFoundCode}
+		return &storage.TaskRead{}, domain.TaskError{Code: domain.TaskErrorTaskNotFoundCode}
 	}
 	if !ok {
 		return &storage.TaskRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")

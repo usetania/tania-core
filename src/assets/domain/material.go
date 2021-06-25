@@ -59,7 +59,7 @@ func GetCurrencyCode(currencyCode string) (string, error) {
 	case MoneyEUR:
 		return MoneyEUR, nil
 	default:
-		return "", errors.New("Wrong currency code")
+		return "", errors.New("wrong currency code")
 	}
 }
 
@@ -338,7 +338,7 @@ func (m *Material) ChangeProducedBy(producedBy string) error {
 
 func validateQuantity(quantity float32) error {
 	if quantity <= 0 {
-		return errors.New("Cannot be empty")
+		return errors.New("cannot be empty")
 	}
 
 	return nil
@@ -348,7 +348,7 @@ func validateQuantityUnit(quantityUnit string, materialType MaterialType) (Mater
 	qu := GetMaterialQuantityUnit(materialType.Code(), quantityUnit)
 
 	if qu == (MaterialQuantityUnit{}) {
-		return MaterialQuantityUnit{}, errors.New("Cannot be empty")
+		return MaterialQuantityUnit{}, errors.New("cannot be empty")
 	}
 
 	return qu, nil

@@ -58,6 +58,9 @@ func (f *MaterialEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, ev
 				EventName: structhelper.GetName(eTemp),
 				EventData: eTemp,
 			})
+			if err != nil {
+				result <- err
+			}
 
 			_, err = stmt.Exec(uid.Bytes(), latestVersion, time.Now(), e)
 			if err != nil {

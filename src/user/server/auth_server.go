@@ -105,7 +105,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 
 	userRead, ok := queryResult.Result.(storage.UserRead)
 	if !ok {
-		return Error(c, errors.New("Error type assertion"))
+		return Error(c, errors.New("error type assertion"))
 	}
 
 	queryResult = <-s.UserAuthQuery.FindByUserID(userRead.UID)
@@ -115,7 +115,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 
 	userAuth, ok := queryResult.Result.(storage.UserAuth)
 	if !ok {
-		return Error(c, errors.New("Error type assertion"))
+		return Error(c, errors.New("error type assertion"))
 	}
 
 	if userRead.UID == (uuid.UUID{}) {
@@ -186,7 +186,7 @@ func (s *AuthServer) Register(c echo.Context) error {
 	confirmPassword := c.FormValue("confirm_password")
 
 	if password != confirmPassword {
-		return Error(c, errors.New("Confirm password didn't match"))
+		return Error(c, errors.New("confirm password didn't match"))
 	}
 
 	user, _, err := s.RegisterNewUser(username, password, confirmPassword)
@@ -220,6 +220,9 @@ func (s *AuthServer) RegisterNewUser(username, password, confirmPassword string)
 	}
 
 	err = <-s.UserAuthRepo.Save(&userAuth)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	s.publishUncommittedEvents(user)
 

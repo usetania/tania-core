@@ -1,31 +1,32 @@
 package domain
 
 import (
+	"testing"
+	"time"
+
 	"github.com/Tanibox/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"testing"
-	"time"
 )
 
 type TaskServiceMock struct {
 	mock.Mock
 }
 
-func (m TaskServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
+func (m *TaskServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
-func (m TaskServiceMock) FindCropByID(uid uuid.UUID) ServiceResult {
+func (m *TaskServiceMock) FindCropByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
-func (m TaskServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
+func (m *TaskServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
-func (m TaskServiceMock) FindReservoirByID(uid uuid.UUID) ServiceResult {
+func (m *TaskServiceMock) FindReservoirByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
@@ -36,9 +37,9 @@ func TestCreateTask(t *testing.T) {
 	assetID, _ := uuid.NewV4()
 	assetID_notexist, _ := uuid.NewV4()
 
-	due_date_invalid, _ := time.Parse(time.RFC3339, "2017-01-23T17:37:39.697328206+01:00")
+	due_date_invalid := time.Now().Add(-1 * time.Hour)
 	due_ptr_invalid := &due_date_invalid
-	due_date, _ := time.Parse(time.RFC3339, "2020-12-31T17:37:39.697328206+01:00")
+	due_date := time.Now().Add(1 * time.Hour)
 	due_ptr := &due_date
 
 	tasktitle := "My Task"

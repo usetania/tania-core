@@ -40,7 +40,7 @@ func (w *TaskEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["domain_details"]; ok {
 			domainCode, ok := mapped["domain"].(string)
 			if !ok {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			e.DomainDetails, err = makeDomainDetails(v, domainCode)
@@ -112,7 +112,7 @@ func (w *TaskEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["domain_details"]; ok {
 			domainCode, ok := mapped["domain"].(string)
 			if !ok {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			e.DomainDetails, err = makeDomainDetails(v, domainCode)

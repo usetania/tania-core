@@ -153,12 +153,12 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			case domain.MaterialTypeOtherCode:
 				materialType = domain.MaterialTypeOther{}
 			default:
-				result <- query.QueryResult{Error: errors.New("Invalid material type")}
+				result <- query.QueryResult{Error: errors.New("invalid material type")}
 			}
 
 			qtyUnit := domain.GetMaterialQuantityUnit(rowsData.Type, rowsData.QuantityUnit)
 			if qtyUnit == (domain.MaterialQuantityUnit{}) {
-				result <- query.QueryResult{Error: errors.New("Invalid quantity unit")}
+				result <- query.QueryResult{Error: errors.New("invalid quantity unit")}
 			}
 
 			var notes *string
@@ -319,12 +319,12 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		case domain.MaterialTypeOtherCode:
 			materialType = domain.MaterialTypeOther{}
 		default:
-			result <- query.QueryResult{Error: errors.New("Invalid material type")}
+			result <- query.QueryResult{Error: errors.New("invalid material type")}
 		}
 
 		qtyUnit := domain.GetMaterialQuantityUnit(rowsData.Type, rowsData.QuantityUnit)
 		if qtyUnit == (domain.MaterialQuantityUnit{}) {
-			result <- query.QueryResult{Error: errors.New("Invalid quantity unit")}
+			result <- query.QueryResult{Error: errors.New("invalid quantity unit")}
 		}
 
 		var notes *string

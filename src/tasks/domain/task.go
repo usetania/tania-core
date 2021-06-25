@@ -1,8 +1,9 @@
 package domain
 
 import (
-	uuid "github.com/satori/go.uuid"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 type TaskService interface {
@@ -23,7 +24,7 @@ type Task struct {
 	Title         string     `json:"title"`
 	Description   string     `json:"description"`
 	CreatedDate   time.Time  `json:"created_date"`
-	DueDate       *time.Time `json:"due_date, omitempty"`
+	DueDate       *time.Time `json:"due_date,omitempty"`
 	CompletedDate *time.Time `json:"completed_date"`
 	CancelledDate *time.Time `json:"cancelled_date"`
 	Priority      string     `json:"priority"`
@@ -307,21 +308,6 @@ func validateTaskPriority(priority string) error {
 	}
 
 	_, err := FindTaskPriorityByCode(priority)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-// validateTaskStatus
-func validateTaskStatus(status string) error {
-
-	if status == "" {
-		return TaskError{TaskErrorStatusEmptyCode}
-	}
-
-	_, err := FindTaskStatusByCode(status)
 	if err != nil {
 		return err
 	}

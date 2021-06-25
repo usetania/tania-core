@@ -20,16 +20,16 @@ type TaskCategory struct {
 
 func FindAllTaskCategories() []TaskCategory {
 	return []TaskCategory{
-		TaskCategory{Code: TaskCategoryArea, Name: "Area"},
-		TaskCategory{Code: TaskCategoryCrop, Name: "Crop"},
-		TaskCategory{Code: TaskCategoryFinance, Name: "Finance"},
-		TaskCategory{Code: TaskCategoryGeneral, Name: "General"},
-		TaskCategory{Code: TaskCategoryInventory, Name: "Inventory"},
-		TaskCategory{Code: TaskCategoryNutrient, Name: "Nutrient"},
-		TaskCategory{Code: TaskCategoryPestControl, Name: "Pest Control"},
-		TaskCategory{Code: TaskCategoryReservoir, Name: "Reservoir"},
-		TaskCategory{Code: TaskCategorySafety, Name: "Safety"},
-		TaskCategory{Code: TaskCategorySanitation, Name: "Sanitation"},
+		{Code: TaskCategoryArea, Name: "Area"},
+		{Code: TaskCategoryCrop, Name: "Crop"},
+		{Code: TaskCategoryFinance, Name: "Finance"},
+		{Code: TaskCategoryGeneral, Name: "General"},
+		{Code: TaskCategoryInventory, Name: "Inventory"},
+		{Code: TaskCategoryNutrient, Name: "Nutrient"},
+		{Code: TaskCategoryPestControl, Name: "Pest Control"},
+		{Code: TaskCategoryReservoir, Name: "Reservoir"},
+		{Code: TaskCategorySafety, Name: "Safety"},
+		{Code: TaskCategorySanitation, Name: "Sanitation"},
 	}
 }
 
