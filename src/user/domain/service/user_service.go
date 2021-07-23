@@ -22,7 +22,7 @@ func (s UserServiceImpl) FindUserByUsername(username string) (domain.UserService
 
 	user, ok := result.Result.(storage.UserRead)
 	if !ok {
-		return domain.UserServiceResult{}, errors.New("Error type assertion")
+		return domain.UserServiceResult{}, errors.New("error type assertion")
 	}
 
 	return domain.UserServiceResult{

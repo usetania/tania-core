@@ -21,7 +21,7 @@ func (w *ReservoirEventWrapper) UnmarshalJSON(b []byte) error {
 
 	mapped, ok := wrapper.EventData.(map[string]interface{})
 	if !ok {
-		return errors.New("Error type assertion")
+		return errors.New("error type assertion")
 	}
 
 	f := mapstructure.ComposeDecodeHookFunc(

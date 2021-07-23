@@ -5,11 +5,11 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/Tanibox/tania-core/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-core/src/tasks/domain"
 	"github.com/Tanibox/tania-core/src/tasks/query"
 	"github.com/Tanibox/tania-core/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
-  "github.com/Tanibox/tania-core/src/helper/paginationhelper"
 )
 
 type TaskReadQuerySqlite struct {
@@ -47,14 +47,13 @@ func (r TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 		sql := `SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`
 		var args []interface{}
 
+		if page != 0 && limit != 0 {
+			sql += " LIMIT ? OFFSET ?"
+			offset := paginationhelper.CalculatePageToOffset(page, limit)
+			args = append(args, limit, offset)
+		}
 
-    if page != 0 && limit != 0 {
-      sql += " LIMIT ? OFFSET ?"
-      offset := paginationhelper.CalculatePageToOffset(page, limit)
-      args = append(args, limit, offset)
-    }
-
-    rows, err := r.DB.Query(sql, args...)
+		rows, err := r.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -113,46 +112,46 @@ func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 		sql := "SELECT * FROM TASK_READ WHERE 1 = 1"
 		var args []interface{}
 
-		if value, _ := params["is_due"]; value != "" {
+		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
 			args = append(args, b)
 		}
-		start, _ := params["due_start"]
-		end, _ := params["due_end"]
+		start := params["due_start"]
+		end := params["due_end"]
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
 			args = append(args, start)
 			args = append(args, end)
 		}
-		if value, _ := params["priority"]; value != "" {
+		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["status"]; value != "" {
+		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["domain"]; value != "" {
+		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["category"]; value != "" {
+		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["asset_id"]; value != "" {
+		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
 			args = append(args, assetID)
 		}
 
-    if page != 0 && limit != 0 {
-      sql += " LIMIT ? OFFSET ?"
-      offset := paginationhelper.CalculatePageToOffset(page, limit)
-      args = append(args, limit, offset)
-    }
-    rows, err := s.DB.Query(sql, args...)
+		if page != 0 && limit != 0 {
+			sql += " LIMIT ? OFFSET ?"
+			offset := paginationhelper.CalculatePageToOffset(page, limit)
+			args = append(args, limit, offset)
+		}
+		rows, err := s.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -174,84 +173,80 @@ func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 	return result
 }
 
-
-
 func (q TaskReadQuerySqlite) CountAll() <-chan query.QueryResult {
-  result := make(chan query.QueryResult)
+	result := make(chan query.QueryResult)
 
-  go func() {
-    total := 0
-    var params []interface{}
+	go func() {
+		total := 0
+		var params []interface{}
 
-    sql := "SELECT COUNT(UID) FROM TASK_READ"
+		sql := "SELECT COUNT(UID) FROM TASK_READ"
 
+		err := q.DB.QueryRow(sql, params...).Scan(&total)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
 
-    err := q.DB.QueryRow(sql, params...).Scan(&total)
-    if err != nil {
-      result <- query.QueryResult{Error: err}
-    }
+		result <- query.QueryResult{Result: total}
+		close(result)
+	}()
 
-    result <- query.QueryResult{Result: total}
-    close(result)
-  }()
-
-  return result
+	return result
 }
 
 func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-chan query.QueryResult {
-  result := make(chan query.QueryResult)
+	result := make(chan query.QueryResult)
 
-  go func() {
-    total := 0
+	go func() {
+		total := 0
 
-    sql := "SELECT COUNT(UID) FROM TASK_READ WHERE 1 = 1"
-    var args []interface{}
+		sql := "SELECT COUNT(UID) FROM TASK_READ WHERE 1 = 1"
+		var args []interface{}
 
-    if value, _ := params["is_due"]; value != "" {
-      b, _ := strconv.ParseBool(value)
-      sql += " AND IS_DUE = ? "
-      args = append(args, b)
-    }
-    start, _ := params["due_start"]
-    end, _ := params["due_end"]
-    if start != "" && end != "" {
-      sql += " AND DUE_DATE BETWEEN ? AND ? "
-      args = append(args, start)
-      args = append(args, end)
-    }
-    if value, _ := params["priority"]; value != "" {
-      sql += " AND PRIORITY = ? "
-      args = append(args, value)
-    }
-    if value, _ := params["status"]; value != "" {
-      sql += " AND STATUS = ? "
-      args = append(args, value)
-    }
-    if value, _ := params["domain"]; value != "" {
-      sql += " AND DOMAIN_CODE = ? "
-      args = append(args, value)
-    }
-    if value, _ := params["category"]; value != "" {
-      sql += " AND CATEGORY = ? "
-      args = append(args, value)
-    }
-    if value, _ := params["asset_id"]; value != "" {
-      assetID, _ := uuid.FromString(value)
-      sql += " AND ASSET_ID = ? "
-      args = append(args, assetID)
-    }
+		if value := params["is_due"]; value != "" {
+			b, _ := strconv.ParseBool(value)
+			sql += " AND IS_DUE = ? "
+			args = append(args, b)
+		}
+		start := params["due_start"]
+		end := params["due_end"]
+		if start != "" && end != "" {
+			sql += " AND DUE_DATE BETWEEN ? AND ? "
+			args = append(args, start)
+			args = append(args, end)
+		}
+		if value := params["priority"]; value != "" {
+			sql += " AND PRIORITY = ? "
+			args = append(args, value)
+		}
+		if value := params["status"]; value != "" {
+			sql += " AND STATUS = ? "
+			args = append(args, value)
+		}
+		if value := params["domain"]; value != "" {
+			sql += " AND DOMAIN_CODE = ? "
+			args = append(args, value)
+		}
+		if value := params["category"]; value != "" {
+			sql += " AND CATEGORY = ? "
+			args = append(args, value)
+		}
+		if value := params["asset_id"]; value != "" {
+			assetID, _ := uuid.FromString(value)
+			sql += " AND ASSET_ID = ? "
+			args = append(args, assetID)
+		}
 
-    err := q.DB.QueryRow(sql, args...).Scan(&total)
-    if err != nil {
-      result <- query.QueryResult{Error: err}
-    }
+		err := q.DB.QueryRow(sql, args...).Scan(&total)
+		if err != nil {
+			result <- query.QueryResult{Error: err}
+		}
 
-    result <- query.QueryResult{Result: total}
-    close(result)
-  }()
-  return result
+		result <- query.QueryResult{Result: total}
+		close(result)
+	}()
+	return result
 }
-
 
 func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRead, error) {
 	rowsData := taskReadQueryResult{}

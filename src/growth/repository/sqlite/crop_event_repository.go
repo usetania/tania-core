@@ -35,6 +35,9 @@ func (f *CropEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 				Name: structhelper.GetName(v),
 				Data: v,
 			})
+			if err != nil {
+				result <- err
+			}
 
 			_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), e)
 			if err != nil {

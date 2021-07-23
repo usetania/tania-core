@@ -22,7 +22,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 	mapped, ok := wrapper.Data.(map[string]interface{})
 	if !ok {
-		return errors.New("Error type assertion")
+		return errors.New("error type assertion")
 	}
 
 	f := mapstructure.ComposeDecodeHookFunc(
@@ -84,7 +84,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["UpdatedSrcArea"]; ok {
 			code, ok2 := mapped["UpdatedSrcAreaCode"].(string)
 			if !ok2 {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			if code == "INITIAL_AREA" {
@@ -107,7 +107,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["UpdatedDstArea"]; ok {
 			code, ok2 := mapped["UpdatedDstAreaCode"].(string)
 			if !ok2 {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			if code == "INITIAL_AREA" {
@@ -142,7 +142,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["UpdatedHarvestedStorage"]; ok {
 			mapped2, ok2 := v.(map[string]interface{})
 			if !ok2 {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			harvestedStorage := domain.HarvestedStorage{}
@@ -150,7 +150,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 			if v2, ok2 := mapped2["quantity"]; ok2 {
 				val, ok3 := v2.(float64)
 				if !ok3 {
-					return errors.New("Error type assertion")
+					return errors.New("error type assertion")
 				}
 
 				harvestedStorage.Quantity = int(val)
@@ -158,7 +158,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 			if v2, ok2 := mapped2["produced_gram_quantity"]; ok2 {
 				val, ok3 := v2.(float64)
 				if !ok3 {
-					return errors.New("Error type assertion")
+					return errors.New("error type assertion")
 				}
 
 				harvestedStorage.ProducedGramQuantity = float32(val)
@@ -193,7 +193,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["HarvestedArea"]; ok {
 			code, ok2 := mapped["HarvestedAreaCode"].(string)
 			if !ok2 {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			if code == "INITIAL_AREA" {
@@ -227,7 +227,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["UpdatedTrash"]; ok {
 			mapped2, ok2 := v.(map[string]interface{})
 			if !ok2 {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			trash := domain.Trash{}
@@ -235,7 +235,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 			if v2, ok2 := mapped2["quantity"]; ok2 {
 				val, ok3 := v2.(float64)
 				if !ok3 {
-					return errors.New("Error type assertion")
+					return errors.New("error type assertion")
 				}
 
 				trash.Quantity = int(val)
@@ -270,7 +270,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 		if v, ok := mapped["DumpedArea"]; ok {
 			code, ok2 := mapped["DumpedAreaCode"].(string)
 			if !ok2 {
-				return errors.New("Error type assertion")
+				return errors.New("error type assertion")
 			}
 
 			if code == "INITIAL_AREA" {
@@ -340,7 +340,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 func makeUUID(v interface{}) (uuid.UUID, error) {
 	val, ok := v.(string)
 	if !ok {
-		return uuid.UUID{}, errors.New("Error type assertion")
+		return uuid.UUID{}, errors.New("error type assertion")
 	}
 
 	uid, err := uuid.FromString(val)
@@ -354,7 +354,7 @@ func makeUUID(v interface{}) (uuid.UUID, error) {
 func makeTime(v interface{}) (time.Time, error) {
 	val, ok := v.(string)
 	if !ok {
-		return time.Time{}, errors.New("Error type assertion")
+		return time.Time{}, errors.New("error type assertion")
 	}
 
 	date, err := time.Parse(time.RFC3339, val)
@@ -365,56 +365,11 @@ func makeTime(v interface{}) (time.Time, error) {
 	return date, nil
 }
 
-func makeCropContainer(v interface{}) (domain.CropContainer, error) {
-	mapped, ok := v.(map[string]interface{})
-	if !ok {
-		return domain.CropContainer{}, errors.New("Error type assertion")
-	}
-
-	var containerType domain.CropContainerType
-	quantity := 0
-
-	if v, ok := mapped["Quantity"]; ok {
-		qty, ok2 := v.(float64)
-		if !ok2 {
-			return domain.CropContainer{}, errors.New("Error type assertion")
-		}
-
-		quantity = int(qty)
-	}
-	if v, ok := mapped["Type"]; ok {
-		mapped2, ok2 := v.(map[string]interface{})
-		if !ok2 {
-			return domain.CropContainer{}, errors.New("Error type assertion")
-		}
-
-		if v2, ok2 := mapped2["Cell"]; ok2 {
-			cell, ok3 := v2.(float64)
-			if !ok3 {
-				return domain.CropContainer{}, errors.New("Error type assertion")
-			}
-
-			cellInt := int(cell)
-
-			if cellInt != 0 {
-				containerType = domain.Tray{Cell: cellInt}
-			}
-		} else {
-			containerType = domain.Pot{}
-		}
-	}
-
-	return domain.CropContainer{
-		Quantity: quantity,
-		Type:     containerType,
-	}, nil
-}
-
 func makeCropInitialArea(v interface{}) (domain.InitialArea, error) {
 	initialArea := domain.InitialArea{}
 	mapped, ok := v.(map[string]interface{})
 	if !ok {
-		return domain.InitialArea{}, errors.New("Error type assertion")
+		return domain.InitialArea{}, errors.New("error type assertion")
 	}
 
 	if v, ok := mapped["area_id"]; ok {
@@ -427,14 +382,14 @@ func makeCropInitialArea(v interface{}) (domain.InitialArea, error) {
 	if v, ok := mapped["initial_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
-			return domain.InitialArea{}, errors.New("Error type assertion")
+			return domain.InitialArea{}, errors.New("error type assertion")
 		}
 		initialArea.InitialQuantity = int(qty)
 	}
 	if v, ok := mapped["current_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
-			return domain.InitialArea{}, errors.New("Error type assertion")
+			return domain.InitialArea{}, errors.New("error type assertion")
 		}
 		initialArea.CurrentQuantity = int(qty)
 	}
@@ -488,7 +443,7 @@ func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 	movedArea := domain.MovedArea{}
 	mapped, ok := v.(map[string]interface{})
 	if !ok {
-		return domain.MovedArea{}, errors.New("Error type assertion")
+		return domain.MovedArea{}, errors.New("error type assertion")
 	}
 
 	if v, ok := mapped["area_id"]; ok {
@@ -508,7 +463,7 @@ func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 	if v, ok := mapped["initial_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
-			return domain.MovedArea{}, errors.New("Error type assertion")
+			return domain.MovedArea{}, errors.New("error type assertion")
 		}
 		movedArea.InitialQuantity = int(qty)
 	}
@@ -516,7 +471,7 @@ func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 		qty, ok2 := v.(float64)
 		if !ok2 {
 			if !ok2 {
-				return domain.MovedArea{}, errors.New("Error type assertion")
+				return domain.MovedArea{}, errors.New("error type assertion")
 			}
 		}
 		movedArea.CurrentQuantity = int(qty)

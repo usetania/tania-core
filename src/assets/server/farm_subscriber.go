@@ -31,7 +31,7 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -46,7 +46,7 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -61,7 +61,7 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -77,7 +77,7 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -106,7 +106,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead.UID = e.UID
@@ -138,7 +138,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -153,7 +153,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -178,7 +178,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -197,7 +197,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -237,7 +237,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
@@ -247,7 +247,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		reservoir, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead.UID = e.UID
@@ -273,7 +273,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -288,7 +288,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -303,7 +303,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -318,7 +318,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -333,7 +333,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
@@ -343,7 +343,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		reservoir, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -361,7 +361,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -382,7 +382,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -401,7 +401,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -451,7 +451,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -466,7 +466,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -481,7 +481,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -499,7 +499,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -514,7 +514,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -529,7 +529,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -544,7 +544,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("Internal server error. Error type assertion"))
+			log.Error(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material

@@ -113,35 +113,35 @@ func (s TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, 
 		sql := "SELECT * FROM TASK_READ WHERE 1 = 1"
 		var args []interface{}
 
-		if value, _ := params["is_due"]; value != "" {
+		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
 			args = append(args, b)
 		}
-		start, _ := params["due_start"]
-		end, _ := params["due_end"]
+		start := params["due_start"]
+		end := params["due_end"]
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
 			args = append(args, start)
 			args = append(args, end)
 		}
-		if value, _ := params["priority"]; value != "" {
+		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["status"]; value != "" {
+		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["domain"]; value != "" {
+		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["category"]; value != "" {
+		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["asset_id"]; value != "" {
+		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
 			args = append(args, assetID.Bytes())
@@ -205,35 +205,35 @@ func (q TaskReadQueryMysql) CountTasksWithFilter(params map[string]string) <-cha
 		sql := "SELECT COUNT(UID) FROM TASK_READ WHERE 1 = 1"
 		var args []interface{}
 
-		if value, _ := params["is_due"]; value != "" {
+		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
 			args = append(args, b)
 		}
-		start, _ := params["due_start"]
-		end, _ := params["due_end"]
+		start := params["due_start"]
+		end := params["due_end"]
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
 			args = append(args, start)
 			args = append(args, end)
 		}
-		if value, _ := params["priority"]; value != "" {
+		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["status"]; value != "" {
+		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["domain"]; value != "" {
+		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["category"]; value != "" {
+		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
 			args = append(args, value)
 		}
-		if value, _ := params["asset_id"]; value != "" {
+		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
 			args = append(args, assetID.Bytes())

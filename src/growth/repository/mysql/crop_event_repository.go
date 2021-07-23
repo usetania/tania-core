@@ -35,6 +35,9 @@ func (f *CropEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, events
 				Name: structhelper.GetName(v),
 				Data: v,
 			})
+			if err != nil {
+				result <- err
+			}
 
 			_, err = stmt.Exec(uid.Bytes(), latestVersion, time.Now(), e)
 			if err != nil {

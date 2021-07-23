@@ -17,13 +17,13 @@ type FarmType struct {
 
 func FindAllFarmTypes() []FarmType {
 	return []FarmType{
-		FarmType{Code: FarmTypeOrganic, Name: "Organic / Soil-Based"},
-		FarmType{Code: FarmTypeHydroponic, Name: "Hydroponic"},
-		FarmType{Code: FarmTypeAquaponic, Name: "Aquaponic"},
-		FarmType{Code: FarmTypeMushroom, Name: "Mushroom"},
-		FarmType{Code: FarmTypeLiveStock, Name: "Livestock"},
-		FarmType{Code: FarmTypeFisheries, Name: "Fisheries"},
-		FarmType{Code: FarmTypePermaculture, Name: "Permaculture"},
+		{Code: FarmTypeOrganic, Name: "Organic / Soil-Based"},
+		{Code: FarmTypeHydroponic, Name: "Hydroponic"},
+		{Code: FarmTypeAquaponic, Name: "Aquaponic"},
+		{Code: FarmTypeMushroom, Name: "Mushroom"},
+		{Code: FarmTypeLiveStock, Name: "Livestock"},
+		{Code: FarmTypeFisheries, Name: "Fisheries"},
+		{Code: FarmTypePermaculture, Name: "Permaculture"},
 	}
 }
 

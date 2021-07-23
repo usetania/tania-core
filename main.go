@@ -11,9 +11,7 @@ import (
 
 	"github.com/Tanibox/tania-core/src/eventbus"
 	"github.com/asaskevich/EventBus"
-	"golang.org/x/crypto/ssh/terminal"
-
-	"github.com/go-sql-driver/mysql"
+	"golang.org/x/term"
 
 	"github.com/Tanibox/tania-core/config"
 	assetsserver "github.com/Tanibox/tania-core/src/assets/server"
@@ -24,17 +22,17 @@ import (
 	tasksserver "github.com/Tanibox/tania-core/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-core/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-core/src/user/server"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	colorable "github.com/mattn/go-colorable"
+	"github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
 	uuid "github.com/satori/go.uuid"
 	log "github.com/sirupsen/logrus"
 )
 
 func init() {
-	if terminal.IsTerminal(int(os.Stdout.Fd())) {
+	if term.IsTerminal(int(os.Stdout.Fd())) {
 		log.SetFormatter(&log.TextFormatter{ForceColors: true})
 
 		// We need this for Windows to get coloured
@@ -51,7 +49,7 @@ func main() {
 	e := echo.New()
 
 	// Initialize DB.
-	log.Print("Using " + *config.Config.TaniaPersistenceEngine + " persistance engine")
+	log.Print("Using " + *config.Config.TaniaPersistenceEngine + " persistence engine")
 
 	// InMemory DB will always be initialized.
 	inMem := initInMemory()
@@ -131,6 +129,9 @@ func main() {
 
 	// Initialize user
 	err = initUser(authServer)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
 
 	// Initialize Echo Middleware
 	e.Use(middleware.Recover())

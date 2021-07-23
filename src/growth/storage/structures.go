@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/growth/domain"
-	deadlock "github.com/sasha-s/go-deadlock"
+	"github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
 )
 

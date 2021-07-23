@@ -25,7 +25,7 @@ func (s ReservoirQueryMysql) FindReservoirByID(uid uuid.UUID) <-chan query.Query
 		}{}
 		reservoir := query.TaskReservoirQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME
+		s.DB.QueryRow(`SELECT UID, NAME
 			FROM RESERVOIR_READ WHERE UID = ?`, uid.Bytes()).Scan(&rowsData.UID, &rowsData.Name)
 
 		reservoirUID, err := uuid.FromBytes(rowsData.UID)

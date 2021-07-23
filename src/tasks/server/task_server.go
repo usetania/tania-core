@@ -12,7 +12,7 @@ import (
 	"github.com/Tanibox/tania-core/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-core/src/helper/structhelper"
 	"github.com/Tanibox/tania-core/src/tasks/domain"
-	service "github.com/Tanibox/tania-core/src/tasks/domain/service"
+	"github.com/Tanibox/tania-core/src/tasks/domain/service"
 	"github.com/Tanibox/tania-core/src/tasks/query"
 	queryInMem "github.com/Tanibox/tania-core/src/tasks/query/inmemory"
 	queryMysql "github.com/Tanibox/tania-core/src/tasks/query/mysql"

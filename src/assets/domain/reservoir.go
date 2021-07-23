@@ -267,19 +267,3 @@ func validateReservoirName(name string) error {
 
 	return nil
 }
-
-func validatePH(ph float32) error {
-	if ph < 0 {
-		return ReservoirError{ReservoirErrorPHInvalidCode}
-	}
-
-	return nil
-}
-
-func validateEC(ec float32) error {
-	if ec <= 0 {
-		return ReservoirError{ReservoirErrorECInvalidCode}
-	}
-
-	return nil
-}

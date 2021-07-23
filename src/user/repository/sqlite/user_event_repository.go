@@ -36,6 +36,9 @@ func (f *UserEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 				EventName: structhelper.GetName(v),
 				EventData: v,
 			})
+			if err != nil {
+				result <- err
+			}
 
 			_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), e)
 			if err != nil {

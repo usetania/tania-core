@@ -25,7 +25,7 @@ func (s AreaQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		}{}
 		area := query.TaskAreaQueryResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME
+		s.DB.QueryRow(`SELECT UID, NAME
 			FROM AREA_READ WHERE UID = ?`, uid.Bytes()).Scan(&rowsData.UID, &rowsData.Name)
 
 		areaUID, err := uuid.FromBytes(rowsData.UID)

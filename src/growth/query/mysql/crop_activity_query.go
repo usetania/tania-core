@@ -54,13 +54,16 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Quer
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
 			json.Unmarshal(rowsData.ActivityType, &wrapper)
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("Error type assertion")}
+				result <- query.QueryResult{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromBytes(rowsData.CropUID)
@@ -94,7 +97,7 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 
 		at, ok := activityType.(storage.ActivityType)
 		if !ok {
-			result <- query.QueryResult{Error: errors.New("Wrong activity type")}
+			result <- query.QueryResult{Error: errors.New("wrong activity type")}
 		}
 
 		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY
@@ -114,13 +117,16 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 				&rowsData.CreatedDate,
 				&rowsData.Description,
 			)
+			if err != nil {
+				result <- query.QueryResult{Error: err}
+			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
 			json.Unmarshal(rowsData.ActivityType, &wrapper)
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("Error type assertion")}
+				result <- query.QueryResult{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromBytes(rowsData.CropUID)

@@ -58,6 +58,9 @@ func (f *MaterialEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, e
 				EventName: structhelper.GetName(eTemp),
 				EventData: eTemp,
 			})
+			if err != nil {
+				result <- err
+			}
 
 			_, err = stmt.Exec(uid, latestVersion, time.Now().Format(time.RFC3339), e)
 			if err != nil {

@@ -3,7 +3,7 @@ package storage
 import (
 	"time"
 
-	domain "github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/Tanibox/tania-core/src/tasks/domain"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -19,7 +19,7 @@ type TaskRead struct {
 	UID           uuid.UUID         `json:"uid"`
 	Description   string            `json:"description"`
 	CreatedDate   time.Time         `json:"created_date"`
-	DueDate       *time.Time        `json:"due_date, omitempty"`
+	DueDate       *time.Time        `json:"due_date,omitempty"`
 	CompletedDate *time.Time        `json:"completed_date"`
 	CancelledDate *time.Time        `json:"cancelled_date"`
 	Priority      string            `json:"priority"`
