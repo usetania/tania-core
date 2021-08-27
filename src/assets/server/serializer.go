@@ -9,8 +9,8 @@ import (
 	"github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/Tanibox/tania-core/src/assets/query"
 	"github.com/Tanibox/tania-core/src/assets/storage"
+	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 )
 
 type SimpleFarm domain.Farm

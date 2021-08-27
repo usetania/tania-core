@@ -5,8 +5,8 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/mitchellh/mapstructure"
-	uuid "github.com/satori/go.uuid"
 )
 
 // EventWrapper is used to wrap the event interface with its struct name,

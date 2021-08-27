@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/gofrs/uuid"
 	"github.com/mitchellh/mapstructure"
-	uuid "github.com/satori/go.uuid"
 )
 
 type TaskEventWrapper InterfaceWrapper

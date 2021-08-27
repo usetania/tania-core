@@ -6,7 +6,7 @@ import (
 
 	"github.com/Tanibox/tania-core/src/user/query"
 	"github.com/Tanibox/tania-core/src/user/storage"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type UserAuthQuerySqlite struct {

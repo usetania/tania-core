@@ -4,7 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/Tanibox/tania-core/src/growth/query"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type TaskReadQuerySqlite struct {

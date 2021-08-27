@@ -8,7 +8,7 @@ import (
 	"github.com/Tanibox/tania-core/src/assets/decoder"
 	"github.com/Tanibox/tania-core/src/assets/query"
 	"github.com/Tanibox/tania-core/src/assets/storage"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type AreaEventQuerySqlite struct {

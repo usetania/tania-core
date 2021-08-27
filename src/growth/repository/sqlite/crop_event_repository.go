@@ -8,7 +8,7 @@ import (
 	"github.com/Tanibox/tania-core/src/growth/decoder"
 	"github.com/Tanibox/tania-core/src/growth/repository"
 	"github.com/Tanibox/tania-core/src/helper/structhelper"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type CropEventRepositorySqlite struct {

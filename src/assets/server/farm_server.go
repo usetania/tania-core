@@ -25,8 +25,8 @@ import (
 	"github.com/Tanibox/tania-core/src/helper/paginationhelper"
 	"github.com/Tanibox/tania-core/src/helper/stringhelper"
 	"github.com/Tanibox/tania-core/src/helper/structhelper"
+	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 )
 
 // FarmServer ties the routes and handlers with injected dependencies

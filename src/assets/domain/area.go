@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/helper/validationhelper"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type Area struct {
