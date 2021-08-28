@@ -1,6 +1,6 @@
 package query
 
-import uuid "github.com/satori/go.uuid"
+import "github.com/gofrs/uuid"
 
 type UserEventQuery interface {
 	FindAllByID(userUID uuid.UUID) <-chan QueryResult

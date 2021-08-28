@@ -3,7 +3,7 @@ package repository
 import (
 	"github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/Tanibox/tania-core/src/assets/storage"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 // RepositoryResult is a struct to wrap repository result

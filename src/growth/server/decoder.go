@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/gofrs/uuid"
 	"github.com/mitchellh/mapstructure"
-	uuid "github.com/satori/go.uuid"
 )
 
 func Decode(f mapstructure.DecodeHookFunc, data *map[string]interface{}, e interface{}) (interface{}, error) {

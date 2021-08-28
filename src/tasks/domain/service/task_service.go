@@ -3,7 +3,7 @@ package service
 import (
 	"github.com/Tanibox/tania-core/src/tasks/domain"
 	"github.com/Tanibox/tania-core/src/tasks/query"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 // TaskService handles task behaviours that needs external interaction to be worked

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/sasha-s/go-deadlock"
-	uuid "github.com/satori/go.uuid"
 )
 
 type TaskEventStorage struct {

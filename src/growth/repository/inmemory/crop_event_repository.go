@@ -3,7 +3,7 @@ package inmemory
 import (
 	"github.com/Tanibox/tania-core/src/growth/repository"
 	"github.com/Tanibox/tania-core/src/growth/storage"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type CropEventRepositoryInMemory struct {

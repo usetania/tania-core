@@ -3,7 +3,7 @@ package inmemory
 import (
 	"github.com/Tanibox/tania-core/src/assets/storage"
 	"github.com/Tanibox/tania-core/src/growth/query"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type AreaReadQueryInMemory struct {

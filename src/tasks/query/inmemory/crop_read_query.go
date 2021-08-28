@@ -3,7 +3,7 @@ package inmemory
 import (
 	"github.com/Tanibox/tania-core/src/growth/storage"
 	"github.com/Tanibox/tania-core/src/tasks/query"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type CropQueryInMemory struct {
