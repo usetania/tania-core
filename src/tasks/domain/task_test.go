@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/tasks/query"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

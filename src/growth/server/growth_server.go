@@ -26,8 +26,8 @@ import (
 	"github.com/Tanibox/tania-core/src/growth/repository"
 	"github.com/Tanibox/tania-core/src/growth/storage"
 	taskstorage "github.com/Tanibox/tania-core/src/tasks/storage"
+	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 )
 
 // GrowthServer ties the routes and handlers with injected dependencies

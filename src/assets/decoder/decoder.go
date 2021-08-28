@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/gofrs/uuid"
 	"github.com/mitchellh/mapstructure"
-	uuid "github.com/satori/go.uuid"
 )
 
 // EventWrapper is used to wrap the event interface with its struct name,

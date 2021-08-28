@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/helper/validationhelper"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 // Reservoir is entity that provides the operation that farm owner or his/her staff
