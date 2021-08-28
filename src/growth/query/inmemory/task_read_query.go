@@ -6,7 +6,7 @@ import (
 	"github.com/Tanibox/tania-core/src/growth/query"
 	tasksdomain "github.com/Tanibox/tania-core/src/tasks/domain"
 	"github.com/Tanibox/tania-core/src/tasks/storage"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type TaskReadQueryInMemory struct {

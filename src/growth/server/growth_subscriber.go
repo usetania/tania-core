@@ -9,8 +9,8 @@ import (
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/Tanibox/tania-core/src/growth/storage"
 	taskevents "github.com/Tanibox/tania-core/src/tasks/domain"
+	"github.com/gofrs/uuid"
 	"github.com/labstack/gommon/log"
-	uuid "github.com/satori/go.uuid"
 )
 
 func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {

@@ -2,11 +2,12 @@ package sqlite
 
 import (
 	"database/sql"
+	"time"
+
 	"github.com/Tanibox/tania-core/src/tasks/domain"
 	"github.com/Tanibox/tania-core/src/tasks/repository"
 	"github.com/Tanibox/tania-core/src/tasks/storage"
-	uuid "github.com/satori/go.uuid"
-	"time"
+	"github.com/gofrs/uuid"
 )
 
 type TaskReadRepositorySqlite struct {

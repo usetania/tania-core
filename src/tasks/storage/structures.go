@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/tasks/domain"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type TaskEvent struct {

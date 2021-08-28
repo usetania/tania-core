@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/gofrs/uuid"
 	"github.com/sasha-s/go-deadlock"
-	uuid "github.com/satori/go.uuid"
 )
 
 type CropEvent struct {

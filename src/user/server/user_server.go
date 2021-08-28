@@ -17,8 +17,8 @@ import (
 	repoMysql "github.com/Tanibox/tania-core/src/user/repository/mysql"
 	repoSqlite "github.com/Tanibox/tania-core/src/user/repository/sqlite"
 	"github.com/Tanibox/tania-core/src/user/storage"
+	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
-	uuid "github.com/satori/go.uuid"
 )
 
 // UserServer ties the routes and handlers with injected dependencies

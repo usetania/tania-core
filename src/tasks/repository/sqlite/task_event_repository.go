@@ -8,7 +8,7 @@ import (
 	"github.com/Tanibox/tania-core/src/helper/structhelper"
 	"github.com/Tanibox/tania-core/src/tasks/decoder"
 	"github.com/Tanibox/tania-core/src/tasks/repository"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 type TaskEventRepositorySqlite struct {

@@ -8,7 +8,7 @@ import (
 
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/Tanibox/tania-core/src/growth/storage"
-	uuid "github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 
 	"github.com/Tanibox/tania-core/src/growth/domain"
 	"github.com/labstack/echo/v4"
