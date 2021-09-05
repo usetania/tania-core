@@ -1,11 +1,13 @@
 $primary: #7136A1;
 $danger: #DC3545;
-$gray: #f6f8f8;
+$gray: #F6F8F8;
+$light: #FFFFFF;
 
 $theme-colors: (
     "primary": $primary,
     "danger": $danger,
     "gray": $gray,
+    "light": $light
 );
 
 @import "~bootstrap/scss/bootstrap";
