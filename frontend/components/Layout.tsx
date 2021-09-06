@@ -1,5 +1,6 @@
-import type { NextPage } from "next";
 import Image from "next/image";
+import Link from "next/link";
+import React from "react";
 import { Container, Col, Nav, Navbar, Row } from "react-bootstrap";
 import {
   FaHome,
@@ -50,11 +51,15 @@ const navData = [
   },
 ];
 
-const Layout: NextPage = ({ children }) => {
+interface iLayout {
+  children: React.ReactNode;
+}
+
+const Layout = ({ children }: iLayout) => {
   return (
     <Row className="mx-0">
-      <Col md={3} lg={2} className="d-none d-md-block px-0">
-        <aside className="bg-primary min-vh-100">
+      <Col md={3} lg={2} className="bg-primary d-none d-md-block px-0">
+        <aside>
           <Nav defaultActiveKey="/" className="flex-column">
             <Nav.Link href="/">
               <div className="d-flex justify-content-center py-3 mb-3">
@@ -66,16 +71,17 @@ const Layout: NextPage = ({ children }) => {
                 />
               </div>
             </Nav.Link>
-            {navData.map(({ name, route, icon }) => (
-              <Nav.Item key={name}>
-                <Nav.Link href={route} className="text-light">
-                  <div className="d-flex align-items-center">
-                    {icon}
-                    <span>{name}</span>
-                  </div>
-                </Nav.Link>
-              </Nav.Item>
-            ))}
+            {navData &&
+              navData.map(({ name, route, icon }) => (
+                <Nav.Item key={name}>
+                  <Nav.Link href={route} className="text-light">
+                    <div className="d-flex align-items-center">
+                      {icon}
+                      <span>{name}</span>
+                    </div>
+                  </Nav.Link>
+                </Nav.Item>
+              ))}
           </Nav>
         </aside>
       </Col>
@@ -97,32 +103,35 @@ const Layout: NextPage = ({ children }) => {
               <Nav.Link>Demo Farm</Nav.Link>
             </Nav>
             <Nav className="d-md-none">
-              {navData.map(({ name, route, icon }) => (
-                <Nav.Item key={`mobile-${name}`}>
-                  <Nav.Link href={route}>
-                    <div className="d-flex align-items-center">
-                      {icon}
-                      <span>{name}</span>
-                    </div>
-                  </Nav.Link>
-                </Nav.Item>
-              ))}
+              {navData &&
+                navData.map(({ name, route, icon }) => (
+                  <Nav.Item key={`mobile-${name}`}>
+                    <Nav.Link href={route}>
+                      <div className="d-flex align-items-center">
+                        {icon}
+                        <span>{name}</span>
+                      </div>
+                    </Nav.Link>
+                  </Nav.Item>
+                ))}
             </Nav>
             <div className="dropdown-divider d-md-none" />
             <Nav className="ms-auto">
               <Nav.Link className="">
                 <div className="d-flex align-items-center">
                   <FaPowerOff className="me-3" />
-                  <span>Sign Out</span>
+                  <Link href="/">
+                    <span className="text-decoration-none">Sign Out</span>
+                  </Link>
                 </div>
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
-        <Container fluid className="py-3">
+        <Container fluid className="py-4">
           {children}
         </Container>
-        <footer>
+        <footer className="mb-3">
           <Container fluid>
             Tania 1.7.0. Made for the ♥ of plants &copy; 2019 Copyright.
           </Container>

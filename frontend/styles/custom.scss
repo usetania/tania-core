@@ -11,3 +11,10 @@ $theme-colors: (
 );
 
 @import "~bootstrap/scss/bootstrap";
+
+a {
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
