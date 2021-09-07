@@ -1,4 +1,12 @@
-import { FaGripHorizontal, FaArchive, FaLeaf } from "react-icons/fa";
+import {
+  FaGripHorizontal,
+  FaArchive,
+  FaLeaf,
+  FaHome,
+  FaTint,
+  FaClipboard,
+  FaUser,
+} from "react-icons/fa";
 
 const dashboardData = [
   {
@@ -79,4 +87,42 @@ const tasksData = [
   },
 ];
 
-export { dashboardData, cropsData, tasksData };
+const navData = [
+  {
+    name: "Dashboard",
+    route: "/dashboard",
+    icon: <FaHome className="me-3" />,
+  },
+  {
+    name: "Reservoir",
+    route: "/reservoir",
+    icon: <FaTint className="me-3" />,
+  },
+  {
+    name: "Areas",
+    route: "/areas",
+    icon: <FaGripHorizontal className="me-3" />,
+  },
+  {
+    name: "Materials",
+    route: "/materials",
+    icon: <FaArchive className="me-3" />,
+  },
+  {
+    name: "Crops",
+    route: "/crops",
+    icon: <FaLeaf className="me-3" />,
+  },
+  {
+    name: "Tasks",
+    route: "/tasks",
+    icon: <FaClipboard className="me-3" />,
+  },
+  {
+    name: "Account",
+    route: "/account",
+    icon: <FaUser className="me-3" />,
+  },
+];
+
+export { dashboardData, cropsData, tasksData, navData };

@@ -12,9 +12,13 @@ $theme-colors: (
 
 @import "~bootstrap/scss/bootstrap";
 
-a {
+a:not(.nav-link) {
     text-decoration: none;
     &:hover {
         text-decoration: underline;
     }
+}
+
+a.nav-link.active {
+    font-weight: bold;
 }
