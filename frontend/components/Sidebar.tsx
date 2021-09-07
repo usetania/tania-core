@@ -1,14 +1,16 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { Col, Nav } from "react-bootstrap";
 
 import iNavData from "../types/iNavData";
 import { navData } from "../data";
 
 const Sidebar = (): JSX.Element => {
+  const router = useRouter();
   return (
     <Col md={3} lg={2} className="bg-sidebar d-none d-md-block px-0 min-vh-100">
       <aside>
-        <Nav defaultActiveKey="/dashboard" className="flex-column">
+        <Nav defaultActiveKey={router.pathname} className="flex-column">
           <Nav.Link href="/">
             <div className="d-flex justify-content-center py-3 mb-3">
               <Image
