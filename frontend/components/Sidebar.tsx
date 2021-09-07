@@ -6,7 +6,7 @@ import { navData } from "../data";
 
 const Sidebar = (): JSX.Element => {
   return (
-    <Col md={3} lg={2} className="bg-primary d-none d-md-block px-0">
+    <Col md={3} lg={2} className="bg-sidebar d-none d-md-block px-0 min-vh-100">
       <aside>
         <Nav defaultActiveKey="/dashboard" className="flex-column">
           <Nav.Link href="/">

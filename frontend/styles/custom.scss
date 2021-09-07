@@ -1,13 +1,17 @@
 $primary: #7136A1;
+$secondary: #84BA4B;
 $danger: #DC3545;
 $gray: #F6F8F8;
 $light: #FFFFFF;
+$sidebar: #513969;
 
 $theme-colors: (
     "primary": $primary,
+    "secondary": $secondary,
     "danger": $danger,
     "gray": $gray,
-    "light": $light
+    "light": $light,
+    "sidebar": $sidebar
 );
 
 @import "~bootstrap/scss/bootstrap";
@@ -21,4 +25,8 @@ a:not(.nav-link) {
 
 a.nav-link.active {
     font-weight: bold;
+}
+
+.showPointer {
+    cursor: pointer;
 }

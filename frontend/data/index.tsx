@@ -125,4 +125,31 @@ const navData = [
   },
 ];
 
-export { dashboardData, cropsData, tasksData, navData };
+const reservoirData = [
+  {
+    id: 31,
+    name: "River",
+    createdOn: "20/03/2021",
+    sourceType: "Tap/Well",
+    capacity: 0,
+    usedIn: "Organic Lettuce",
+  },
+  {
+    id: 32,
+    name: "Water Tank",
+    createdOn: "19/07/2021",
+    sourceType: "Water Tank/Cistern",
+    capacity: 2,
+    usedIn: "Organic Chilli",
+  },
+  {
+    id: 33,
+    name: "Something",
+    createdOn: "07/09/2021",
+    sourceType: "Tap/Well",
+    capacity: 1,
+    usedIn: "Organic Spinach",
+  },
+];
+
+export { dashboardData, cropsData, tasksData, navData, reservoirData };

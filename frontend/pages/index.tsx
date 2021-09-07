@@ -2,8 +2,10 @@ import { useState } from "react";
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { FaUnlock } from "react-icons/fa";
+
+import ButtonIcon from "../components/ButtonIcon";
 
 const Home: NextPage = () => {
   const router = useRouter();
@@ -65,14 +67,13 @@ const Home: NextPage = () => {
                   </Form.Group>
                 </Form>
                 <div className="text-center">
-                  <Button
+                  <ButtonIcon
+                    label="Login"
+                    icon={<FaUnlock className="me-1" />}
                     type="submit"
                     variant="primary"
                     onClick={handleSubmit}
-                  >
-                    <FaUnlock className="me-1" />
-                    Login
-                  </Button>
+                  />
                 </div>
               </Card.Body>
             </Card>
