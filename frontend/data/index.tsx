@@ -152,4 +152,30 @@ const reservoirData = [
   },
 ];
 
-export { dashboardData, cropsData, tasksData, navData, reservoirData };
+const notesData = [
+  {
+    id: 41,
+    title: "Nulla eu aliquip veniam ea ea ad incididunt sint.",
+    createdOn: "07/09/2021",
+  },
+  {
+    id: 42,
+    title:
+      "Ut pariatur elit excepteur est in ad elit velit cillum mollit nostrud sint esse.",
+    createdOn: "07/09/2021",
+  },
+  {
+    id: 43,
+    title: "Minim cillum irure non ad eu est voluptate ipsum voluptate.",
+    createdOn: "19/07/2021",
+  },
+];
+
+export {
+  dashboardData,
+  cropsData,
+  tasksData,
+  navData,
+  reservoirData,
+  notesData,
+};
