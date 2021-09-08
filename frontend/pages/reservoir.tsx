@@ -1,28 +1,31 @@
 import { useState } from "react";
 import type { NextPage } from "next";
 import Link from "next/link";
-import { Col, Form, Modal, Row, Table } from "react-bootstrap";
-import { FaEdit, FaPlus, FaTimes, FaCheck } from "react-icons/fa";
+import { Col, Form, Row, Table } from "react-bootstrap";
+import { FaEdit, FaPlus } from "react-icons/fa";
 
 import ButtonIcon from "../components/ButtonIcon";
+import ModalContainer from "../components/ModalContainer";
 import Layout from "../components/Layout";
 import { reservoirData } from "../data";
+import useModal from "../hooks/useModal";
 
 const Reservoir: NextPage = () => {
+  const { modalOpen, showModal, closeModal } = useModal();
   const [reservoirName, setReservoirName] = useState("");
   const [selectedSource, setSelectedSource] = useState();
   const [sourceNumber, setSourceNumber] = useState("0");
   const [nameIsEmpty, setNameIsEmpty] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const closeModal = () => setShowModal(false);
+
   const addReservoir = () => {
     if (!reservoirName) {
       setNameIsEmpty(true);
     } else {
       setNameIsEmpty(false);
-      setShowModal(false);
+      closeModal();
     }
   };
+
   return (
     <Layout>
       <Row>
@@ -35,7 +38,7 @@ const Reservoir: NextPage = () => {
           <ButtonIcon
             label="Add Reservoir"
             icon={<FaPlus className="me-2" />}
-            onClick={() => setShowModal(true)}
+            onClick={showModal}
             variant="primary"
           />
         </Col>
@@ -64,21 +67,20 @@ const Reservoir: NextPage = () => {
                   <td>{capacity}</td>
                   <td>{usedIn}</td>
                   <td>
-                    <FaEdit
-                      onClick={() => setShowModal(true)}
-                      className="show-pointer"
-                    />
+                    <FaEdit onClick={showModal} className="show-pointer" />
                   </td>
                 </tr>
               )
             )}
         </tbody>
       </Table>
-      <Modal show={showModal} onHide={closeModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New Reservoir</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <ModalContainer
+        title="Add New Reservoir"
+        isShow={modalOpen}
+        handleCloseModal={closeModal}
+        handleSubmitModal={addReservoir}
+      >
+        <>
           <small className="text-muted">
             Reservoir is a water source for your farm. It can be a direct line
             from well, or water tank that has volume/capacity.
@@ -114,23 +116,8 @@ const Reservoir: NextPage = () => {
               </Form.Group>
             )}
           </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <ButtonIcon
-            label="Cancel"
-            icon={<FaTimes className="me-1" />}
-            variant="light"
-            onClick={closeModal}
-          />
-          <ButtonIcon
-            label="Save"
-            icon={<FaCheck className="me-1" />}
-            variant="secondary"
-            onClick={addReservoir}
-            textColor="text-light"
-          />
-        </Modal.Footer>
-      </Modal>
+        </>
+      </ModalContainer>
     </Layout>
   );
 };
