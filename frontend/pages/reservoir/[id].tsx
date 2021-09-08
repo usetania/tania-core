@@ -25,7 +25,7 @@ const ReservoirDetail: NextPage = () => {
   const { id } = router.query;
   const { modalOpen, showModal, closeModal } = useModal();
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState(null);
+  const [priority, setPriority] = useState("");
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
@@ -186,8 +186,18 @@ const ReservoirDetail: NextPage = () => {
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Is this task urgent?</Form.Label>
-              <Form.Check type="radio" label="Yes" />
-              <Form.Check type="radio" label="No" />
+              <Form.Check
+                type="radio"
+                label="Yes"
+                name="priority"
+                onChange={() => setPriority("urgent")}
+              />
+              <Form.Check
+                type="radio"
+                label="No"
+                name="priority"
+                onChange={() => setPriority("normal")}
+              />
               {isError && (
                 <Form.Text className="text-danger">
                   The priority field is required
