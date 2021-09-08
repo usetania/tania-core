@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
@@ -10,7 +10,7 @@ import {
   Row,
   Table,
 } from "react-bootstrap";
-import { FaCalendarAlt, FaPaperPlane, FaPlus, FaTrash } from "react-icons/fa";
+import { FaPaperPlane, FaPlus, FaTrash } from "react-icons/fa";
 
 import ButtonIcon from "../../components/ButtonIcon";
 import Layout from "../../components/Layout";
@@ -30,6 +30,7 @@ const ReservoirDetail: NextPage = () => {
   const [desc, setDesc] = useState("");
   const [selectedCategory, setSelectedCategory] = useState();
   const [isError, setIsError] = useState(false);
+  const target = useRef(null);
 
   const addTaskReservoir = () => {
     if (!dueDate || !priority || !title) {
@@ -170,13 +171,12 @@ const ReservoirDetail: NextPage = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>Due Date</Form.Label>
-              <InputGroup>
-                <Form.Control type="text" onClick={() => {}} />
-                <Button variant="primary">
-                  <div className="d-flex align-items-center">
-                    <FaCalendarAlt />
-                  </div>
-                </Button>
+              <InputGroup ref={target}>
+                <Form.Control
+                  type="date"
+                  value={dueDate}
+                  onChange={(e) => setDueDate(e.target.value)}
+                />
               </InputGroup>
               {isError && (
                 <Form.Text className="text-danger">
