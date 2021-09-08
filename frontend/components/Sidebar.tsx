@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { Col, Nav } from "react-bootstrap";
 
@@ -24,12 +25,14 @@ const Sidebar = (): JSX.Element => {
           {navData &&
             navData.map(({ name, route, icon }: iNavData) => (
               <Nav.Item key={name}>
-                <Nav.Link href={route} className="text-light">
-                  <div className="d-flex align-items-center">
-                    {icon}
-                    <span>{name}</span>
-                  </div>
-                </Nav.Link>
+                <Link href={route} passHref>
+                  <Nav.Link className="text-light">
+                    <div className="d-flex align-items-center">
+                      {icon}
+                      <span>{name}</span>
+                    </div>
+                  </Nav.Link>
+                </Link>
               </Nav.Item>
             ))}
         </Nav>

@@ -66,7 +66,7 @@ const Reservoir: NextPage = () => {
                   <td>
                     <FaEdit
                       onClick={() => setShowModal(true)}
-                      className="showPointer"
+                      className="show-pointer"
                     />
                   </td>
                 </tr>
