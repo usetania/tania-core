@@ -171,6 +171,29 @@ const notesData = [
   },
 ];
 
+const areaData = [
+  {
+    id: 51,
+    name: "Organic Lettuce",
+    type: "Growing",
+    size: 1,
+    unit: "Ha",
+    batches: 2,
+    quantity: 779,
+    edit: false,
+  },
+  {
+    id: 52,
+    name: "Organic Chilli",
+    type: "Seeding",
+    size: 2,
+    unit: "Ha",
+    batches: 0,
+    quantity: 0,
+    edit: true,
+  },
+];
+
 export {
   dashboardData,
   cropsData,
@@ -178,4 +201,5 @@ export {
   navData,
   reservoirData,
   notesData,
+  areaData,
 };
