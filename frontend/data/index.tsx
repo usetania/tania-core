@@ -30,12 +30,22 @@ const cropsData = [
   {
     id: 101,
     varieties: "Romaine",
+    batchId: "rom-20mar",
+    seedingDate: "20/03/2021",
+    daysSinceSeeding: 177,
     qty: 126,
+    qtyUnit: "Trays",
+    lastWatering: "-",
   },
   {
     id: 102,
     varieties: "Romaine",
-    qty: 78,
+    batchId: "rom-24mar",
+    seedingDate: "24/03/2021",
+    daysSinceSeeding: 173,
+    qty: 777,
+    qtyUnit: "Pots",
+    lastWatering: "-",
   },
 ];
 

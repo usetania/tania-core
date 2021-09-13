@@ -17,14 +17,11 @@ const ButtonIcon = ({
   onClick,
   textColor = "text-dark",
 }: iButtonIcon): JSX.Element => (
-  <Button
-    onClick={onClick}
-    className={`d-flex align-items-center ${textColor}`}
-    type={type}
-    variant={variant}
-  >
-    {icon}
-    <span>{label}</span>
+  <Button onClick={onClick} type={type} variant={variant}>
+    <div className={`d-flex align-items-center ${textColor}`}>
+      {icon}
+      <span>{label}</span>
+    </div>
   </Button>
 );
 
