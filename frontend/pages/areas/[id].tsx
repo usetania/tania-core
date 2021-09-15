@@ -71,7 +71,7 @@ const ReservoirDetail: NextPage = () => {
         </Col>
       </Row>
       <Row>
-        <Col md={5}>
+        <Col md={5} className="mb-3">
           <Card>
             <Card.Img variant="top" src="/no-img.png" />
             <Card.Body>
