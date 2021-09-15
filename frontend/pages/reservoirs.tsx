@@ -60,7 +60,7 @@ const Reservoir: NextPage = () => {
               ({ id, name, createdOn, sourceType, capacity, usedIn }) => (
                 <tr key={id}>
                   <td>
-                    <Link href={`/reservoir/${id}`}>{name}</Link>
+                    <Link href={`/reservoirs/${id}`}>{name}</Link>
                   </td>
                   <td>{createdOn}</td>
                   <td>{sourceType}</td>

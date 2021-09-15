@@ -36,6 +36,9 @@ const cropsData = [
     qty: 126,
     qtyUnit: "Trays",
     lastWatering: "-",
+    seeding: 0,
+    growing: 777,
+    dumped: 0,
   },
   {
     id: 102,
@@ -46,6 +49,9 @@ const cropsData = [
     qty: 777,
     qtyUnit: "Pots",
     lastWatering: "-",
+    seeding: 0,
+    growing: 2,
+    dumped: 0,
   },
 ];
 
@@ -105,7 +111,7 @@ const navData = [
   },
   {
     name: "Reservoir",
-    route: "/reservoir",
+    route: "/reservoirs",
     icon: <FaTint className="me-3" />,
   },
   {
