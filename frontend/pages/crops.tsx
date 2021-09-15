@@ -103,7 +103,7 @@ const Crops: NextPage = () => {
                 </thead>
                 <tbody>
                   <tr>
-                    <td colSpan="6">No crops available.</td>
+                    <td colSpan={6}>No crops available.</td>
                   </tr>
                 </tbody>
               </Table>
