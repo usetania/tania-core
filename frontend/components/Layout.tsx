@@ -60,7 +60,7 @@ const Layout = ({ children }: iLayout) => {
           </Navbar.Collapse>
         </Navbar>
         <Container fluid className="py-4">
-          {children}
+          <div style={{ minHeight: "calc(100vh - 152px)" }}>{children}</div>
         </Container>
         <Footer />
       </Col>
