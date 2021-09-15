@@ -204,6 +204,18 @@ const areaData = [
   },
 ];
 
+const materialData = [
+  {
+    id: 61,
+    category: "Seed",
+    name: "Romaine",
+    price: "2€",
+    producedBy: "Kultiva",
+    qty: 1000,
+    additionalNotes: "",
+  },
+];
+
 export {
   dashboardData,
   cropsData,
@@ -212,4 +224,5 @@ export {
   reservoirData,
   notesData,
   areaData,
+  materialData,
 };
