@@ -19,6 +19,7 @@ const Dashboard: NextPage = () => {
         <Panel
           title="At A Glance"
           md={6}
+          lg={6}
           footer="You are using Tania 1.7 right now"
         >
           <Nav className="flex-column">
@@ -32,7 +33,7 @@ const Dashboard: NextPage = () => {
             ))}
           </Nav>
         </Panel>
-        <Panel title="What is on Production" md={6}>
+        <Panel title="What is on Production" md={6} lg={6}>
           <>
             <div className="mb-3">
               <Link href="/crops">See all Crops</Link>

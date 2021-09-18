@@ -59,7 +59,7 @@ const ReservoirDetail: NextPage = () => {
         </Col>
       </Row>
       <Row>
-        <Panel title="Basic Info" md={6}>
+        <Panel title="Basic Info" md={6} lg={6}>
           <>
             <Row className="mb-2">
               <Col>
@@ -91,7 +91,7 @@ const ReservoirDetail: NextPage = () => {
             </Row>
           </>
         </Panel>
-        <Panel title="Notes" md={6}>
+        <Panel title="Notes" md={6} lg={6}>
           <>
             <InputGroup className="mb-3">
               <Form.Control type="text" placeholder="Create a note" />
@@ -121,7 +121,7 @@ const ReservoirDetail: NextPage = () => {
         </Panel>
       </Row>
       <Row>
-        <Panel title="Tasks">
+        <Panel title="Tasks" lg={6}>
           <>
             <Table responsive>
               <thead>

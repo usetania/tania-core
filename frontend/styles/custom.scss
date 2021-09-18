@@ -32,3 +32,13 @@ a.nav-link.active {
 .show-pointer {
     cursor: pointer;
 }
+
+.tab-content {
+    background: white;
+    border-left: 1px #dee2e6 solid;
+    border-right: 1px #dee2e6 solid;
+    border-bottom: 1px #dee2e6 solid;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 1rem;
+}
