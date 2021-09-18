@@ -3,12 +3,13 @@ import Link from "next/link";
 import { Collapse } from "react-bootstrap";
 import { FaChevronDown } from "react-icons/fa";
 
-interface iTableTaskItem {
+export interface iTableTaskItem {
   id: number;
   item: string;
   details: string;
   dueDate: string;
   priority: string;
+  category?: string;
 }
 
 const TableTaskItem = ({

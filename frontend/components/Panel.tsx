@@ -6,6 +6,7 @@ interface iPanel {
   xs?: number;
   sm?: number;
   md?: number;
+  lg?: number;
   footer?: string;
 }
 
@@ -15,10 +16,11 @@ const Panel = ({
   xs = 12,
   sm = 12,
   md = 12,
+  lg = 12,
   footer,
 }: iPanel): JSX.Element => {
   return (
-    <Col xs={xs} sm={sm} md={md}>
+    <Col xs={xs} sm={sm} md={md} lg={lg}>
       <Card className="mb-3">
         <Card.Body>
           <Card.Title>

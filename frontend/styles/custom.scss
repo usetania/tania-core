@@ -4,6 +4,7 @@ $danger: #DC3545;
 $gray: #F6F8F8;
 $light: #FFFFFF;
 $sidebar: #513969;
+$info: #17a2b8;
 
 $theme-colors: (
     "primary": $primary,
@@ -11,7 +12,8 @@ $theme-colors: (
     "danger": $danger,
     "gray": $gray,
     "light": $light,
-    "sidebar": $sidebar
+    "sidebar": $sidebar,
+    "info": $info
 );
 
 @import "~bootstrap/scss/bootstrap";
