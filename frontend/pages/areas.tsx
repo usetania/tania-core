@@ -153,7 +153,7 @@ const Areas: NextPage = () => {
             </Form.Group>
             <Form.Group>
               <Form.Label>
-                Select photo <small className="text-muted">(if any)</small>
+                Select photo <small className="text-muted">(optional)</small>
               </Form.Label>
               <Form.Control type="file" />
             </Form.Group>

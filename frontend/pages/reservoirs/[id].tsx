@@ -121,7 +121,7 @@ const ReservoirDetail: NextPage = () => {
         </Panel>
       </Row>
       <Row>
-        <Panel title="Tasks" lg={6}>
+        <Panel title="Tasks">
           <>
             <Table responsive>
               <thead>
