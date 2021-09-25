@@ -1,0 +1,44 @@
+$primary: #7136A1;
+$secondary: #84BA4B;
+$danger: #DC3545;
+$gray: #F6F8F8;
+$light: #FFFFFF;
+$sidebar: #513969;
+$info: #17a2b8;
+
+$theme-colors: (
+    "primary": $primary,
+    "secondary": $secondary,
+    "danger": $danger,
+    "gray": $gray,
+    "light": $light,
+    "sidebar": $sidebar,
+    "info": $info
+);
+
+@import "~bootstrap/scss/bootstrap";
+
+a:not(.nav-link) {
+    text-decoration: none;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+a.nav-link.active {
+    font-weight: bold;
+}
+
+.show-pointer {
+    cursor: pointer;
+}
+
+.tab-content {
+    background: white;
+    border-left: 1px #dee2e6 solid;
+    border-right: 1px #dee2e6 solid;
+    border-bottom: 1px #dee2e6 solid;
+    border-bottom-left-radius: 0.25rem;
+    border-bottom-right-radius: 0.25rem;
+    padding: 1rem;
+}
