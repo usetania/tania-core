@@ -8,12 +8,12 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-04-16 14:10+0800\n"
-"PO-Revision-Date: 2021-02-05 19:16+0100\n"
+"PO-Revision-Date: 2021-10-16 23:43+0200\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 3.0\n"
 "Last-Translator: Jiří Podhorecký <j.podhorecky@volny.cz>\n"
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
 "Language: cs\n"
@@ -35,7 +35,7 @@ msgstr "Účet"
 
 #: resources/js/pages/settings/account.vue:6
 msgid "Account Settings"
-msgstr "Account Settings"
+msgstr "Nastavení účtu"
 
 #: resources/js/pages/farms/crop.vue:134
 msgid "Activity"
@@ -51,7 +51,7 @@ msgstr "Přidat nádrž"
 
 #: resources/js/pages/home.vue:12
 msgid "At A Glance"
-msgstr "At A Glance"
+msgstr "Přehledně"
 
 #: resources/js/pages/farms/crops-form.vue:5
 msgid "Add a New Batch"
@@ -88,14 +88,14 @@ msgstr "Přidat nový úkol na"
 
 #: resources/js/pages/farms/crop-notes.vue:49
 msgid "Add Notes"
-msgstr "Add Notes"
+msgstr "Přidat poznámky"
 
 #: resources/js/pages/farms/area.vue:18
 #: resources/js/pages/farms/crop-notes.vue:31
 #: resources/js/pages/farms/reservoir.vue:9
 #: resources/js/pages/tasks/task.vue:15
 msgid "Add Task"
-msgstr "Add Task"
+msgstr "Přidat úkol"
 
 #: resources/js/pages/inventories/materials-form-agrochemical.vue:63
 #: resources/js/pages/inventories/materials-form-growingmedium.vue:44
@@ -107,7 +107,7 @@ msgstr "Add Task"
 #: resources/js/pages/inventories/materials-form-seedcontainer.vue:46
 #: resources/js/pages/inventories/materials.vue:38
 msgid "Additional Notes"
-msgstr "Additional Notes"
+msgstr "Další poznámky"
 
 #: resources/js/pages/farms/activities/harvest-crop-task.vue:35
 #: resources/js/pages/farms/crop.vue:210
@@ -320,11 +320,11 @@ msgstr "Plodiny"
 
 #: resources/js/pages/farms/crop.vue:111
 msgid "Current Quantity"
-msgstr "Current Quantity"
+msgstr "Aktuální množství"
 
 #: resources/js/pages/farms/area.vue:58
 msgid "Current Status"
-msgstr "Current Status"
+msgstr "Aktuální stav"
 
 #: resources/js/components/aside.vue:8 resources/js/pages/home.vue:6
 msgid "Dashboard"
@@ -446,7 +446,7 @@ msgstr "Počáteční výsadba"
 
 #: resources/js/pages/farms/crops-listing.vue:22
 msgid "Initial Quantity"
-msgstr "Initial Quantity"
+msgstr "Počáteční množství"
 
 #: resources/js/pages/auth/login.vue:23
 msgid "Input your username here"
@@ -551,7 +551,7 @@ msgstr "Nebyl vytvořen žádný úkol"
 
 #: resources/js/pages/tasks/task.vue:62
 msgid "Normal"
-msgstr "Normal"
+msgstr "Normální"
 
 #: resources/js/pages/farms/tasks/task-label.vue:14
 msgid "NORMAL"
@@ -567,7 +567,7 @@ msgstr "Poznámky"
 
 #: resources/js/pages/farms/tasks/crop-task-form.vue:67
 msgid "Nutrient"
-msgstr "Nutrient"
+msgstr "Živina"
 
 #: resources/js/pages/farms/tasks/task-label.vue:12
 msgid "NUTRIENT"
