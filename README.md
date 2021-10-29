@@ -30,6 +30,7 @@ Download Tania for Windows x64 and Linux x64 on [the release page](https://githu
     * [Building Instructions](#building-instructions)
     * [Database Engine](#database-engine)
     * [Run The Test](#run-the-test)
+    * [Run Tania Core On Portainer](#Run-Tania-Core-On-Portainer)
 * [REST APIs](#rest-apis)
 * [Roadmap](#roadmap)
 * [Contributing to Tania](#contributing-to-tania)
@@ -90,6 +91,43 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 ### Run The Test
 - Use `go test ./...` to run all the Go tests.
 - Use `npm run cypress:run` to run the end-to-end test
+
+### Run Tania Core On Portainer
+
+```
+version: '2.2'
+
+services:
+  app:
+    image: tanibox/tania:latest
+    environment:
+      SYMFONY_LOCALE: en
+      SYMFONY_SECRET: AugIVKlefKLzqJwlwY5S5YaW8Ui66fi8
+      SYMFONY_ENV: dev
+      SYMFONY_DB_HOST: db
+      SYMFONY_DB_PORT: 3306
+      SYMFONY_DB_NAME: tania
+      SYMFONY_DB_USERNAME: tania
+      SYMFONY_DB_PASSWORD: <Password>
+      SYMFONY_MAILER_TRANSPORT: smtp
+      SYMFONY_MAILER_HOST: 127.0.0.1
+      SYMFONY_MAILER_USERNAME: admin
+      SYMFONY_MAILER_PASSWORD: <Password>
+      SYMFONY_MAILER_FROM_ADDRESS: <your_e-mail>
+      SYMFONY_MAILER_SENDER_NAME: <User_Name>
+      COMPOSER_ALLOW_SUPERUSER: 1
+    ports:
+      - 80:80
+  db:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tania
+      MYSQL_USER: tania
+      MYSQL_PASSWORD: <Password>
+    ports:
+      - 3306:3306
+```
 
 ## REST APIs
 **Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can import the JSON file inside Postman directory to [Postman app](https://www.getpostman.com).
