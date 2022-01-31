@@ -27,7 +27,6 @@ func (s *UserServer) SaveToUserReadModel(event interface{}) error {
 
 		userRead.Password = e.NewPassword
 		userRead.LastUpdated = e.DateChanged
-
 	}
 
 	err := <-s.UserReadRepo.Save(userRead)

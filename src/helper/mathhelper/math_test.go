@@ -8,7 +8,6 @@ import (
 
 func TestIsEqualFloat32(t *testing.T) {
 	// Given
-
 	// When
 	val1 := IsEqual(float32(10.0001), float32(10.00009))
 	val2 := IsEqual(float32(10.0005), float32(10.00001))

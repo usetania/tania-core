@@ -41,6 +41,7 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 
 	go func() {
 		materialReads := []storage.MaterialRead{}
+
 		var params []interface{}
 
 		sql := "SELECT * FROM MATERIAL_READ WHERE 1 = 1"
@@ -49,21 +50,26 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 			t := strings.Split(materialType, ",")
 
 			sql += " AND TYPE = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE = ?"
+
 				params = append(params, v)
 			}
 		}
+
 		if materialTypeDetail != "" {
 			t := strings.Split(materialTypeDetail, ",")
 
 			sql += " AND TYPE_DATA = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE_DATA = ?"
+
 				params = append(params, v)
 			}
 		}
@@ -109,6 +115,7 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 			}
 
 			var mExpDate *time.Time
+
 			if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 				date, err := time.Parse(time.RFC3339, rowsData.ExpirationDate.String)
 				if err != nil {
@@ -205,6 +212,7 @@ func (q MaterialReadQuerySqlite) CountAll(materialType, materialTypeDetail strin
 
 	go func() {
 		total := 0
+
 		var params []interface{}
 
 		sql := "SELECT COUNT(UID) FROM MATERIAL_READ WHERE 1 = 1"
@@ -213,21 +221,26 @@ func (q MaterialReadQuerySqlite) CountAll(materialType, materialTypeDetail strin
 			t := strings.Split(materialType, ",")
 
 			sql += " AND TYPE = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE = ?"
+
 				params = append(params, v)
 			}
 		}
+
 		if materialTypeDetail != "" {
 			t := strings.Split(materialTypeDetail, ",")
 
 			sql += " AND TYPE_DATA = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE_DATA = ?"
+
 				params = append(params, v)
 			}
 		}
@@ -280,6 +293,7 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 		}
 
 		var mExpDate *time.Time
+
 		if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 			date, err := time.Parse(time.RFC3339, rowsData.ExpirationDate.String)
 			if err != nil {

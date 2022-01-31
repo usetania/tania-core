@@ -33,6 +33,7 @@ func (f *MaterialEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, ev
 			latestVersion++
 
 			var eTemp interface{}
+
 			switch val := v.(type) {
 			case domain.MaterialCreated:
 				val.Type = repository.MaterialEventTypeWrapper{

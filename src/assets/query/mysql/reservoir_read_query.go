@@ -76,6 +76,7 @@ func (s ReservoirReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResul
 		}
 
 		notes := []storage.ReservoirNote{}
+
 		for rows.Next() {
 			rows.Scan(
 				&notesRowsData.UID,
@@ -161,6 +162,7 @@ func (s ReservoirReadQueryMysql) FindAllByFarm(farmUID uuid.UUID) <-chan query.Q
 			}
 
 			notes := []storage.ReservoirNote{}
+
 			for noteRows.Next() {
 				notesRowsData := reservoirNotesReadResult{}
 				err := noteRows.Scan(
@@ -169,7 +171,6 @@ func (s ReservoirReadQueryMysql) FindAllByFarm(farmUID uuid.UUID) <-chan query.Q
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
 				)
-
 				if err != nil {
 					result <- query.QueryResult{Error: err}
 				}

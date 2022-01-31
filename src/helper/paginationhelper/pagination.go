@@ -46,6 +46,7 @@ func ParsePagination(page, limit string) (pageInt, limitInt int, err error) {
 			return DefaultPage, DefaultLimit, err
 		}
 	}
+
 	if limit != "" {
 		limitInt, err = strconv.Atoi(limit)
 		if err != nil {

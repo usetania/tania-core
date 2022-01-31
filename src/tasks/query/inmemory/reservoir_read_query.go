@@ -22,9 +22,9 @@ func (s ReservoirQueryInMemory) FindReservoirByID(reservoirUID uuid.UUID) <-chan
 		defer s.Storage.Lock.RUnlock()
 
 		ci := query.TaskReservoirQueryResult{}
+
 		for _, val := range s.Storage.ReservoirReadMap {
 			// WARNING, domain leakage
-
 			if val.UID == reservoirUID {
 				ci.UID = val.UID
 				ci.Name = val.Name

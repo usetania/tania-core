@@ -24,6 +24,7 @@ func (f *TaskEventQueryInMemory) FindAllByTaskID(uid uuid.UUID) <-chan query.Que
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.TaskEvent{}
+
 		for _, v := range f.Storage.TaskEvents {
 			if v.TaskUID == uid {
 				events = append(events, v)

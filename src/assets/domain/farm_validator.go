@@ -10,12 +10,15 @@ func validateFarmName(name string) error {
 	if name == "" {
 		return FarmError{FarmErrorNameEmptyCode}
 	}
+
 	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return FarmError{FarmErrorNameAlphanumericOnlyCode}
 	}
+
 	if len(name) < 5 {
 		return FarmError{FarmErrorNameNotEnoughCharacterCode}
 	}
+
 	if len(name) > 100 {
 		return FarmError{FarmErrorNameExceedMaximunCharacterCode}
 	}
@@ -45,10 +48,10 @@ func validateGeoLocation(latitude string, longitude string) error {
 
 func validateFarmType(code string) error {
 	_, err := FindFarmTypeByCode(code)
-
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -56,6 +59,7 @@ func validateCountry(country string) error {
 	if country == "" {
 		return FarmError{FarmErrorInvalidCountry}
 	}
+
 	return nil
 }
 

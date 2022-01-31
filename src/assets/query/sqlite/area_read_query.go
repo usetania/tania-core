@@ -105,6 +105,7 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		}
 
 		notes := []storage.AreaNote{}
+
 		for rows.Next() {
 			rows.Scan(
 				&notesRowsData.UID,
@@ -233,6 +234,7 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Query
 			}
 
 			notes := []storage.AreaNote{}
+
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
 				rows.Scan(
@@ -366,6 +368,7 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 		}
 
 		notes := []storage.AreaNote{}
+
 		for rows.Next() {
 			rows.Scan(
 				&notesRowsData.UID,
@@ -494,6 +497,7 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 			}
 
 			notes := []storage.AreaNote{}
+
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
 				rows.Scan(
@@ -571,6 +575,7 @@ func (s AreaReadQuerySqlite) CountAreas(farmUID uuid.UUID) <-chan query.QueryRes
 
 	go func() {
 		total := 0
+
 		err := s.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE FARM_UID = ?`, farmUID).Scan(&total)
 		if err != nil {
 			result <- query.QueryResult{Error: err}

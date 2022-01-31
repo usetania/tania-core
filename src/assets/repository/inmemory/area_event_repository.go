@@ -23,6 +23,7 @@ func (f *AreaEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.AreaEvents = append(f.Storage.AreaEvents, storage.AreaEvent{
 				AreaUID: uid,
 				Version: latestVersion,

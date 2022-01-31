@@ -24,6 +24,7 @@ func (f *FarmEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.FarmEvents = append(f.Storage.FarmEvents, storage.FarmEvent{
 				FarmUID: uid,
 				Version: latestVersion,

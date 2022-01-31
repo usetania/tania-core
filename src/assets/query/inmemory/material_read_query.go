@@ -59,6 +59,7 @@ func (q *MaterialReadQueryInMemory) FindByID(materialUID uuid.UUID) <-chan query
 		defer q.Storage.Lock.RUnlock()
 
 		material := storage.MaterialRead{}
+
 		for _, val := range q.Storage.MaterialReadMap {
 			if val.UID == materialUID {
 				material = val

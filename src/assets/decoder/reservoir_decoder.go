@@ -30,57 +30,27 @@ func (w *ReservoirEventWrapper) UnmarshalJSON(b []byte) error {
 		WaterSourceHook(),
 	)
 
+	var e interface{}
+
 	switch wrapper.EventName {
 	case "ReservoirCreated":
-		e := domain.ReservoirCreated{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.ReservoirCreated{}
 	case "ReservoirWaterSourceChanged":
-		e := domain.ReservoirWaterSourceChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.ReservoirWaterSourceChanged{}
 	case "ReservoirNameChanged":
-		e := domain.ReservoirNameChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.ReservoirNameChanged{}
 	case "ReservoirNoteAdded":
-		e := domain.ReservoirNoteAdded{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.ReservoirNoteAdded{}
 	case "ReservoirNoteRemoved":
-		e := domain.ReservoirNoteRemoved{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
+		e = domain.ReservoirNoteRemoved{}
 	}
+
+	_, err = Decode(f, &mapped, &e)
+	if err != nil {
+		return err
+	}
+
+	w.EventData = e
 
 	return nil
 }

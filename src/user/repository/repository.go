@@ -31,5 +31,6 @@ func NewUserFromHistory(events []storage.UserEvent) *domain.User {
 		state.Transition(v.Event)
 		state.Version++
 	}
+
 	return state
 }

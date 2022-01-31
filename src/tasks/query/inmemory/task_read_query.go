@@ -76,6 +76,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 					is_match = false
 				}
 			}
+
 			if is_match {
 				// Priority
 				if value := params["priority"]; value != "" {
@@ -83,6 +84,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 						is_match = false
 					}
 				}
+
 				if is_match {
 					// Status
 					if value := params["status"]; value != "" {
@@ -90,6 +92,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 							is_match = false
 						}
 					}
+
 					if is_match {
 						// Domain
 						if value := params["domain"]; value != "" {
@@ -97,6 +100,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 								is_match = false
 							}
 						}
+
 						if is_match {
 							// Asset ID
 							if value := params["asset_id"]; value != "" {
@@ -105,6 +109,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 									is_match = false
 								}
 							}
+
 							if is_match {
 								// Category
 								if value := params["category"]; value != "" {
@@ -112,6 +117,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 										is_match = false
 									}
 								}
+
 								if is_match {
 									// Due Start Date & Due End Date
 									start := params["due_start"]
@@ -136,6 +142,7 @@ func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 					}
 				}
 			}
+
 			if is_match {
 				tasks = append(tasks, val)
 			}
@@ -184,6 +191,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 					is_match = false
 				}
 			}
+
 			if is_match {
 				// Priority
 				if value := params["priority"]; value != "" {
@@ -191,6 +199,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 						is_match = false
 					}
 				}
+
 				if is_match {
 					// Status
 					if value := params["status"]; value != "" {
@@ -198,6 +207,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 							is_match = false
 						}
 					}
+
 					if is_match {
 						// Domain
 						if value := params["domain"]; value != "" {
@@ -205,6 +215,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 								is_match = false
 							}
 						}
+
 						if is_match {
 							// Asset ID
 							if value := params["asset_id"]; value != "" {
@@ -213,6 +224,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 									is_match = false
 								}
 							}
+
 							if is_match {
 								// Category
 								if value := params["category"]; value != "" {
@@ -220,6 +232,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 										is_match = false
 									}
 								}
+
 								if is_match {
 									// Due Start Date & Due End Date
 									start := params["due_start"]
@@ -244,6 +257,7 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 					}
 				}
 			}
+
 			if is_match {
 				tasks = append(tasks, val)
 			}
@@ -258,9 +272,9 @@ func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 }
 
 func checkWithinTimeRange(start time.Time, end time.Time, check time.Time) bool {
-
 	is_start := check.Equal(start)
 	is_end := check.Equal(end)
 	is_between := check.After(start) && check.Before(end)
+
 	return is_start || is_end || is_between
 }

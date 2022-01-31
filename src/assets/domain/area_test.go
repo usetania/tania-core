@@ -81,7 +81,7 @@ func TestInvalidCreateArea(t *testing.T) {
 
 	areaService := mockAreaService(farmResult, reservoirResult, countCropsResult)
 
-	var tests = []struct {
+	tests := []struct {
 		Name          string
 		Size          AreaSize
 		Type          string
@@ -163,9 +163,11 @@ func TestAreaCreateRemoveNote(t *testing.T) {
 	assert.Equal(t, 1, len(area.Notes))
 
 	uid := uuid.UUID{}
+
 	for k, v := range area.Notes {
 		assert.Equal(t, noteContent, v.Content)
 		assert.NotNil(t, v.CreatedDate)
+
 		uid = k
 	}
 

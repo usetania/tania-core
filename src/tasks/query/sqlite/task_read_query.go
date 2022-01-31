@@ -45,6 +45,7 @@ func (r TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 		tasks := []storage.TaskRead{}
 
 		sql := `SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`
+
 		var args []interface{}
 
 		if page != 0 && limit != 0 {
@@ -110,39 +111,54 @@ func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 		tasks := []storage.TaskRead{}
 
 		sql := "SELECT * FROM TASK_READ WHERE 1 = 1"
+
 		var args []interface{}
 
 		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
+
 			args = append(args, b)
 		}
+
 		start := params["due_start"]
 		end := params["due_end"]
+
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
+
 			args = append(args, start)
 			args = append(args, end)
 		}
+
 		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
+
 			args = append(args, assetID)
 		}
 
@@ -151,6 +167,7 @@ func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 			offset := paginationhelper.CalculatePageToOffset(page, limit)
 			args = append(args, limit, offset)
 		}
+
 		rows, err := s.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
@@ -178,6 +195,7 @@ func (q TaskReadQuerySqlite) CountAll() <-chan query.QueryResult {
 
 	go func() {
 		total := 0
+
 		var params []interface{}
 
 		sql := "SELECT COUNT(UID) FROM TASK_READ"
@@ -201,39 +219,54 @@ func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-ch
 		total := 0
 
 		sql := "SELECT COUNT(UID) FROM TASK_READ WHERE 1 = 1"
+
 		var args []interface{}
 
 		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
+
 			args = append(args, b)
 		}
+
 		start := params["due_start"]
 		end := params["due_end"]
+
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
+
 			args = append(args, start)
 			args = append(args, end)
 		}
+
 		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
+
 			args = append(args, assetID)
 		}
 
@@ -245,6 +278,7 @@ func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-ch
 		result <- query.QueryResult{Result: total}
 		close(result)
 	}()
+
 	return result
 }
 
@@ -258,7 +292,6 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 		&rowsData.DomainDataAreaID,
 		&rowsData.Category, &rowsData.IsDue, &rowsData.AssetID,
 	)
-
 	if err != nil {
 		return storage.TaskRead{}, err
 	}
@@ -274,6 +307,7 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	}
 
 	var dueDate *time.Time
+
 	if rowsData.DueDate.Valid && rowsData.DueDate.String != "" {
 		d, err := time.Parse(time.RFC3339, rowsData.DueDate.String)
 		if err != nil {
@@ -284,6 +318,7 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	}
 
 	var completedDate *time.Time
+
 	if rowsData.CompletedDate.Valid && rowsData.CompletedDate.String != "" {
 		d, err := time.Parse(time.RFC3339, rowsData.CompletedDate.String)
 		if err != nil {
@@ -294,6 +329,7 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	}
 
 	var cancelledDate *time.Time
+
 	if rowsData.CancelledDate.Valid && rowsData.CancelledDate.String != "" {
 		d, err := time.Parse(time.RFC3339, rowsData.CancelledDate.String)
 		if err != nil {
@@ -304,16 +340,20 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	}
 
 	var domainDetails domain.TaskDomain
+
 	switch rowsData.DomainCode {
 	case domain.TaskDomainAreaCode:
 		materialID := (*uuid.UUID)(nil)
+
 		if rowsData.DomainDataMaterialID.Valid && rowsData.DomainDataMaterialID.String != "" {
 			uid, err := uuid.FromString(rowsData.DomainDataMaterialID.String)
 			if err != nil {
 				return storage.TaskRead{}, err
 			}
+
 			materialID = &uid
 		}
+
 		domainDetails = domain.TaskDomainArea{
 			MaterialID: materialID,
 		}
@@ -321,24 +361,30 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	case domain.TaskDomainCropCode:
 		materialID := (*uuid.UUID)(nil)
 		areaID := (*uuid.UUID)(nil)
+
 		if rowsData.DomainDataMaterialID.Valid && rowsData.DomainDataMaterialID.String != "" {
 			uid, err := uuid.FromString(rowsData.DomainDataMaterialID.String)
 			if err != nil {
 				return storage.TaskRead{}, err
 			}
+
 			materialID = &uid
 		}
+
 		if rowsData.DomainDataAreaID.Valid && rowsData.DomainDataAreaID.String != "" {
 			uid, err := uuid.FromString(rowsData.DomainDataAreaID.String)
 			if err != nil {
 				return storage.TaskRead{}, err
 			}
+
 			areaID = &uid
 		}
 
 		domainDetails = domain.TaskDomainCrop{
 			MaterialID: materialID,
-			AreaID:     areaID}
+			AreaID:     areaID,
+		}
+
 	case domain.TaskDomainFinanceCode:
 		domainDetails = domain.TaskDomainFinance{}
 	case domain.TaskDomainGeneralCode:
@@ -346,21 +392,24 @@ func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRe
 	case domain.TaskDomainInventoryCode:
 		domainDetails = domain.TaskDomainInventory{}
 	case domain.TaskDomainReservoirCode:
-
 		materialID := (*uuid.UUID)(nil)
+
 		if rowsData.DomainDataMaterialID.Valid && rowsData.DomainDataMaterialID.String != "" {
 			uid, err := uuid.FromString(rowsData.DomainDataMaterialID.String)
 			if err != nil {
 				return storage.TaskRead{}, err
 			}
+
 			materialID = &uid
 		}
+
 		domainDetails = domain.TaskDomainReservoir{
 			MaterialID: materialID,
 		}
 	}
 
 	var assetUID *uuid.UUID
+
 	if rowsData.AssetID.Valid && rowsData.AssetID.String != "" {
 		uid, err := uuid.FromString(rowsData.AssetID.String)
 		if err != nil {

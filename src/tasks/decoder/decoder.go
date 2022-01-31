@@ -40,6 +40,7 @@ func UIDHook() mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(uuid.UUID{}) {
 			return data, nil
 		}
@@ -53,6 +54,7 @@ func TimeHook(layout string) mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(time.Time{}) {
 			return data, nil
 		}

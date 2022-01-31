@@ -22,6 +22,7 @@ func (s CropActivityQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Q
 		defer s.Storage.Lock.RUnlock()
 
 		activities := []storage.CropActivity{}
+
 		for _, val := range s.Storage.CropActivityMap {
 			if val.UID == uid {
 				activities = append(activities, val)
@@ -44,6 +45,7 @@ func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(uid uuid.UUID, ac
 		defer s.Storage.Lock.RUnlock()
 
 		activity := storage.CropActivity{}
+
 		for _, val := range s.Storage.CropActivityMap {
 			var at storage.ActivityType
 			switch v := activityType.(type) {

@@ -29,7 +29,6 @@ func (f *ReservoirEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, 
 			stmt, err := f.DB.Prepare(`INSERT INTO RESERVOIR_EVENT
 				(RESERVOIR_UID, VERSION, CREATED_DATE, EVENT)
 				VALUES (?, ?, ?, ?)`)
-
 			if err != nil {
 				result <- err
 			}
@@ -38,7 +37,6 @@ func (f *ReservoirEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, 
 				EventName: structhelper.GetName(v),
 				EventData: v,
 			})
-
 			if err != nil {
 				panic(err)
 			}

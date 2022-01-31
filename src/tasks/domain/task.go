@@ -41,7 +41,7 @@ type Task struct {
 }
 
 // CreateTask
-func CreateTask(taskService TaskService, title string, description string, duedate *time.Time, priority string, taskdomain TaskDomain, taskcategory string, assetid *uuid.UUID) (*Task, error) {
+func CreateTask(ts TaskService, title, description, priority, category string, duedate *time.Time, taskdomain TaskDomain, assetid *uuid.UUID) (*Task, error) {
 	// add validation
 
 	err := validateTaskTitle(title)
@@ -64,12 +64,12 @@ func CreateTask(taskService TaskService, title string, description string, dueda
 		return &Task{}, err
 	}
 
-	err = validateTaskCategory(taskcategory)
+	err = validateTaskCategory(category)
 	if err != nil {
 		return &Task{}, err
 	}
 
-	err = validateAssetID(taskService, assetid, taskdomain.Code())
+	err = validateAssetID(ts, assetid, taskdomain.Code())
 	if err != nil {
 		return &Task{}, err
 	}
@@ -81,7 +81,7 @@ func CreateTask(taskService TaskService, title string, description string, dueda
 
 	initial := &Task{}
 
-	initial.TrackChange(taskService, TaskCreated{
+	initial.TrackChange(ts, TaskCreated{
 		Title:         title,
 		UID:           uid,
 		Description:   description,
@@ -91,7 +91,7 @@ func CreateTask(taskService TaskService, title string, description string, dueda
 		Status:        TaskStatusCreated,
 		Domain:        taskdomain.Code(),
 		DomainDetails: taskdomain,
-		Category:      taskcategory,
+		Category:      category,
 		IsDue:         false,
 		AssetID:       assetid,
 	})
@@ -180,7 +180,6 @@ func (t *Task) ChangeTaskCategory(taskService TaskService, category string) (*Ta
 }
 
 func (t *Task) ChangeTaskDetails(taskService TaskService, details TaskDomain) (*Task, error) {
-
 	event := TaskDetailsChanged{
 		UID:           t.UID,
 		DomainDetails: details,
@@ -224,6 +223,7 @@ func (t *Task) CancelTask(taskService TaskService) {
 
 func (state *Task) TrackChange(taskService TaskService, event interface{}) error {
 	state.UncommittedChanges = append(state.UncommittedChanges, event)
+
 	err := state.Transition(taskService, event)
 	if err != nil {
 		return err
@@ -279,6 +279,7 @@ func validateTaskTitle(title string) error {
 	if title == "" {
 		return TaskError{TaskErrorTitleEmptyCode}
 	}
+
 	return nil
 }
 
@@ -287,6 +288,7 @@ func validateTaskDescription(description string) error {
 	if description == "" {
 		return TaskError{TaskErrorDescriptionEmptyCode}
 	}
+
 	return nil
 }
 
@@ -297,12 +299,12 @@ func validateTaskDueDate(newdate *time.Time) error {
 			return TaskError{TaskErrorDueDateInvalidCode}
 		}
 	}
+
 	return nil
 }
 
-//validateTaskPriority
+// validateTaskPriority
 func validateTaskPriority(priority string) error {
-
 	if priority == "" {
 		return TaskError{TaskErrorPriorityEmptyCode}
 	}
@@ -317,7 +319,6 @@ func validateTaskPriority(priority string) error {
 
 // validateTaskCategory
 func validateTaskCategory(taskcategory string) error {
-
 	if taskcategory == "" {
 		return TaskError{TaskErrorCategoryEmptyCode}
 	}
@@ -332,12 +333,11 @@ func validateTaskCategory(taskcategory string) error {
 
 // validateAssetID
 func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain string) error {
-
 	if assetid != nil {
 		if taskdomain == "" {
 			return TaskError{TaskErrorDomainEmptyCode}
 		}
-		//Find asset in repository
+		// Find asset in repository
 		// if not found return error
 
 		switch taskdomain {
@@ -348,14 +348,12 @@ func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain str
 				return serviceResult.Error
 			}
 		case TaskDomainCropCode:
-
 			serviceResult := taskService.FindCropByID(*assetid)
 
 			if serviceResult.Error != nil {
 				return serviceResult.Error
 			}
 		case TaskDomainInventoryCode:
-
 			serviceResult := taskService.FindMaterialByID(*assetid)
 
 			if serviceResult.Error != nil {
@@ -371,5 +369,6 @@ func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain str
 			return TaskError{TaskErrorInvalidDomainCode}
 		}
 	}
+
 	return nil
 }

@@ -33,6 +33,7 @@ func UIDHook() mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(uuid.UUID{}) {
 			return data, nil
 		}
@@ -46,6 +47,7 @@ func TimeHook(layout string) mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(time.Time{}) {
 			return data, nil
 		}
@@ -71,6 +73,7 @@ func CropContainerHook() mapstructure.DecodeHookFunc {
 		}
 
 		var containerType domain.CropContainerType
+
 		quantity := 0
 
 		if v, ok := mapped["Quantity"]; ok {
@@ -107,6 +110,5 @@ func CropContainerHook() mapstructure.DecodeHookFunc {
 			Quantity: quantity,
 			Type:     containerType,
 		}, nil
-
 	}
 }

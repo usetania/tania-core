@@ -115,15 +115,13 @@ func CreateMaterialTypeAgrochemical(chemicalType string) (MaterialTypeAgrochemic
 	return MaterialTypeAgrochemical{ct}, nil
 }
 
-type MaterialTypeGrowingMedium struct {
-}
+type MaterialTypeGrowingMedium struct{}
 
 func (mt MaterialTypeGrowingMedium) Code() string {
 	return MaterialTypeGrowingMediumCode
 }
 
-type MaterialTypeLabelAndCropSupport struct {
-}
+type MaterialTypeLabelAndCropSupport struct{}
 
 func (mt MaterialTypeLabelAndCropSupport) Code() string {
 	return MaterialTypeLabelAndCropSupportCode
@@ -173,15 +171,13 @@ func CreateMaterialTypeSeedingContainer(containerType string) (MaterialTypeSeedi
 	return MaterialTypeSeedingContainer{ContainerType: ct}, nil
 }
 
-type MaterialTypePostHarvestSupply struct {
-}
+type MaterialTypePostHarvestSupply struct{}
 
 func (mt MaterialTypePostHarvestSupply) Code() string {
 	return MaterialTypePostHarvestSupplyCode
 }
 
-type MaterialTypeOther struct {
-}
+type MaterialTypeOther struct{}
 
 func (mt MaterialTypeOther) Code() string {
 	return MaterialTypeOtherCode

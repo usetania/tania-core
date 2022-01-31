@@ -21,6 +21,7 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM CROP_READ WHERE UID = ?`, cropRead.UID).Scan(&count)
 		if err != nil {
 			result <- err
@@ -96,7 +97,6 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						WIDTH = ?, HEIGHT = ?, DESCRIPTION = ?
 						WHERE UID = ?`,
 						v.Filename, v.MimeType, v.Size, v.Width, v.Height, v.Description, v.UID)
-
 					if err != nil {
 						result <- err
 					}
@@ -153,7 +153,6 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						movedLastWatered, movedLastFertilized, movedLastPesticided, movedLastPruned,
 						cd, lu,
 						cropRead.UID, v.AreaUID)
-
 					if err != nil {
 						result <- err
 					}
@@ -194,7 +193,6 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						v.SourceAreaName,
 						cd, lu,
 						cropRead.UID, v.SourceAreaUID)
-
 					if err != nil {
 						result <- err
 					}
@@ -231,7 +229,6 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 						WHERE CROP_UID = ? AND SOURCE_AREA_UID = ?`,
 						v.Quantity, v.SourceAreaName, cd, lu,
 						cropRead.UID, v.SourceAreaUID)
-
 					if err != nil {
 						result <- err
 					}
@@ -266,13 +263,11 @@ func (f *CropReadRepositorySqlite) Save(cropRead *storage.CropRead) <-chan error
 				for _, v := range cropRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO CROP_READ_NOTES (UID, CROP_UID, CONTENT, CREATED_DATE)
 							VALUES (?, ?, ?, ?)`, v.UID, cropRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
-
 					if err != nil {
 						result <- err
 					}
 				}
 			}
-
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO CROP_READ
 				(UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,

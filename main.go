@@ -55,6 +55,7 @@ func main() {
 	inMem := initInMemory()
 
 	var db *sql.DB
+
 	switch *config.Config.TaniaPersistenceEngine {
 	case config.DB_SQLITE:
 		db = initSqlite()
@@ -193,6 +194,7 @@ func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
 		c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 		c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
 		c.Response().Header().Set("Expires", "0")                                         // Proxies.
+
 		return next(c)
 	}
 }
@@ -256,6 +258,7 @@ func initMysql() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	sqls := string(ddl)
 
 	// We need to split the DDL query by `;` and execute it one by one.
@@ -280,7 +283,6 @@ func initMysql() *sql.DB {
 				// because CREATE INDEX doesn't have IF NOT EXISTS clause,
 				// otherwise we will stop the loop and print the error
 				if me.Number == 1061 {
-
 				} else {
 					log.Print(err)
 					return db
@@ -312,6 +314,7 @@ func initSqlite() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	sql := string(ddl)
 
 	_, err = db.Exec(sql)
@@ -339,6 +342,7 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 			}
 
 			var uid interface{}
+
 			err := db.QueryRow(`SELECT USER_UID
 				FROM USER_AUTH WHERE ACCESS_TOKEN = ?`, splitted[1]).Scan(&uid)
 			if err != nil {

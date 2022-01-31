@@ -24,6 +24,7 @@ func (f *CropEventQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.CropEvent{}
+
 		for _, v := range f.Storage.CropEvents {
 			if v.CropUID == uid {
 				events = append(events, v)

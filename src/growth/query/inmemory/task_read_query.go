@@ -25,6 +25,7 @@ func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 		defer s.Storage.Lock.RUnlock()
 
 		task := query.CropTaskQueryResult{}
+
 		for _, val := range s.Storage.TaskReadMap {
 			if val.UID == uid {
 				task.UID = uid

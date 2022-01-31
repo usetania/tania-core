@@ -24,6 +24,7 @@ func (f *AreaEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryRe
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.AreaEvent{}
+
 		for _, v := range f.Storage.AreaEvents {
 			if v.AreaUID == uid {
 				events = append(events, v)

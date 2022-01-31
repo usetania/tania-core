@@ -24,6 +24,7 @@ func (f *ReservoirEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Qu
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.ReservoirEvent{}
+
 		for _, v := range f.Storage.ReservoirEvents {
 			if v.ReservoirUID == uid {
 				events = append(events, v)

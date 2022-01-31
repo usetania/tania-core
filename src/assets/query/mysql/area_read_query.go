@@ -100,6 +100,7 @@ func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		}
 
 		notes := []storage.AreaNote{}
+
 		for rows.Next() {
 			rows.Scan(
 				&notesRowsData.UID,
@@ -218,6 +219,7 @@ func (s AreaReadQueryMysql) FindAllByFarm(farmUID uuid.UUID) <-chan query.QueryR
 			}
 
 			notes := []storage.AreaNote{}
+
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
 				rows.Scan(
@@ -341,6 +343,7 @@ func (s AreaReadQueryMysql) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan q
 		}
 
 		notes := []storage.AreaNote{}
+
 		for rows.Next() {
 			rows.Scan(
 				&notesRowsData.UID,
@@ -452,12 +455,14 @@ func (s AreaReadQueryMysql) FindAreasByReservoirID(reservoirUID uuid.UUID) <-cha
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
+
 			rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", areaUID.Bytes())
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
 
 			notes := []storage.AreaNote{}
+
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
 				rows.Scan(
@@ -530,6 +535,7 @@ func (s AreaReadQueryMysql) CountAreas(farmUID uuid.UUID) <-chan query.QueryResu
 
 	go func() {
 		total := 0
+
 		err := s.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE FARM_UID = ?`, farmUID.Bytes()).Scan(&total)
 		if err != nil {
 			result <- query.QueryResult{Error: err}

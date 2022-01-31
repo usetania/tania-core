@@ -22,6 +22,7 @@ func (s AreaReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 		defer s.Storage.Lock.RUnlock()
 
 		area := storage.AreaRead{}
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.UID == uid {
 				area = val
@@ -44,6 +45,7 @@ func (s AreaReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan query.Que
 		defer s.Storage.Lock.RUnlock()
 
 		areas := []storage.AreaRead{}
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.Farm.UID == farmUID {
 				areas = append(areas, val)
@@ -66,6 +68,7 @@ func (s AreaReadQueryInMemory) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-cha
 		defer s.Storage.Lock.RUnlock()
 
 		area := storage.AreaRead{}
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.Farm.UID == farmUID && val.UID == areaUID {
 				area = val
@@ -88,6 +91,7 @@ func (s AreaReadQueryInMemory) FindAreasByReservoirID(reservoirUID uuid.UUID) <-
 		defer s.Storage.Lock.RUnlock()
 
 		areas := []storage.AreaRead{}
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.Reservoir.UID == reservoirUID {
 				areas = append(areas, val)
@@ -110,6 +114,7 @@ func (s AreaReadQueryInMemory) CountAreas(farmUID uuid.UUID) <-chan query.QueryR
 		defer s.Storage.Lock.RUnlock()
 
 		total := 0
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.Farm.UID == farmUID {
 				total++

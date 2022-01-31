@@ -50,8 +50,7 @@ func (b Bucket) Type() string {
 }
 
 // Tap is value object attached to the Reservoir.waterSource domain.
-type Tap struct {
-}
+type Tap struct{}
 
 func (t Tap) Type() string {
 	return TapType
@@ -110,13 +109,12 @@ func (state *Reservoir) Transition(event interface{}) {
 
 	case ReservoirNoteRemoved:
 		delete(state.Notes, e.UID)
-
 	}
 }
 
 // CreateReservoir registers a new Reservoir.
-func CreateReservoir(reservoirService ReservoirService, farmUID uuid.UUID, name string, waterSourceType string, capacity float32) (*Reservoir, error) {
-	farmServiceResult, err := reservoirService.FindFarmByID(farmUID)
+func CreateReservoir(rs ReservoirService, farmUID uuid.UUID, name, waterSourceType string, capacity float32) (*Reservoir, error) {
+	farmServiceResult, err := rs.FindFarmByID(farmUID)
 	if err != nil {
 		return nil, err
 	}
@@ -214,6 +212,7 @@ func (r *Reservoir) RemoveNote(uid uuid.UUID) error {
 	}
 
 	found := false
+
 	for _, v := range r.Notes {
 		if v.UID == uid {
 			found = true
@@ -234,11 +233,13 @@ func (r *Reservoir) RemoveNote(uid uuid.UUID) error {
 
 func validateWaterSource(waterSourceType string, capacity float32) (WaterSource, error) {
 	var ws WaterSource
+
 	if waterSourceType == BucketType {
 		b, err := CreateBucket(capacity)
 		if err != nil {
 			return nil, err
 		}
+
 		ws = b
 	} else if waterSourceType == TapType {
 		t, err := CreateTap()
@@ -255,12 +256,15 @@ func validateReservoirName(name string) error {
 	if name == "" {
 		return ReservoirError{ReservoirErrorNameEmptyCode}
 	}
+
 	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}
 	}
+
 	if len(name) < 5 {
 		return ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}
 	}
+
 	if len(name) > 100 {
 		return ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}
 	}

@@ -203,6 +203,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 		reservoirRead = &r
 
 		notes := []storage.ReservoirNote{}
+
 		for _, v := range reservoirRead.Notes {
 			if v.UID != e.UID {
 				notes = append(notes, storage.ReservoirNote{
@@ -214,7 +215,6 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 		}
 
 		reservoirRead.Notes = notes
-
 	}
 
 	err := <-s.ReservoirReadRepo.Save(reservoirRead)
@@ -407,6 +407,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 		areaRead = &area
 
 		notes := []storage.AreaNote{}
+
 		for _, v := range areaRead.Notes {
 			if v.UID != e.UID {
 				notes = append(notes, storage.AreaNote{

@@ -162,7 +162,6 @@ func (w *TaskEventWrapper) UnmarshalJSON(b []byte) error {
 		}
 
 		w.Data = e
-
 	}
 
 	return nil
@@ -172,6 +171,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 	mapped := v.(map[string]interface{})
 
 	var domainDetails domain.TaskDomain
+
 	switch domainCode {
 	case domain.TaskDomainAreaCode:
 		taskDomainArea := domain.TaskDomainArea{}
@@ -208,6 +208,7 @@ func makeDomainDetails(v interface{}, domainCode string) (domain.TaskDomain, err
 
 			taskDomainCrop.MaterialID = &uid
 		}
+
 		if v2, ok2 := mapped["area_id"]; ok2 {
 			val, ok := v2.(string)
 			if !ok {

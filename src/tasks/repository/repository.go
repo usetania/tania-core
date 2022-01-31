@@ -30,6 +30,7 @@ func BuildTaskFromEventHistory(taskService domain.TaskService, events []storage.
 		state.Transition(taskService, v.Event)
 		state.Version++
 	}
+
 	return state
 }
 

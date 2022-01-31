@@ -22,6 +22,7 @@ func (s CropReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 		defer s.Storage.Lock.RUnlock()
 
 		crop := storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.UID == uid {
 				crop = val
@@ -44,6 +45,7 @@ func (s CropReadQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryR
 		defer s.Storage.Lock.RUnlock()
 
 		crop := storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.BatchID == batchID {
 				crop = val
@@ -66,6 +68,7 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status stri
 		defer s.Storage.Lock.RUnlock()
 
 		cropRead := []storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 
@@ -86,6 +89,7 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status stri
 				}
 
 				movedEmpty := false
+
 				for _, v := range allMovedEmpty {
 					if v {
 						movedEmpty = true
@@ -130,6 +134,7 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, lim
 		defer s.Storage.Lock.RUnlock()
 
 		archives := []storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 
@@ -149,6 +154,7 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, lim
 
 				if initialEmpty {
 					movedEmpty := true
+
 					for _, v := range allMovedEmpty {
 						if !v {
 							movedEmpty = false
@@ -178,6 +184,7 @@ func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-
 		defer s.Storage.Lock.RUnlock()
 
 		total := 0
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 
@@ -197,6 +204,7 @@ func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-
 
 				if initialEmpty {
 					movedEmpty := true
+
 					for _, v := range allMovedEmpty {
 						if !v {
 							movedEmpty = false
@@ -226,6 +234,7 @@ func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan quer
 		defer s.Storage.Lock.RUnlock()
 
 		crops := []query.CropAreaByAreaQueryResult{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
 				crops = append(crops, query.CropAreaByAreaQueryResult{
@@ -290,7 +299,6 @@ func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan quer
 					})
 				}
 			}
-
 		}
 
 		result <- query.QueryResult{Result: crops}
@@ -312,6 +320,7 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 		harvestProduced := float32(0)
 		plantType := make(map[string]bool)
 		totalPlantVariety := 0
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 				for _, val2 := range val.HarvestedStorage {
@@ -320,6 +329,7 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 
 				if _, ok := plantType[val.Inventory.Name]; !ok {
 					totalPlantVariety++
+
 					plantType[val.Inventory.Name] = true
 				}
 			}
@@ -345,6 +355,7 @@ func (s CropReadQueryInMemory) CountTotalBatch(farmUID uuid.UUID) <-chan query.Q
 
 		varQty := []query.CountTotalBatchQueryResult{}
 		varietyName := make(map[string]int)
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 				if _, ok := varietyName[val.Inventory.Name]; !ok {

@@ -22,6 +22,7 @@ func (s ReservoirReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryRe
 		defer s.Storage.Lock.RUnlock()
 
 		reservoir := storage.ReservoirRead{}
+
 		for _, val := range s.Storage.ReservoirReadMap {
 			if val.UID == uid {
 				reservoir = val
@@ -44,6 +45,7 @@ func (s ReservoirReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan quer
 		defer s.Storage.Lock.RUnlock()
 
 		reservoirs := []storage.ReservoirRead{}
+
 		for _, val := range s.Storage.ReservoirReadMap {
 			if val.Farm.UID == farmUID {
 				reservoirs = append(reservoirs, val)

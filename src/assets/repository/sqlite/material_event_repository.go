@@ -33,6 +33,7 @@ func (f *MaterialEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, e
 			latestVersion++
 
 			var eTemp interface{}
+
 			switch val := v.(type) {
 			case domain.MaterialCreated:
 				val.Type = repository.MaterialEventTypeWrapper{

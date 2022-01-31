@@ -63,17 +63,15 @@ func (q CropReadQuerySqlite) CountCropsByArea(areaUID uuid.UUID) <-chan query.Qu
 	result := make(chan query.QueryResult)
 
 	go func() {
-		var totalCropBatchInitial sql.NullInt64
-		var totalPlantInitial sql.NullInt64
+		var totalCropBatchInitial, totalPlantInitial sql.NullInt64
+
 		err := q.DB.QueryRow(`SELECT COUNT(UID), SUM(INITIAL_AREA_CURRENT_QUANTITY)
 			FROM CROP_READ WHERE INITIAL_AREA_UID = ?`, areaUID).Scan(&totalCropBatchInitial, &totalPlantInitial)
-
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
-		var totalCropBatchMoved sql.NullInt64
-		var totalPlantMoved sql.NullInt64
+		var totalCropBatchMoved, totalPlantMoved sql.NullInt64
 		err = q.DB.QueryRow(`SELECT COUNT(CROP_UID), SUM(CURRENT_QUANTITY)
 			FROM CROP_READ_MOVED_AREA WHERE AREA_UID = ?`, areaUID).Scan(&totalCropBatchMoved, &totalPlantMoved)
 
@@ -108,6 +106,7 @@ func (q CropReadQuerySqlite) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Q
 			cropRead := storage.CropRead{}
 
 			uid := ""
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -156,6 +155,7 @@ func (q CropReadQuerySqlite) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Q
 			cropRead := storage.CropRead{}
 
 			uid := ""
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -268,6 +268,7 @@ func (q CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 	}
 
 	var initialAreaLastWatered *time.Time
+
 	if rowsData.InitialAreaLastWatered.Valid && rowsData.InitialAreaLastWatered.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastWatered.String)
 		if err != nil {
@@ -278,6 +279,7 @@ func (q CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 	}
 
 	var initialAreaLastFertilized *time.Time
+
 	if rowsData.InitialAreaLastFertilized.Valid && rowsData.InitialAreaLastFertilized.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastFertilized.String)
 		if err != nil {
@@ -288,6 +290,7 @@ func (q CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 	}
 
 	var initialAreaLastPesticided *time.Time
+
 	if rowsData.InitialAreaLastPesticided.Valid && rowsData.InitialAreaLastPesticided.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastPesticided.String)
 		if err != nil {
@@ -298,6 +301,7 @@ func (q CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 	}
 
 	var initialAreaLastPruned *time.Time
+
 	if rowsData.InitialAreaLastPruned.Valid && rowsData.InitialAreaLastPruned.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastPruned.String)
 		if err != nil {
@@ -354,6 +358,7 @@ func (q CropReadQuerySqlite) populateCropMovedArea(uid uuid.UUID, cropRead *stor
 	}
 
 	movedAreas := []storage.MovedArea{}
+
 	for rows.Next() {
 		err = rows.Scan(
 			&movedRowsData.ID,
@@ -375,6 +380,7 @@ func (q CropReadQuerySqlite) populateCropMovedArea(uid uuid.UUID, cropRead *stor
 		}
 
 		var lw *time.Time
+
 		if movedRowsData.LastWatered.Valid && movedRowsData.LastWatered.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastWatered.String)
 			if err != nil {
@@ -385,6 +391,7 @@ func (q CropReadQuerySqlite) populateCropMovedArea(uid uuid.UUID, cropRead *stor
 		}
 
 		var lf *time.Time
+
 		if movedRowsData.LastFertilized.Valid && movedRowsData.LastFertilized.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastFertilized.String)
 			if err != nil {
@@ -395,6 +402,7 @@ func (q CropReadQuerySqlite) populateCropMovedArea(uid uuid.UUID, cropRead *stor
 		}
 
 		var lp *time.Time
+
 		if movedRowsData.LastPesticided.Valid && movedRowsData.LastPesticided.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastPesticided.String)
 			if err != nil {
@@ -405,6 +413,7 @@ func (q CropReadQuerySqlite) populateCropMovedArea(uid uuid.UUID, cropRead *stor
 		}
 
 		var lpr *time.Time
+
 		if movedRowsData.LastPruned.Valid && movedRowsData.LastPruned.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastPruned.String)
 			if err != nil {

@@ -20,6 +20,7 @@ func (f *FarmReadRepositoryMysql) Save(farmRead *storage.FarmRead) <-chan error 
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM FARM_READ WHERE UID = ?`, farmRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
@@ -33,7 +34,6 @@ func (f *FarmReadRepositoryMysql) Save(farmRead *storage.FarmRead) <-chan error 
 				farmRead.Name, farmRead.Latitude, farmRead.Longitude, farmRead.Type,
 				farmRead.Country, farmRead.City, farmRead.IsActive, farmRead.CreatedDate,
 				farmRead.UID.Bytes())
-
 			if err != nil {
 				result <- err
 			}
@@ -43,7 +43,6 @@ func (f *FarmReadRepositoryMysql) Save(farmRead *storage.FarmRead) <-chan error 
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				farmRead.UID.Bytes(), farmRead.Name, farmRead.Latitude, farmRead.Longitude, farmRead.Type,
 				farmRead.Country, farmRead.City, farmRead.IsActive, farmRead.CreatedDate)
-
 			if err != nil {
 				result <- err
 			}

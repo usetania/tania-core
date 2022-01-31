@@ -23,6 +23,7 @@ func (f *ReservoirEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.ReservoirEvents = append(f.Storage.ReservoirEvents, storage.ReservoirEvent{
 				ReservoirUID: uid,
 				Version:      latestVersion,

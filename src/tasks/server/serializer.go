@@ -22,5 +22,6 @@ func MapTaskToTaskRead(task *domain.Task) *storage.TaskRead {
 		IsDue:         task.IsDue,
 		AssetID:       task.AssetID,
 	}
+
 	return taskRead
 }

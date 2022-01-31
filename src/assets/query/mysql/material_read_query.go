@@ -42,6 +42,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 	go func() {
 		materialReads := []storage.MaterialRead{}
 		rowsData := materialReadResult{}
+
 		var params []interface{}
 
 		sql := "SELECT * FROM MATERIAL_READ WHERE 1 = 1"
@@ -50,21 +51,26 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			t := strings.Split(materialType, ",")
 
 			sql += " AND TYPE = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE = ?"
+
 				params = append(params, v)
 			}
 		}
+
 		if materialTypeDetail != "" {
 			t := strings.Split(materialTypeDetail, ",")
 
 			sql += " AND TYPE_DATA = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE_DATA = ?"
+
 				params = append(params, v)
 			}
 		}
@@ -108,6 +114,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			}
 
 			var mExpDate *time.Time
+
 			if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 				date, err := time.Parse("2006-01-02 15:04:05", rowsData.ExpirationDate.String)
 				if err != nil {
@@ -199,6 +206,7 @@ func (q MaterialReadQueryMysql) CountAll(materialType, materialTypeDetail string
 
 	go func() {
 		total := 0
+
 		var params []interface{}
 
 		sql := "SELECT COUNT(UID) FROM MATERIAL_READ WHERE 1 = 1"
@@ -207,21 +215,26 @@ func (q MaterialReadQueryMysql) CountAll(materialType, materialTypeDetail string
 			t := strings.Split(materialType, ",")
 
 			sql += " AND TYPE = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE = ?"
+
 				params = append(params, v)
 			}
 		}
+
 		if materialTypeDetail != "" {
 			t := strings.Split(materialTypeDetail, ",")
 
 			sql += " AND TYPE_DATA = ?"
+
 			params = append(params, t[0])
 
 			for _, v := range t[1:] {
 				sql += " OR TYPE_DATA = ?"
+
 				params = append(params, v)
 			}
 		}
@@ -274,6 +287,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		}
 
 		var mExpDate *time.Time
+
 		if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 			date, err := time.Parse("2006-01-02 15:04:05", rowsData.ExpirationDate.String)
 			if err != nil {
@@ -289,6 +303,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		}
 
 		var materialType storage.MaterialType
+
 		switch rowsData.Type {
 		case domain.MaterialTypePlantCode:
 			materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)

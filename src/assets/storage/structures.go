@@ -90,11 +90,13 @@ type AreaReservoir struct {
 	Name string    `json:"name"`
 }
 
-type AreaSize domain.AreaSize
-type AreaLocation domain.AreaLocation
-type AreaType domain.AreaType
-type AreaPhoto domain.AreaPhoto
-type AreaNote domain.AreaNote
+type (
+	AreaSize     domain.AreaSize
+	AreaLocation domain.AreaLocation
+	AreaType     domain.AreaType
+	AreaPhoto    domain.AreaPhoto
+	AreaNote     domain.AreaNote
+)
 
 type MaterialEvent struct {
 	MaterialUID uuid.UUID
@@ -116,9 +118,11 @@ type MaterialRead struct {
 	CreatedDate    time.Time        `json:"created_date"`
 }
 
-type PricePerUnit domain.PricePerUnit
-type MaterialType domain.MaterialType
-type MaterialQuantity domain.MaterialQuantity
+type (
+	PricePerUnit     domain.PricePerUnit
+	MaterialType     domain.MaterialType
+	MaterialQuantity domain.MaterialQuantity
+)
 
 type CropRead struct {
 	UID        uuid.UUID  `json:"uid"`

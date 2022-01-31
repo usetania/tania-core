@@ -42,6 +42,7 @@ func (f *MaterialEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryR
 			rows.Scan(&rowsData.ID, &rowsData.MaterialUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
 			wrapper := decoder.MaterialEventWrapper{}
+
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}

@@ -73,5 +73,4 @@ func (s AreaServiceInMemory) CountCropsByAreaID(areaUID uuid.UUID) (int, error) 
 	}
 
 	return totals.TotalCropBatch, nil
-
 }

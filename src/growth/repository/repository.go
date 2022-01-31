@@ -27,6 +27,7 @@ func NewCropBatchFromHistory(events []storage.CropEvent) *domain.Crop {
 		state.Transition(v.Event)
 		state.Version++
 	}
+
 	return state
 }
 

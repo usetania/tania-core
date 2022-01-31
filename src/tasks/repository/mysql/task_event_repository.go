@@ -29,7 +29,6 @@ func (s *TaskEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, events
 			stmt, err := s.DB.Prepare(`INSERT INTO TASK_EVENT
 				(TASK_UID, VERSION, CREATED_DATE, EVENT)
 				VALUES (?, ?, ?, ?)`)
-
 			if err != nil {
 				result <- err
 			}
@@ -38,7 +37,6 @@ func (s *TaskEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, events
 				Name: structhelper.GetName(v),
 				Data: v,
 			})
-
 			if err != nil {
 				panic(err)
 			}

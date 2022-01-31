@@ -214,7 +214,6 @@ func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("MaterialExpirationDateChanged", s.SaveToMaterialReadModel)
 	s.EventBus.Subscribe("MaterialNotesChanged", s.SaveToMaterialReadModel)
 	s.EventBus.Subscribe("MaterialProducedByChanged", s.SaveToMaterialReadModel)
-
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -270,6 +269,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 
 	data := make(map[string][]storage.FarmRead)
 	data["data"] = farms
+
 	if len(farms) == 0 {
 		data["data"] = []storage.FarmRead{}
 	}
@@ -652,6 +652,7 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 	}
 
 	noteFound := false
+
 	for _, v := range reservoirRead.Notes {
 		if v.UID == noteUID {
 			noteFound = true
@@ -713,6 +714,7 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 	}
 
 	data := make(map[string][]storage.ReservoirRead)
+
 	for _, v := range reservoirs {
 		r, err := MapToReservoirReadFromRead(s, v)
 		if err != nil {
@@ -747,6 +749,7 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 	}
 
 	data := make(map[string]storage.ReservoirRead)
+
 	data["data"], err = MapToReservoirReadFromRead(s, reservoir)
 	if err != nil {
 		Error(c, err)
@@ -830,6 +833,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	s.publishUncommittedEvents(area)
 
 	data := make(map[string]DetailArea)
+
 	detailArea, err := MapToDetailArea(s, *area)
 	if err != nil {
 		return Error(c, err)
@@ -983,6 +987,7 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 	if err != nil {
 		return Error(c, err)
 	}
+
 	content := c.FormValue("content")
 
 	// Validate //
@@ -1067,6 +1072,7 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	}
 
 	found := false
+
 	for _, v := range areaRead.Notes {
 		if v.UID == noteUID {
 			found = true
@@ -1359,6 +1365,7 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	}
 
 	var expDate *time.Time
+
 	if expirationDate != "" {
 		tp, err := time.Parse("2006-01-02", expirationDate)
 		if err != nil {
@@ -1380,6 +1387,7 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 
 	// Process //
 	var mt domain.MaterialType
+
 	switch materialTypeParam {
 	case strings.ToLower(domain.MaterialTypeSeedCode):
 		pt := domain.GetPlantType(plantType)
@@ -1493,6 +1501,7 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 	}
 
 	var expDate *time.Time
+
 	if expirationDate != "" {
 		tp, err := time.Parse("2006-01-02", expirationDate)
 		if err != nil {
@@ -1528,6 +1537,7 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 
 	// Process //
 	var mt domain.MaterialType
+
 	switch materialTypeParam {
 	case strings.ToLower(domain.MaterialTypeSeedCode):
 		if plantType != "" {

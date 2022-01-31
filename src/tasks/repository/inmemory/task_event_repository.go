@@ -24,6 +24,7 @@ func (f *TaskEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.TaskEvents = append(f.Storage.TaskEvents, storage.TaskEvent{
 				TaskUID: uid,
 				Version: latestVersion,

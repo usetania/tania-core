@@ -303,6 +303,7 @@ func (state *Crop) Transition(event interface{}) {
 		}
 
 		isFound := false
+
 		for i, v := range state.MovedArea {
 			ma, ok := e.UpdatedDstArea.(MovedArea)
 
@@ -323,6 +324,7 @@ func (state *Crop) Transition(event interface{}) {
 
 	case CropBatchHarvested:
 		isFound := false
+
 		for i, v := range state.HarvestedStorage {
 			if v.SourceAreaUID == e.UpdatedHarvestedStorage.SourceAreaUID {
 				state.HarvestedStorage[i] = e.UpdatedHarvestedStorage
@@ -351,6 +353,7 @@ func (state *Crop) Transition(event interface{}) {
 
 	case CropBatchDumped:
 		isFound := false
+
 		for i, v := range state.Trash {
 			if v.SourceAreaUID == e.UpdatedTrash.SourceAreaUID {
 				state.Trash[i] = e.UpdatedTrash
@@ -420,8 +423,8 @@ func CreateCropBatch(
 	areaUID uuid.UUID,
 	cropType string,
 	inventoryUID uuid.UUID,
-	quantity int, containerType CropContainerType) (*Crop, error) {
-
+	quantity int, containerType CropContainerType) (*Crop, error,
+) {
 	serviceResult := cropService.FindAreaByID(areaUID)
 	if serviceResult.Error != nil {
 		return nil, serviceResult.Error
@@ -540,6 +543,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	// Check validity of the source area input and the quantity to the existing crop source area.
 	isValidSrcArea := false
 	isValidQuantity := false
+
 	if c.InitialArea.AreaUID == srcArea.UID {
 		isValidSrcArea = true
 		isValidQuantity = (c.InitialArea.CurrentQuantity - quantity) >= 0
@@ -555,6 +559,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	if !isValidSrcArea {
 		return CropError{Code: CropMoveToAreaErrorInvalidExistingArea}
 	}
+
 	if !isValidQuantity {
 		return CropError{Code: CropMoveToAreaErrorInvalidQuantity}
 	}
@@ -563,7 +568,9 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	movedDate := time.Now()
 
 	var updatedSrcArea interface{}
-	updatedSrcAreaCode := ""
+
+	var updatedSrcAreaCode string
+
 	if c.InitialArea.AreaUID == srcArea.UID {
 		ia := c.InitialArea
 		ia.CurrentQuantity -= quantity
@@ -583,6 +590,7 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 	}
 
 	var updatedDstArea interface{}
+
 	updatedDstAreaCode := ""
 	isDstFoundInInitial := false
 	isDstFoundInMoved := false
@@ -647,8 +655,8 @@ func (c *Crop) Harvest(
 	harvestType string,
 	producedQuantity float32,
 	producedUnit ProducedUnit,
-	notes string) error {
-
+	notes string,
+) error {
 	// Validate //
 	// Check if source area is exist in DB
 	serviceResult := cropService.FindAreaByID(sourceAreaUID)
@@ -670,6 +678,7 @@ func (c *Crop) Harvest(
 	if c.InitialArea.AreaUID == sourceAreaUID {
 		isAreaValid = true
 	}
+
 	for _, v := range c.MovedArea {
 		if v.AreaUID == sourceAreaUID {
 			isAreaValid = true
@@ -695,8 +704,11 @@ func (c *Crop) Harvest(
 	// If harvestType All, then empty the quantity in the area because it has been all harvested
 	// Else if harvestType Partial, then we assume that the quantity of moved plant is 0
 	harvestedQuantity := 0
+
 	var harvestedArea interface{}
+
 	harvestedAreaCode := ""
+
 	if ht.Code == HarvestTypeAll {
 		if c.InitialArea.AreaUID == srcArea.UID {
 			ia := c.InitialArea
@@ -711,6 +723,7 @@ func (c *Crop) Harvest(
 			harvestedArea = ia
 			harvestedAreaCode = "INITIAL_AREA"
 		}
+
 		for _, v := range c.MovedArea {
 			if v.AreaUID == srcArea.UID {
 				ma := v
@@ -731,6 +744,7 @@ func (c *Crop) Harvest(
 	// Check source area existence. If already exist, then just update it
 	harvestedStorage := HarvestedStorage{}
 	isExist := false
+
 	for _, v := range c.HarvestedStorage {
 		if v.SourceAreaUID == srcArea.UID {
 			harvestedStorage = v
@@ -767,6 +781,7 @@ func (c *Crop) Harvest(
 	}
 
 	movedAreaEmpty := true
+
 	if harvestedAreaCode == "MOVED_AREA" {
 		for _, v := range c.MovedArea {
 			ha := harvestedArea.(MovedArea)
@@ -829,6 +844,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	// Check if area is already set in the crop
 	isAreaValid := false
 	isQuantityValid := true
+
 	if c.InitialArea.AreaUID == sourceAreaUID {
 		isAreaValid = true
 
@@ -836,6 +852,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 			isQuantityValid = false
 		}
 	}
+
 	for _, v := range c.MovedArea {
 		if v.AreaUID == sourceAreaUID {
 			isAreaValid = true
@@ -860,10 +877,12 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 
 	// Check source area existence. If already exist, then just update it
 	var dumpedArea interface{}
+
 	updatedTrash := Trash{}
 	dumpDate := time.Now()
 
 	isExist := false
+
 	for i, v := range c.Trash {
 		if v.SourceAreaUID == srcArea.UID {
 			updatedTrash = v
@@ -881,6 +900,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 
 	// Reduce the quantity in the area because it has been dumped
 	dumpedAreaCode := ""
+
 	if c.InitialArea.AreaUID == srcArea.UID {
 		ia := c.InitialArea
 		ia.CurrentQuantity -= quantity
@@ -889,6 +909,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 		dumpedArea = ia
 		dumpedAreaCode = "INITIAL_AREA"
 	}
+
 	for _, v := range c.MovedArea {
 		if v.AreaUID == srcArea.UID {
 			ma := v
@@ -903,6 +924,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	// Check all the quantity in InitialArea and MovedArea,
 	// if its all empty then crop status is marked to archive
 	initialAreaEmpty := false
+
 	if dumpedAreaCode == "INITIAL_AREA" {
 		ia := dumpedArea.(InitialArea)
 
@@ -914,6 +936,7 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	}
 
 	movedAreaEmpty := true
+
 	if dumpedAreaCode == "MOVED_AREA" {
 		for _, v := range c.MovedArea {
 			ha := dumpedArea.(MovedArea)
@@ -956,19 +979,16 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 
 func (c *Crop) Fertilize() error {
 	// c.LastFertilized = time.Now()
-
 	return nil
 }
 
 func (c *Crop) Prune() error {
 	// c.LastPruned = time.Now()
-
 	return nil
 }
 
 func (c *Crop) Pesticide() error {
 	// c.LastPesticided = time.Now()
-
 	return nil
 }
 
@@ -1098,6 +1118,7 @@ func (c *Crop) RemoveNote(uid uuid.UUID) error {
 	}
 
 	found := CropNote{}
+
 	for _, v := range c.Notes {
 		if v.UID == uid {
 			found = v
@@ -1166,7 +1187,7 @@ func (c Crop) CalculateDaysSinceSeeding() int {
 	return days
 }
 
-func generateBatchID(cropService CropService, inventory query.CropMaterialQueryResult, createdDate time.Time) (string, error) {
+func generateBatchID(cs CropService, inventory query.CropMaterialQueryResult, createdDate time.Time) (string, error) {
 	// Generate Batch ID
 	// Format the date to become daymonth format like 25jan
 	dateFormat := strings.ToLower(createdDate.Format("2Jan"))
@@ -1174,6 +1195,7 @@ func generateBatchID(cropService CropService, inventory query.CropMaterialQueryR
 	// Get variety name and split it to slice
 	varietySlice := strings.Fields(inventory.Name)
 	varietyFormat := ""
+
 	for _, v := range varietySlice {
 		// 	// For every value, get only the first three characters
 		format := ""
@@ -1190,7 +1212,7 @@ func generateBatchID(cropService CropService, inventory query.CropMaterialQueryR
 	batchID := stringhelper.Join(varietyFormat, dateFormat)
 
 	// Validate Uniqueness of Batch ID.
-	serviceResult := cropService.FindByBatchID(batchID)
+	serviceResult := cs.FindByBatchID(batchID)
 	if serviceResult.Error != nil {
 		return "", serviceResult.Error
 	}

@@ -56,6 +56,7 @@ func (s CropServiceInMemory) FindByBatchID(batchID string) domain.ServiceResult 
 			Error: domain.CropError{Code: domain.CropErrorInvalidBatchID},
 		}
 	}
+
 	if cropFound.UID != (uuid.UUID{}) {
 		return domain.ServiceResult{
 			Error: domain.CropError{Code: domain.CropErrorBatchIDAlreadyCreated},

@@ -40,7 +40,6 @@ func NewAuthServer(
 	db *sql.DB,
 	eventBus eventbus.TaniaEventBus,
 ) (*AuthServer, error) {
-
 	authServer := &AuthServer{
 		EventBus: eventBus,
 	}
@@ -67,7 +66,6 @@ func NewAuthServer(
 		authServer.UserAuthQuery = queryMysql.NewUserAuthQueryMysql(db)
 
 		authServer.UserService = service.UserServiceImpl{UserReadQuery: authServer.UserReadQuery}
-
 	}
 
 	authServer.InitSubscriber()
@@ -131,12 +129,14 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 	}
 
 	var err error
+
 	reqRedirectURI, err = url.PathUnescape(reqRedirectURI)
 	if err != nil {
 		return Error(c, err)
 	}
 
 	selectedRedirectURI := ""
+
 	for _, v := range redirectURI {
 		if reqRedirectURI == *v {
 			selectedRedirectURI = *v

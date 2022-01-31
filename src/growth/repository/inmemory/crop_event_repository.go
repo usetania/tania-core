@@ -24,6 +24,7 @@ func (f *CropEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.CropEvents = append(f.Storage.CropEvents, storage.CropEvent{
 				CropUID: uid,
 				Version: latestVersion,

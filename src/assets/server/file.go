@@ -16,8 +16,7 @@ type File interface {
 	Upload(file *multipart.FileHeader, destPath string) error
 }
 
-type LocalFile struct {
-}
+type LocalFile struct{}
 
 func (f LocalFile) GetFile(srcPath string) ([]byte, error) {
 	file, err := ioutil.ReadFile(srcPath)

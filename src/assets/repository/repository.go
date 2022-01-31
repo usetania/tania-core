@@ -27,6 +27,7 @@ func NewFarmFromHistory(events []storage.FarmEvent) *domain.Farm {
 		state.Transition(v.Event)
 		state.Version++
 	}
+
 	return state
 }
 
@@ -44,6 +45,7 @@ func NewAreaFromHistory(events []storage.AreaEvent) *domain.Area {
 		state.Transition(v.Event)
 		state.Version++
 	}
+
 	return state
 }
 
@@ -61,6 +63,7 @@ func NewReservoirFromHistory(events []storage.ReservoirEvent) *domain.Reservoir 
 		state.Transition(v.Event)
 		state.Version++
 	}
+
 	return state
 }
 
@@ -74,6 +77,7 @@ func NewMaterialFromHistory(events []storage.MaterialEvent) *domain.Material {
 		state.Transition(v.Event)
 		state.Version++
 	}
+
 	return state
 }
 

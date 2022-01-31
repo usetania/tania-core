@@ -73,6 +73,7 @@ func InitViperConfig() {
 	pflag.String("client_id", "f0ece679-3f53-463e-b624-73e83049d6ac", "OAuth2 Implicit Grant Client ID for frontend")
 
 	pflag.Parse()
+
 	err := v.BindPFlags(pflag.CommandLine)
 	if err != nil {
 		log.Fatal(err)

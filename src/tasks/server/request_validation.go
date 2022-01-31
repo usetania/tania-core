@@ -28,8 +28,7 @@ const (
 // So we can focus on processing data without converting data type after this sanitizing.
 // This validation doesn't aim to validate business process.
 // The business process validation will be handled in each entity's behaviour.
-type RequestValidation struct {
-}
+type RequestValidation struct{}
 
 // RequestValidationError contains fields used for JSON error response
 type RequestValidationError struct {

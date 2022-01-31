@@ -24,6 +24,7 @@ func (f *FarmEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryRe
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.FarmEvent{}
+
 		for _, v := range f.Storage.FarmEvents {
 			if v.FarmUID == uid {
 				events = append(events, v)

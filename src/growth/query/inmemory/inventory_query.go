@@ -23,6 +23,7 @@ func (s MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query
 		defer s.Storage.Lock.RUnlock()
 
 		ci := query.CropMaterialQueryResult{}
+
 		for _, val := range s.Storage.MaterialReadMap {
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
@@ -55,6 +56,7 @@ func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeC
 		defer q.Storage.Lock.RUnlock()
 
 		ci := query.CropMaterialQueryResult{}
+
 		for _, val := range q.Storage.MaterialReadMap {
 			// WARNING, domain leakage
 			switch v := val.Type.(type) {

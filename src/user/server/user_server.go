@@ -64,7 +64,6 @@ func NewUserServer(
 		userServer.UserAuthQuery = queryMysql.NewUserAuthQueryMysql(db)
 
 		userServer.UserService = service.UserServiceImpl{UserReadQuery: userServer.UserReadQuery}
-
 	}
 
 	userServer.InitSubscriber()
@@ -142,7 +141,6 @@ func (s *UserServer) ChangePassword(c echo.Context) error {
 	data["data"] = MapToUserRead(user)
 
 	return c.JSON(http.StatusOK, data)
-
 }
 
 func (s *UserServer) publishUncommittedEvents(entity interface{}) error {

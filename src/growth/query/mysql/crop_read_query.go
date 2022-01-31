@@ -184,25 +184,26 @@ func (s CropReadQueryMysql) FindAllCropsByFarm(farmUID uuid.UUID, status string,
 
 	go func() {
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
-
 		cropReads := []storage.CropRead{}
 		params := []interface{}{}
 
 		offset := paginationhelper.CalculatePageToOffset(page, limit)
 
 		sql := `SELECT UID FROM CROP_READ WHERE FARM_UID = ?`
+
 		params = append(params, farmUID.Bytes())
 
 		if status != "" {
 			sql += ` AND STATUS = ?`
+
 			params = append(params, status)
 		}
 
 		sql += ` ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`
+
 		params = append(params, limit, offset)
 
 		rows, err := s.DB.Query(sql, params...)
-
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -211,6 +212,7 @@ func (s CropReadQueryMysql) FindAllCropsByFarm(farmUID uuid.UUID, status string,
 			cropRead := storage.CropRead{}
 
 			uid := []byte{}
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -269,10 +271,12 @@ func (s CropReadQueryMysql) CountAllCropsByFarm(farmUID uuid.UUID, status string
 		params := []interface{}{}
 
 		sql := `SELECT COUNT(UID) FROM CROP_READ WHERE FARM_UID = ?`
+
 		params = append(params, farmUID.Bytes())
 
 		if status != "" {
 			sql += `  AND STATUS = ?`
+
 			params = append(params, status)
 		}
 
@@ -301,7 +305,6 @@ func (s CropReadQueryMysql) FindAllCropsArchives(farmUID uuid.UUID, page, limit 
 		rows, err := s.DB.Query(`SELECT UID FROM CROP_READ
 			WHERE FARM_UID = ? AND STATUS = ? ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`,
 			farmUID.Bytes(), domain.CropArchived, limit, offset)
-
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
@@ -310,6 +313,7 @@ func (s CropReadQueryMysql) FindAllCropsArchives(farmUID uuid.UUID, page, limit 
 			cropRead := storage.CropRead{}
 
 			uid := []byte{}
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -394,6 +398,7 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 			cropRead := storage.CropRead{}
 
 			uid := []byte{}
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -452,6 +457,7 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 			cropRead := storage.CropRead{}
 
 			uid := []byte{}
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -532,6 +538,7 @@ func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query
 			cropRead := storage.CropRead{}
 
 			uid := []byte{}
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -558,6 +565,7 @@ func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query
 
 			if _, ok := plantType[cropRead.Inventory.Name]; !ok {
 				totalPlantVariety++
+
 				plantType[cropRead.Inventory.Name] = true
 			}
 		}
@@ -590,6 +598,7 @@ func (s CropReadQueryMysql) CountTotalBatch(farmUID uuid.UUID) <-chan query.Quer
 			cropRead := storage.CropRead{}
 
 			uid := []byte{}
+
 			err := rows.Scan(&uid)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
@@ -685,6 +694,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 	}
 
 	var initialAreaLastWatered *time.Time
+
 	if rowsData.InitialAreaLastWatered.Valid && rowsData.InitialAreaLastWatered.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastWatered.String)
 		if err != nil {
@@ -695,6 +705,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 	}
 
 	var initialAreaLastFertilized *time.Time
+
 	if rowsData.InitialAreaLastFertilized.Valid && rowsData.InitialAreaLastFertilized.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastFertilized.String)
 		if err != nil {
@@ -705,6 +716,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 	}
 
 	var initialAreaLastPesticided *time.Time
+
 	if rowsData.InitialAreaLastPesticided.Valid && rowsData.InitialAreaLastPesticided.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastPesticided.String)
 		if err != nil {
@@ -715,6 +727,7 @@ func (s CropReadQueryMysql) populateCrop(cropUID uuid.UUID, cropRead *storage.Cr
 	}
 
 	var initialAreaLastPruned *time.Time
+
 	if rowsData.InitialAreaLastPruned.Valid && rowsData.InitialAreaLastPruned.String != "" {
 		date, err := time.Parse(time.RFC3339, rowsData.InitialAreaLastPruned.String)
 		if err != nil {
@@ -762,6 +775,7 @@ func (s CropReadQueryMysql) populateCropPhotos(uid uuid.UUID, cropRead *storage.
 	}
 
 	photos := []storage.CropPhoto{}
+
 	for rows.Next() {
 		err = rows.Scan(
 			&photoRowsData.UID,
@@ -808,6 +822,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 	}
 
 	movedAreas := []storage.MovedArea{}
+
 	for rows.Next() {
 		err = rows.Scan(
 			&movedRowsData.ID,
@@ -829,6 +844,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 		}
 
 		var lw *time.Time
+
 		if movedRowsData.LastWatered.Valid && movedRowsData.LastWatered.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastWatered.String)
 			if err != nil {
@@ -839,6 +855,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 		}
 
 		var lf *time.Time
+
 		if movedRowsData.LastFertilized.Valid && movedRowsData.LastFertilized.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastFertilized.String)
 			if err != nil {
@@ -849,6 +866,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 		}
 
 		var lp *time.Time
+
 		if movedRowsData.LastPesticided.Valid && movedRowsData.LastPesticided.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastPesticided.String)
 			if err != nil {
@@ -859,6 +877,7 @@ func (s CropReadQueryMysql) populateCropMovedArea(uid uuid.UUID, cropRead *stora
 		}
 
 		var lpr *time.Time
+
 		if movedRowsData.LastPruned.Valid && movedRowsData.LastPruned.String != "" {
 			date, err := time.Parse(time.RFC3339, movedRowsData.LastPruned.String)
 			if err != nil {
@@ -901,6 +920,7 @@ func (s CropReadQueryMysql) populateCropHarvestedStorage(uid uuid.UUID, cropRead
 	}
 
 	harvestedStorages := []storage.HarvestedStorage{}
+
 	for rows.Next() {
 		err = rows.Scan(
 			&harvestedRowsData.ID,
@@ -944,6 +964,7 @@ func (s CropReadQueryMysql) populateCropTrash(uid uuid.UUID, cropRead *storage.C
 	}
 
 	trash := []storage.Trash{}
+
 	for rows.Next() {
 		err = rows.Scan(
 			&trashRowsData.ID,
@@ -985,6 +1006,7 @@ func (s CropReadQueryMysql) populateCropNotes(uid uuid.UUID, cropRead *storage.C
 	}
 
 	notes := []domain.CropNote{}
+
 	for rows.Next() {
 		rows.Scan(
 			&notesRowsData.UID,

@@ -24,6 +24,7 @@ func (f *MaterialEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Que
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.MaterialEvent{}
+
 		for _, v := range f.Storage.MaterialEvents {
 			if v.MaterialUID == uid {
 				events = append(events, v)

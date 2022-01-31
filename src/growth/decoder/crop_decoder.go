@@ -118,6 +118,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				e.UpdatedDstArea = initialArea
 			}
+
 			if code == "MOVED_AREA" {
 				movedArea, err := makeCropMovedArea(v)
 				if err != nil {
@@ -155,6 +156,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				harvestedStorage.Quantity = int(val)
 			}
+
 			if v2, ok2 := mapped2["produced_gram_quantity"]; ok2 {
 				val, ok3 := v2.(float64)
 				if !ok3 {
@@ -163,6 +165,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				harvestedStorage.ProducedGramQuantity = float32(val)
 			}
+
 			if v2, ok2 := mapped2["source_area_id"]; ok2 {
 				uid, err := makeUUID(v2)
 				if err != nil {
@@ -171,6 +174,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				harvestedStorage.SourceAreaUID = uid
 			}
+
 			if v2, ok2 := mapped2["created_date"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
@@ -179,6 +183,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				harvestedStorage.CreatedDate = val
 			}
+
 			if v2, ok2 := mapped2["last_updated"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
@@ -204,6 +209,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				e.HarvestedArea = initialArea
 			}
+
 			if code == "MOVED_AREA" {
 				movedArea, err := makeCropMovedArea(v)
 				if err != nil {
@@ -240,6 +246,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				trash.Quantity = int(val)
 			}
+
 			if v2, ok2 := mapped2["source_area_id"]; ok2 {
 				uid, err := makeUUID(v2)
 				if err != nil {
@@ -248,6 +255,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				trash.SourceAreaUID = uid
 			}
+
 			if v2, ok2 := mapped2["created_date"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
@@ -256,6 +264,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				trash.CreatedDate = val
 			}
+
 			if v2, ok2 := mapped2["last_updated"]; ok2 {
 				val, err := makeTime(v2)
 				if err != nil {
@@ -267,6 +276,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 			e.UpdatedTrash = trash
 		}
+
 		if v, ok := mapped["DumpedArea"]; ok {
 			code, ok2 := mapped["DumpedAreaCode"].(string)
 			if !ok2 {
@@ -281,6 +291,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				e.DumpedArea = initialArea
 			}
+
 			if code == "MOVED_AREA" {
 				movedArea, err := makeCropMovedArea(v)
 				if err != nil {
@@ -367,6 +378,7 @@ func makeTime(v interface{}) (time.Time, error) {
 
 func makeCropInitialArea(v interface{}) (domain.InitialArea, error) {
 	initialArea := domain.InitialArea{}
+
 	mapped, ok := v.(map[string]interface{})
 	if !ok {
 		return domain.InitialArea{}, errors.New("error type assertion")
@@ -377,62 +389,79 @@ func makeCropInitialArea(v interface{}) (domain.InitialArea, error) {
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.AreaUID = uid
 	}
+
 	if v, ok := mapped["initial_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
 			return domain.InitialArea{}, errors.New("error type assertion")
 		}
+
 		initialArea.InitialQuantity = int(qty)
 	}
+
 	if v, ok := mapped["current_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
 			return domain.InitialArea{}, errors.New("error type assertion")
 		}
+
 		initialArea.CurrentQuantity = int(qty)
 	}
+
 	if v, ok := mapped["created_date"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.CreatedDate = val
 	}
+
 	if v, ok := mapped["last_updated"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.LastUpdated = val
 	}
+
 	if v, ok := mapped["last_watered"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.LastWatered = val
 	}
+
 	if v, ok := mapped["last_fertilized"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.LastFertilized = val
 	}
+
 	if v, ok := mapped["last_pesticided"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.LastPesticided = val
 	}
+
 	if v, ok := mapped["last_pruned"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.InitialArea{}, err
 		}
+
 		initialArea.LastPruned = val
 	}
 
@@ -441,6 +470,7 @@ func makeCropInitialArea(v interface{}) (domain.InitialArea, error) {
 
 func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 	movedArea := domain.MovedArea{}
+
 	mapped, ok := v.(map[string]interface{})
 	if !ok {
 		return domain.MovedArea{}, errors.New("error type assertion")
@@ -451,22 +481,28 @@ func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.AreaUID = uid
 	}
+
 	if v, ok := mapped["source_area_id"]; ok {
 		uid, err := makeUUID(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.SourceAreaUID = uid
 	}
+
 	if v, ok := mapped["initial_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
 			return domain.MovedArea{}, errors.New("error type assertion")
 		}
+
 		movedArea.InitialQuantity = int(qty)
 	}
+
 	if v, ok := mapped["current_quantity"]; ok {
 		qty, ok2 := v.(float64)
 		if !ok2 {
@@ -474,48 +510,61 @@ func makeCropMovedArea(v interface{}) (domain.MovedArea, error) {
 				return domain.MovedArea{}, errors.New("error type assertion")
 			}
 		}
+
 		movedArea.CurrentQuantity = int(qty)
 	}
+
 	if v, ok := mapped["created_date"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.CreatedDate = val
 	}
+
 	if v, ok := mapped["last_updated"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.LastUpdated = val
 	}
+
 	if v, ok := mapped["last_watered"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.LastWatered = val
 	}
+
 	if v, ok := mapped["last_fertilized"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.LastFertilized = val
 	}
+
 	if v, ok := mapped["last_pesticided"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.LastPesticided = val
 	}
+
 	if v, ok := mapped["last_pruned"]; ok {
 		val, err := makeTime(v)
 		if err != nil {
 			return domain.MovedArea{}, err
 		}
+
 		movedArea.LastPruned = val
 	}
 

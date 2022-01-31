@@ -45,8 +45,8 @@ func NewTaskServer(
 	materialStorage *assetsstorage.MaterialReadStorage,
 	reservoirStorage *assetsstorage.ReservoirReadStorage,
 	taskEventStorage *storage.TaskEventStorage,
-	taskReadStorage *storage.TaskReadStorage) (*TaskServer, error) {
-
+	taskReadStorage *storage.TaskReadStorage) (*TaskServer, error,
+) {
 	taskServer := &TaskServer{
 		EventBus: bus,
 	}
@@ -108,7 +108,6 @@ func NewTaskServer(
 			MaterialQuery:  materialReadQuery,
 			ReservoirQuery: reservoirQuery,
 		}
-
 	}
 
 	taskServer.InitSubscriber()
@@ -167,6 +166,7 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 	}
 
 	taskList := []storage.TaskRead{}
+
 	for _, v := range tasks {
 		s.AppendTaskDomainDetails(&v)
 		taskList = append(taskList, v)
@@ -180,10 +180,12 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 	if countResult.Error != nil {
 		return countResult.Error
 	}
+
 	count, ok := countResult.Result.(int)
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
+
 	data["total_rows"] = count
 	data["page"] = pageInt
 
@@ -223,6 +225,7 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	}
 
 	taskList := []storage.TaskRead{}
+
 	for _, v := range tasks {
 		s.AppendTaskDomainDetails(&v)
 		taskList = append(taskList, v)
@@ -236,45 +239,49 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	if countResult.Error != nil {
 		return countResult.Error
 	}
+
 	count, ok := countResult.Result.(int)
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
+
 	data["total_rows"] = count
 	data["page"] = pageInt
+
 	return c.JSON(http.StatusOK, data)
 }
 
 // SaveTask is a TaskServer's handler to save new Task
 func (s *TaskServer) SaveTask(c echo.Context) error {
-
 	data := make(map[string]storage.TaskRead)
 
 	form_date := c.FormValue("due_date")
 	due_ptr := (*time.Time)(nil)
+
 	if len(form_date) != 0 {
 		due_date, err := time.Parse(time.RFC3339Nano, form_date)
-
 		if err != nil {
 			return Error(c, err)
 		}
+
 		due_ptr = &due_date
 	}
 
 	asset_id := c.FormValue("asset_id")
 	asset_id_ptr := (*uuid.UUID)(nil)
+
 	if len(asset_id) != 0 {
 		asset_id, err := uuid.FromString(asset_id)
 		if err != nil {
 			return Error(c, err)
 		}
+
 		asset_id_ptr = &asset_id
 	}
 
 	domaincode := c.FormValue("domain")
 
 	domaintask, err := s.CreateTaskDomainByCode(domaincode, c)
-
 	if err != nil {
 		return Error(c, err)
 	}
@@ -283,12 +290,11 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		s.TaskService,
 		c.FormValue("title"),
 		c.FormValue("description"),
-		due_ptr,
 		c.FormValue("priority"),
-		domaintask,
 		c.FormValue("category"),
+		due_ptr,
+		domaintask,
 		asset_id_ptr)
-
 	if err != nil {
 		return Error(c, err)
 	}
@@ -317,41 +323,45 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 	switch domainvalue {
 	case domain.TaskDomainAreaCode:
-
 		category := c.FormValue("category")
 		materialID := c.FormValue("material_id")
 
 		materialPtr := (*uuid.UUID)(nil)
+
 		if len(materialID) != 0 {
 			uid, err := uuid.FromString(materialID)
 			if err != nil {
 				return domain.TaskDomainArea{}, err
 			}
+
 			materialPtr = &uid
 		}
 
 		return domain.CreateTaskDomainArea(s.TaskService, category, materialPtr)
 	case domain.TaskDomainCropCode:
-
 		category := c.FormValue("category")
 		materialID := c.FormValue("material_id")
 		areaID := c.FormValue("area_id")
 
 		materialPtr := (*uuid.UUID)(nil)
+
 		if len(materialID) != 0 {
 			uid, err := uuid.FromString(materialID)
 			if err != nil {
 				return domain.TaskDomainCrop{}, err
 			}
+
 			materialPtr = &uid
 		}
 
 		areaPtr := (*uuid.UUID)(nil)
+
 		if len(areaID) != 0 {
 			uid, err := uuid.FromString(areaID)
 			if err != nil {
 				return domain.TaskDomainCrop{}, err
 			}
+
 			areaPtr = &uid
 		}
 
@@ -363,18 +373,20 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 	case domain.TaskDomainInventoryCode:
 		return domain.CreateTaskDomainInventory()
 	case domain.TaskDomainReservoirCode:
-
 		category := c.FormValue("category")
 		materialID := c.FormValue("material_id")
 
 		materialPtr := (*uuid.UUID)(nil)
+
 		if len(materialID) != 0 {
 			uid, err := uuid.FromString(materialID)
 			if err != nil {
 				return domain.TaskDomainReservoir{}, err
 			}
+
 			materialPtr = &uid
 		}
+
 		return domain.CreateTaskDomainReservoir(s.TaskService, category, materialPtr)
 	default:
 		return nil, NewRequestValidationError(INVALID_OPTION, "domain")
@@ -383,6 +395,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	data := make(map[string]storage.TaskRead)
+
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -398,6 +411,7 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	if task.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
+
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
@@ -405,11 +419,11 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	s.AppendTaskDomainDetails(&task)
 
 	data["task"] = task
+
 	return c.JSON(http.StatusOK, data)
 }
 
 func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
-
 	switch task.Domain {
 	case domain.TaskDomainAreaCode:
 		materialID := task.DomainDetails.(domain.TaskDomainArea).MaterialID
@@ -420,6 +434,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
+
 			task.DomainDetails = &storage.TaskDomainDetailedArea{
 				MaterialID:           &materialQueryResult.UID,
 				MaterialName:         materialQueryResult.Name,
@@ -441,6 +456,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
+
 			material = &storage.TaskDomainCropMaterial{
 				MaterialID:           &materialQueryResult.UID,
 				MaterialName:         materialQueryResult.Name,
@@ -448,6 +464,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 				MaterialDetailedType: materialQueryResult.DetailedTypeCode,
 			}
 		}
+
 		areaID := task.DomainDetails.(domain.TaskDomainCrop).AreaID
 		if areaID != nil {
 			areaResult := s.TaskService.FindAreaByID(*areaID)
@@ -456,11 +473,13 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
+
 			area = &storage.TaskDomainCropArea{
 				AreaID:   &areaQueryResult.UID,
 				AreaName: areaQueryResult.Name,
 			}
 		}
+
 		cropID := task.AssetID
 		if cropID != nil {
 			cropResult := s.TaskService.FindCropByID(*cropID)
@@ -469,18 +488,19 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
+
 			crop = &storage.TaskDomainCropBatch{
 				CropID:      &cropQueryResult.UID,
 				CropBatchID: cropQueryResult.BatchID,
 			}
 		}
+
 		task.DomainDetails = &storage.TaskDomainDetailedCrop{
 			Material: material,
 			Area:     area,
 			Crop:     crop,
 		}
 	case domain.TaskDomainReservoirCode:
-
 		materialID := task.DomainDetails.(domain.TaskDomainReservoir).MaterialID
 		if materialID != nil {
 			materialResult := s.TaskService.FindMaterialByID(*materialID)
@@ -489,6 +509,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 			}
+
 			task.DomainDetails = &storage.TaskDomainDetailedReservoir{
 				MaterialID:           &materialQueryResult.UID,
 				MaterialName:         materialQueryResult.Name,
@@ -496,14 +517,14 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 				MaterialDetailedType: materialQueryResult.DetailedTypeCode,
 			}
 		}
-
 	}
+
 	return nil
 }
 
 func (s *TaskServer) UpdateTask(c echo.Context) error {
-
 	data := make(map[string]storage.TaskRead)
+
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -517,6 +538,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	if taskRead.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
+
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
@@ -550,11 +572,9 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *domain.Task, c echo.Context) (*domain.Task, error) {
-
+func (s *TaskServer) updateTaskAttributes(ts domain.TaskService, task *domain.Task, c echo.Context) (*domain.Task, error) {
 	// Change Task Title
-	title := c.FormValue("title")
-	if len(title) != 0 {
+	if title := c.FormValue("title"); len(title) != 0 {
 		task.ChangeTaskTitle(s.TaskService, title)
 	}
 
@@ -566,14 +586,14 @@ func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *
 
 	// Change Task Due Date
 	form_date := c.FormValue("due_date")
-	due_ptr := (*time.Time)(nil)
 	if len(form_date) != 0 {
+		var due_ptr *time.Time
 
 		due_date, err := time.Parse(time.RFC3339Nano, form_date)
-
 		if err != nil {
 			return task, Error(c, err)
 		}
+
 		due_ptr = &due_date
 		task.ChangeTaskDueDate(s.TaskService, due_ptr)
 	}
@@ -588,11 +608,12 @@ func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *
 	category := c.FormValue("category")
 	if len(category) != 0 {
 		task.ChangeTaskCategory(s.TaskService, category)
-		details, err := s.CreateTaskDomainByCode(task.Domain, c)
 
+		details, err := s.CreateTaskDomainByCode(task.Domain, c)
 		if err != nil {
 			return &domain.Task{}, Error(c, err)
 		}
+
 		task.ChangeTaskDetails(s.TaskService, details)
 	}
 
@@ -600,8 +621,8 @@ func (s *TaskServer) updateTaskAttributes(taskService domain.TaskService, task *
 }
 
 func (s *TaskServer) CancelTask(c echo.Context) error {
-
 	data := make(map[string]storage.TaskRead)
+
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -615,6 +636,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	if taskRead.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
+
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
@@ -652,8 +674,8 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 }
 
 func (s *TaskServer) CompleteTask(c echo.Context) error {
-
 	data := make(map[string]storage.TaskRead)
+
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -667,6 +689,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	if taskRead.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
+
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
@@ -710,8 +733,8 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 }
 
 func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
-
 	data := make(map[string]storage.TaskRead)
+
 	uid, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -725,6 +748,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	if taskRead.UID != uid {
 		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
 	}
+
 	if !ok {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
@@ -757,7 +781,6 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 }
 
 func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
-
 	switch e := entity.(type) {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {

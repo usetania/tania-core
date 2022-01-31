@@ -20,6 +20,7 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM CROP_READ WHERE UID = ?`, cropRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
@@ -75,7 +76,6 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 						WIDTH = ?, HEIGHT = ?, DESCRIPTION = ?
 						WHERE UID = ?`,
 						v.Filename, v.MimeType, v.Size, v.Width, v.Height, v.Description, v.UID.Bytes())
-
 					if err != nil {
 						result <- err
 					}
@@ -109,7 +109,6 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 						v.LastWatered, v.LastFertilized, v.LastPesticided, v.LastPruned,
 						v.CreatedDate, v.LastUpdated,
 						cropRead.UID.Bytes(), v.AreaUID.Bytes())
-
 					if err != nil {
 						result <- err
 					}
@@ -147,7 +146,6 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 						v.SourceAreaName,
 						v.CreatedDate, v.LastUpdated,
 						cropRead.UID.Bytes(), v.SourceAreaUID.Bytes())
-
 					if err != nil {
 						result <- err
 					}
@@ -181,7 +179,6 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 						WHERE CROP_UID = ? AND SOURCE_AREA_UID = ?`,
 						v.Quantity, v.SourceAreaName, v.CreatedDate, v.LastUpdated,
 						cropRead.UID.Bytes(), v.SourceAreaUID.Bytes())
-
 					if err != nil {
 						result <- err
 					}
@@ -217,13 +214,11 @@ func (f *CropReadRepositoryMysql) Save(cropRead *storage.CropRead) <-chan error 
 				for _, v := range cropRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO CROP_READ_NOTES (UID, CROP_UID, CONTENT, CREATED_DATE)
 							VALUES (?, ?, ?, ?)`, v.UID.Bytes(), cropRead.UID.Bytes(), v.Content, v.CreatedDate)
-
 					if err != nil {
 						result <- err
 					}
 				}
 			}
-
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO CROP_READ
 				(UID, BATCH_ID, STATUS, TYPE, CONTAINER_QUANTITY, CONTAINER_TYPE, CONTAINER_CELL,

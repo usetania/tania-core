@@ -91,9 +91,11 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 	assert.Equal(t, 1, len(reservoir.Notes))
 
 	uid := uuid.UUID{}
+
 	for k, v := range reservoir.Notes {
 		assert.Equal(t, noteContent, v.Content)
 		assert.NotEqual(t, uuid.UUID{}, v.UID)
+
 		uid = k
 	}
 

@@ -7,7 +7,7 @@ import (
 func TestValidateFarmName(t *testing.T) {
 	t.Parallel()
 	// Given
-	var tests = []struct {
+	tests := []struct {
 		param    string
 		expected error
 	}{
@@ -30,7 +30,7 @@ func TestValidGeoLocation(t *testing.T) {
 	t.Parallel()
 
 	// Given
-	var tests = []struct {
+	tests := []struct {
 		latitude  string
 		longitude string
 		expected  error
@@ -62,7 +62,7 @@ func TestValidGeoLocation(t *testing.T) {
 func TestValidateFarmType(t *testing.T) {
 	t.Parallel()
 
-	var tests = []struct {
+	tests := []struct {
 		param    string
 		expected error
 	}{
@@ -82,7 +82,7 @@ func TestValidateFarmType(t *testing.T) {
 func TestValidateRegion(t *testing.T) {
 	t.Parallel()
 
-	var tests = []struct {
+	tests := []struct {
 		country  string
 		expected error
 	}{
@@ -101,7 +101,7 @@ func TestValidateRegion(t *testing.T) {
 func TestValidateCityCode(t *testing.T) {
 	t.Parallel()
 
-	var tests = []struct {
+	tests := []struct {
 		city     string
 		expected error
 	}{

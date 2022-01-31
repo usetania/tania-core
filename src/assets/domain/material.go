@@ -179,7 +179,6 @@ func (state *Material) Transition(event interface{}) {
 
 	case MaterialProducedByChanged:
 		state.ProducedBy = &e.ProducedBy
-
 	}
 }
 
@@ -192,8 +191,8 @@ func CreateMaterial(
 	quantityUnit string,
 	expirationDate *time.Time,
 	notes *string,
-	producedBy *string) (*Material, error) {
-
+	producedBy *string) (*Material, error,
+) {
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return nil, err

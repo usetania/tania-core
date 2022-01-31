@@ -81,6 +81,7 @@ func (s ReservoirReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResu
 		}
 
 		notes := []storage.ReservoirNote{}
+
 		for rows.Next() {
 			rows.Scan(
 				&notesRowsData.UID,
@@ -176,6 +177,7 @@ func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.
 			}
 
 			notes := []storage.ReservoirNote{}
+
 			for noteRows.Next() {
 				notesRowsData := reservoirNotesReadResult{}
 				err := noteRows.Scan(
@@ -184,7 +186,6 @@ func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
 				)
-
 				if err != nil {
 					result <- query.QueryResult{Error: err}
 				}

@@ -18,14 +18,17 @@ func (m *TaskServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
+
 func (m *TaskServiceMock) FindCropByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
+
 func (m *TaskServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
+
 func (m *TaskServiceMock) FindReservoirByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
@@ -60,7 +63,7 @@ func TestCreateTask(t *testing.T) {
 
 	taskdomain, _ := CreateTaskDomainCrop(taskServiceMock, taskcategory, &materialID, &areaID)
 
-	var tests = []struct {
+	tests := []struct {
 		title              string
 		description        string
 		duedate            *time.Time
@@ -70,19 +73,19 @@ func TestCreateTask(t *testing.T) {
 		assetid            *uuid.UUID
 		eexpectedTaskError error
 	}{
-		//empty title
+		// empty title
 		{"", taskdescription, due_ptr, "NORMAL", taskdomain, taskcategory, &assetID, TaskError{TaskErrorTitleEmptyCode}},
-		//emptyduedate
+		// emptyduedate
 		{tasktitle, taskdescription, nil, "URGENT", taskdomain, taskcategory, &assetID, nil},
-		//duedatepassed
+		// duedatepassed
 		{tasktitle, taskdescription, due_ptr_invalid, "NORMAL", taskdomain, taskcategory, &assetID, TaskError{TaskErrorDueDateInvalidCode}},
-		//empty priority
+		// empty priority
 		{tasktitle, taskdescription, due_ptr, "", taskdomain, taskcategory, &assetID, TaskError{TaskErrorPriorityEmptyCode}},
-		//invalidpriority
+		// invalidpriority
 		{tasktitle, taskdescription, due_ptr, "urgent", taskdomain, taskcategory, &assetID, TaskError{TaskErrorInvalidPriorityCode}},
-		//empty category
+		// empty category
 		{tasktitle, taskdescription, due_ptr, "URGENT", taskdomain, "", &assetID, TaskError{TaskErrorCategoryEmptyCode}},
-		//invalid category
+		// invalid category
 		{tasktitle, taskdescription, due_ptr, "NORMAL", taskdomain, "VEGETABLE", &assetID, TaskError{TaskErrorInvalidCategoryCode}},
 	}
 
@@ -91,25 +94,25 @@ func TestCreateTask(t *testing.T) {
 		taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 		_, err := CreateTask(
-			taskServiceMock, test.title, test.description, test.duedate, test.priority, test.domain, test.category, test.assetid)
+			taskServiceMock, test.title, test.description, test.priority, test.category, test.duedate, test.domain, test.assetid)
 
 		assert.Equal(t, test.eexpectedTaskError, err)
 	}
 
-	//nil assetid
+	// nil assetid
 	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 	_, err := CreateTask(
-		taskServiceMock, tasktitle, taskdescription, due_ptr, "URGENT", taskdomain, taskcategory, nil)
+		taskServiceMock, tasktitle, taskdescription, "URGENT", taskcategory, due_ptr, taskdomain, nil)
 
 	assert.Equal(t, nil, err)
 
-	//assetid doesn't exist
+	// assetid doesn't exist
 	taskServiceMock.On("FindCropByID", assetID_notexist).Return(ServiceResult{Result: query.TaskCropQueryResult{}, Error: TaskError{TaskErrorInvalidAssetIDCode}})
 	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialQueryResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 	_, err = CreateTask(
-		taskServiceMock, tasktitle, taskdescription, due_ptr, "NORMAL", taskdomain, taskcategory, &assetID_notexist)
+		taskServiceMock, tasktitle, taskdescription, "NORMAL", taskcategory, due_ptr, taskdomain, &assetID_notexist)
 
 	assert.Equal(t, TaskError{TaskErrorInvalidAssetIDCode}, err)
 }

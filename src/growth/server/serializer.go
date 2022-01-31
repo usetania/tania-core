@@ -44,22 +44,27 @@ func (sn SortedCropNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
 // Less is part of sort.Interface.
 func (sn SortedCropNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
 
-type CropActivity storage.CropActivity
-type SeedActivity struct{ *storage.SeedActivity }
-type MoveActivity struct{ *storage.MoveActivity }
-type HarvestActivity struct{ *storage.HarvestActivity }
-type DumpActivity struct{ *storage.DumpActivity }
-type PhotoActivity struct{ *storage.PhotoActivity }
-type WaterActivity struct{ *storage.WaterActivity }
-type TaskCropActivity struct{ *storage.TaskCropActivity }
-type TaskNutrientActivity struct{ *storage.TaskNutrientActivity }
-type TaskPestControlActivity struct {
-	*storage.TaskPestControlActivity
-}
-type TaskSafetyActivity struct{ *storage.TaskSafetyActivity }
-type TaskSanitationActivity struct {
-	*storage.TaskSanitationActivity
-}
+type (
+	CropActivity            storage.CropActivity
+	SeedActivity            struct{ *storage.SeedActivity }
+	MoveActivity            struct{ *storage.MoveActivity }
+	HarvestActivity         struct{ *storage.HarvestActivity }
+	DumpActivity            struct{ *storage.DumpActivity }
+	PhotoActivity           struct{ *storage.PhotoActivity }
+	WaterActivity           struct{ *storage.WaterActivity }
+	TaskCropActivity        struct{ *storage.TaskCropActivity }
+	TaskNutrientActivity    struct{ *storage.TaskNutrientActivity }
+	TaskPestControlActivity struct {
+		*storage.TaskPestControlActivity
+	}
+)
+
+type (
+	TaskSafetyActivity     struct{ *storage.TaskSafetyActivity }
+	TaskSanitationActivity struct {
+		*storage.TaskSanitationActivity
+	}
+)
 
 func MapToCropActivity(activity storage.CropActivity) CropActivity {
 	ca := CropActivity(activity)
@@ -124,6 +129,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 	}
 
 	movedAreas := []storage.MovedArea{}
+
 	for _, v := range crop.MovedArea {
 		queryResult = <-s.AreaReadQuery.FindByID(v.AreaUID)
 		if queryResult.Error != nil {
@@ -176,6 +182,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 	}
 
 	harvestedStorage := []storage.HarvestedStorage{}
+
 	for _, v := range crop.HarvestedStorage {
 		queryResult = <-s.AreaReadQuery.FindByID(v.SourceAreaUID)
 		if queryResult.Error != nil {
@@ -198,6 +205,7 @@ func MapToCropRead(s *GrowthServer, crop domain.Crop) (storage.CropRead, error) 
 	}
 
 	trash := []storage.Trash{}
+
 	for _, v := range crop.Trash {
 		queryResult = <-s.AreaReadQuery.FindByID(v.SourceAreaUID)
 		if queryResult.Error != nil {
@@ -344,6 +352,7 @@ func MapToCropListInArea(crop query.CropAreaByAreaQueryResult) (CropListInArea, 
 
 func (a SeedActivity) MarshalJSON() ([]byte, error) {
 	type Alias SeedActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -355,6 +364,7 @@ func (a SeedActivity) MarshalJSON() ([]byte, error) {
 
 func (a MoveActivity) MarshalJSON() ([]byte, error) {
 	type Alias MoveActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -366,6 +376,7 @@ func (a MoveActivity) MarshalJSON() ([]byte, error) {
 
 func (a HarvestActivity) MarshalJSON() ([]byte, error) {
 	type Alias HarvestActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -377,6 +388,7 @@ func (a HarvestActivity) MarshalJSON() ([]byte, error) {
 
 func (a DumpActivity) MarshalJSON() ([]byte, error) {
 	type Alias DumpActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -388,6 +400,7 @@ func (a DumpActivity) MarshalJSON() ([]byte, error) {
 
 func (a PhotoActivity) MarshalJSON() ([]byte, error) {
 	type Alias PhotoActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -399,6 +412,7 @@ func (a PhotoActivity) MarshalJSON() ([]byte, error) {
 
 func (a WaterActivity) MarshalJSON() ([]byte, error) {
 	type Alias WaterActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -410,6 +424,7 @@ func (a WaterActivity) MarshalJSON() ([]byte, error) {
 
 func (a TaskCropActivity) MarshalJSON() ([]byte, error) {
 	type Alias TaskCropActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -421,6 +436,7 @@ func (a TaskCropActivity) MarshalJSON() ([]byte, error) {
 
 func (a TaskNutrientActivity) MarshalJSON() ([]byte, error) {
 	type Alias TaskNutrientActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -432,6 +448,7 @@ func (a TaskNutrientActivity) MarshalJSON() ([]byte, error) {
 
 func (a TaskPestControlActivity) MarshalJSON() ([]byte, error) {
 	type Alias TaskPestControlActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -443,6 +460,7 @@ func (a TaskPestControlActivity) MarshalJSON() ([]byte, error) {
 
 func (a TaskSafetyActivity) MarshalJSON() ([]byte, error) {
 	type Alias TaskSafetyActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`
@@ -454,6 +472,7 @@ func (a TaskSafetyActivity) MarshalJSON() ([]byte, error) {
 
 func (a TaskSanitationActivity) MarshalJSON() ([]byte, error) {
 	type Alias TaskSanitationActivity
+
 	return json.Marshal(struct {
 		*Alias
 		Code string `json:"code"`

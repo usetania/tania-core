@@ -42,6 +42,7 @@ func (f *UserEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 			rows.Scan(&rowsData.ID, &rowsData.UserUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
 			wrapper := decoder.UserEventWrapper{}
+
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}

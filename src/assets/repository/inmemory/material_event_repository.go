@@ -23,6 +23,7 @@ func (f *MaterialEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int,
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.MaterialEvents = append(f.Storage.MaterialEvents, storage.MaterialEvent{
 				MaterialUID: uid,
 				Version:     latestVersion,

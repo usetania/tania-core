@@ -64,7 +64,6 @@ func (state *Farm) Transition(event interface{}) {
 	case FarmRegionChanged:
 		state.Country = e.Country
 		state.City = e.City
-
 	}
 }
 

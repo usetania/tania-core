@@ -205,8 +205,8 @@ func CreateArea(
 	name string,
 	areaType string,
 	size AreaSize,
-	locationCode string) (*Area, error) {
-
+	locationCode string) (*Area, error,
+) {
 	err := validateAreaName(name)
 	if err != nil {
 		return nil, err
@@ -350,9 +350,8 @@ func (a *Area) ChangeReservoir(reservoirUID uuid.UUID) error {
 	return nil
 }
 
+// TODO: Do file type validation here
 func (a *Area) ChangePhoto(photo AreaPhoto) error {
-	// TODO: Do file type validation here
-
 	a.TrackChange(AreaPhotoAdded{
 		AreaUID:  a.UID,
 		Filename: photo.Filename,
@@ -391,6 +390,7 @@ func (a *Area) RemoveNote(uid uuid.UUID) error {
 	}
 
 	found := false
+
 	for _, v := range a.Notes {
 		if v.UID == uid {
 			found = true
@@ -413,12 +413,15 @@ func validateAreaName(name string) error {
 	if name == "" {
 		return AreaError{AreaErrorNameEmptyCode}
 	}
+
 	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return AreaError{AreaErrorNameAlphanumericOnlyCode}
 	}
+
 	if len(name) < 5 {
 		return AreaError{AreaErrorNameNotEnoughCharacterCode}
 	}
+
 	if len(name) > 100 {
 		return AreaError{AreaErrorNameExceedMaximunCharacterCode}
 	}

@@ -46,7 +46,6 @@ func (state *User) Transition(event interface{}) {
 	case PasswordChanged:
 		state.Password = e.NewPassword
 		state.LastUpdated = e.DateChanged
-
 	}
 }
 

@@ -46,6 +46,7 @@ func (r TaskReadQueryMysql) FindAll(page, limit int) <-chan query.QueryResult {
 		tasks := []storage.TaskRead{}
 
 		sql := `SELECT * FROM TASK_READ ORDER BY CREATED_DATE DESC`
+
 		var args []interface{}
 
 		if page != 0 && limit != 0 {
@@ -111,45 +112,61 @@ func (s TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, 
 		tasks := []storage.TaskRead{}
 
 		sql := "SELECT * FROM TASK_READ WHERE 1 = 1"
+
 		var args []interface{}
 
 		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
+
 			args = append(args, b)
 		}
+
 		start := params["due_start"]
 		end := params["due_end"]
+
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
+
 			args = append(args, start)
 			args = append(args, end)
 		}
+
 		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
+
 			args = append(args, assetID.Bytes())
 		}
 
 		if page != 0 && limit != 0 {
 			sql += " LIMIT ? OFFSET ?"
 			offset := paginationhelper.CalculatePageToOffset(page, limit)
+
 			args = append(args, limit, offset)
 		}
 
@@ -180,6 +197,7 @@ func (q TaskReadQueryMysql) CountAll() <-chan query.QueryResult {
 
 	go func() {
 		total := 0
+
 		var params []interface{}
 
 		sql := "SELECT COUNT(UID) FROM TASK_READ"
@@ -203,39 +221,54 @@ func (q TaskReadQueryMysql) CountTasksWithFilter(params map[string]string) <-cha
 		total := 0
 
 		sql := "SELECT COUNT(UID) FROM TASK_READ WHERE 1 = 1"
+
 		var args []interface{}
 
 		if value := params["is_due"]; value != "" {
 			b, _ := strconv.ParseBool(value)
 			sql += " AND IS_DUE = ? "
+
 			args = append(args, b)
 		}
+
 		start := params["due_start"]
 		end := params["due_end"]
+
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
+
 			args = append(args, start)
 			args = append(args, end)
 		}
+
 		if value := params["priority"]; value != "" {
 			sql += " AND PRIORITY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["status"]; value != "" {
 			sql += " AND STATUS = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["domain"]; value != "" {
 			sql += " AND DOMAIN_CODE = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["category"]; value != "" {
 			sql += " AND CATEGORY = ? "
+
 			args = append(args, value)
 		}
+
 		if value := params["asset_id"]; value != "" {
 			assetID, _ := uuid.FromString(value)
 			sql += " AND ASSET_ID = ? "
+
 			args = append(args, assetID.Bytes())
 		}
 
@@ -260,7 +293,6 @@ func (s TaskReadQueryMysql) populateQueryResult(rows *sql.Rows) (storage.TaskRea
 		&rowsData.Priority, &rowsData.Status, &rowsData.DomainCode, &rowsData.DomainDataMaterialID,
 		&rowsData.DomainDataAreaID, &rowsData.DomainDataCropID, &rowsData.Category, &rowsData.IsDue, &rowsData.AssetID,
 	)
-
 	if err != nil {
 		return storage.TaskRead{}, err
 	}
@@ -271,16 +303,19 @@ func (s TaskReadQueryMysql) populateQueryResult(rows *sql.Rows) (storage.TaskRea
 	}
 
 	var domainDetails domain.TaskDomain
+
 	switch rowsData.DomainCode {
 	case domain.TaskDomainAreaCode:
 		domainDetails = domain.TaskDomainArea{}
 	case domain.TaskDomainCropCode:
 		var materialID *uuid.UUID
+
 		var areaID *uuid.UUID
 
 		if rowsData.DomainDataMaterialID.Valid {
 			materialID = &rowsData.DomainDataMaterialID.UUID
 		}
+
 		if rowsData.DomainDataAreaID.Valid {
 			areaID = &rowsData.DomainDataAreaID.UUID
 		}

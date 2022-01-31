@@ -13,12 +13,15 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type SimpleFarm domain.Farm
-type SimpleArea struct {
-	UID  uuid.UUID
-	Name string
-	Type string
-}
+type (
+	SimpleFarm domain.Farm
+	SimpleArea struct {
+		UID  uuid.UUID
+		Name string
+		Type string
+	}
+)
+
 type AreaList struct {
 	UID            uuid.UUID        `json:"uid"`
 	Name           string           `json:"name"`
@@ -27,6 +30,7 @@ type AreaList struct {
 	TotalCropBatch int              `json:"total_crop_batch"`
 	PlantQuantity  int              `json:"plant_quantity"`
 }
+
 type DetailArea struct {
 	storage.AreaRead
 	TotalCropBatch int `json:"total_crop_batch"`
@@ -66,8 +70,10 @@ func (sn SortedReservoirNotes) Swap(i, j int) { sn[i], sn[j] = sn[j], sn[i] }
 // Less is part of sort.Interface.
 func (sn SortedReservoirNotes) Less(i, j int) bool { return sn[i].CreatedDate.After(sn[j].CreatedDate) }
 
-type ReservoirBucket struct{ domain.Bucket }
-type ReservoirTap struct{ domain.Tap }
+type (
+	ReservoirBucket struct{ domain.Bucket }
+	ReservoirTap    struct{ domain.Tap }
+)
 
 type MaterialSimple struct {
 	UID  uuid.UUID    `json:"uid"`

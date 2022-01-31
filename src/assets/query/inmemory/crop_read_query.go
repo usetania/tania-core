@@ -23,15 +23,18 @@ func (q CropReadQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan query.
 
 		totalCropBatch := 0
 		totalPlant := 0
+
 		for _, val := range q.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
 				totalCropBatch++
+
 				totalPlant += val.Container.Quantity
 			}
 
 			for _, v := range val.MovedArea {
 				if v.AreaUID == areaUID {
 					totalCropBatch++
+
 					totalPlant += val.Container.Quantity
 				}
 			}
@@ -56,6 +59,7 @@ func (q CropReadQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query
 		defer q.Storage.Lock.RUnlock()
 
 		crops := []query.AreaCropQueryResult{}
+
 		for _, val := range q.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
 				crops = append(crops, query.AreaCropQueryResult{

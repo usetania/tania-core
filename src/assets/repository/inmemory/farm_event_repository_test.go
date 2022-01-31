@@ -21,6 +21,7 @@ func TestFarmEventInMemorySave(t *testing.T) {
 
 	// When
 	var err1, err2 error
+
 	go func() {
 		err1 = <-repo.Save(farm1.UID, farm1.Version, farm1.UncommittedChanges)
 		err2 = <-repo.Save(farm2.UID, farm2.Version, farm2.UncommittedChanges)

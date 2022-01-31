@@ -174,7 +174,6 @@ func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/crops/:crop_id/photos/:photo_id", s.GetCropPhotos)
 	g.GET("/crops/:id/activities", s.GetCropActivities)
 	g.GET("/:id/crops/information", s.GetCropsInformation)
-
 }
 
 func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
@@ -190,6 +189,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	}
 
 	containerType := c.FormValue("container_type")
+
 	containerCell, err := strconv.Atoi(c.FormValue("container_cell"))
 	if err != nil {
 		return Error(c, err)
@@ -222,6 +222,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	}
 
 	var containerT domain.CropContainerType
+
 	switch containerType {
 	case domain.Tray{}.Code():
 		containerT = domain.Tray{Cell: containerCell}
@@ -254,6 +255,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	s.publishUncommittedEvents(cropBatch)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *cropBatch)
 	if err != nil {
 		return Error(c, err)
@@ -301,6 +303,7 @@ func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
 	}
 
 	var ct domain.CropContainerType
+
 	if containerType != "" {
 		switch containerType {
 		case domain.Tray{}.Code():
@@ -382,6 +385,7 @@ func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -484,6 +488,7 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -570,6 +575,7 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -640,6 +646,7 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -709,6 +716,7 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -771,6 +779,7 @@ func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -832,6 +841,7 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -998,11 +1008,13 @@ func (s *GrowthServer) FindAllCropsByArea(c echo.Context) error {
 	}
 
 	data["data"] = []CropListInArea{}
+
 	for _, v := range crops {
 		cl, err := MapToCropListInArea(v)
 		if err != nil {
 			return Error(c, err)
 		}
+
 		data["data"] = append(data["data"], cl)
 	}
 
@@ -1053,6 +1065,7 @@ func (s *GrowthServer) GetBatchQuantity(c echo.Context) error {
 
 func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
 	description := c.FormValue("description")
+
 	cropUID, err := uuid.FromString(c.Param("id"))
 	if err != nil {
 		return Error(c, err)
@@ -1089,6 +1102,7 @@ func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
 	crop := repository.NewCropBatchFromHistory(events)
 
 	destPath := stringhelper.Join(*config.Config.UploadPathCrop, "/", photo.Filename)
+
 	err = s.File.Upload(photo, destPath)
 	if err != nil {
 		return Error(c, err)
@@ -1121,6 +1135,7 @@ func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
 	s.publishUncommittedEvents(crop)
 
 	data := make(map[string]storage.CropRead)
+
 	cr, err := MapToCropRead(s, *crop)
 	if err != nil {
 		return Error(c, err)
@@ -1158,6 +1173,7 @@ func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
 	}
 
 	found := storage.CropPhoto{}
+
 	for _, v := range cropRead.Photos {
 		if v.UID == photoUID {
 			found = v

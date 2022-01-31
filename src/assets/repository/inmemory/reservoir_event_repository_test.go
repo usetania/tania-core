@@ -41,6 +41,7 @@ func TestReservoirEventInMemorySave(t *testing.T) {
 
 	// When
 	var err1, err2 error
+
 	go func() {
 		err1 = <-repo.Save(reservoir1.UID, reservoir1.Version, reservoir1.UncommittedChanges)
 		err2 = <-repo.Save(reservoir2.UID, reservoir2.Version, reservoir2.UncommittedChanges)

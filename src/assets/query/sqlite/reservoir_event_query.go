@@ -42,6 +42,7 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Quer
 			rows.Scan(&rowsData.ID, &rowsData.ReservoirUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
 			wrapper := decoder.ReservoirEventWrapper{}
+
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.QueryResult{Error: err}

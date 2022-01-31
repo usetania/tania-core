@@ -20,6 +20,7 @@ func (f *ReservoirReadRepositoryMysql) Save(reservoirRead *storage.ReservoirRead
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM RESERVOIR_READ WHERE UID = ?`, reservoirRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
@@ -53,13 +54,11 @@ func (f *ReservoirReadRepositoryMysql) Save(reservoirRead *storage.ReservoirRead
 				for _, v := range reservoirRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO RESERVOIR_READ_NOTES (UID, RESERVOIR_UID, CONTENT, CREATED_DATE)
 							VALUES (?, ?, ?, ?)`, v.UID.Bytes(), reservoirRead.UID.Bytes(), v.Content, v.CreatedDate)
-
 					if err != nil {
 						result <- err
 					}
 				}
 			}
-
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO RESERVOIR_READ
 				(UID, NAME, WATERSOURCE_TYPE, WATERSOURCE_CAPACITY, FARM_UID, FARM_NAME, CREATED_DATE)

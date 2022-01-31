@@ -22,6 +22,7 @@ func (s FarmReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 		defer s.Storage.Lock.RUnlock()
 
 		farm := query.CropFarmQueryResult{}
+
 		for _, val := range s.Storage.FarmReadMap {
 			if val.UID == uid {
 				farm.UID = uid

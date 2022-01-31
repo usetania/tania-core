@@ -21,10 +21,12 @@ func (m *CropServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
 }
+
 func (m *CropServiceMock) FindByBatchID(batchID string) ServiceResult {
 	args := m.Called(batchID)
 	return args.Get(0).(ServiceResult)
 }
+
 func (m *CropServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
 	return args.Get(0).(ServiceResult)
@@ -42,6 +44,7 @@ func TestCreateCropBatch(t *testing.T) {
 	areaBServiceResult := ServiceResult{
 		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
+
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
@@ -92,6 +95,7 @@ func TestHarvestCropBatch(t *testing.T) {
 	areaBServiceResult := ServiceResult{
 		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
+
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
@@ -133,7 +137,6 @@ func TestHarvestCropBatch(t *testing.T) {
 	assert.Equal(t, 0, crop.MovedArea[0].CurrentQuantity)
 	assert.Equal(t, 15, crop.HarvestedStorage[0].Quantity)
 	assert.Equal(t, float32(12000), crop.HarvestedStorage[0].ProducedGramQuantity)
-
 }
 
 func TestWaterCrop(t *testing.T) {
@@ -148,6 +151,7 @@ func TestWaterCrop(t *testing.T) {
 	areaBServiceResult := ServiceResult{
 		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
+
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
@@ -198,6 +202,7 @@ func TestCropHarvestArchiveStatus(t *testing.T) {
 	areaBServiceResult := ServiceResult{
 		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
+
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
@@ -244,6 +249,7 @@ func TestCropDumpArchiveStatus(t *testing.T) {
 	areaBServiceResult := ServiceResult{
 		Result: query.CropAreaQueryResult{UID: areaBUID, Type: "GROWING"},
 	}
+
 	cropServiceMock.On("FindAreaByID", areaAUID).Return(areaAServiceResult)
 	cropServiceMock.On("FindAreaByID", areaBUID).Return(areaBServiceResult)
 
