@@ -31,7 +31,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func init() {
+func main() {
 	if term.IsTerminal(int(os.Stdout.Fd())) {
 		log.SetFormatter(&log.TextFormatter{ForceColors: true})
 
@@ -43,9 +43,7 @@ func init() {
 	}
 
 	config.InitViperConfig()
-}
 
-func main() {
 	e := echo.New()
 
 	// Initialize DB.
