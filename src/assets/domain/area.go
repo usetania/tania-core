@@ -273,8 +273,7 @@ func CreateArea(
 }
 
 func (a *Area) ChangeName(name string) error {
-	err := validateAreaName(name)
-	if err != nil {
+	if err := validateAreaName(name); err != nil {
 		return err
 	}
 
@@ -288,8 +287,7 @@ func (a *Area) ChangeName(name string) error {
 
 // ChangeSize changes an area size.
 func (a *Area) ChangeSize(size AreaSize) error {
-	err := validateSize(size)
-	if err != nil {
+	if err := validateSize(size); err != nil {
 		return err
 	}
 
@@ -447,8 +445,7 @@ func validateAreaType(areaType string) error {
 		return AreaError{AreaErrorTypeEmptyCode}
 	}
 
-	v := GetAreaType(areaType)
-	if v == (AreaType{}) {
+	if v := GetAreaType(areaType); v == (AreaType{}) {
 		return AreaError{AreaErrorInvalidAreaTypeCode}
 	}
 

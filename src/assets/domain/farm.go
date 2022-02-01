@@ -117,8 +117,7 @@ func CreateFarm(name, farmType, latitude, longitude, country, city string) (*Far
 }
 
 func (f *Farm) ChangeName(name string) error {
-	err := validateFarmName(name)
-	if err != nil {
+	if err := validateFarmName(name); err != nil {
 		return err
 	}
 
