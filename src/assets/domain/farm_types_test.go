@@ -1,8 +1,9 @@
-package domain
+package domain_test
 
 import (
 	"testing"
 
+	. "github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/stretchr/testify/assert"
 )
 
