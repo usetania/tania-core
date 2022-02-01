@@ -16,21 +16,25 @@ type TaskServiceMock struct {
 
 func (m *TaskServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
+
 	return args.Get(0).(ServiceResult)
 }
 
 func (m *TaskServiceMock) FindCropByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
+
 	return args.Get(0).(ServiceResult)
 }
 
 func (m *TaskServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
+
 	return args.Get(0).(ServiceResult)
 }
 
 func (m *TaskServiceMock) FindReservoirByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
+
 	return args.Get(0).(ServiceResult)
 }
 

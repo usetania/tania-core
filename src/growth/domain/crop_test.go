@@ -19,16 +19,19 @@ type CropServiceMock struct {
 
 func (m *CropServiceMock) FindMaterialByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
+
 	return args.Get(0).(ServiceResult)
 }
 
 func (m *CropServiceMock) FindByBatchID(batchID string) ServiceResult {
 	args := m.Called(batchID)
+
 	return args.Get(0).(ServiceResult)
 }
 
 func (m *CropServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
 	args := m.Called(uid)
+
 	return args.Get(0).(ServiceResult)
 }
 

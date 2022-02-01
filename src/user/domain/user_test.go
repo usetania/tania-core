@@ -14,6 +14,7 @@ type UserServiceMock struct {
 
 func (m *UserServiceMock) FindUserByUsername(username string) (UserServiceResult, error) {
 	args := m.Called(username)
+
 	return args.Get(0).(UserServiceResult), nil
 }
 
