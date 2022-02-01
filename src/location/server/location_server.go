@@ -26,10 +26,9 @@ func (s *Server) Mount(g *echo.Group) {
 
 // LocationsGetCountries displays all available location in Tania
 func LocationsGetCountries(c echo.Context) error {
-	var countries []Country
-
 	query := gountries.New()
 	items := query.FindAllCountries()
+	countries := make([]Country, 0, len(items))
 
 	for _, item := range items {
 		countries = append(countries, Country{
