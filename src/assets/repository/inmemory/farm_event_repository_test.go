@@ -3,9 +3,8 @@ package inmemory
 import (
 	"testing"
 
-	"github.com/Tanibox/tania-core/src/assets/storage"
-
 	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/Tanibox/tania-core/src/assets/storage"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/Tanibox/tania-core/src/tasks/decoder"
-
 	"github.com/Tanibox/tania-core/src/tasks/query"
 	"github.com/Tanibox/tania-core/src/tasks/storage"
 	"github.com/gofrs/uuid"

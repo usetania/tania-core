@@ -6,11 +6,10 @@ import (
 	"sort"
 	"time"
 
+	"github.com/Tanibox/tania-core/src/growth/domain"
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/Tanibox/tania-core/src/growth/storage"
 	"github.com/gofrs/uuid"
-
-	"github.com/Tanibox/tania-core/src/growth/domain"
 	"github.com/labstack/echo/v4"
 )
 

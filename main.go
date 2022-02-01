@@ -9,19 +9,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/eventbus"
-	"github.com/asaskevich/EventBus"
-	"golang.org/x/term"
-
 	"github.com/Tanibox/tania-core/config"
 	assetsserver "github.com/Tanibox/tania-core/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-core/src/assets/storage"
+	"github.com/Tanibox/tania-core/src/eventbus"
 	growthserver "github.com/Tanibox/tania-core/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-core/src/growth/storage"
 	locationserver "github.com/Tanibox/tania-core/src/location/server"
 	tasksserver "github.com/Tanibox/tania-core/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-core/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-core/src/user/server"
+	"github.com/asaskevich/EventBus"
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
@@ -29,6 +27,7 @@ import (
 	"github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/term"
 )
 
 func main() {

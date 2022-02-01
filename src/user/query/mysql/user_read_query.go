@@ -5,11 +5,10 @@ import (
 	"errors"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
-
 	"github.com/Tanibox/tania-core/src/user/query"
 	"github.com/Tanibox/tania-core/src/user/storage"
 	"github.com/gofrs/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserReadQueryMysql struct {
