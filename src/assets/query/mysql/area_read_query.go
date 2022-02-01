@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-core/src/assets/domain"
@@ -71,11 +72,11 @@ func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
 			&rowsData.FarmName,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: areaRead}
 		}
 
@@ -323,11 +324,11 @@ func (s AreaReadQueryMysql) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan q
 			&rowsData.FarmName,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: areaRead}
 		}
 

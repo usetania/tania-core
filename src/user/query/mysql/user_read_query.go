@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -42,11 +43,11 @@ func (s UserReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: userRead}
 		}
 
@@ -85,11 +86,11 @@ func (s UserReadQueryMysql) FindByUsername(username string) <-chan query.Result 
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: userRead}
 		}
 
@@ -129,11 +130,11 @@ func (s UserReadQueryMysql) FindByUsernameAndPassword(username, password string)
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: userRead}
 		}
 

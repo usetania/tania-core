@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/gofrs/uuid"
@@ -43,11 +44,11 @@ func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
 			&rowsData.FarmUID,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: areaQueryResult}
 		}
 

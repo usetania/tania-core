@@ -273,11 +273,11 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Res
 			&rowsData.CreatedDate,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: materialRead}
 		}
 

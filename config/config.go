@@ -33,12 +33,12 @@ type Configuration struct {
 /*
 InitViperConfig https://github.com/spf13/viper
 Viper uses the following precedence order. Each item takes precedence over the item below it:
-- explicit call to Set
-- flag
-- env
-- config
-- key/value store
-- default
+  - explicit call to Set
+  - flag
+  - env
+  - config
+  - key/value store
+  - default
 */
 func InitViperConfig() {
 	v := viper.New()

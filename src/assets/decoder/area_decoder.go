@@ -29,97 +29,35 @@ func (w *AreaEventWrapper) UnmarshalJSON(b []byte) error {
 		TimeHook(time.RFC3339),
 	)
 
+	var e interface{}
+
 	switch wrapper.EventName {
 	case "AreaCreated":
-		e := domain.AreaCreated{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaCreated{}
 	case "AreaNameChanged":
-		e := domain.AreaNameChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaNameChanged{}
 	case "AreaSizeChanged":
-		e := domain.AreaSizeChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaSizeChanged{}
 	case "AreaTypeChanged":
-		e := domain.AreaTypeChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaTypeChanged{}
 	case "AreaLocationChanged":
-		e := domain.AreaLocationChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaLocationChanged{}
 	case "AreaReservoirChanged":
-		e := domain.AreaReservoirChanged{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaReservoirChanged{}
 	case "AreaPhotoAdded":
-		e := domain.AreaPhotoAdded{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaPhotoAdded{}
 	case "AreaNoteAdded":
-		e := domain.AreaNoteAdded{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
-
+		e = domain.AreaNoteAdded{}
 	case "AreaNoteRemoved":
-		e := domain.AreaNoteRemoved{}
-
-		_, err := Decode(f, &mapped, &e)
-		if err != nil {
-			return err
-		}
-
-		w.EventData = e
+		e = domain.AreaNoteRemoved{}
 	}
+
+	_, err = Decode(f, &mapped, &e)
+	if err != nil {
+		return err
+	}
+
+	w.EventData = e
 
 	return nil
 }

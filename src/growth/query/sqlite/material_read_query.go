@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/gofrs/uuid"
@@ -37,11 +38,11 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Re
 			&rowsData.TypeData,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: materialQueryResult}
 		}
 
@@ -77,11 +78,11 @@ func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCod
 			&rowsData.TypeData,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: materialQueryResult}
 		}
 

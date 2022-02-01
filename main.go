@@ -177,6 +177,7 @@ func initUser(authServer *userserver.AuthServer) error {
 	_, _, err := authServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
 		log.Print("User ", defaultUsername, " has already created")
+
 		return err
 	}
 
@@ -283,6 +284,7 @@ func initMysql() *sql.DB {
 				if me.Number == 1061 {
 				} else {
 					log.Print(err)
+
 					return db
 				}
 			}

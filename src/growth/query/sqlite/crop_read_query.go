@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-core/src/growth/domain"
@@ -156,11 +157,11 @@ func (s CropReadQuerySqlite) FindByBatchID(batchID string) <-chan query.Result {
 			&rowsData.BatchID,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			result <- query.Result{Result: cropRead}
 		}
 
@@ -670,11 +671,11 @@ func (s CropReadQuerySqlite) populateCrop(cropUID uuid.UUID, cropRead *storage.C
 		&rowsData.InitialAreaLastUpdated,
 	)
 
-	if err != nil && err != sql.ErrNoRows {
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
 
-	if err == sql.ErrNoRows {
+	if errors.Is(err, sql.ErrNoRows) {
 		return err
 	}
 
