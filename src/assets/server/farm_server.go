@@ -1694,7 +1694,7 @@ func (s *FarmServer) GetAvailableMaterialPlantType(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
+func (s *FarmServer) publishUncommittedEvents(entity interface{}) {
 	switch e := entity.(type) {
 	case *domain.Farm:
 		for _, v := range e.UncommittedChanges {
@@ -1717,6 +1717,4 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	}
-
-	return nil
 }

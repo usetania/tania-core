@@ -143,7 +143,7 @@ func (s *UserServer) ChangePassword(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *UserServer) publishUncommittedEvents(entity interface{}) error {
+func (s *UserServer) publishUncommittedEvents(entity interface{}) {
 	switch e := entity.(type) {
 	case *domain.User:
 		for _, v := range e.UncommittedChanges {
@@ -151,6 +151,4 @@ func (s *UserServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	}
-
-	return nil
 }

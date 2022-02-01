@@ -1248,7 +1248,7 @@ func (s *GrowthServer) GetCropsInformation(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *GrowthServer) publishUncommittedEvents(entity interface{}) error {
+func (s *GrowthServer) publishUncommittedEvents(entity interface{}) {
 	switch e := entity.(type) {
 	case *domain.Crop:
 		for _, v := range e.UncommittedChanges {
@@ -1256,6 +1256,4 @@ func (s *GrowthServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	}
-
-	return nil
 }

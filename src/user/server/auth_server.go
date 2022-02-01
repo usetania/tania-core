@@ -229,7 +229,7 @@ func (s *AuthServer) RegisterNewUser(username, password, confirmPassword string)
 	return user, &userAuth, nil
 }
 
-func (s *AuthServer) publishUncommittedEvents(entity interface{}) error {
+func (s *AuthServer) publishUncommittedEvents(entity interface{}) {
 	switch e := entity.(type) {
 	case *domain.User:
 		for _, v := range e.UncommittedChanges {
@@ -237,6 +237,4 @@ func (s *AuthServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	}
-
-	return nil
 }

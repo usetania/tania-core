@@ -550,7 +550,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	updatedTask, err := s.updateTaskAttributes(s.TaskService, task, c)
+	updatedTask, err := s.updateTaskAttributes(task, c)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -572,7 +572,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) updateTaskAttributes(ts domain.TaskService, task *domain.Task, c echo.Context) (*domain.Task, error) {
+func (s *TaskServer) updateTaskAttributes(task *domain.Task, c echo.Context) (*domain.Task, error) {
 	// Change Task Title
 	if title := c.FormValue("title"); len(title) != 0 {
 		task.ChangeTaskTitle(s.TaskService, title)
@@ -648,7 +648,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	updatedTask, err := s.updateTaskAttributes(s.TaskService, task, c)
+	updatedTask, err := s.updateTaskAttributes(task, c)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -708,7 +708,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	// Build TaskEvents from history
 	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
 
-	updatedTask, err := s.updateTaskAttributes(s.TaskService, task, c)
+	updatedTask, err := s.updateTaskAttributes(task, c)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -780,7 +780,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
+func (s *TaskServer) publishUncommittedEvents(entity interface{}) {
 	switch e := entity.(type) {
 	case *domain.Task:
 		for _, v := range e.UncommittedChanges {
@@ -789,6 +789,4 @@ func (s *TaskServer) publishUncommittedEvents(entity interface{}) error {
 		}
 	default:
 	}
-
-	return nil
 }
