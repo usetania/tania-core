@@ -22,14 +22,14 @@ type materialReadResult struct {
 	TypeData string
 }
 
-func (s MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.QueryResult {
+func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		materialQueryResult := query.CropMaterialQueryResult{}
 		rowsData := materialReadResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA FROM MATERIAL_READ
+		err := q.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA FROM MATERIAL_READ
 			WHERE UID = ?`, materialUID).Scan(
 			&rowsData.UID,
 			&rowsData.Name,

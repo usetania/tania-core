@@ -17,16 +17,16 @@ func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskReadQuery {
 	return &TaskReadQueryInMemory{Storage: s}
 }
 
-func (r TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult {
+func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
-		r.Storage.Lock.RLock()
-		defer r.Storage.Lock.RUnlock()
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
 
 		tasks := []storage.TaskRead{}
 
-		for _, val := range r.Storage.TaskReadMap {
+		for _, val := range q.Storage.TaskReadMap {
 			tasks = append(tasks, val)
 		}
 
@@ -43,14 +43,14 @@ func (r TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult
 }
 
 // FindByID is to find by ID
-func (r TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
+func (q TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
-		r.Storage.Lock.RLock()
-		defer r.Storage.Lock.RUnlock()
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
 
-		result <- query.QueryResult{Result: r.Storage.TaskReadMap[uid]}
+		result <- query.QueryResult{Result: q.Storage.TaskReadMap[uid]}
 
 		close(result)
 	}()
@@ -58,15 +58,15 @@ func (r TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 	return result
 }
 
-func (s TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
+func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
-		s.Storage.Lock.RLock()
-		defer s.Storage.Lock.RUnlock()
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
 
 		tasks := []storage.TaskRead{}
-		for _, val := range s.Storage.TaskReadMap {
+		for _, val := range q.Storage.TaskReadMap {
 			is_match := true
 
 			// Is Due
@@ -173,15 +173,15 @@ func (q TaskReadQueryInMemory) CountAll() <-chan query.QueryResult {
 	return result
 }
 
-func (s TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-chan query.QueryResult {
+func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
-		s.Storage.Lock.RLock()
-		defer s.Storage.Lock.RUnlock()
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
 
 		tasks := []storage.TaskRead{}
-		for _, val := range s.Storage.TaskReadMap {
+		for _, val := range q.Storage.TaskReadMap {
 			is_match := true
 
 			// Is Due

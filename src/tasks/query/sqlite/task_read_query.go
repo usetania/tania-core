@@ -38,7 +38,7 @@ type taskReadQueryResult struct {
 	AssetID              sql.NullString
 }
 
-func (r TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
+func (q TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -54,13 +54,13 @@ func (r TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 			args = append(args, limit, offset)
 		}
 
-		rows, err := r.DB.Query(sql, args...)
+		rows, err := q.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
 		for rows.Next() {
-			taskRead, err := r.populateQueryResult(rows)
+			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -77,19 +77,19 @@ func (r TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 }
 
 // FindByID is to find by ID
-func (r TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
+func (q TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
 		task := storage.TaskRead{}
 
-		rows, err := r.DB.Query(`SELECT * FROM TASK_READ WHERE UID = ?`, uid)
+		rows, err := q.DB.Query(`SELECT * FROM TASK_READ WHERE UID = ?`, uid)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
 		for rows.Next() {
-			taskRead, err := r.populateQueryResult(rows)
+			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -104,7 +104,7 @@ func (r TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 	return result
 }
 
-func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
+func (q TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
@@ -168,13 +168,13 @@ func (s TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 			args = append(args, limit, offset)
 		}
 
-		rows, err := s.DB.Query(sql, args...)
+		rows, err := q.DB.Query(sql, args...)
 		if err != nil {
 			result <- query.QueryResult{Error: err}
 		}
 
 		for rows.Next() {
-			taskRead, err := s.populateQueryResult(rows)
+			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
 				result <- query.QueryResult{Error: err}
 			}
@@ -282,7 +282,7 @@ func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-ch
 	return result
 }
 
-func (s TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRead, error) {
+func (q TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRead, error) {
 	rowsData := taskReadQueryResult{}
 
 	err := rows.Scan(

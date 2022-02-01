@@ -243,73 +243,73 @@ type CropPhoto struct {
 	Description string    `json:"description"`
 }
 
-func (state *Crop) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (c *Crop) TrackChange(event interface{}) {
+	c.UncommittedChanges = append(c.UncommittedChanges, event)
+	c.Transition(event)
 }
 
-func (state *Crop) Transition(event interface{}) {
+func (c *Crop) Transition(event interface{}) {
 	switch e := event.(type) {
 	case CropBatchCreated:
-		state.UID = e.UID
-		state.BatchID = e.BatchID
-		state.Status = e.Status
-		state.Type = e.Type
-		state.Container = e.Container
-		state.InventoryUID = e.InventoryUID
-		state.InitialArea = InitialArea{
+		c.UID = e.UID
+		c.BatchID = e.BatchID
+		c.Status = e.Status
+		c.Type = e.Type
+		c.Container = e.Container
+		c.InventoryUID = e.InventoryUID
+		c.InitialArea = InitialArea{
 			AreaUID:         e.InitialAreaUID,
 			InitialQuantity: e.Quantity,
 			CurrentQuantity: e.Quantity,
 			CreatedDate:     e.CreatedDate,
 			LastUpdated:     e.CreatedDate,
 		}
-		state.FarmUID = e.FarmUID
+		c.FarmUID = e.FarmUID
 
 	case CropBatchInventoryChanged:
-		state.InventoryUID = e.InventoryUID
-		state.BatchID = e.BatchID
+		c.InventoryUID = e.InventoryUID
+		c.BatchID = e.BatchID
 
 	case CropBatchTypeChanged:
-		state.Type = e.Type
+		c.Type = e.Type
 
 	case CropBatchContainerChanged:
-		state.Container = e.Container
-		state.InitialArea.CurrentQuantity = e.Container.Quantity
-		state.InitialArea.InitialQuantity = e.Container.Quantity
+		c.Container = e.Container
+		c.InitialArea.CurrentQuantity = e.Container.Quantity
+		c.InitialArea.InitialQuantity = e.Container.Quantity
 
 	case CropBatchMoved:
-		if state.InitialArea.AreaUID == e.SrcAreaUID {
+		if c.InitialArea.AreaUID == e.SrcAreaUID {
 			ia, ok := e.UpdatedSrcArea.(InitialArea)
 			if ok {
-				state.InitialArea = ia
+				c.InitialArea = ia
 			}
 		}
 
-		for i, v := range state.MovedArea {
+		for i, v := range c.MovedArea {
 			ma, ok := e.UpdatedSrcArea.(MovedArea)
 			if ok {
 				if v.AreaUID == ma.AreaUID {
-					state.MovedArea[i] = ma
+					c.MovedArea[i] = ma
 				}
 			}
 		}
 
-		if state.InitialArea.AreaUID == e.DstAreaUID {
+		if c.InitialArea.AreaUID == e.DstAreaUID {
 			ia, ok := e.UpdatedDstArea.(InitialArea)
 			if ok {
-				state.InitialArea = ia
+				c.InitialArea = ia
 			}
 		}
 
 		isFound := false
 
-		for i, v := range state.MovedArea {
+		for i, v := range c.MovedArea {
 			ma, ok := e.UpdatedDstArea.(MovedArea)
 
 			if ok {
 				if v.AreaUID == ma.AreaUID {
-					state.MovedArea[i] = ma
+					c.MovedArea[i] = ma
 					isFound = true
 				}
 			}
@@ -318,95 +318,95 @@ func (state *Crop) Transition(event interface{}) {
 		if !isFound {
 			ma, ok := e.UpdatedDstArea.(MovedArea)
 			if ok {
-				state.MovedArea = append(state.MovedArea, ma)
+				c.MovedArea = append(c.MovedArea, ma)
 			}
 		}
 
 	case CropBatchHarvested:
 		isFound := false
 
-		for i, v := range state.HarvestedStorage {
+		for i, v := range c.HarvestedStorage {
 			if v.SourceAreaUID == e.UpdatedHarvestedStorage.SourceAreaUID {
-				state.HarvestedStorage[i] = e.UpdatedHarvestedStorage
+				c.HarvestedStorage[i] = e.UpdatedHarvestedStorage
 				isFound = true
 			}
 		}
 
 		if !isFound {
-			state.HarvestedStorage = append(state.HarvestedStorage, e.UpdatedHarvestedStorage)
+			c.HarvestedStorage = append(c.HarvestedStorage, e.UpdatedHarvestedStorage)
 		}
 
 		if e.HarvestedAreaCode == "INITIAL_AREA" {
 			ha := e.HarvestedArea.(InitialArea)
-			state.InitialArea = ha
+			c.InitialArea = ha
 		} else if e.HarvestedAreaCode == "MOVED_AREA" {
 			ma := e.HarvestedArea.(MovedArea)
 
-			for i, v := range state.MovedArea {
+			for i, v := range c.MovedArea {
 				if v.AreaUID == ma.AreaUID {
-					state.MovedArea[i] = ma
+					c.MovedArea[i] = ma
 				}
 			}
 		}
 
-		state.Status = GetCropStatus(e.CropStatus)
+		c.Status = GetCropStatus(e.CropStatus)
 
 	case CropBatchDumped:
 		isFound := false
 
-		for i, v := range state.Trash {
+		for i, v := range c.Trash {
 			if v.SourceAreaUID == e.UpdatedTrash.SourceAreaUID {
-				state.Trash[i] = e.UpdatedTrash
+				c.Trash[i] = e.UpdatedTrash
 				isFound = true
 			}
 		}
 
 		if !isFound {
-			state.Trash = append(state.Trash, e.UpdatedTrash)
+			c.Trash = append(c.Trash, e.UpdatedTrash)
 		}
 
 		if e.DumpedAreaCode == "INITIAL_AREA" {
 			da := e.DumpedArea.(InitialArea)
-			state.InitialArea = da
+			c.InitialArea = da
 		} else if e.DumpedAreaCode == "MOVED_AREA" {
 			da := e.DumpedArea.(MovedArea)
 
-			for i, v := range state.MovedArea {
+			for i, v := range c.MovedArea {
 				if v.AreaUID == da.AreaUID {
-					state.MovedArea[i] = da
+					c.MovedArea[i] = da
 				}
 			}
 		}
 
-		state.Status = GetCropStatus(e.CropStatus)
+		c.Status = GetCropStatus(e.CropStatus)
 
 	case CropBatchWatered:
-		if state.InitialArea.AreaUID == e.AreaUID {
-			state.InitialArea.LastWatered = e.WateringDate
+		if c.InitialArea.AreaUID == e.AreaUID {
+			c.InitialArea.LastWatered = e.WateringDate
 		}
 
-		for i, v := range state.MovedArea {
+		for i, v := range c.MovedArea {
 			if v.AreaUID == e.AreaUID {
-				state.MovedArea[i].LastWatered = e.WateringDate
+				c.MovedArea[i].LastWatered = e.WateringDate
 			}
 		}
 
 	case CropBatchNoteCreated:
-		if len(state.Notes) == 0 {
-			state.Notes = make(map[uuid.UUID]CropNote)
+		if len(c.Notes) == 0 {
+			c.Notes = make(map[uuid.UUID]CropNote)
 		}
 
-		state.Notes[e.UID] = CropNote{
+		c.Notes[e.UID] = CropNote{
 			UID:         e.UID,
 			Content:     e.Content,
 			CreatedDate: e.CreatedDate,
 		}
 
 	case CropBatchNoteRemoved:
-		delete(state.Notes, e.UID)
+		delete(c.Notes, e.UID)
 
 	case CropBatchPhotoCreated:
-		state.Photos = append(state.Photos, CropPhoto{
+		c.Photos = append(c.Photos, CropPhoto{
 			UID:         e.UID,
 			Filename:    e.Filename,
 			MimeType:    e.MimeType,

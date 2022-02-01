@@ -15,16 +15,16 @@ func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.Material
 	return MaterialReadQueryInMemory{Storage: s}
 }
 
-func (s MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
+func (q MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
 	result := make(chan query.QueryResult)
 
 	go func() {
-		s.Storage.Lock.RLock()
-		defer s.Storage.Lock.RUnlock()
+		q.Storage.Lock.RLock()
+		defer q.Storage.Lock.RUnlock()
 
 		ci := query.CropMaterialQueryResult{}
 
-		for _, val := range s.Storage.MaterialReadMap {
+		for _, val := range q.Storage.MaterialReadMap {
 			if val.UID == inventoryUID {
 				ci.UID = val.UID
 				ci.Name = val.Name

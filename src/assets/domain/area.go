@@ -140,40 +140,40 @@ type AreaNote struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
-func (state *Area) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (a *Area) TrackChange(event interface{}) {
+	a.UncommittedChanges = append(a.UncommittedChanges, event)
+	a.Transition(event)
 }
 
-func (state *Area) Transition(event interface{}) {
+func (a *Area) Transition(event interface{}) {
 	switch e := event.(type) {
 	case AreaCreated:
-		state.UID = e.UID
-		state.Name = e.Name
-		state.Type = e.Type
-		state.Location = e.Location
-		state.Size = e.Size
-		state.CreatedDate = e.CreatedDate
-		state.FarmUID = e.FarmUID
-		state.ReservoirUID = e.ReservoirUID
+		a.UID = e.UID
+		a.Name = e.Name
+		a.Type = e.Type
+		a.Location = e.Location
+		a.Size = e.Size
+		a.CreatedDate = e.CreatedDate
+		a.FarmUID = e.FarmUID
+		a.ReservoirUID = e.ReservoirUID
 
 	case AreaNameChanged:
-		state.Name = e.Name
+		a.Name = e.Name
 
 	case AreaSizeChanged:
-		state.Size = e.Size
+		a.Size = e.Size
 
 	case AreaTypeChanged:
-		state.Type = e.Type
+		a.Type = e.Type
 
 	case AreaLocationChanged:
-		state.Location = e.Location
+		a.Location = e.Location
 
 	case AreaReservoirChanged:
-		state.ReservoirUID = e.ReservoirUID
+		a.ReservoirUID = e.ReservoirUID
 
 	case AreaPhotoAdded:
-		state.Photo = AreaPhoto{
+		a.Photo = AreaPhoto{
 			Filename: e.Filename,
 			MimeType: e.MimeType,
 			Size:     e.Size,
@@ -182,18 +182,18 @@ func (state *Area) Transition(event interface{}) {
 		}
 
 	case AreaNoteAdded:
-		if len(state.Notes) == 0 {
-			state.Notes = make(map[uuid.UUID]AreaNote)
+		if len(a.Notes) == 0 {
+			a.Notes = make(map[uuid.UUID]AreaNote)
 		}
 
-		state.Notes[e.UID] = AreaNote{
+		a.Notes[e.UID] = AreaNote{
 			UID:         e.UID,
 			Content:     e.Content,
 			CreatedDate: e.CreatedDate,
 		}
 
 	case AreaNoteRemoved:
-		delete(state.Notes, e.UID)
+		delete(a.Notes, e.UID)
 	}
 }
 

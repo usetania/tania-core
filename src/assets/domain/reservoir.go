@@ -76,39 +76,39 @@ type ReservoirNote struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
-func (state *Reservoir) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (r *Reservoir) TrackChange(event interface{}) {
+	r.UncommittedChanges = append(r.UncommittedChanges, event)
+	r.Transition(event)
 }
 
-func (state *Reservoir) Transition(event interface{}) {
+func (r *Reservoir) Transition(event interface{}) {
 	switch e := event.(type) {
 	case ReservoirCreated:
-		state.UID = e.UID
-		state.Name = e.Name
-		state.WaterSource = e.WaterSource
-		state.FarmUID = e.FarmUID
-		state.CreatedDate = e.CreatedDate
+		r.UID = e.UID
+		r.Name = e.Name
+		r.WaterSource = e.WaterSource
+		r.FarmUID = e.FarmUID
+		r.CreatedDate = e.CreatedDate
 
 	case ReservoirWaterSourceChanged:
-		state.WaterSource = e.WaterSource
+		r.WaterSource = e.WaterSource
 
 	case ReservoirNameChanged:
-		state.Name = e.Name
+		r.Name = e.Name
 
 	case ReservoirNoteAdded:
-		if len(state.Notes) == 0 {
-			state.Notes = make(map[uuid.UUID]ReservoirNote)
+		if len(r.Notes) == 0 {
+			r.Notes = make(map[uuid.UUID]ReservoirNote)
 		}
 
-		state.Notes[e.UID] = ReservoirNote{
+		r.Notes[e.UID] = ReservoirNote{
 			UID:         e.UID,
 			Content:     e.Content,
 			CreatedDate: e.CreatedDate,
 		}
 
 	case ReservoirNoteRemoved:
-		delete(state.Notes, e.UID)
+		delete(r.Notes, e.UID)
 	}
 }
 

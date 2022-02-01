@@ -33,37 +33,37 @@ type FarmCountry struct {
 	Name string `json:"country_name"`
 }
 
-func (state *Farm) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (f *Farm) TrackChange(event interface{}) {
+	f.UncommittedChanges = append(f.UncommittedChanges, event)
+	f.Transition(event)
 }
 
-func (state *Farm) Transition(event interface{}) {
+func (f *Farm) Transition(event interface{}) {
 	switch e := event.(type) {
 	case FarmCreated:
-		state.UID = e.UID
-		state.Name = e.Name
-		state.Type = e.Type
-		state.Latitude = e.Latitude
-		state.Longitude = e.Longitude
-		state.Country = e.Country
-		state.City = e.City
-		state.IsActive = e.IsActive
-		state.CreatedDate = e.CreatedDate
+		f.UID = e.UID
+		f.Name = e.Name
+		f.Type = e.Type
+		f.Latitude = e.Latitude
+		f.Longitude = e.Longitude
+		f.Country = e.Country
+		f.City = e.City
+		f.IsActive = e.IsActive
+		f.CreatedDate = e.CreatedDate
 
 	case FarmNameChanged:
-		state.Name = e.Name
+		f.Name = e.Name
 
 	case FarmTypeChanged:
-		state.Type = e.Type
+		f.Type = e.Type
 
 	case FarmGeolocationChanged:
-		state.Latitude = e.Latitude
-		state.Longitude = e.Longitude
+		f.Latitude = e.Latitude
+		f.Longitude = e.Longitude
 
 	case FarmRegionChanged:
-		state.Country = e.Country
-		state.City = e.City
+		f.Country = e.Country
+		f.City = e.City
 	}
 }
 

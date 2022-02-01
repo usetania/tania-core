@@ -180,6 +180,7 @@ func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.
 
 			for noteRows.Next() {
 				notesRowsData := reservoirNotesReadResult{}
+
 				err := noteRows.Scan(
 					&notesRowsData.UID,
 					&notesRowsData.ReservoirUID,

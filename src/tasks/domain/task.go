@@ -221,10 +221,10 @@ func (t *Task) CancelTask(taskService TaskService) {
 
 // Event Tracking
 
-func (state *Task) TrackChange(taskService TaskService, event interface{}) error {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
+func (t *Task) TrackChange(taskService TaskService, event interface{}) error {
+	t.UncommittedChanges = append(t.UncommittedChanges, event)
 
-	err := state.Transition(taskService, event)
+	err := t.Transition(taskService, event)
 	if err != nil {
 		return err
 	}
@@ -232,41 +232,41 @@ func (state *Task) TrackChange(taskService TaskService, event interface{}) error
 	return nil
 }
 
-func (state *Task) Transition(taskService TaskService, event interface{}) error {
+func (t *Task) Transition(taskService TaskService, event interface{}) error {
 	switch e := event.(type) {
 	case TaskCreated:
-		state.Title = e.Title
-		state.UID = e.UID
-		state.Description = e.Description
-		state.CreatedDate = e.CreatedDate
-		state.DueDate = e.DueDate
-		state.Priority = e.Priority
-		state.Status = e.Status
-		state.Domain = e.Domain
-		state.DomainDetails = e.DomainDetails
-		state.Category = e.Category
-		state.IsDue = e.IsDue
-		state.AssetID = e.AssetID
+		t.Title = e.Title
+		t.UID = e.UID
+		t.Description = e.Description
+		t.CreatedDate = e.CreatedDate
+		t.DueDate = e.DueDate
+		t.Priority = e.Priority
+		t.Status = e.Status
+		t.Domain = e.Domain
+		t.DomainDetails = e.DomainDetails
+		t.Category = e.Category
+		t.IsDue = e.IsDue
+		t.AssetID = e.AssetID
 	case TaskTitleChanged:
-		state.Title = e.Title
+		t.Title = e.Title
 	case TaskDescriptionChanged:
-		state.Description = e.Description
+		t.Description = e.Description
 	case TaskDueDateChanged:
-		state.DueDate = e.DueDate
+		t.DueDate = e.DueDate
 	case TaskPriorityChanged:
-		state.Priority = e.Priority
+		t.Priority = e.Priority
 	case TaskCategoryChanged:
-		state.Category = e.Category
+		t.Category = e.Category
 	case TaskDetailsChanged:
-		state.DomainDetails = e.DomainDetails
+		t.DomainDetails = e.DomainDetails
 	case TaskCancelled:
-		state.CancelledDate = e.CancelledDate
-		state.Status = TaskStatusCancelled
+		t.CancelledDate = e.CancelledDate
+		t.Status = TaskStatusCancelled
 	case TaskCompleted:
-		state.CompletedDate = e.CompletedDate
-		state.Status = TaskStatusCompleted
+		t.CompletedDate = e.CompletedDate
+		t.Status = TaskStatusCompleted
 	case TaskDue:
-		state.IsDue = true
+		t.IsDue = true
 	}
 
 	return nil
