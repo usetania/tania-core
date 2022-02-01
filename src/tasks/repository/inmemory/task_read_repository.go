@@ -13,7 +13,7 @@ func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) repository.TaskRe
 	return &TaskReadRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *TaskReadRepositoryInMemory) Save(taskRead *storage.TaskRead) <-chan error {
 	result := make(chan error)
 

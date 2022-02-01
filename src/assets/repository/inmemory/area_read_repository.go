@@ -13,7 +13,7 @@ func NewAreaReadRepositoryInMemory(s *storage.AreaReadStorage) repository.AreaRe
 	return &AreaReadRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *AreaReadRepositoryInMemory) Save(areaRead *storage.AreaRead) <-chan error {
 	result := make(chan error)
 

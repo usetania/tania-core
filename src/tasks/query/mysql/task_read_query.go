@@ -77,7 +77,7 @@ func (q TaskReadQueryMysql) FindAll(page, limit int) <-chan query.Result {
 	return result
 }
 
-// FindByID is to find by ID
+// FindByID is to find by ID.
 func (q TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
 	result := make(chan query.Result)
 

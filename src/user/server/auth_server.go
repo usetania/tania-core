@@ -140,6 +140,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 	for _, v := range redirectURI {
 		if reqRedirectURI == *v {
 			selectedRedirectURI = *v
+
 			break
 		}
 	}

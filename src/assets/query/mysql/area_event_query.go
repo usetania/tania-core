@@ -39,11 +39,14 @@ func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.Result {
 		}{}
 
 		for rows.Next() {
-			rows.Scan(&rowsData.ID, &rowsData.AreaUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			err := rows.Scan(&rowsData.ID, &rowsData.AreaUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			if err != nil {
+				result <- query.Result{Error: err}
+			}
 
 			wrapper := decoder.AreaEventWrapper{}
 
-			err := json.Unmarshal(rowsData.Event, &wrapper)
+			err = json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.Result{Error: err}
 			}

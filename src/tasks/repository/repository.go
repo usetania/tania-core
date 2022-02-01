@@ -7,7 +7,7 @@ import (
 )
 
 // Result is a struct to wrap repository result
-// so its easy to use it in channel
+// so its easy to use it in channel.
 type Result struct {
 	Result interface{}
 	Error  error

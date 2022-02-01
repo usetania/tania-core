@@ -14,7 +14,7 @@ func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) repository.Task
 	return &TaskEventRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *TaskEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 

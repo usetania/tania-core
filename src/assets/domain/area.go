@@ -197,7 +197,7 @@ func (a *Area) Transition(event interface{}) {
 	}
 }
 
-// CreateArea registers a new area to a farm
+// CreateArea registers a new area to a farm.
 func CreateArea(
 	areaService AreaService,
 	farmUID uuid.UUID,
@@ -286,7 +286,7 @@ func (a *Area) ChangeName(name string) error {
 	return nil
 }
 
-// ChangeSize changes an area size
+// ChangeSize changes an area size.
 func (a *Area) ChangeSize(size AreaSize) error {
 	err := validateSize(size)
 	if err != nil {
@@ -324,7 +324,7 @@ func (a *Area) ChangeType(areaService AreaService, areaType string) error {
 	return nil
 }
 
-// ChangeLocation changes an area location
+// ChangeLocation changes an area location.
 func (a *Area) ChangeLocation(locationCode string) error {
 	v := GetAreaLocation(locationCode)
 	if v == (AreaLocation{}) {
@@ -350,7 +350,7 @@ func (a *Area) ChangeReservoir(reservoirUID uuid.UUID) error {
 	return nil
 }
 
-// TODO: Do file type validation here
+// TODO: Do file type validation here.
 func (a *Area) ChangePhoto(photo AreaPhoto) error {
 	a.TrackChange(AreaPhotoAdded{
 		AreaUID:  a.UID,

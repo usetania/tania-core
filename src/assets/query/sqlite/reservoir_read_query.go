@@ -83,12 +83,15 @@ func (s ReservoirReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
 		notes := []storage.ReservoirNote{}
 
 		for rows.Next() {
-			rows.Scan(
+			err = rows.Scan(
 				&notesRowsData.UID,
 				&notesRowsData.ReservoirUID,
 				&notesRowsData.Content,
 				&notesRowsData.CreatedDate,
 			)
+			if err != nil {
+				result <- query.Result{Error: err}
+			}
 
 			noteUID, err := uuid.FromString(notesRowsData.UID)
 			if err != nil {

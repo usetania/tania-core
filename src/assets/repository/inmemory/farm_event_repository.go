@@ -14,7 +14,7 @@ func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) repository.Farm
 	return &FarmEventRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *FarmEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 

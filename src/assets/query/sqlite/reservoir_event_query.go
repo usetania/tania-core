@@ -39,11 +39,14 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Resu
 		}{}
 
 		for rows.Next() {
-			rows.Scan(&rowsData.ID, &rowsData.ReservoirUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			err := rows.Scan(&rowsData.ID, &rowsData.ReservoirUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			if err != nil {
+				result <- query.Result{Error: err}
+			}
 
 			wrapper := decoder.ReservoirEventWrapper{}
 
-			err := json.Unmarshal(rowsData.Event, &wrapper)
+			err = json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
 				result <- query.Result{Error: err}
 			}

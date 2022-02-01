@@ -13,7 +13,7 @@ func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) repositor
 	return &MaterialReadRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *MaterialReadRepositoryInMemory) Save(materialRead *storage.MaterialRead) <-chan error {
 	result := make(chan error)
 

@@ -13,7 +13,7 @@ type TaskService interface {
 	FindReservoirByID(uid uuid.UUID) ServiceResult
 }
 
-// ServiceResult is the container for service result
+// ServiceResult is the container for service result.
 type ServiceResult struct {
 	Result interface{}
 	Error  error
@@ -40,7 +40,7 @@ type Task struct {
 	UncommittedChanges []interface{}
 }
 
-// CreateTask
+// CreateTask.
 func CreateTask(ts TaskService, title, description, priority, category string, duedate *time.Time, taskdomain TaskDomain, assetid *uuid.UUID) (*Task, error) {
 	// add validation
 
@@ -190,14 +190,14 @@ func (t *Task) ChangeTaskDetails(taskService TaskService, details TaskDomain) (*
 	return t, nil
 }
 
-// SetTaskAsDue
+// SetTaskAsDue.
 func (t *Task) SetTaskAsDue(taskService TaskService) {
 	t.TrackChange(taskService, TaskDue{
 		UID: t.UID,
 	})
 }
 
-// CompleteTask
+// CompleteTask.
 func (t *Task) CompleteTask(taskService TaskService) {
 	completedTime := time.Now()
 
@@ -208,7 +208,7 @@ func (t *Task) CompleteTask(taskService TaskService) {
 	})
 }
 
-// CompleteTask
+// CompleteTask.
 func (t *Task) CancelTask(taskService TaskService) {
 	cancelledTime := time.Now()
 
@@ -219,7 +219,7 @@ func (t *Task) CancelTask(taskService TaskService) {
 	})
 }
 
-// Event Tracking
+// Event Tracking.
 
 func (t *Task) TrackChange(taskService TaskService, event interface{}) error {
 	t.UncommittedChanges = append(t.UncommittedChanges, event)

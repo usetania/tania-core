@@ -38,14 +38,14 @@ type Crop struct {
 	UncommittedChanges []interface{}
 }
 
-// CropService handles crop behaviours that needs external interaction to be worked
+// CropService handles crop behaviours that needs external interaction to be worked.
 type CropService interface {
 	FindMaterialByID(uid uuid.UUID) ServiceResult
 	FindByBatchID(batchID string) ServiceResult
 	FindAreaByID(uid uuid.UUID) ServiceResult
 }
 
-// ServiceResult is the container for service result
+// ServiceResult is the container for service result.
 type ServiceResult struct {
 	Result interface{}
 	Error  error
@@ -54,7 +54,7 @@ type ServiceResult struct {
 // We just recorded two crop status
 // because other activities are recurring and parallel.
 // So we can't have crop batch with a status, for example `HARVESTED`,
-// because not all the crop has harvested
+// because not all the crop has harvested.
 const (
 	CropActive   = "ACTIVE"
 	CropArchived = "ARCHIVED"
@@ -109,7 +109,7 @@ func GetCropType(code string) CropType {
 	return CropType{}
 }
 
-// CropContainerType defines the type of a container
+// CropContainerType defines the type of a container.
 type CropContainerType interface {
 	Code() string
 }
