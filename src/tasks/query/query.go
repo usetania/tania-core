@@ -5,7 +5,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type QueryResult struct {
+type Result struct {
 	Result interface{}
 	Error  error
 }
@@ -17,67 +17,54 @@ type EventWrapper struct {
 	EventData interface{}
 }
 
-type AreaQuery interface {
-	FindByID(areaUID uuid.UUID) <-chan QueryResult
+type Area interface {
+	FindByID(areaUID uuid.UUID) <-chan Result
 }
 
-type CropQuery interface {
-	FindCropByID(cropUID uuid.UUID) <-chan QueryResult
+type Crop interface {
+	FindCropByID(cropUID uuid.UUID) <-chan Result
 }
 
-type MaterialQuery interface {
-	FindMaterialByID(materialID uuid.UUID) <-chan QueryResult
+type Material interface {
+	FindMaterialByID(materialID uuid.UUID) <-chan Result
 }
 
-type TaskEventQuery interface {
-	FindAllByTaskID(uid uuid.UUID) <-chan QueryResult
+type TaskEvent interface {
+	FindAllByTaskID(uid uuid.UUID) <-chan Result
 }
 
-type TaskReadQuery interface {
-	FindAll(page, limit int) <-chan QueryResult
-	FindByID(taskUID uuid.UUID) <-chan QueryResult
-	FindTasksWithFilter(params map[string]string, page, limit int) <-chan QueryResult
-	CountAll() <-chan QueryResult
-	CountTasksWithFilter(params map[string]string) <-chan QueryResult
+type TaskRead interface {
+	FindAll(page, limit int) <-chan Result
+	FindByID(taskUID uuid.UUID) <-chan Result
+	FindTasksWithFilter(params map[string]string, page, limit int) <-chan Result
+	CountAll() <-chan Result
+	CountTasksWithFilter(params map[string]string) <-chan Result
 }
 
-type ReservoirQuery interface {
-	FindReservoirByID(reservoirUID uuid.UUID) <-chan QueryResult
+type Reservoir interface {
+	FindReservoirByID(reservoirUID uuid.UUID) <-chan Result
 }
-
-/*
-TODO
-
-type DeviceQuery interface {
-	FindDeviceByID(deviceUID uuid.UUID) <-chan QueryResult
-}
-
-type FinanceQuery interface {
-	FindFinanceByID(financeUID uuid.UUID) <-chan QueryResult
-}
-
-*/
 
 // QUERY RESULTS
 
-type TaskAreaQueryResult struct {
+type TaskAreaResult struct {
 	UID  uuid.UUID `json:"uid"`
 	Name string    `json:"name"`
 }
 
-type TaskCropQueryResult struct {
+type TaskCropResult struct {
 	UID     uuid.UUID `json:"uid"`
 	BatchID string    `json:"batch_id"`
 }
 
-type TaskMaterialQueryResult struct {
+type TaskMaterialResult struct {
 	UID              uuid.UUID `json:"uid"`
 	TypeCode         string    `json:"type"`
 	DetailedTypeCode string    `json:"detailed_type"`
 	Name             string    `json:"name"`
 }
 
-type TaskReservoirQueryResult struct {
+type TaskReservoirResult struct {
 	UID  uuid.UUID `json:"uid"`
 	Name string    `json:"name"`
 }

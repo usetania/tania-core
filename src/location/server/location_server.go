@@ -14,13 +14,13 @@ type Country struct {
 	Name string `json:"name"`
 }
 
-type LocationServer struct{}
+type Server struct{}
 
-func NewLocationServer() (*LocationServer, error) {
-	return &LocationServer{}, nil
+func NewServer() (*Server, error) {
+	return &Server{}, nil
 }
 
-func (s *LocationServer) Mount(g *echo.Group) {
+func (s *Server) Mount(g *echo.Group) {
 	g.GET("/countries", LocationsGetCountries)
 }
 

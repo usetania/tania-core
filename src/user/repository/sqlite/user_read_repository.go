@@ -12,7 +12,7 @@ type UserReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserReadRepositorySqlite(db *sql.DB) repository.UserReadRepository {
+func NewUserReadRepositorySqlite(db *sql.DB) repository.UserRead {
 	return &UserReadRepositorySqlite{DB: db}
 }
 

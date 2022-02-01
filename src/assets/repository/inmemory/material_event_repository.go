@@ -10,7 +10,7 @@ type MaterialEventRepositoryInMemory struct {
 	Storage *storage.MaterialEventStorage
 }
 
-func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) repository.MaterialEventRepository {
+func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) repository.MaterialEvent {
 	return &MaterialEventRepositoryInMemory{Storage: s}
 }
 

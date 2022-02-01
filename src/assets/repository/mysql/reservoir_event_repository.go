@@ -15,7 +15,7 @@ type ReservoirEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewReservoirEventRepositoryMysql(db *sql.DB) repository.ReservoirEventRepository {
+func NewReservoirEventRepositoryMysql(db *sql.DB) repository.ReservoirEvent {
 	return &ReservoirEventRepositoryMysql{DB: db}
 }
 

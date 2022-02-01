@@ -10,11 +10,11 @@ import (
 
 func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) {
 	if name == "" {
-		return "", NewRequestValidationError(REQUIRED, "name")
+		return "", NewRequestValidationError(Required, "name")
 	}
 
 	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
-		return "", NewRequestValidationError(ALPHANUMERIC, "name")
+		return "", NewRequestValidationError(Alphanumeric, "name")
 	}
 
 	return name, nil
@@ -26,16 +26,16 @@ func (rv *RequestValidation) ValidateCapacity(waterSourceType, capacity string) 
 	}
 
 	if capacity == "" {
-		return 0, NewRequestValidationError(REQUIRED, "capacity")
+		return 0, NewRequestValidationError(Required, "capacity")
 	}
 
 	if !validationhelper.IsFloat(capacity) {
-		return 0, NewRequestValidationError(FLOAT, "capacity")
+		return 0, NewRequestValidationError(Float, "capacity")
 	}
 
 	c, err := strconv.ParseFloat(capacity, 32)
 	if err != nil {
-		return 0, NewRequestValidationError(PARSE_FAILED, "capacity")
+		return 0, NewRequestValidationError(ParseFailed, "capacity")
 	}
 
 	return float32(c), nil
@@ -43,15 +43,15 @@ func (rv *RequestValidation) ValidateCapacity(waterSourceType, capacity string) 
 
 func (rv *RequestValidation) ValidateType(t string) (string, error) {
 	if t == "" {
-		return "", NewRequestValidationError(REQUIRED, "type")
+		return "", NewRequestValidationError(Required, "type")
 	}
 
 	if !validationhelper.IsAlpha(t) {
-		return "", NewRequestValidationError(ALPHA, "type")
+		return "", NewRequestValidationError(Alpha, "type")
 	}
 
 	if t != domain.BucketType && t != domain.TapType {
-		return "", NewRequestValidationError(INVALID_OPTION, "type")
+		return "", NewRequestValidationError(InvalidOption, "type")
 	}
 
 	return t, nil

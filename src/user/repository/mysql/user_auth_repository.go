@@ -11,7 +11,7 @@ type UserAuthRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserAuthRepositoryMysql(db *sql.DB) repository.UserAuthRepository {
+func NewUserAuthRepositoryMysql(db *sql.DB) repository.UserAuth {
 	return &UserAuthRepositoryMysql{DB: db}
 }
 

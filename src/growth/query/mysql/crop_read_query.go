@@ -101,51 +101,51 @@ type cropReadNotesResult struct {
 	CreatedDate time.Time
 }
 
-func (s CropReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropRead := storage.CropRead{}
 
 		err := s.populateCrop(uid, &cropRead)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		err = s.populateCropPhotos(uid, &cropRead)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		err = s.populateCropMovedArea(uid, &cropRead)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		err = s.populateCropHarvestedStorage(uid, &cropRead)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		err = s.populateCropTrash(uid, &cropRead)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		err = s.populateCropNotes(uid, &cropRead)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: cropRead}
+		result <- query.Result{Result: cropRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) FindByBatchID(batchID string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) FindByBatchID(batchID string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropRead := storage.CropRead{}
@@ -157,30 +157,30 @@ func (s CropReadQueryMysql) FindByBatchID(batchID string) <-chan query.QueryResu
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: cropRead}
+			result <- query.Result{Result: cropRead}
 		}
 
 		cropUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		cropRead.UID = cropUID
 		cropRead.BatchID = rowsData.BatchID
 
-		result <- query.QueryResult{Result: cropRead}
+		result <- query.Result{Result: cropRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
@@ -205,7 +205,7 @@ func (s CropReadQueryMysql) FindAllCropsByFarm(farmUID uuid.UUID, status string,
 
 		rows, err := s.DB.Query(sql, params...)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -215,56 +215,56 @@ func (s CropReadQueryMysql) FindAllCropsByFarm(farmUID uuid.UUID, status string,
 
 			err := rows.Scan(&uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCrop(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropMovedArea(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropTrash(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropNotes(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropPhotos(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropReads = append(cropReads, cropRead)
 		}
 
-		result <- query.QueryResult{Result: cropReads}
+		result <- query.Result{Result: cropReads}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -282,18 +282,18 @@ func (s CropReadQueryMysql) CountAllCropsByFarm(farmUID uuid.UUID, status string
 
 		err := s.DB.QueryRow(sql, params...).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropReads := []storage.CropRead{}
@@ -306,7 +306,7 @@ func (s CropReadQueryMysql) FindAllCropsArchives(farmUID uuid.UUID, page, limit 
 			WHERE FARM_UID = ? AND STATUS = ? ORDER BY INITIAL_AREA_CREATED_DATE DESC LIMIT ? OFFSET ?`,
 			farmUID.Bytes(), domain.CropArchived, limit, offset)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -316,56 +316,56 @@ func (s CropReadQueryMysql) FindAllCropsArchives(farmUID uuid.UUID, page, limit 
 
 			err := rows.Scan(&uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCrop(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropMovedArea(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropTrash(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropNotes(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropPhotos(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropReads = append(cropReads, cropRead)
 		}
 
-		result <- query.QueryResult{Result: cropReads}
+		result <- query.Result{Result: cropReads}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -373,25 +373,25 @@ func (s CropReadQueryMysql) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-cha
 		err := s.DB.QueryRow(`SELECT COUNT(UID) FROM CROP_READ
 			WHERE FARM_UID = ? AND STATUS = ?`, farmUID.Bytes(), domain.CropArchived).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		crops := []query.CropAreaByAreaQueryResult{}
 
 		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE INITIAL_AREA_UID = ?", areaUID.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -401,17 +401,17 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 
 			err := rows.Scan(&uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCrop(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			if cropRead.InitialArea.AreaUID == areaUID {
@@ -450,7 +450,7 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 			LEFT JOIN CROP_READ_MOVED_AREA ON CROP_READ.UID = CROP_READ_MOVED_AREA.CROP_UID
 			WHERE CROP_READ_MOVED_AREA.AREA_UID = ?`, areaUID.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -460,22 +460,22 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 
 			err := rows.Scan(&uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCrop(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropMovedArea(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			for _, val := range cropRead.MovedArea {
@@ -512,15 +512,15 @@ func (s CropReadQueryMysql) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Q
 			}
 		}
 
-		result <- query.QueryResult{Result: crops}
+		result <- query.Result{Result: crops}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropInf := query.CropInformationQueryResult{}
@@ -531,7 +531,7 @@ func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
 		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -541,22 +541,22 @@ func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query
 
 			err := rows.Scan(&uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCrop(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCropHarvestedStorage(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			for _, val := range cropRead.HarvestedStorage {
@@ -573,7 +573,7 @@ func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query
 		cropInf.TotalHarvestProduced = harvestProduced
 		cropInf.TotalPlantVariety = totalPlantVariety
 
-		result <- query.QueryResult{Result: cropInf}
+		result <- query.Result{Result: cropInf}
 
 		close(result)
 	}()
@@ -581,8 +581,8 @@ func (s CropReadQueryMysql) FindCropsInformation(farmUID uuid.UUID) <-chan query
 	return result
 }
 
-func (s CropReadQueryMysql) CountTotalBatch(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryMysql) CountTotalBatch(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		varQty := []query.CountTotalBatchQueryResult{}
@@ -591,7 +591,7 @@ func (s CropReadQueryMysql) CountTotalBatch(farmUID uuid.UUID) <-chan query.Quer
 		// TODO: REFACTOR TO REDUCE QUERY CALLS
 		rows, err := s.DB.Query("SELECT UID FROM CROP_READ WHERE FARM_UID = ?", farmUID.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -601,17 +601,17 @@ func (s CropReadQueryMysql) CountTotalBatch(farmUID uuid.UUID) <-chan query.Quer
 
 			err := rows.Scan(&uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(uid)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			err = s.populateCrop(cropUID, &cropRead)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			varietyName[cropRead.Inventory.Name]++
@@ -624,7 +624,7 @@ func (s CropReadQueryMysql) CountTotalBatch(farmUID uuid.UUID) <-chan query.Quer
 			})
 		}
 
-		result <- query.QueryResult{Result: varQty}
+		result <- query.Result{Result: varQty}
 		close(result)
 	}()
 

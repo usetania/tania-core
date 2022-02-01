@@ -13,7 +13,7 @@ type MaterialReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewMaterialReadRepositoryMysql(db *sql.DB) repository.MaterialReadRepository {
+func NewMaterialReadRepositoryMysql(db *sql.DB) repository.MaterialRead {
 	return &MaterialReadRepositoryMysql{DB: db}
 }
 

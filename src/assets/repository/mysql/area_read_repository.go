@@ -11,7 +11,7 @@ type AreaReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewAreaReadRepositoryMysql(db *sql.DB) repository.AreaReadRepository {
+func NewAreaReadRepositoryMysql(db *sql.DB) repository.AreaRead {
 	return &AreaReadRepositoryMysql{DB: db}
 }
 

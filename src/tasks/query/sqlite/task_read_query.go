@@ -16,7 +16,7 @@ type TaskReadQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewTaskReadQuerySqlite(s *sql.DB) query.TaskReadQuery {
+func NewTaskReadQuerySqlite(s *sql.DB) query.TaskRead {
 	return &TaskReadQuerySqlite{DB: s}
 }
 
@@ -38,8 +38,8 @@ type taskReadQueryResult struct {
 	AssetID              sql.NullString
 }
 
-func (q TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		tasks := []storage.TaskRead{}
@@ -56,19 +56,19 @@ func (q TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 
 		rows, err := q.DB.Query(sql, args...)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
 			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			tasks = append(tasks, taskRead)
 		}
 
-		result <- query.QueryResult{Result: tasks}
+		result <- query.Result{Result: tasks}
 
 		close(result)
 	}()
@@ -77,35 +77,35 @@ func (q TaskReadQuerySqlite) FindAll(page, limit int) <-chan query.QueryResult {
 }
 
 // FindByID is to find by ID
-func (q TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		task := storage.TaskRead{}
 
 		rows, err := q.DB.Query(`SELECT * FROM TASK_READ WHERE UID = ?`, uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
 			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			task = taskRead
 		}
 
-		result <- query.QueryResult{Result: task}
+		result <- query.Result{Result: task}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		tasks := []storage.TaskRead{}
@@ -170,19 +170,19 @@ func (q TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 
 		rows, err := q.DB.Query(sql, args...)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
 			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			tasks = append(tasks, taskRead)
 		}
 
-		result <- query.QueryResult{Result: tasks}
+		result <- query.Result{Result: tasks}
 
 		close(result)
 	}()
@@ -190,8 +190,8 @@ func (q TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 	return result
 }
 
-func (q TaskReadQuerySqlite) CountAll() <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQuerySqlite) CountAll() <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -202,18 +202,18 @@ func (q TaskReadQuerySqlite) CountAll() <-chan query.QueryResult {
 
 		err := q.DB.QueryRow(sql, params...).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -272,10 +272,10 @@ func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-ch
 
 		err := q.DB.QueryRow(sql, args...).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 

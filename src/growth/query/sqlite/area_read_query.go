@@ -25,8 +25,8 @@ type areaReadResult struct {
 	FarmUID  string
 }
 
-func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		areaQueryResult := query.CropAreaQueryResult{}
@@ -44,21 +44,21 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: areaQueryResult}
+			result <- query.Result{Result: areaQueryResult}
 		}
 
 		areaUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmUID, err := uuid.FromString(rowsData.FarmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		areaQueryResult.UID = areaUID
@@ -69,7 +69,7 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		areaQueryResult.Location = rowsData.Location
 		areaQueryResult.FarmUID = farmUID
 
-		result <- query.QueryResult{Result: areaQueryResult}
+		result <- query.Result{Result: areaQueryResult}
 		close(result)
 	}()
 

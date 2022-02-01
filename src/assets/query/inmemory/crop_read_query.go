@@ -10,12 +10,12 @@ type CropReadQueryInMemory struct {
 	Storage *storage.CropReadStorage
 }
 
-func NewCropReadQueryInMemory(s *storage.CropReadStorage) query.CropReadQuery {
+func NewCropReadQueryInMemory(s *storage.CropReadStorage) query.CropRead {
 	return CropReadQueryInMemory{Storage: s}
 }
 
-func (q CropReadQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q CropReadQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -40,7 +40,7 @@ func (q CropReadQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan query.
 			}
 		}
 
-		result <- query.QueryResult{Result: query.CountAreaCropQueryResult{
+		result <- query.Result{Result: query.CountAreaCropResult{
 			PlantQuantity:  totalPlant,
 			TotalCropBatch: totalCropBatch,
 		}}
@@ -51,18 +51,18 @@ func (q CropReadQueryInMemory) CountCropsByArea(areaUID uuid.UUID) <-chan query.
 	return result
 }
 
-func (q CropReadQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q CropReadQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		crops := []query.AreaCropQueryResult{}
+		crops := []query.AreaCropResult{}
 
 		for _, val := range q.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
-				crops = append(crops, query.AreaCropQueryResult{
+				crops = append(crops, query.AreaCropResult{
 					CropUID: val.UID,
 					BatchID: val.BatchID,
 					InitialArea: query.InitialArea{
@@ -86,7 +86,7 @@ func (q CropReadQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query
 
 			for _, v := range val.MovedArea {
 				if v.AreaUID == areaUID {
-					crops = append(crops, query.AreaCropQueryResult{
+					crops = append(crops, query.AreaCropResult{
 						CropUID: val.UID,
 						BatchID: val.BatchID,
 						InitialArea: query.InitialArea{
@@ -109,7 +109,7 @@ func (q CropReadQueryInMemory) FindAllCropByArea(areaUID uuid.UUID) <-chan query
 			}
 		}
 
-		result <- query.QueryResult{Result: crops}
+		result <- query.Result{Result: crops}
 
 		close(result)
 	}()

@@ -57,9 +57,9 @@ func main() {
 	var db *sql.DB
 
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		db = initSqlite()
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		db = initMysql()
 	}
 
@@ -123,7 +123,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	locationServer, err := locationserver.NewLocationServer()
+	locationServer, err := locationserver.NewServer()
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -355,9 +355,9 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 			}
 
 			var userUID uuid.UUID
-			if *config.Config.TaniaPersistenceEngine == config.DB_SQLITE {
+			if *config.Config.TaniaPersistenceEngine == config.DBSqlite {
 				userUID, err = uuid.FromString(string(ubyte))
-			} else if *config.Config.TaniaPersistenceEngine == config.DB_MYSQL {
+			} else if *config.Config.TaniaPersistenceEngine == config.DBMysql {
 				ubyte := uid.([]byte)
 				userUID, err = uuid.FromBytes(ubyte)
 			}

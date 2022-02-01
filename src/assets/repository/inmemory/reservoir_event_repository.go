@@ -10,7 +10,7 @@ type ReservoirEventRepositoryInMemory struct {
 	Storage *storage.ReservoirEventStorage
 }
 
-func NewReservoirEventRepositoryInMemory(s *storage.ReservoirEventStorage) repository.ReservoirEventRepository {
+func NewReservoirEventRepositoryInMemory(s *storage.ReservoirEventStorage) repository.ReservoirEvent {
 	return &ReservoirEventRepositoryInMemory{Storage: s}
 }
 

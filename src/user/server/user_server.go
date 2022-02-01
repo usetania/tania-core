@@ -23,12 +23,12 @@ import (
 
 // UserServer ties the routes and handlers with injected dependencies
 type UserServer struct {
-	UserEventRepo  repository.UserEventRepository
-	UserReadRepo   repository.UserReadRepository
-	UserEventQuery query.UserEventQuery
-	UserReadQuery  query.UserReadQuery
-	UserAuthRepo   repository.UserAuthRepository
-	UserAuthQuery  query.UserAuthQuery
+	UserEventRepo  repository.UserEvent
+	UserReadRepo   repository.UserRead
+	UserEventQuery query.UserEvent
+	UserReadQuery  query.UserRead
+	UserAuthRepo   repository.UserAuth
+	UserAuthQuery  query.UserAuth
 	UserService    domain.UserService
 	EventBus       eventbus.TaniaEventBus
 }
@@ -43,7 +43,7 @@ func NewUserServer(
 	}
 
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		userServer.UserEventRepo = repoSqlite.NewUserEventRepositorySqlite(db)
 		userServer.UserReadRepo = repoSqlite.NewUserReadRepositorySqlite(db)
 		userServer.UserEventQuery = querySqlite.NewUserEventQuerySqlite(db)
@@ -54,7 +54,7 @@ func NewUserServer(
 
 		userServer.UserService = service.UserServiceImpl{UserReadQuery: userServer.UserReadQuery}
 
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		userServer.UserEventRepo = repoMysql.NewUserEventRepositoryMysql(db)
 		userServer.UserReadRepo = repoMysql.NewUserReadRepositoryMysql(db)
 		userServer.UserEventQuery = queryMysql.NewUserEventQueryMysql(db)
@@ -98,11 +98,11 @@ func (s *UserServer) ChangePassword(c echo.Context) error {
 	}
 
 	if userRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if newPassword != confirmNewPassword {
-		return Error(c, NewRequestValidationError(NOT_MATCH, "password"))
+		return Error(c, NewRequestValidationError(NorMatch, "password"))
 	}
 
 	// Process
@@ -120,7 +120,7 @@ func (s *UserServer) ChangePassword(c echo.Context) error {
 	}
 
 	if !isValid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "password"))
+		return Error(c, NewRequestValidationError(NotFound, "password"))
 	}
 
 	err = user.ChangePassword(oldPassword, newPassword, confirmNewPassword)

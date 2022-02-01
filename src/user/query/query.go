@@ -2,21 +2,21 @@ package query
 
 import "github.com/gofrs/uuid"
 
-type UserEventQuery interface {
-	FindAllByID(userUID uuid.UUID) <-chan QueryResult
+type UserEvent interface {
+	FindAllByID(userUID uuid.UUID) <-chan Result
 }
 
-type UserReadQuery interface {
-	FindByID(userUID uuid.UUID) <-chan QueryResult
-	FindByUsername(username string) <-chan QueryResult
-	FindByUsernameAndPassword(username, password string) <-chan QueryResult
+type UserRead interface {
+	FindByID(userUID uuid.UUID) <-chan Result
+	FindByUsername(username string) <-chan Result
+	FindByUsernameAndPassword(username, password string) <-chan Result
 }
 
-type UserAuthQuery interface {
-	FindByUserID(userUID uuid.UUID) <-chan QueryResult
+type UserAuth interface {
+	FindByUserID(userUID uuid.UUID) <-chan Result
 }
 
-type QueryResult struct {
+type Result struct {
 	Result interface{}
 	Error  error
 }

@@ -10,9 +10,9 @@ import (
 )
 
 type AreaServiceInMemory struct {
-	FarmReadQuery      query.FarmReadQuery
-	ReservoirReadQuery query.ReservoirReadQuery
-	CropReadQuery      query.CropReadQuery
+	FarmReadQuery      query.FarmRead
+	ReservoirReadQuery query.ReservoirRead
+	CropReadQuery      query.CropRead
 }
 
 func (s AreaServiceInMemory) FindFarmByID(uid uuid.UUID) (domain.AreaFarmServiceResult, error) {
@@ -67,7 +67,7 @@ func (s AreaServiceInMemory) CountCropsByAreaID(areaUID uuid.UUID) (int, error) 
 		return 0, result.Error
 	}
 
-	totals, ok := result.Result.(query.CountAreaCropQueryResult)
+	totals, ok := result.Result.(query.CountAreaCropResult)
 	if !ok {
 		return 0, errors.New("internal server error")
 	}

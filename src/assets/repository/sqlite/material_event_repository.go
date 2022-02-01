@@ -16,7 +16,7 @@ type MaterialEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewMaterialEventRepositorySqlite(db *sql.DB) repository.MaterialEventRepository {
+func NewMaterialEventRepositorySqlite(db *sql.DB) repository.MaterialEvent {
 	return &MaterialEventRepositorySqlite{DB: db}
 }
 

@@ -12,12 +12,12 @@ type AreaEventQueryInMemory struct {
 	Storage *storage.AreaEventStorage
 }
 
-func NewAreaEventQueryInMemory(s *storage.AreaEventStorage) query.AreaEventQuery {
+func NewAreaEventQueryInMemory(s *storage.AreaEventStorage) query.AreaEvent {
 	return &AreaEventQueryInMemory{Storage: s}
 }
 
-func (f *AreaEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *AreaEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		f.Storage.Lock.RLock()
@@ -35,7 +35,7 @@ func (f *AreaEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryRe
 			return events[i].Version < events[j].Version
 		})
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 	}()
 
 	return result

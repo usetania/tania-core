@@ -10,7 +10,7 @@ type AreaEventRepositoryInMemory struct {
 	Storage *storage.AreaEventStorage
 }
 
-func NewAreaEventRepositoryInMemory(s *storage.AreaEventStorage) repository.AreaEventRepository {
+func NewAreaEventRepositoryInMemory(s *storage.AreaEventStorage) repository.AreaEvent {
 	return &AreaEventRepositoryInMemory{Storage: s}
 }
 

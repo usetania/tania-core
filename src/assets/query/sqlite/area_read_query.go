@@ -14,7 +14,7 @@ type AreaReadQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewAreaReadQuerySqlite(db *sql.DB) query.AreaReadQuery {
+func NewAreaReadQuerySqlite(db *sql.DB) query.AreaRead {
 	return AreaReadQuerySqlite{DB: db}
 }
 
@@ -44,8 +44,8 @@ type areaNotesReadResult struct {
 	CreatedDate string
 }
 
-func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		areaRead := storage.AreaRead{}
@@ -72,36 +72,36 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: areaRead}
+			result <- query.Result{Result: areaRead}
 		}
 
 		areaUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		reservoirUID, err := uuid.FromString(rowsData.ReservoirUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmUID, err := uuid.FromString(rowsData.FarmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		areaCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		notes := []storage.AreaNote{}
@@ -116,12 +116,12 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 
 			noteUID, err := uuid.FromString(notesRowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			notes = append(notes, storage.AreaNote{
@@ -133,12 +133,12 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 
 		sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 		if sizeUnit == (domain.AreaUnit{}) {
-			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
+			result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 		}
 
 		location := domain.GetAreaLocation(rowsData.Location)
 		if location == (domain.AreaLocation{}) {
-			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
+			result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 		}
 
 		areaRead = storage.AreaRead{
@@ -169,22 +169,22 @@ func (s AreaReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			},
 		}
 
-		result <- query.QueryResult{Result: areaRead}
+		result <- query.Result{Result: areaRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		areaReads := []storage.AreaRead{}
 
 		rows, err := s.DB.Query("SELECT * FROM AREA_READ WHERE FARM_UID = ?", farmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -210,27 +210,27 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Query
 
 			areaUID, err := uuid.FromString(rowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			reservoirUID, err := uuid.FromString(rowsData.ReservoirUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmUID, err := uuid.FromString(rowsData.FarmUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			areaCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", areaUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			notes := []storage.AreaNote{}
@@ -246,12 +246,12 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Query
 
 				noteUID, err := uuid.FromString(notesRowsData.UID)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				notes = append(notes, storage.AreaNote{
@@ -263,12 +263,12 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Query
 
 			sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 			if sizeUnit == (domain.AreaUnit{}) {
-				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
+				result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 			}
 
 			location := domain.GetAreaLocation(rowsData.Location)
 			if location == (domain.AreaLocation{}) {
-				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
+				result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 			}
 
 			areaReads = append(areaReads, storage.AreaRead{
@@ -300,15 +300,15 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Query
 			})
 		}
 
-		result <- query.QueryResult{Result: areaReads}
+		result <- query.Result{Result: areaReads}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		areaRead := storage.AreaRead{}
@@ -335,36 +335,36 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: areaRead}
+			result <- query.Result{Result: areaRead}
 		}
 
 		areaUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		reservoirUID, err := uuid.FromString(rowsData.ReservoirUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmUID, err := uuid.FromString(rowsData.FarmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		areaCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", areaUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		notes := []storage.AreaNote{}
@@ -379,12 +379,12 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 
 			noteUID, err := uuid.FromString(notesRowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			notes = append(notes, storage.AreaNote{
@@ -396,12 +396,12 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 
 		sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 		if sizeUnit == (domain.AreaUnit{}) {
-			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
+			result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 		}
 
 		location := domain.GetAreaLocation(rowsData.Location)
 		if location == (domain.AreaLocation{}) {
-			result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
+			result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 		}
 
 		areaRead = storage.AreaRead{
@@ -432,22 +432,22 @@ func (s AreaReadQuerySqlite) FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan 
 			},
 		}
 
-		result <- query.QueryResult{Result: areaRead}
+		result <- query.Result{Result: areaRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		areaReads := []storage.AreaRead{}
 
 		rows, err := s.DB.Query("SELECT * FROM AREA_READ WHERE RESERVOIR_UID = ?", reservoirUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -473,27 +473,27 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 
 			areaUID, err := uuid.FromString(rowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			reservoirUID, err := uuid.FromString(rowsData.ReservoirUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmUID, err := uuid.FromString(rowsData.FarmUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			areaCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			rows, err := s.DB.Query("SELECT * FROM AREA_READ_NOTES WHERE AREA_UID = ?", areaUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			notes := []storage.AreaNote{}
@@ -509,12 +509,12 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 
 				noteUID, err := uuid.FromString(notesRowsData.UID)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				notes = append(notes, storage.AreaNote{
@@ -526,12 +526,12 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 
 			sizeUnit := domain.GetAreaUnit(rowsData.SizeUnit)
 			if sizeUnit == (domain.AreaUnit{}) {
-				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
+				result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidSizeUnitCode}}
 			}
 
 			location := domain.GetAreaLocation(rowsData.Location)
 			if location == (domain.AreaLocation{}) {
-				result <- query.QueryResult{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
+				result <- query.Result{Error: domain.AreaError{Code: domain.AreaErrorInvalidAreaLocationCode}}
 			}
 
 			areaReads = append(areaReads, storage.AreaRead{
@@ -563,25 +563,25 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 			})
 		}
 
-		result <- query.QueryResult{Result: areaReads}
+		result <- query.Result{Result: areaReads}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s AreaReadQuerySqlite) CountAreas(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQuerySqlite) CountAreas(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
 
 		err := s.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE FARM_UID = ?`, farmUID).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 
 		close(result)
 	}()

@@ -8,14 +8,14 @@ import (
 
 // TaskService handles task behaviours that needs external interaction to be worked
 
-type TaskServiceSqlLite struct {
-	CropQuery      query.CropQuery
-	AreaQuery      query.AreaQuery
-	MaterialQuery  query.MaterialQuery
-	ReservoirQuery query.ReservoirQuery
+type TaskServiceSqlite struct {
+	CropQuery      query.Crop
+	AreaQuery      query.Area
+	MaterialQuery  query.Material
+	ReservoirQuery query.Reservoir
 }
 
-func (s TaskServiceSqlLite) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlite) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.AreaQuery.FindByID(uid)
 
 	if result.Error != nil {
@@ -24,14 +24,14 @@ func (s TaskServiceSqlLite) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
 		}
 	}
 
-	area, ok := result.Result.(query.TaskAreaQueryResult)
+	area, ok := result.Result.(query.TaskAreaResult)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
 	}
 
-	if area == (query.TaskAreaQueryResult{}) {
+	if area == (query.TaskAreaResult{}) {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
@@ -42,7 +42,7 @@ func (s TaskServiceSqlLite) FindAreaByID(uid uuid.UUID) domain.ServiceResult {
 	}
 }
 
-func (s TaskServiceSqlLite) FindCropByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlite) FindCropByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.CropQuery.FindCropByID(uid)
 
 	if result.Error != nil {
@@ -51,14 +51,14 @@ func (s TaskServiceSqlLite) FindCropByID(uid uuid.UUID) domain.ServiceResult {
 		}
 	}
 
-	crop, ok := result.Result.(query.TaskCropQueryResult)
+	crop, ok := result.Result.(query.TaskCropResult)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
 	}
 
-	if crop == (query.TaskCropQueryResult{}) {
+	if crop == (query.TaskCropResult{}) {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
@@ -69,7 +69,7 @@ func (s TaskServiceSqlLite) FindCropByID(uid uuid.UUID) domain.ServiceResult {
 	}
 }
 
-func (s TaskServiceSqlLite) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlite) FindMaterialByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.MaterialQuery.FindMaterialByID(uid)
 
 	if result.Error != nil {
@@ -78,14 +78,14 @@ func (s TaskServiceSqlLite) FindMaterialByID(uid uuid.UUID) domain.ServiceResult
 		}
 	}
 
-	material, ok := result.Result.(query.TaskMaterialQueryResult)
+	material, ok := result.Result.(query.TaskMaterialResult)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
 	}
 
-	if material == (query.TaskMaterialQueryResult{}) {
+	if material == (query.TaskMaterialResult{}) {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
@@ -96,7 +96,7 @@ func (s TaskServiceSqlLite) FindMaterialByID(uid uuid.UUID) domain.ServiceResult
 	}
 }
 
-func (s TaskServiceSqlLite) FindReservoirByID(uid uuid.UUID) domain.ServiceResult {
+func (s TaskServiceSqlite) FindReservoirByID(uid uuid.UUID) domain.ServiceResult {
 	result := <-s.ReservoirQuery.FindReservoirByID(uid)
 
 	if result.Error != nil {
@@ -105,14 +105,14 @@ func (s TaskServiceSqlLite) FindReservoirByID(uid uuid.UUID) domain.ServiceResul
 		}
 	}
 
-	reservoir, ok := result.Result.(query.TaskReservoirQueryResult)
+	reservoir, ok := result.Result.(query.TaskReservoirResult)
 	if !ok {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}
 	}
 
-	if reservoir == (query.TaskReservoirQueryResult{}) {
+	if reservoir == (query.TaskReservoirResult{}) {
 		return domain.ServiceResult{
 			Error: domain.TaskError{Code: domain.TaskErrorInvalidAssetIDCode},
 		}

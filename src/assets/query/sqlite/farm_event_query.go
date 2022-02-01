@@ -15,19 +15,19 @@ type FarmEventQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewFarmEventQuerySqlite(db *sql.DB) query.FarmEventQuery {
+func NewFarmEventQuerySqlite(db *sql.DB) query.FarmEvent {
 	return &FarmEventQuerySqlite{DB: db}
 }
 
-func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.FarmEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM FARM_EVENT WHERE FARM_UID = ? ORDER BY VERSION ASC", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -45,17 +45,17 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmUID, err := uuid.FromString(rowsData.FarmUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.FarmEvent{
@@ -66,7 +66,7 @@ func (f *FarmEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

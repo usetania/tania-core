@@ -6,18 +6,18 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// RepositoryResult is a struct to wrap repository result
+// Result is a struct to wrap repository result
 // so its easy to use it in channel
-type RepositoryResult struct {
+type Result struct {
 	Result interface{}
 	Error  error
 }
 
-type FarmEventRepository interface {
+type FarmEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
-type FarmReadRepository interface {
+type FarmRead interface {
 	Save(farmRead *storage.FarmRead) <-chan error
 }
 
@@ -31,11 +31,11 @@ func NewFarmFromHistory(events []storage.FarmEvent) *domain.Farm {
 	return state
 }
 
-type AreaEventRepository interface {
+type AreaEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
-type AreaReadRepository interface {
+type AreaRead interface {
 	Save(areaRead *storage.AreaRead) <-chan error
 }
 
@@ -49,11 +49,11 @@ func NewAreaFromHistory(events []storage.AreaEvent) *domain.Area {
 	return state
 }
 
-type ReservoirEventRepository interface {
+type ReservoirEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
-type ReservoirReadRepository interface {
+type ReservoirRead interface {
 	Save(reservoirRead *storage.ReservoirRead) <-chan error
 }
 
@@ -67,7 +67,7 @@ func NewReservoirFromHistory(events []storage.ReservoirEvent) *domain.Reservoir 
 	return state
 }
 
-type MaterialEventRepository interface {
+type MaterialEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
@@ -90,6 +90,6 @@ func (w MaterialEventTypeWrapper) Code() string {
 	return w.Type
 }
 
-type MaterialReadRepository interface {
+type MaterialRead interface {
 	Save(materialRead *storage.MaterialRead) <-chan error
 }

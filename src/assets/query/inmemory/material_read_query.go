@@ -10,12 +10,12 @@ type MaterialReadQueryInMemory struct {
 	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.MaterialReadQuery {
+func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.MaterialRead {
 	return &MaterialReadQueryInMemory{Storage: s}
 }
 
-func (q *MaterialReadQueryInMemory) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q *MaterialReadQueryInMemory) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -26,7 +26,7 @@ func (q *MaterialReadQueryInMemory) FindAll(materialType, materialTypeDetail str
 			materials = append(materials, val)
 		}
 
-		result <- query.QueryResult{Result: materials}
+		result <- query.Result{Result: materials}
 
 		close(result)
 	}()
@@ -34,8 +34,8 @@ func (q *MaterialReadQueryInMemory) FindAll(materialType, materialTypeDetail str
 	return result
 }
 
-func (q MaterialReadQueryInMemory) CountAll(materialType, materialTypeDetail string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryInMemory) CountAll(materialType, materialTypeDetail string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -43,7 +43,7 @@ func (q MaterialReadQueryInMemory) CountAll(materialType, materialTypeDetail str
 
 		total := len(q.Storage.MaterialReadMap)
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 
 		close(result)
 	}()
@@ -51,8 +51,8 @@ func (q MaterialReadQueryInMemory) CountAll(materialType, materialTypeDetail str
 	return result
 }
 
-func (q *MaterialReadQueryInMemory) FindByID(materialUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q *MaterialReadQueryInMemory) FindByID(materialUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -66,7 +66,7 @@ func (q *MaterialReadQueryInMemory) FindByID(materialUID uuid.UUID) <-chan query
 			}
 		}
 
-		result <- query.QueryResult{Result: material}
+		result <- query.Result{Result: material}
 
 		close(result)
 	}()

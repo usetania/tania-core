@@ -15,7 +15,7 @@ type TaskEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewTaskEventRepositoryMysql(s *sql.DB) repository.TaskEventRepository {
+func NewTaskEventRepositoryMysql(s *sql.DB) repository.TaskEvent {
 	return &TaskEventRepositoryMysql{DB: s}
 }
 

@@ -13,7 +13,7 @@ type FarmReadQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewFarmReadQuerySqlite(db *sql.DB) query.FarmReadQuery {
+func NewFarmReadQuerySqlite(db *sql.DB) query.FarmRead {
 	return FarmReadQuerySqlite{DB: db}
 }
 
@@ -29,8 +29,8 @@ type farmReadResult struct {
 	CreatedDate string
 }
 
-func (s FarmReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s FarmReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		farmRead := storage.FarmRead{}
@@ -49,21 +49,21 @@ func (s FarmReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: farmRead}
+			result <- query.Result{Result: farmRead}
 		}
 
 		farmUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmRead = storage.FarmRead{
@@ -78,15 +78,15 @@ func (s FarmReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			CreatedDate: createdDate,
 		}
 
-		result <- query.QueryResult{Result: farmRead}
+		result <- query.Result{Result: farmRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s FarmReadQuerySqlite) FindAll() <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s FarmReadQuerySqlite) FindAll() <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		farmReads := []storage.FarmRead{}
@@ -94,7 +94,7 @@ func (s FarmReadQuerySqlite) FindAll() <-chan query.QueryResult {
 
 		rows, err := s.DB.Query("SELECT * FROM FARM_READ ORDER BY CREATED_DATE ASC")
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -111,17 +111,17 @@ func (s FarmReadQuerySqlite) FindAll() <-chan query.QueryResult {
 			)
 
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmUID, err := uuid.FromString(rowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmReads = append(farmReads, storage.FarmRead{
@@ -137,7 +137,7 @@ func (s FarmReadQuerySqlite) FindAll() <-chan query.QueryResult {
 			})
 		}
 
-		result <- query.QueryResult{Result: farmReads}
+		result <- query.Result{Result: farmReads}
 		close(result)
 	}()
 

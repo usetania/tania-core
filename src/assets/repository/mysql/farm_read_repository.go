@@ -11,7 +11,7 @@ type FarmReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewFarmReadRepositoryMysql(db *sql.DB) repository.FarmReadRepository {
+func NewFarmReadRepositoryMysql(db *sql.DB) repository.FarmRead {
 	return &FarmReadRepositoryMysql{DB: db}
 }
 

@@ -9,7 +9,7 @@ type FarmReadRepositoryInMemory struct {
 	Storage *storage.FarmReadStorage
 }
 
-func NewFarmReadRepositoryInMemory(s *storage.FarmReadStorage) repository.FarmReadRepository {
+func NewFarmReadRepositoryInMemory(s *storage.FarmReadStorage) repository.FarmRead {
 	return &FarmReadRepositoryInMemory{Storage: s}
 }
 

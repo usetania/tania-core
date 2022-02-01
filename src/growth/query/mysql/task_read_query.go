@@ -27,8 +27,8 @@ type taskReadResult struct {
 	MaterialID  []byte
 }
 
-func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		taskQueryResult := query.CropTaskQueryResult{}
@@ -49,31 +49,31 @@ func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: taskQueryResult}
+			result <- query.Result{Result: taskQueryResult}
 		}
 
 		taskUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		assetUID, err := uuid.FromBytes(rowsData.AssetID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		areaUID, err := uuid.FromBytes(rowsData.AreaID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		materialUID, err := uuid.FromBytes(rowsData.MaterialID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		taskQueryResult.UID = taskUID
@@ -86,7 +86,7 @@ func (s TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		taskQueryResult.AreaUID = areaUID
 		taskQueryResult.MaterialUID = materialUID
 
-		result <- query.QueryResult{Result: taskQueryResult}
+		result <- query.Result{Result: taskQueryResult}
 		close(result)
 	}()
 

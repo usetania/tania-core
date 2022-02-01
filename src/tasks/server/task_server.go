@@ -28,10 +28,10 @@ import (
 
 // TaskServer ties the routes and handlers with injected dependencies
 type TaskServer struct {
-	TaskEventRepo  repository.TaskEventRepository
-	TaskReadRepo   repository.TaskReadRepository
-	TaskEventQuery query.TaskEventQuery
-	TaskReadQuery  query.TaskReadQuery
+	TaskEventRepo  repository.TaskEvent
+	TaskReadRepo   repository.TaskRead
+	TaskEventQuery query.TaskEvent
+	TaskReadQuery  query.TaskRead
 	TaskService    domain.TaskService
 	EventBus       eventbus.TaniaEventBus
 }
@@ -52,7 +52,7 @@ func NewTaskServer(
 	}
 
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_INMEMORY:
+	case config.DBInmemory:
 		taskServer.TaskEventRepo = repoInMem.NewTaskEventRepositoryInMemory(taskEventStorage)
 		taskServer.TaskReadRepo = repoInMem.NewTaskReadRepositoryInMemory(taskReadStorage)
 
@@ -64,14 +64,14 @@ func NewTaskServer(
 		materialReadQuery := queryInMem.NewMaterialQueryInMemory(materialStorage)
 		reservoirQuery := queryInMem.NewReservoirQueryInMemory(reservoirStorage)
 
-		taskServer.TaskService = service.TaskServiceSqlLite{
+		taskServer.TaskService = service.TaskServiceSqlite{
 			CropQuery:      cropQuery,
 			AreaQuery:      areaQuery,
 			MaterialQuery:  materialReadQuery,
 			ReservoirQuery: reservoirQuery,
 		}
 
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		taskServer.TaskEventRepo = repoSqlite.NewTaskEventRepositorySqlite(db)
 		taskServer.TaskReadRepo = repoSqlite.NewTaskReadRepositorySqlite(db)
 
@@ -83,14 +83,14 @@ func NewTaskServer(
 		materialReadQuery := querySqlite.NewMaterialQuerySqlite(db)
 		reservoirQuery := querySqlite.NewReservoirQuerySqlite(db)
 
-		taskServer.TaskService = service.TaskServiceSqlLite{
+		taskServer.TaskService = service.TaskServiceSqlite{
 			CropQuery:      cropQuery,
 			AreaQuery:      areaQuery,
 			MaterialQuery:  materialReadQuery,
 			ReservoirQuery: reservoirQuery,
 		}
 
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		taskServer.TaskEventRepo = repoMysql.NewTaskEventRepositoryMysql(db)
 		taskServer.TaskReadRepo = repoMysql.NewTaskReadRepositoryMysql(db)
 
@@ -102,7 +102,7 @@ func NewTaskServer(
 		materialReadQuery := queryMysql.NewMaterialQueryMysql(db)
 		reservoirQuery := queryMysql.NewReservoirQueryMysql(db)
 
-		taskServer.TaskService = service.TaskServiceSqlLite{
+		taskServer.TaskService = service.TaskServiceSqlite{
 			CropQuery:      cropQuery,
 			AreaQuery:      areaQuery,
 			MaterialQuery:  materialReadQuery,
@@ -255,28 +255,28 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 func (s *TaskServer) SaveTask(c echo.Context) error {
 	data := make(map[string]storage.TaskRead)
 
-	form_date := c.FormValue("due_date")
-	due_ptr := (*time.Time)(nil)
+	formDate := c.FormValue("due_date")
+	duePtr := (*time.Time)(nil)
 
-	if len(form_date) != 0 {
-		due_date, err := time.Parse(time.RFC3339Nano, form_date)
+	if len(formDate) != 0 {
+		dueDate, err := time.Parse(time.RFC3339Nano, formDate)
 		if err != nil {
 			return Error(c, err)
 		}
 
-		due_ptr = &due_date
+		duePtr = &dueDate
 	}
 
-	asset_id := c.FormValue("asset_id")
-	asset_id_ptr := (*uuid.UUID)(nil)
+	assetID := c.FormValue("asset_id")
+	assetIDPtr := (*uuid.UUID)(nil)
 
-	if len(asset_id) != 0 {
-		asset_id, err := uuid.FromString(asset_id)
+	if len(assetID) != 0 {
+		assetID, err := uuid.FromString(assetID)
 		if err != nil {
 			return Error(c, err)
 		}
 
-		asset_id_ptr = &asset_id
+		assetIDPtr = &assetID
 	}
 
 	domaincode := c.FormValue("domain")
@@ -292,9 +292,9 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 		c.FormValue("description"),
 		c.FormValue("priority"),
 		c.FormValue("category"),
-		due_ptr,
+		duePtr,
 		domaintask,
-		asset_id_ptr)
+		assetIDPtr)
 	if err != nil {
 		return Error(c, err)
 	}
@@ -318,7 +318,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (domain.TaskDomain, error) {
 	domainvalue := domaincode
 	if domainvalue == "" {
-		return nil, NewRequestValidationError(REQUIRED, "domain")
+		return nil, NewRequestValidationError(Required, "domain")
 	}
 
 	switch domainvalue {
@@ -389,7 +389,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 		return domain.CreateTaskDomainReservoir(s.TaskService, category, materialPtr)
 	default:
-		return nil, NewRequestValidationError(INVALID_OPTION, "domain")
+		return nil, NewRequestValidationError(InvalidOption, "domain")
 	}
 }
 
@@ -409,7 +409,7 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 	task, ok := result.Result.(storage.TaskRead)
 
 	if task.UID != uid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if !ok {
@@ -429,7 +429,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 		materialID := task.DomainDetails.(domain.TaskDomainArea).MaterialID
 		if materialID != nil {
 			materialResult := s.TaskService.FindMaterialByID(*materialID)
-			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialQueryResult)
+			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialResult)
 
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -451,7 +451,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 		materialID := task.DomainDetails.(domain.TaskDomainCrop).MaterialID
 		if materialID != nil {
 			materialResult := s.TaskService.FindMaterialByID(*materialID)
-			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialQueryResult)
+			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialResult)
 
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -468,7 +468,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 		areaID := task.DomainDetails.(domain.TaskDomainCrop).AreaID
 		if areaID != nil {
 			areaResult := s.TaskService.FindAreaByID(*areaID)
-			areaQueryResult, ok := areaResult.Result.(query.TaskAreaQueryResult)
+			areaQueryResult, ok := areaResult.Result.(query.TaskAreaResult)
 
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -483,7 +483,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 		cropID := task.AssetID
 		if cropID != nil {
 			cropResult := s.TaskService.FindCropByID(*cropID)
-			cropQueryResult, ok := cropResult.Result.(query.TaskCropQueryResult)
+			cropQueryResult, ok := cropResult.Result.(query.TaskCropResult)
 
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -504,7 +504,7 @@ func (s *TaskServer) AppendTaskDomainDetails(task *storage.TaskRead) error {
 		materialID := task.DomainDetails.(domain.TaskDomainReservoir).MaterialID
 		if materialID != nil {
 			materialResult := s.TaskService.FindMaterialByID(*materialID)
-			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialQueryResult)
+			materialQueryResult, ok := materialResult.Result.(query.TaskMaterialResult)
 
 			if !ok {
 				return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
@@ -536,7 +536,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	taskRead, ok := readResult.Result.(storage.TaskRead)
 
 	if taskRead.UID != uid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if !ok {
@@ -585,17 +585,17 @@ func (s *TaskServer) updateTaskAttributes(ts domain.TaskService, task *domain.Ta
 	}
 
 	// Change Task Due Date
-	form_date := c.FormValue("due_date")
-	if len(form_date) != 0 {
-		var due_ptr *time.Time
+	formDate := c.FormValue("due_date")
+	if len(formDate) != 0 {
+		var duePtr *time.Time
 
-		due_date, err := time.Parse(time.RFC3339Nano, form_date)
+		dueDate, err := time.Parse(time.RFC3339Nano, formDate)
 		if err != nil {
 			return task, Error(c, err)
 		}
 
-		due_ptr = &due_date
-		task.ChangeTaskDueDate(s.TaskService, due_ptr)
+		duePtr = &dueDate
+		task.ChangeTaskDueDate(s.TaskService, duePtr)
 	}
 
 	// Change Task Priority
@@ -634,7 +634,7 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	taskRead, ok := readResult.Result.(storage.TaskRead)
 
 	if taskRead.UID != uid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if !ok {
@@ -687,7 +687,7 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	taskRead, ok := readResult.Result.(storage.TaskRead)
 
 	if taskRead.UID != uid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if !ok {
@@ -746,7 +746,7 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	taskRead, ok := readResult.Result.(storage.TaskRead)
 
 	if taskRead.UID != uid {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if !ok {

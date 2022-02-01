@@ -17,7 +17,7 @@ type MaterialReadQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewMaterialReadQueryMysql(db *sql.DB) query.MaterialReadQuery {
+func NewMaterialReadQueryMysql(db *sql.DB) query.MaterialRead {
 	return MaterialReadQueryMysql{DB: db}
 }
 
@@ -36,8 +36,8 @@ type materialReadResult struct {
 	CreatedDate    time.Time
 }
 
-func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		materialReads := []storage.MaterialRead{}
@@ -85,7 +85,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 
 		rows, err := q.DB.Query(sql, params...)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -105,12 +105,12 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			)
 
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			materialUID, err := uuid.FromBytes(rowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			var mExpDate *time.Time
@@ -118,7 +118,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 				date, err := time.Parse("2006-01-02 15:04:05", rowsData.ExpirationDate.String)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				mExpDate = &date
@@ -126,7 +126,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 
 			pricePerUnit, err := domain.CreatePricePerUnit(rowsData.PricePerUnit, rowsData.CurrencyCode)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			var materialType storage.MaterialType
@@ -134,38 +134,38 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			case domain.MaterialTypePlantCode:
 				materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 			case domain.MaterialTypeSeedCode:
 				materialType, err = domain.CreateMaterialTypeSeed(rowsData.TypeData)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 			case domain.MaterialTypeGrowingMediumCode:
 				materialType = domain.MaterialTypeGrowingMedium{}
 			case domain.MaterialTypeAgrochemicalCode:
 				materialType, err = domain.CreateMaterialTypeAgrochemical(rowsData.TypeData)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 			case domain.MaterialTypeLabelAndCropSupportCode:
 				materialType = domain.MaterialTypeLabelAndCropSupport{}
 			case domain.MaterialTypeSeedingContainerCode:
 				materialType, err = domain.CreateMaterialTypeSeedingContainer(rowsData.TypeData)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 			case domain.MaterialTypePostHarvestSupplyCode:
 				materialType = domain.MaterialTypePostHarvestSupply{}
 			case domain.MaterialTypeOtherCode:
 				materialType = domain.MaterialTypeOther{}
 			default:
-				result <- query.QueryResult{Error: errors.New("invalid material type")}
+				result <- query.Result{Error: errors.New("invalid material type")}
 			}
 
 			qtyUnit := domain.GetMaterialQuantityUnit(rowsData.Type, rowsData.QuantityUnit)
 			if qtyUnit == (domain.MaterialQuantityUnit{}) {
-				result <- query.QueryResult{Error: errors.New("invalid quantity unit")}
+				result <- query.Result{Error: errors.New("invalid quantity unit")}
 			}
 
 			var notes *string
@@ -194,15 +194,15 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			})
 		}
 
-		result <- query.QueryResult{Result: materialReads}
+		result <- query.Result{Result: materialReads}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q MaterialReadQueryMysql) CountAll(materialType, materialTypeDetail string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryMysql) CountAll(materialType, materialTypeDetail string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -241,18 +241,18 @@ func (q MaterialReadQueryMysql) CountAll(materialType, materialTypeDetail string
 
 		err := q.DB.QueryRow(sql, params...).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		materialRead := storage.MaterialRead{}
@@ -274,16 +274,16 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: materialRead}
+			result <- query.Result{Result: materialRead}
 		}
 
 		materialUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		var mExpDate *time.Time
@@ -291,7 +291,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		if rowsData.ExpirationDate.Valid && rowsData.ExpirationDate.String != "" {
 			date, err := time.Parse("2006-01-02 15:04:05", rowsData.ExpirationDate.String)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			mExpDate = &date
@@ -299,7 +299,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 
 		pricePerUnit, err := domain.CreatePricePerUnit(rowsData.PricePerUnit, rowsData.CurrencyCode)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		var materialType storage.MaterialType
@@ -308,38 +308,38 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		case domain.MaterialTypePlantCode:
 			materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 		case domain.MaterialTypeSeedCode:
 			materialType, err = domain.CreateMaterialTypeSeed(rowsData.TypeData)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 		case domain.MaterialTypeGrowingMediumCode:
 			materialType = domain.MaterialTypeGrowingMedium{}
 		case domain.MaterialTypeAgrochemicalCode:
 			materialType, err = domain.CreateMaterialTypeAgrochemical(rowsData.TypeData)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 		case domain.MaterialTypeLabelAndCropSupportCode:
 			materialType = domain.MaterialTypeLabelAndCropSupport{}
 		case domain.MaterialTypeSeedingContainerCode:
 			materialType, err = domain.CreateMaterialTypeSeedingContainer(rowsData.TypeData)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 		case domain.MaterialTypePostHarvestSupplyCode:
 			materialType = domain.MaterialTypePostHarvestSupply{}
 		case domain.MaterialTypeOtherCode:
 			materialType = domain.MaterialTypeOther{}
 		default:
-			result <- query.QueryResult{Error: errors.New("invalid material type")}
+			result <- query.Result{Error: errors.New("invalid material type")}
 		}
 
 		qtyUnit := domain.GetMaterialQuantityUnit(rowsData.Type, rowsData.QuantityUnit)
 		if qtyUnit == (domain.MaterialQuantityUnit{}) {
-			result <- query.QueryResult{Error: errors.New("invalid quantity unit")}
+			result <- query.Result{Error: errors.New("invalid quantity unit")}
 		}
 
 		var notes *string
@@ -367,7 +367,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 			CreatedDate:    rowsData.CreatedDate,
 		}
 
-		result <- query.QueryResult{Result: materialRead}
+		result <- query.Result{Result: materialRead}
 		close(result)
 	}()
 

@@ -15,7 +15,7 @@ type UserReadQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserReadQueryMysql(db *sql.DB) query.UserReadQuery {
+func NewUserReadQueryMysql(db *sql.DB) query.UserRead {
 	return UserReadQueryMysql{DB: db}
 }
 
@@ -27,8 +27,8 @@ type userReadResult struct {
 	LastUpdated time.Time
 }
 
-func (s UserReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userRead := storage.UserRead{}
@@ -43,16 +43,16 @@ func (s UserReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userRead}
+			result <- query.Result{Result: userRead}
 		}
 
 		userUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userRead = storage.UserRead{
@@ -63,15 +63,15 @@ func (s UserReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			LastUpdated: rowsData.LastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userRead}
+		result <- query.Result{Result: userRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s UserReadQueryMysql) FindByUsername(username string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserReadQueryMysql) FindByUsername(username string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userRead := storage.UserRead{}
@@ -86,16 +86,16 @@ func (s UserReadQueryMysql) FindByUsername(username string) <-chan query.QueryRe
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userRead}
+			result <- query.Result{Result: userRead}
 		}
 
 		userUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userRead = storage.UserRead{
@@ -106,15 +106,15 @@ func (s UserReadQueryMysql) FindByUsername(username string) <-chan query.QueryRe
 			LastUpdated: rowsData.LastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userRead}
+		result <- query.Result{Result: userRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s UserReadQueryMysql) FindByUsernameAndPassword(username, password string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserReadQueryMysql) FindByUsernameAndPassword(username, password string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userRead := storage.UserRead{}
@@ -130,21 +130,21 @@ func (s UserReadQueryMysql) FindByUsernameAndPassword(username, password string)
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userRead}
+			result <- query.Result{Result: userRead}
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(rowsData.Password), []byte(password))
 		if err != nil {
-			result <- query.QueryResult{Result: userRead}
+			result <- query.Result{Result: userRead}
 		}
 
 		userUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userRead = storage.UserRead{
@@ -155,7 +155,7 @@ func (s UserReadQueryMysql) FindByUsernameAndPassword(username, password string)
 			LastUpdated: rowsData.LastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userRead}
+		result <- query.Result{Result: userRead}
 		close(result)
 	}()
 

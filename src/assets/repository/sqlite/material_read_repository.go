@@ -13,7 +13,7 @@ type MaterialReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewMaterialReadRepositorySqlite(db *sql.DB) repository.MaterialReadRepository {
+func NewMaterialReadRepositorySqlite(db *sql.DB) repository.MaterialRead {
 	return &MaterialReadRepositorySqlite{DB: db}
 }
 

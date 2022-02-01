@@ -16,19 +16,19 @@ type TaskEventQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewTaskEventQueryMysql(db *sql.DB) query.TaskEventQuery {
+func NewTaskEventQueryMysql(db *sql.DB) query.TaskEvent {
 	return &TaskEventQueryMysql{DB: db}
 }
 
-func (f *TaskEventQueryMysql) FindAllByTaskID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *TaskEventQueryMysql) FindAllByTaskID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.TaskEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM TASK_EVENT WHERE TASK_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -47,7 +47,7 @@ func (f *TaskEventQueryMysql) FindAllByTaskID(uid uuid.UUID) <-chan query.QueryR
 
 			taskUID, err := uuid.FromBytes(rowsData.TaskUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.TaskEvent{
@@ -58,7 +58,7 @@ func (f *TaskEventQueryMysql) FindAllByTaskID(uid uuid.UUID) <-chan query.QueryR
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

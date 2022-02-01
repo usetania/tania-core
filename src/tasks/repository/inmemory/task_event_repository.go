@@ -10,7 +10,7 @@ type TaskEventRepositoryInMemory struct {
 	Storage *storage.TaskEventStorage
 }
 
-func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) repository.TaskEventRepository {
+func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) repository.TaskEvent {
 	return &TaskEventRepositoryInMemory{Storage: s}
 }
 

@@ -1200,9 +1200,9 @@ func generateBatchID(cs CropService, inventory query.CropMaterialQueryResult, cr
 		// 	// For every value, get only the first three characters
 		format := ""
 		if len(v) > 3 {
-			format = strings.ToLower(string(v[0:3]))
+			format = strings.ToLower(v[0:3])
 		} else {
-			format = strings.ToLower(string(v))
+			format = strings.ToLower(v)
 		}
 
 		varietyFormat = stringhelper.Join(varietyFormat, format, "-")

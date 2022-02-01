@@ -14,7 +14,7 @@ type CropActivityRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewCropActivityRepositorySqlite(db *sql.DB) repository.CropActivityRepository {
+func NewCropActivityRepositorySqlite(db *sql.DB) repository.CropActivity {
 	return &CropActivityRepositorySqlite{DB: db}
 }
 

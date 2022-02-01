@@ -15,19 +15,19 @@ type ReservoirEventQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewReservoirEventQueryMysql(db *sql.DB) query.ReservoirEventQuery {
+func NewReservoirEventQueryMysql(db *sql.DB) query.ReservoirEvent {
 	return &ReservoirEventQueryMysql{DB: db}
 }
 
-func (f *ReservoirEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *ReservoirEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.ReservoirEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM RESERVOIR_EVENT WHERE RESERVOIR_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -45,12 +45,12 @@ func (f *ReservoirEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.Query
 
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			reservoirUID, err := uuid.FromBytes(rowsData.ReservoirUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.ReservoirEvent{
@@ -61,7 +61,7 @@ func (f *ReservoirEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.Query
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

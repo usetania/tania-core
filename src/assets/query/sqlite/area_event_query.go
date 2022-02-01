@@ -15,19 +15,19 @@ type AreaEventQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewAreaEventQuerySqlite(db *sql.DB) query.AreaEventQuery {
+func NewAreaEventQuerySqlite(db *sql.DB) query.AreaEvent {
 	return &AreaEventQuerySqlite{DB: db}
 }
 
-func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.AreaEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM AREA_EVENT WHERE AREA_UID = ? ORDER BY VERSION ASC", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -45,17 +45,17 @@ func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			areaUID, err := uuid.FromString(rowsData.AreaUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.AreaEvent{
@@ -66,7 +66,7 @@ func (f *AreaEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

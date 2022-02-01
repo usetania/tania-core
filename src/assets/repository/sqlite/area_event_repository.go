@@ -15,7 +15,7 @@ type AreaEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewAreaEventRepositorySqlite(db *sql.DB) repository.AreaEventRepository {
+func NewAreaEventRepositorySqlite(db *sql.DB) repository.AreaEvent {
 	return &AreaEventRepositorySqlite{DB: db}
 }
 

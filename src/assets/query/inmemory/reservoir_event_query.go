@@ -12,12 +12,12 @@ type ReservoirEventQueryInMemory struct {
 	Storage *storage.ReservoirEventStorage
 }
 
-func NewReservoirEventQueryInMemory(s *storage.ReservoirEventStorage) query.ReservoirEventQuery {
+func NewReservoirEventQueryInMemory(s *storage.ReservoirEventStorage) query.ReservoirEvent {
 	return &ReservoirEventQueryInMemory{Storage: s}
 }
 
-func (f *ReservoirEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *ReservoirEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		f.Storage.Lock.RLock()
@@ -35,7 +35,7 @@ func (f *ReservoirEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Qu
 			return events[i].Version < events[j].Version
 		})
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 	}()
 
 	return result

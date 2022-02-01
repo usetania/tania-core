@@ -7,50 +7,50 @@ import (
 )
 
 type AreaReadQuery interface {
-	FindByID(areaUID uuid.UUID) <-chan QueryResult
+	FindByID(areaUID uuid.UUID) <-chan Result
 }
 
 type CropQuery interface {
-	FindByBatchID(batchID string) <-chan QueryResult
-	FindAllCropsByFarm(farmUID uuid.UUID) <-chan QueryResult
-	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
+	FindByBatchID(batchID string) <-chan Result
+	FindAllCropsByFarm(farmUID uuid.UUID) <-chan Result
+	FindAllCropsByArea(areaUID uuid.UUID) <-chan Result
 }
 
 type CropEventQuery interface {
-	FindAllByCropID(uid uuid.UUID) <-chan QueryResult
+	FindAllByCropID(uid uuid.UUID) <-chan Result
 }
 
 type CropReadQuery interface {
-	FindByID(uid uuid.UUID) <-chan QueryResult
-	FindByBatchID(batchID string) <-chan QueryResult
-	FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan QueryResult
-	CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan QueryResult
-	FindAllCropsByArea(areaUID uuid.UUID) <-chan QueryResult
-	FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan QueryResult
-	CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan QueryResult
-	FindCropsInformation(farmUID uuid.UUID) <-chan QueryResult
-	CountTotalBatch(farmUID uuid.UUID) <-chan QueryResult
+	FindByID(uid uuid.UUID) <-chan Result
+	FindByBatchID(batchID string) <-chan Result
+	FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan Result
+	CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan Result
+	FindAllCropsByArea(areaUID uuid.UUID) <-chan Result
+	FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan Result
+	CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan Result
+	FindCropsInformation(farmUID uuid.UUID) <-chan Result
+	CountTotalBatch(farmUID uuid.UUID) <-chan Result
 }
 
 type CropActivityQuery interface {
-	FindAllByCropID(uid uuid.UUID) <-chan QueryResult
-	FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan QueryResult
+	FindAllByCropID(uid uuid.UUID) <-chan Result
+	FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan Result
 }
 
 type MaterialReadQuery interface {
-	FindByID(inventoryUID uuid.UUID) <-chan QueryResult
-	FindMaterialByPlantTypeCodeAndName(plantType string, name string) <-chan QueryResult
+	FindByID(inventoryUID uuid.UUID) <-chan Result
+	FindMaterialByPlantTypeCodeAndName(plantType string, name string) <-chan Result
 }
 
 type FarmReadQuery interface {
-	FindByID(farmUID uuid.UUID) <-chan QueryResult
+	FindByID(farmUID uuid.UUID) <-chan Result
 }
 
 type TaskReadQuery interface {
-	FindByID(taskUID uuid.UUID) <-chan QueryResult
+	FindByID(taskUID uuid.UUID) <-chan Result
 }
 
-type QueryResult struct {
+type Result struct {
 	Result interface{}
 	Error  error
 }

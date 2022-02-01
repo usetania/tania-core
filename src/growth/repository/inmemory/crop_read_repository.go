@@ -9,7 +9,7 @@ type CropReadRepositoryInMemory struct {
 	Storage *storage.CropReadStorage
 }
 
-func NewCropReadRepositoryInMemory(s *storage.CropReadStorage) repository.CropReadRepository {
+func NewCropReadRepositoryInMemory(s *storage.CropReadStorage) repository.CropRead {
 	return &CropReadRepositoryInMemory{Storage: s}
 }
 

@@ -16,7 +16,7 @@ type MaterialEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewMaterialEventRepositoryMysql(db *sql.DB) repository.MaterialEventRepository {
+func NewMaterialEventRepositoryMysql(db *sql.DB) repository.MaterialEvent {
 	return &MaterialEventRepositoryMysql{DB: db}
 }
 

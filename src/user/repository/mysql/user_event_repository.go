@@ -15,7 +15,7 @@ type UserEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserEventRepositoryMysql(db *sql.DB) repository.UserEventRepository {
+func NewUserEventRepositoryMysql(db *sql.DB) repository.UserEvent {
 	return &UserEventRepositoryMysql{DB: db}
 }
 

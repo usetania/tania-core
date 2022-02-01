@@ -12,7 +12,7 @@ type UserAuthRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserAuthRepositorySqlite(db *sql.DB) repository.UserAuthRepository {
+func NewUserAuthRepositorySqlite(db *sql.DB) repository.UserAuth {
 	return &UserAuthRepositorySqlite{DB: db}
 }
 

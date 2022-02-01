@@ -9,7 +9,7 @@ type AreaReadRepositoryInMemory struct {
 	Storage *storage.AreaReadStorage
 }
 
-func NewAreaReadRepositoryInMemory(s *storage.AreaReadStorage) repository.AreaReadRepository {
+func NewAreaReadRepositoryInMemory(s *storage.AreaReadStorage) repository.AreaRead {
 	return &AreaReadRepositoryInMemory{Storage: s}
 }
 

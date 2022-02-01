@@ -12,7 +12,7 @@ type TaskReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewTaskReadRepositoryMysql(s *sql.DB) repository.TaskReadRepository {
+func NewTaskReadRepositoryMysql(s *sql.DB) repository.TaskRead {
 	return &TaskReadRepositoryMysql{DB: s}
 }
 

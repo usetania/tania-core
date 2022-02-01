@@ -8,7 +8,7 @@ import (
 )
 
 type ReservoirServiceInMemory struct {
-	FarmReadQuery query.FarmReadQuery
+	FarmReadQuery query.FarmRead
 }
 
 func (s ReservoirServiceInMemory) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarmServiceResult, error) {

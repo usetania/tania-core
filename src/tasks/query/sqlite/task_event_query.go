@@ -16,19 +16,19 @@ type TaskEventQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewTaskEventQuerySqlite(db *sql.DB) query.TaskEventQuery {
+func NewTaskEventQuerySqlite(db *sql.DB) query.TaskEvent {
 	return &TaskEventQuerySqlite{DB: db}
 }
 
-func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.TaskEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM TASK_EVENT WHERE TASK_UID = ? ORDER BY VERSION ASC", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -47,12 +47,12 @@ func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Query
 
 			taskUID, err := uuid.FromString(rowsData.TaskUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.TaskEvent{
@@ -63,7 +63,7 @@ func (f *TaskEventQuerySqlite) FindAllByTaskID(uid uuid.UUID) <-chan query.Query
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

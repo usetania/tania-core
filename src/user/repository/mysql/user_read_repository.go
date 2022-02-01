@@ -11,7 +11,7 @@ type UserReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserReadRepositoryMysql(db *sql.DB) repository.UserReadRepository {
+func NewUserReadRepositoryMysql(db *sql.DB) repository.UserRead {
 	return &UserReadRepositoryMysql{DB: db}
 }
 

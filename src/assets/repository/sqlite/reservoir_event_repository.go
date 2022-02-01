@@ -15,7 +15,7 @@ type ReservoirEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewReservoirEventRepositorySqlite(db *sql.DB) repository.ReservoirEventRepository {
+func NewReservoirEventRepositorySqlite(db *sql.DB) repository.ReservoirEvent {
 	return &ReservoirEventRepositorySqlite{DB: db}
 }
 

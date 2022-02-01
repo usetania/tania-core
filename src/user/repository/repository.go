@@ -6,22 +6,22 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// RepositoryResult is a struct to wrap repository result
+// Result is a struct to wrap repository result
 // so its easy to use it in channel
-type RepositoryResult struct {
+type Result struct {
 	Result interface{}
 	Error  error
 }
 
-type UserEventRepository interface {
+type UserEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
-type UserReadRepository interface {
+type UserRead interface {
 	Save(userRead *storage.UserRead) <-chan error
 }
 
-type UserAuthRepository interface {
+type UserAuth interface {
 	Save(userAuth *storage.UserAuth) <-chan error
 }
 

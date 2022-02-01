@@ -9,7 +9,7 @@ type MaterialReadRepositoryInMemory struct {
 	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) repository.MaterialReadRepository {
+func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) repository.MaterialRead {
 	return &MaterialReadRepositoryInMemory{Storage: s}
 }
 

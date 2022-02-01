@@ -12,7 +12,7 @@ type CropReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewCropReadRepositorySqlite(db *sql.DB) repository.CropReadRepository {
+func NewCropReadRepositorySqlite(db *sql.DB) repository.CropRead {
 	return &CropReadRepositorySqlite{DB: db}
 }
 

@@ -15,8 +15,8 @@ func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.Material
 	return MaterialReadQueryInMemory{Storage: s}
 }
 
-func (q MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -40,7 +40,7 @@ func (q MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query
 			}
 		}
 
-		result <- query.QueryResult{Result: ci}
+		result <- query.Result{Result: ci}
 
 		close(result)
 	}()
@@ -48,8 +48,8 @@ func (q MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query
 	return result
 }
 
-func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -77,7 +77,7 @@ func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeC
 			}
 		}
 
-		result <- query.QueryResult{Result: ci}
+		result <- query.Result{Result: ci}
 
 		close(result)
 	}()

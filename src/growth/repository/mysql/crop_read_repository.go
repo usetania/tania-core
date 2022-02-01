@@ -11,7 +11,7 @@ type CropReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewCropReadRepositoryMysql(db *sql.DB) repository.CropReadRepository {
+func NewCropReadRepositoryMysql(db *sql.DB) repository.CropRead {
 	return &CropReadRepositoryMysql{DB: db}
 }
 

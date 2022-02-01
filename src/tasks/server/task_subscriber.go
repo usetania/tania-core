@@ -137,7 +137,7 @@ func (s *TaskServer) getTaskReadFromID(uid uuid.UUID) (*storage.TaskRead, error)
 
 	if !ok {
 		return &storage.TaskRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	} else {
-		return &taskReadFromRepo, nil
 	}
+
+	return &taskReadFromRepo, nil
 }

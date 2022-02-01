@@ -11,18 +11,18 @@ type MaterialQueryInMemory struct {
 	Storage *assetsstorage.MaterialReadStorage
 }
 
-func NewMaterialQueryInMemory(s *assetsstorage.MaterialReadStorage) query.MaterialQuery {
+func NewMaterialQueryInMemory(s *assetsstorage.MaterialReadStorage) query.Material {
 	return MaterialQueryInMemory{Storage: s}
 }
 
-func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		ci := query.TaskMaterialQueryResult{}
+		ci := query.TaskMaterialResult{}
 
 		for _, val := range s.Storage.MaterialReadMap {
 			// WARNING, domain leakage
@@ -41,7 +41,7 @@ func (s MaterialQueryInMemory) FindMaterialByID(inventoryUID uuid.UUID) <-chan q
 				}
 			}
 		}
-		result <- query.QueryResult{Result: ci}
+		result <- query.Result{Result: ci}
 
 		close(result)
 	}()

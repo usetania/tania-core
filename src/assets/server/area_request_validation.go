@@ -13,7 +13,7 @@ func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirUID uuid.U
 	reservoir, _ := result.Result.(storage.ReservoirRead)
 
 	if reservoir.UID == (uuid.UUID{}) {
-		return reservoir, NewRequestValidationError(NOT_FOUND, "reservoir_id")
+		return reservoir, NewRequestValidationError(NotFound, "reservoir_id")
 	}
 
 	return reservoir, nil
@@ -24,7 +24,7 @@ func (rv *RequestValidation) ValidateFarm(s FarmServer, farmUID uuid.UUID) (stor
 	farm, _ := result.Result.(storage.FarmRead)
 
 	if farm.UID == (uuid.UUID{}) {
-		return farm, NewRequestValidationError(NOT_FOUND, "farm_id")
+		return farm, NewRequestValidationError(NotFound, "farm_id")
 	}
 
 	return farm, nil
@@ -32,11 +32,11 @@ func (rv *RequestValidation) ValidateFarm(s FarmServer, farmUID uuid.UUID) (stor
 
 func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (domain.AreaSize, error) {
 	if size == "" {
-		return domain.AreaSize{}, NewRequestValidationError(REQUIRED, "size")
+		return domain.AreaSize{}, NewRequestValidationError(Required, "size")
 	}
 
 	if sizeUnit == "" {
-		return domain.AreaSize{}, NewRequestValidationError(REQUIRED, "size_unit")
+		return domain.AreaSize{}, NewRequestValidationError(Required, "size_unit")
 	}
 
 	sizeFloat, err := strconv.ParseFloat(size, 32)
@@ -46,7 +46,7 @@ func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (dom
 
 	unit := domain.GetAreaUnit(sizeUnit)
 	if unit == (domain.AreaUnit{}) {
-		return domain.AreaSize{}, NewRequestValidationError(INVALID_OPTION, "size_unit")
+		return domain.AreaSize{}, NewRequestValidationError(InvalidOption, "size_unit")
 	}
 
 	return domain.AreaSize{
@@ -57,12 +57,12 @@ func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (dom
 
 func (rv *RequestValidation) ValidateAreaLocation(location string) (string, error) {
 	if location == "" {
-		return "", NewRequestValidationError(REQUIRED, "location")
+		return "", NewRequestValidationError(Required, "location")
 	}
 
 	areaLocation := domain.GetAreaLocation(location)
 	if areaLocation == (domain.AreaLocation{}) {
-		return "", NewRequestValidationError(INVALID_OPTION, "location")
+		return "", NewRequestValidationError(InvalidOption, "location")
 	}
 
 	return areaLocation.Code, nil

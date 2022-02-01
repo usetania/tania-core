@@ -189,7 +189,7 @@ func MapToAreaList(s *FarmServer, areas []storage.AreaRead) ([]AreaList, error) 
 			return []AreaList{}, queryResult.Error
 		}
 
-		cropCount, ok := queryResult.Result.(query.CountAreaCropQueryResult)
+		cropCount, ok := queryResult.Result.(query.CountAreaCropResult)
 		if !ok {
 			return []AreaList{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 		}
@@ -316,7 +316,7 @@ func MapToDetailAreaFromStorage(s *FarmServer, areaRead storage.AreaRead) (Detai
 		return DetailArea{}, queryResult.Error
 	}
 
-	cropCount, ok := queryResult.Result.(query.CountAreaCropQueryResult)
+	cropCount, ok := queryResult.Result.(query.CountAreaCropResult)
 	if !ok {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
@@ -329,7 +329,7 @@ func MapToDetailAreaFromStorage(s *FarmServer, areaRead storage.AreaRead) (Detai
 		return DetailArea{}, queryResult.Error
 	}
 
-	crops, ok := queryResult.Result.([]query.AreaCropQueryResult)
+	crops, ok := queryResult.Result.([]query.AreaCropResult)
 	if !ok {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
@@ -397,7 +397,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		return DetailArea{}, queryResult.Error
 	}
 
-	cropCount, ok := queryResult.Result.(query.CountAreaCropQueryResult)
+	cropCount, ok := queryResult.Result.(query.CountAreaCropResult)
 	if !ok {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}
@@ -410,7 +410,7 @@ func MapToDetailArea(s *FarmServer, area domain.Area) (DetailArea, error) {
 		return DetailArea{}, queryResult.Error
 	}
 
-	crops, ok := queryResult.Result.([]query.AreaCropQueryResult)
+	crops, ok := queryResult.Result.([]query.AreaCropResult)
 	if !ok {
 		return DetailArea{}, echo.NewHTTPError(http.StatusInternalServerError, "Internal server error")
 	}

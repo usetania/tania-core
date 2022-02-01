@@ -32,11 +32,11 @@ import (
 
 // GrowthServer ties the routes and handlers with injected dependencies
 type GrowthServer struct {
-	CropEventRepo     repository.CropEventRepository
+	CropEventRepo     repository.CropEvent
 	CropEventQuery    query.CropEventQuery
-	CropReadRepo      repository.CropReadRepository
+	CropReadRepo      repository.CropRead
 	CropReadQuery     query.CropReadQuery
-	CropActivityRepo  repository.CropActivityRepository
+	CropActivityRepo  repository.CropActivity
 	CropActivityQuery query.CropActivityQuery
 	CropService       domain.CropService
 	AreaReadQuery     query.AreaReadQuery
@@ -65,7 +65,7 @@ func NewGrowthServer(
 	}
 
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_INMEMORY:
+	case config.DBInmemory:
 		growthServer.CropEventRepo = repoInMem.NewCropEventRepositoryInMemory(cropEventStorage)
 		growthServer.CropEventQuery = queryInMem.NewCropEventQueryInMemory(cropEventStorage)
 		growthServer.CropReadRepo = repoInMem.NewCropReadRepositoryInMemory(cropReadStorage)
@@ -84,7 +84,7 @@ func NewGrowthServer(
 			CropReadQuery:     growthServer.CropReadQuery,
 			AreaReadQuery:     growthServer.AreaReadQuery,
 		}
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		growthServer.CropEventRepo = repoSqlite.NewCropEventRepositorySqlite(db)
 		growthServer.CropEventQuery = querySqlite.NewCropEventQuerySqlite(db)
 		growthServer.CropReadRepo = repoSqlite.NewCropReadRepositorySqlite(db)
@@ -104,7 +104,7 @@ func NewGrowthServer(
 			AreaReadQuery:     growthServer.AreaReadQuery,
 		}
 
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		growthServer.CropEventRepo = repoMysql.NewCropEventRepositoryMysql(db)
 		growthServer.CropEventQuery = queryMysql.NewCropEventQueryMysql(db)
 		growthServer.CropReadRepo = repoMysql.NewCropReadRepositoryMysql(db)
@@ -198,7 +198,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	// Validate //
 	areaUID, err := uuid.FromString(areaID)
 	if err != nil {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	areaResult := <-s.AreaReadQuery.FindByID(areaUID)
@@ -229,7 +229,7 @@ func (s *GrowthServer) SaveAreaCropBatch(c echo.Context) error {
 	case domain.Pot{}.Code():
 		containerT = domain.Pot{}
 	default:
-		return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))
+		return Error(c, NewRequestValidationError(NotFound, "container_type"))
 	}
 
 	// Process //
@@ -291,15 +291,15 @@ func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if plantType != "" && varietyName == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "name"))
+		return Error(c, NewRequestValidationError(Required, "name"))
 	}
 
 	if varietyName != "" && plantType == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "plant_type"))
+		return Error(c, NewRequestValidationError(Required, "plant_type"))
 	}
 
 	var ct domain.CropContainerType
@@ -316,12 +316,12 @@ func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
 		case domain.Pot{}.Code():
 			ct = domain.Pot{}
 		default:
-			return Error(c, NewRequestValidationError(NOT_FOUND, "container_type"))
+			return Error(c, NewRequestValidationError(NotFound, "container_type"))
 		}
 	}
 
 	if ct != nil && containerQuantity == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "container_quantity"))
+		return Error(c, NewRequestValidationError(Required, "container_quantity"))
 	}
 
 	// Process //
@@ -354,7 +354,7 @@ func (s *GrowthServer) UpdateCropBatch(c echo.Context) error {
 		}
 
 		if material.UID == (uuid.UUID{}) {
-			return Error(c, NewRequestValidationError(NOT_FOUND, "name"))
+			return Error(c, NewRequestValidationError(NotFound, "name"))
 		}
 
 		err := crop.ChangeInventory(s.CropService, material.UID)
@@ -414,7 +414,7 @@ func (s *GrowthServer) FindCropByID(c echo.Context) error {
 	}
 
 	if crop.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	data := make(map[string]storage.CropRead)
@@ -445,7 +445,7 @@ func (s *GrowthServer) MoveCrop(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	srcAreaUID, err := uuid.FromString(srcAreaID)
@@ -523,7 +523,7 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	srcAreaUID, err := uuid.FromString(srcAreaID)
@@ -533,11 +533,11 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 
 	ht := domain.GetHarvestType(harvestType)
 	if ht == (domain.HarvestType{}) {
-		return Error(c, NewRequestValidationError(INVALID_OPTION, "harvest_type"))
+		return Error(c, NewRequestValidationError(InvalidOption, "harvest_type"))
 	}
 
 	if producedQuantity == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "produced_quantity"))
+		return Error(c, NewRequestValidationError(Required, "produced_quantity"))
 	}
 
 	prodQty, err := strconv.ParseFloat(producedQuantity, 32)
@@ -547,7 +547,7 @@ func (s *GrowthServer) HarvestCrop(c echo.Context) error {
 
 	prodUnit := domain.GetProducedUnit(producedUnit)
 	if prodUnit == (domain.ProducedUnit{}) {
-		return Error(c, NewRequestValidationError(INVALID_OPTION, "produced_unit"))
+		return Error(c, NewRequestValidationError(InvalidOption, "produced_unit"))
 	}
 
 	// PROCESS //
@@ -608,7 +608,7 @@ func (s *GrowthServer) DumpCrop(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	srcAreaUID, err := uuid.FromString(srcAreaID)
@@ -678,7 +678,7 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	srcAreaUID, err := uuid.FromString(srcAreaID)
@@ -688,7 +688,7 @@ func (s *GrowthServer) WaterCrop(c echo.Context) error {
 
 	wDate, err := time.Parse("2006-01-02 15:04", wateringDate)
 	if err != nil {
-		return Error(c, NewRequestValidationError(PARSE_FAILED, "watering_date"))
+		return Error(c, NewRequestValidationError(ParseFailed, "watering_date"))
 	}
 
 	// PROCESS //
@@ -747,11 +747,11 @@ func (s *GrowthServer) SaveCropNotes(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if content == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+		return Error(c, NewRequestValidationError(Required, "content"))
 	}
 
 	// Process //
@@ -813,7 +813,7 @@ func (s *GrowthServer) RemoveCropNotes(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	// Process //
@@ -1042,7 +1042,7 @@ func (s *GrowthServer) GetBatchQuantity(c echo.Context) error {
 	}
 
 	if farm.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	// Process //
@@ -1074,7 +1074,7 @@ func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
 	// Validate //
 	photo, err := c.FormFile("photo")
 	if err != nil {
-		return Error(c, NewRequestValidationError(REQUIRED, "photo"))
+		return Error(c, NewRequestValidationError(Required, "photo"))
 	}
 
 	result := <-s.CropReadQuery.FindByID(cropUID)
@@ -1088,7 +1088,7 @@ func (s *GrowthServer) UploadCropPhotos(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	// Process
@@ -1169,7 +1169,7 @@ func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
 	}
 
 	if cropRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "crop_id"))
+		return Error(c, NewRequestValidationError(NotFound, "crop_id"))
 	}
 
 	found := storage.CropPhoto{}
@@ -1181,7 +1181,7 @@ func (s *GrowthServer) GetCropPhotos(c echo.Context) error {
 	}
 
 	if found == (storage.CropPhoto{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "photo_id"))
+		return Error(c, NewRequestValidationError(NotFound, "photo_id"))
 	}
 
 	// Process //
@@ -1207,7 +1207,7 @@ func (s *GrowthServer) GetCropActivities(c echo.Context) error {
 	}
 
 	if crop.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	// Process //

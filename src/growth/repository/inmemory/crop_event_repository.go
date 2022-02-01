@@ -10,7 +10,7 @@ type CropEventRepositoryInMemory struct {
 	Storage *storage.CropEventStorage
 }
 
-func NewCropEventRepositoryInMemory(s *storage.CropEventStorage) repository.CropEventRepository {
+func NewCropEventRepositoryInMemory(s *storage.CropEventStorage) repository.CropEvent {
 	return &CropEventRepositoryInMemory{Storage: s}
 }
 

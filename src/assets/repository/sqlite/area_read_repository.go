@@ -12,7 +12,7 @@ type AreaReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewAreaReadRepositorySqlite(db *sql.DB) repository.AreaReadRepository {
+func NewAreaReadRepositorySqlite(db *sql.DB) repository.AreaRead {
 	return &AreaReadRepositorySqlite{DB: db}
 }
 

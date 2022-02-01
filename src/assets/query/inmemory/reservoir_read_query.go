@@ -10,12 +10,12 @@ type ReservoirReadQueryInMemory struct {
 	Storage *storage.ReservoirReadStorage
 }
 
-func NewReservoirReadQueryInMemory(s *storage.ReservoirReadStorage) query.ReservoirReadQuery {
+func NewReservoirReadQueryInMemory(s *storage.ReservoirReadStorage) query.ReservoirRead {
 	return ReservoirReadQueryInMemory{Storage: s}
 }
 
-func (s ReservoirReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s ReservoirReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -29,7 +29,7 @@ func (s ReservoirReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryRe
 			}
 		}
 
-		result <- query.QueryResult{Result: reservoir}
+		result <- query.Result{Result: reservoir}
 
 		close(result)
 	}()
@@ -37,8 +37,8 @@ func (s ReservoirReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryRe
 	return result
 }
 
-func (s ReservoirReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s ReservoirReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -52,7 +52,7 @@ func (s ReservoirReadQueryInMemory) FindAllByFarm(farmUID uuid.UUID) <-chan quer
 			}
 		}
 
-		result <- query.QueryResult{Result: reservoirs}
+		result <- query.Result{Result: reservoirs}
 
 		close(result)
 	}()

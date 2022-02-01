@@ -12,7 +12,7 @@ type FarmReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewFarmReadRepositorySqlite(db *sql.DB) repository.FarmReadRepository {
+func NewFarmReadRepositorySqlite(db *sql.DB) repository.FarmRead {
 	return &FarmReadRepositorySqlite{DB: db}
 }
 

@@ -14,7 +14,7 @@ type TaskReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewTaskReadRepositorySqlite(s *sql.DB) repository.TaskReadRepository {
+func NewTaskReadRepositorySqlite(s *sql.DB) repository.TaskRead {
 	return &TaskReadRepositorySqlite{DB: s}
 }
 

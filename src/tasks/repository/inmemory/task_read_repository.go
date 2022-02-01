@@ -9,7 +9,7 @@ type TaskReadRepositoryInMemory struct {
 	Storage *storage.TaskReadStorage
 }
 
-func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) repository.TaskReadRepository {
+func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) repository.TaskRead {
 	return &TaskReadRepositoryInMemory{Storage: s}
 }
 

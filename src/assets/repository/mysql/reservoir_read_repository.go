@@ -11,7 +11,7 @@ type ReservoirReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewReservoirReadRepositoryMysql(db *sql.DB) repository.ReservoirReadRepository {
+func NewReservoirReadRepositoryMysql(db *sql.DB) repository.ReservoirRead {
 	return &ReservoirReadRepositoryMysql{DB: db}
 }
 

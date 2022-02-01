@@ -22,8 +22,8 @@ type materialReadResult struct {
 	TypeData string
 }
 
-func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		materialQueryResult := query.CropMaterialQueryResult{}
@@ -38,16 +38,16 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: materialQueryResult}
+			result <- query.Result{Result: materialQueryResult}
 		}
 
 		materialUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		materialQueryResult.UID = materialUID
@@ -55,15 +55,15 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Que
 		materialQueryResult.TypeCode = rowsData.Type
 		materialQueryResult.PlantTypeCode = rowsData.TypeData
 
-		result <- query.QueryResult{Result: materialQueryResult}
+		result <- query.Result{Result: materialQueryResult}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q MaterialReadQueryMysql) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQueryMysql) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		materialQueryResult := query.CropMaterialQueryResult{}
@@ -78,16 +78,16 @@ func (q MaterialReadQueryMysql) FindMaterialByPlantTypeCodeAndName(plantTypeCode
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: materialQueryResult}
+			result <- query.Result{Result: materialQueryResult}
 		}
 
 		materialUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		materialQueryResult.UID = materialUID
@@ -95,7 +95,7 @@ func (q MaterialReadQueryMysql) FindMaterialByPlantTypeCodeAndName(plantTypeCode
 		materialQueryResult.TypeCode = rowsData.Type
 		materialQueryResult.PlantTypeCode = rowsData.TypeData
 
-		result <- query.QueryResult{Result: materialQueryResult}
+		result <- query.Result{Result: materialQueryResult}
 		close(result)
 	}()
 

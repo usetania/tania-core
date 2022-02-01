@@ -16,7 +16,7 @@ type TaskReadQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewTaskReadQueryMysql(s *sql.DB) query.TaskReadQuery {
+func NewTaskReadQueryMysql(s *sql.DB) query.TaskRead {
 	return &TaskReadQueryMysql{DB: s}
 }
 
@@ -39,8 +39,8 @@ type taskReadQueryResult struct {
 	AssetID              uuid.NullUUID
 }
 
-func (q TaskReadQueryMysql) FindAll(page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryMysql) FindAll(page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		tasks := []storage.TaskRead{}
@@ -57,19 +57,19 @@ func (q TaskReadQueryMysql) FindAll(page, limit int) <-chan query.QueryResult {
 
 		rows, err := q.DB.Query(sql, args...)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
 			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			tasks = append(tasks, taskRead)
 		}
 
-		result <- query.QueryResult{Result: tasks}
+		result <- query.Result{Result: tasks}
 
 		close(result)
 	}()
@@ -78,35 +78,35 @@ func (q TaskReadQueryMysql) FindAll(page, limit int) <-chan query.QueryResult {
 }
 
 // FindByID is to find by ID
-func (q TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		task := storage.TaskRead{}
 
 		rows, err := q.DB.Query(`SELECT * FROM TASK_READ WHERE UID = ?`, uid.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
 			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			task = taskRead
 		}
 
-		result <- query.QueryResult{Result: task}
+		result <- query.Result{Result: task}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		tasks := []storage.TaskRead{}
@@ -172,19 +172,19 @@ func (q TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, 
 
 		rows, err := q.DB.Query(sql, args...)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
 			taskRead, err := q.populateQueryResult(rows)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			tasks = append(tasks, taskRead)
 		}
 
-		result <- query.QueryResult{Result: tasks}
+		result <- query.Result{Result: tasks}
 
 		close(result)
 	}()
@@ -192,8 +192,8 @@ func (q TaskReadQueryMysql) FindTasksWithFilter(params map[string]string, page, 
 	return result
 }
 
-func (q TaskReadQueryMysql) CountAll() <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryMysql) CountAll() <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -204,18 +204,18 @@ func (q TaskReadQueryMysql) CountAll() <-chan query.QueryResult {
 
 		err := q.DB.QueryRow(sql, params...).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q TaskReadQueryMysql) CountTasksWithFilter(params map[string]string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryMysql) CountTasksWithFilter(params map[string]string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		total := 0
@@ -274,10 +274,10 @@ func (q TaskReadQueryMysql) CountTasksWithFilter(params map[string]string) <-cha
 
 		err := q.DB.QueryRow(sql, args...).Scan(&total)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 		close(result)
 	}()
 

@@ -10,7 +10,7 @@ import (
 )
 
 type UserServiceImpl struct {
-	UserReadQuery query.UserReadQuery
+	UserReadQuery query.UserRead
 }
 
 func (s UserServiceImpl) FindUserByUsername(username string) (domain.UserServiceResult, error) {

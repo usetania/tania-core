@@ -10,7 +10,7 @@ type FarmEventRepositoryInMemory struct {
 	Storage *storage.FarmEventStorage
 }
 
-func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) repository.FarmEventRepository {
+func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) repository.FarmEvent {
 	return &FarmEventRepositoryInMemory{Storage: s}
 }
 

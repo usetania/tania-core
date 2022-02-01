@@ -15,7 +15,7 @@ type TaskEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewTaskEventRepositorySqlite(s *sql.DB) repository.TaskEventRepository {
+func NewTaskEventRepositorySqlite(s *sql.DB) repository.TaskEvent {
 	return &TaskEventRepositorySqlite{DB: s}
 }
 

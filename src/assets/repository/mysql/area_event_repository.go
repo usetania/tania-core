@@ -15,7 +15,7 @@ type AreaEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewAreaEventRepositoryMysql(db *sql.DB) repository.AreaEventRepository {
+func NewAreaEventRepositoryMysql(db *sql.DB) repository.AreaEvent {
 	return &AreaEventRepositoryMysql{DB: db}
 }
 

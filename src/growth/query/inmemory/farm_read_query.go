@@ -14,8 +14,8 @@ func NewFarmReadQueryInMemory(s *storage.FarmReadStorage) query.FarmReadQuery {
 	return FarmReadQueryInMemory{Storage: s}
 }
 
-func (s FarmReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s FarmReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -30,7 +30,7 @@ func (s FarmReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 			}
 		}
 
-		result <- query.QueryResult{Result: farm}
+		result <- query.Result{Result: farm}
 
 		close(result)
 	}()

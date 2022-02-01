@@ -13,16 +13,16 @@ import (
 )
 
 const (
-	REQUIRED       = "REQUIRED"
-	ALPHANUMERIC   = "ALPHANUMERIC"
-	ALPHA          = "ALPHA"
-	NUMERIC        = "NUMERIC"
-	FLOAT          = "FLOAT"
-	PARSE_FAILED   = "PARSE_FAILED"
-	INVALID_OPTION = "INVALID_OPTION"
-	NOT_FOUND      = "NOT_FOUND"
-	NOT_MATCH      = "NOT_MATCH"
-	INVALID        = "INVALID"
+	Required      = "REQUIRED"
+	Alphanumeric  = "ALPHANUMERIC"
+	Alpha         = "ALPHA"
+	Numeric       = "NUMERIC"
+	Float         = "FLOAT"
+	ParseFailed   = "PARSE_FAILED"
+	InvalidOption = "INVALID_OPTION"
+	NotFound      = "NOT_FOUND"
+	NorMatch      = "NOT_MATCH"
+	Invalid       = "INVALID"
 )
 
 // RequestValidation sanitizes request inputs and convert the input to its correct data type.
@@ -51,25 +51,25 @@ func (rve RequestValidationError) Error() string {
 // Message translates error code to meaningful message
 func Message(errorCode string) string {
 	switch errorCode {
-	case REQUIRED:
+	case Required:
 		return "This field is required"
-	case ALPHANUMERIC:
+	case Alphanumeric:
 		return "Alphanumeric only"
-	case ALPHA:
+	case Alpha:
 		return "Alphabet only"
-	case NUMERIC:
+	case Numeric:
 		return "Number only"
-	case FLOAT:
+	case Float:
 		return "Float only"
-	case PARSE_FAILED:
+	case ParseFailed:
 		return "Parsing failed. Make sure the input is correct."
-	case INVALID_OPTION:
+	case InvalidOption:
 		return "This value is not available in options. Please give the correct options."
-	case NOT_FOUND:
+	case NotFound:
 		return "Data not found."
-	case NOT_MATCH:
+	case NorMatch:
 		return "Password didn't match with confirmation password"
-	case INVALID:
+	case Invalid:
 		return "Invalid value"
 	default:
 		return "Internal server error"

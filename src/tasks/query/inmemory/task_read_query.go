@@ -13,12 +13,12 @@ type TaskReadQueryInMemory struct {
 	Storage *storage.TaskReadStorage
 }
 
-func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskReadQuery {
+func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskRead {
 	return &TaskReadQueryInMemory{Storage: s}
 }
 
-func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -34,7 +34,7 @@ func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult
 			tasks = tasks[:limit]
 		}
 
-		result <- query.QueryResult{Result: tasks}
+		result <- query.Result{Result: tasks}
 
 		close(result)
 	}()
@@ -43,14 +43,14 @@ func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.QueryResult
 }
 
 // FindByID is to find by ID
-func (q TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
 		defer q.Storage.Lock.RUnlock()
 
-		result <- query.QueryResult{Result: q.Storage.TaskReadMap[uid]}
+		result <- query.Result{Result: q.Storage.TaskReadMap[uid]}
 
 		close(result)
 	}()
@@ -58,8 +58,8 @@ func (q TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 	return result
 }
 
-func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -67,71 +67,71 @@ func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 
 		tasks := []storage.TaskRead{}
 		for _, val := range q.Storage.TaskReadMap {
-			is_match := true
+			isMatch := true
 
 			// Is Due
 			if value := params["is_due"]; value != "" {
 				b, _ := strconv.ParseBool(value)
 				if val.IsDue != b {
-					is_match = false
+					isMatch = false
 				}
 			}
 
-			if is_match {
+			if isMatch {
 				// Priority
 				if value := params["priority"]; value != "" {
 					if val.Priority != value {
-						is_match = false
+						isMatch = false
 					}
 				}
 
-				if is_match {
+				if isMatch {
 					// Status
 					if value := params["status"]; value != "" {
 						if val.Status != value {
-							is_match = false
+							isMatch = false
 						}
 					}
 
-					if is_match {
+					if isMatch {
 						// Domain
 						if value := params["domain"]; value != "" {
 							if val.Domain != value {
-								is_match = false
+								isMatch = false
 							}
 						}
 
-						if is_match {
+						if isMatch {
 							// Asset ID
 							if value := params["asset_id"]; value != "" {
-								asset_id, _ := uuid.FromString(value)
-								if *val.AssetID != asset_id {
-									is_match = false
+								assetID, _ := uuid.FromString(value)
+								if *val.AssetID != assetID {
+									isMatch = false
 								}
 							}
 
-							if is_match {
+							if isMatch {
 								// Category
 								if value := params["category"]; value != "" {
 									if val.Category != value {
-										is_match = false
+										isMatch = false
 									}
 								}
 
-								if is_match {
+								if isMatch {
 									// Due Start Date & Due End Date
 									start := params["due_start"]
 									end := params["due_end"]
 
 									if (start != "") && (end != "") {
-										start_date, err := time.Parse(time.RFC3339Nano, start)
+										startDate, err := time.Parse(time.RFC3339Nano, start)
 
 										if err == nil {
-											end_date, err := time.Parse(time.RFC3339Nano, end)
+											endDate, err := time.Parse(time.RFC3339Nano, end)
 
 											if err == nil {
-												if !checkWithinTimeRange(start_date, end_date, *val.DueDate) {
-													is_match = false
+												if !checkWithinTimeRange(startDate, endDate, *val.DueDate) {
+													isMatch = false
 												}
 											}
 										}
@@ -143,12 +143,12 @@ func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 				}
 			}
 
-			if is_match {
+			if isMatch {
 				tasks = append(tasks, val)
 			}
 		}
 
-		result <- query.QueryResult{Result: tasks}
+		result <- query.Result{Result: tasks}
 
 		close(result)
 	}()
@@ -156,8 +156,8 @@ func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, pag
 	return result
 }
 
-func (q TaskReadQueryInMemory) CountAll() <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryInMemory) CountAll() <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -165,7 +165,7 @@ func (q TaskReadQueryInMemory) CountAll() <-chan query.QueryResult {
 
 		total := len(q.Storage.TaskReadMap)
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 
 		close(result)
 	}()
@@ -173,8 +173,8 @@ func (q TaskReadQueryInMemory) CountAll() <-chan query.QueryResult {
 	return result
 }
 
-func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		q.Storage.Lock.RLock()
@@ -182,71 +182,71 @@ func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 
 		tasks := []storage.TaskRead{}
 		for _, val := range q.Storage.TaskReadMap {
-			is_match := true
+			isMatch := true
 
 			// Is Due
 			if value := params["is_due"]; value != "" {
 				b, _ := strconv.ParseBool(value)
 				if val.IsDue != b {
-					is_match = false
+					isMatch = false
 				}
 			}
 
-			if is_match {
+			if isMatch {
 				// Priority
 				if value := params["priority"]; value != "" {
 					if val.Priority != value {
-						is_match = false
+						isMatch = false
 					}
 				}
 
-				if is_match {
+				if isMatch {
 					// Status
 					if value := params["status"]; value != "" {
 						if val.Status != value {
-							is_match = false
+							isMatch = false
 						}
 					}
 
-					if is_match {
+					if isMatch {
 						// Domain
 						if value := params["domain"]; value != "" {
 							if val.Domain != value {
-								is_match = false
+								isMatch = false
 							}
 						}
 
-						if is_match {
+						if isMatch {
 							// Asset ID
 							if value := params["asset_id"]; value != "" {
-								asset_id, _ := uuid.FromString(value)
-								if *val.AssetID != asset_id {
-									is_match = false
+								assetID, _ := uuid.FromString(value)
+								if *val.AssetID != assetID {
+									isMatch = false
 								}
 							}
 
-							if is_match {
+							if isMatch {
 								// Category
 								if value := params["category"]; value != "" {
 									if val.Category != value {
-										is_match = false
+										isMatch = false
 									}
 								}
 
-								if is_match {
+								if isMatch {
 									// Due Start Date & Due End Date
 									start := params["due_start"]
 									end := params["due_end"]
 
 									if (start != "") && (end != "") {
-										start_date, err := time.Parse(time.RFC3339Nano, start)
+										startDate, err := time.Parse(time.RFC3339Nano, start)
 
 										if err == nil {
-											end_date, err := time.Parse(time.RFC3339Nano, end)
+											endDate, err := time.Parse(time.RFC3339Nano, end)
 
 											if err == nil {
-												if !checkWithinTimeRange(start_date, end_date, *val.DueDate) {
-													is_match = false
+												if !checkWithinTimeRange(startDate, endDate, *val.DueDate) {
+													isMatch = false
 												}
 											}
 										}
@@ -258,12 +258,12 @@ func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 				}
 			}
 
-			if is_match {
+			if isMatch {
 				tasks = append(tasks, val)
 			}
 		}
 
-		result <- query.QueryResult{Result: len(tasks)}
+		result <- query.Result{Result: len(tasks)}
 
 		close(result)
 	}()
@@ -272,9 +272,9 @@ func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 }
 
 func checkWithinTimeRange(start time.Time, end time.Time, check time.Time) bool {
-	is_start := check.Equal(start)
-	is_end := check.Equal(end)
-	is_between := check.After(start) && check.Before(end)
+	isStart := check.Equal(start)
+	isEnd := check.Equal(end)
+	isBetween := check.After(start) && check.Before(end)
 
-	return is_start || is_end || is_between
+	return isStart || isEnd || isBetween
 }

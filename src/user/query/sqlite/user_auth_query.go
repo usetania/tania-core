@@ -13,7 +13,7 @@ type UserAuthQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserAuthQuerySqlite(db *sql.DB) query.UserAuthQuery {
+func NewUserAuthQuerySqlite(db *sql.DB) query.UserAuth {
 	return UserAuthQuerySqlite{DB: db}
 }
 
@@ -25,8 +25,8 @@ type userAuthResult struct {
 	LastUpdated  string
 }
 
-func (s UserAuthQuerySqlite) FindByUserID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserAuthQuerySqlite) FindByUserID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userAuth := storage.UserAuth{}
@@ -42,26 +42,26 @@ func (s UserAuthQuerySqlite) FindByUserID(uid uuid.UUID) <-chan query.QueryResul
 		)
 
 		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userAuth}
+			result <- query.Result{Result: userAuth}
 		}
 
 		userUID, err := uuid.FromString(rowsData.UserUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		lastUpdated, err := time.Parse(time.RFC3339, rowsData.LastUpdated)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userAuth = storage.UserAuth{
@@ -72,7 +72,7 @@ func (s UserAuthQuerySqlite) FindByUserID(uid uuid.UUID) <-chan query.QueryResul
 			LastUpdated:  lastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userAuth}
+		result <- query.Result{Result: userAuth}
 		close(result)
 	}()
 

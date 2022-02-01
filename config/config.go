@@ -9,9 +9,9 @@ import (
 var Config Configuration
 
 const (
-	DB_INMEMORY = "inmemory"
-	DB_SQLITE   = "sqlite"
-	DB_MYSQL    = "mysql"
+	DBInmemory = "inmemory"
+	DBSqlite   = "sqlite"
+	DBMysql    = "mysql"
 )
 
 type Configuration struct {

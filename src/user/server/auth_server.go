@@ -25,12 +25,12 @@ import (
 
 // AuthServer ties the routes and handlers with injected dependencies
 type AuthServer struct {
-	UserEventRepo  repository.UserEventRepository
-	UserReadRepo   repository.UserReadRepository
-	UserEventQuery query.UserEventQuery
-	UserReadQuery  query.UserReadQuery
-	UserAuthRepo   repository.UserAuthRepository
-	UserAuthQuery  query.UserAuthQuery
+	UserEventRepo  repository.UserEvent
+	UserReadRepo   repository.UserRead
+	UserEventQuery query.UserEvent
+	UserReadQuery  query.UserRead
+	UserAuthRepo   repository.UserAuth
+	UserAuthQuery  query.UserAuth
 	UserService    domain.UserService
 	EventBus       eventbus.TaniaEventBus
 }
@@ -45,7 +45,7 @@ func NewAuthServer(
 	}
 
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		authServer.UserEventRepo = repoSqlite.NewUserEventRepositorySqlite(db)
 		authServer.UserReadRepo = repoSqlite.NewUserReadRepositorySqlite(db)
 		authServer.UserEventQuery = querySqlite.NewUserEventQuerySqlite(db)
@@ -56,7 +56,7 @@ func NewAuthServer(
 
 		authServer.UserService = service.UserServiceImpl{UserReadQuery: authServer.UserReadQuery}
 
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		authServer.UserEventRepo = repoMysql.NewUserEventRepositoryMysql(db)
 		authServer.UserReadRepo = repoMysql.NewUserReadRepositoryMysql(db)
 		authServer.UserEventQuery = queryMysql.NewUserEventQueryMysql(db)
@@ -117,15 +117,15 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 	}
 
 	if userRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(INVALID, "username"))
+		return Error(c, NewRequestValidationError(Invalid, "username"))
 	}
 
 	if reqClientID != clientID {
-		return Error(c, NewRequestValidationError(INVALID, "client_id"))
+		return Error(c, NewRequestValidationError(Invalid, "client_id"))
 	}
 
 	if reqRedirectURI == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "redirect_uri"))
+		return Error(c, NewRequestValidationError(Required, "redirect_uri"))
 	}
 
 	var err error
@@ -145,11 +145,11 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 	}
 
 	if selectedRedirectURI == "" {
-		return Error(c, NewRequestValidationError(INVALID, "redirect_uri"))
+		return Error(c, NewRequestValidationError(Invalid, "redirect_uri"))
 	}
 
 	if reqResponseType != responseType {
-		return Error(c, NewRequestValidationError(INVALID, "response_type"))
+		return Error(c, NewRequestValidationError(Invalid, "response_type"))
 	}
 
 	// Generate access token here

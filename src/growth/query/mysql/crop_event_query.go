@@ -19,15 +19,15 @@ func NewCropEventQueryMysql(db *sql.DB) query.CropEventQuery {
 	return &CropEventQueryMysql{DB: db}
 }
 
-func (f *CropEventQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *CropEventQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.CropEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM CROP_EVENT WHERE CROP_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -45,12 +45,12 @@ func (f *CropEventQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.QueryR
 
 			err = json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropUID, err := uuid.FromBytes(rowsData.CropUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.CropEvent{
@@ -61,7 +61,7 @@ func (f *CropEventQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.QueryR
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 
