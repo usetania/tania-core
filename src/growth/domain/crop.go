@@ -518,11 +518,9 @@ func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, dest
 
 	// Check if movement rules for area type is valid
 	isValidMoveRules := false
-	if srcArea.Type == "SEEDING" && dstArea.Type == "GROWING" {
-		isValidMoveRules = true
-	} else if srcArea.Type == "SEEDING" && dstArea.Type == "SEEDING" {
-		isValidMoveRules = true
-	} else if srcArea.Type == "GROWING" && dstArea.Type == "GROWING" {
+	if (srcArea.Type == "SEEDING" && dstArea.Type == "GROWING") ||
+		(srcArea.Type == "SEEDING" && dstArea.Type == "SEEDING") ||
+		(srcArea.Type == "GROWING" && dstArea.Type == "GROWING") {
 		isValidMoveRules = true
 	}
 
