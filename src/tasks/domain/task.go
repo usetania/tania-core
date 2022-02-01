@@ -295,7 +295,7 @@ func validateTaskDescription(description string) error {
 // validateTaskDueDate
 func validateTaskDueDate(newdate *time.Time) error {
 	if newdate != nil {
-		if (*newdate).Before(time.Now()) {
+		if newdate.Before(time.Now()) {
 			return TaskError{TaskErrorDueDateInvalidCode}
 		}
 	}

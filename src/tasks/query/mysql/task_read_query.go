@@ -24,18 +24,18 @@ type taskReadQueryResult struct {
 	UID                  []byte
 	Title                string
 	Description          string
+	Priority             string
+	Status               string
+	DomainCode           string
+	Category             string
+	IsDue                int
 	CreatedDate          time.Time
 	DueDate              *time.Time
 	CompletedDate        *time.Time
 	CancelledDate        *time.Time
-	Priority             string
-	Status               string
-	DomainCode           string
 	DomainDataMaterialID uuid.NullUUID
 	DomainDataAreaID     uuid.NullUUID
 	DomainDataCropID     uuid.NullUUID
-	Category             string
-	IsDue                int
 	AssetID              uuid.NullUUID
 }
 

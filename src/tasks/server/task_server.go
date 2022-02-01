@@ -167,8 +167,8 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 
 	taskList := []storage.TaskRead{}
 
-	for _, v := range tasks {
-		s.AppendTaskDomainDetails(&v)
+	for i, v := range tasks {
+		s.AppendTaskDomainDetails(&tasks[i])
 		taskList = append(taskList, v)
 	}
 
@@ -226,8 +226,8 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 
 	taskList := []storage.TaskRead{}
 
-	for _, v := range tasks {
-		s.AppendTaskDomainDetails(&v)
+	for i, v := range tasks {
+		s.AppendTaskDomainDetails(&tasks[i])
 		taskList = append(taskList, v)
 	}
 
