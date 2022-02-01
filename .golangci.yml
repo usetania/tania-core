@@ -1,5 +1,7 @@
 linters:
   fast: false
+  disable:
+    - errcheck
   enable:
     - deadcode
     #- errcheck
