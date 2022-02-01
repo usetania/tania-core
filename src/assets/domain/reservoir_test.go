@@ -34,7 +34,7 @@ func mockReservoirService(farmUID uuid.UUID, farmName string) *ReservoirServiceM
 func TestCreateReservoir(t *testing.T) {
 	// Given
 	farmUID, _ := uuid.NewV4()
-	serviceMock := mockReservoirService(farmUID, "My Farm")
+	serviceMock := mockReservoirService(farmUID, "My Farm 1")
 
 	// When
 	reservoir, err := CreateReservoir(serviceMock, farmUID, "My Reservoir 1", BucketType, float32(10))

@@ -71,7 +71,6 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status stri
 
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-
 				// Check all the current quantity
 				// It should not be zero,
 				// because if all zero then it will show up in the Archieves instead
@@ -137,7 +136,6 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, lim
 
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-
 				// A crop's current quantity which have zero value should go to archives
 				initialEmpty := true
 				allMovedEmpty := []bool{}
@@ -187,7 +185,6 @@ func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-
 
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-
 				// A crop's current quantity which have zero value should go to archives
 				initialEmpty := true
 				allMovedEmpty := []bool{}

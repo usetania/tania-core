@@ -1195,8 +1195,9 @@ func generateBatchID(cs CropService, inventory query.CropMaterialQueryResult, cr
 	varietyFormat := ""
 
 	for _, v := range varietySlice {
-		// 	// For every value, get only the first three characters
-		format := ""
+		// For every value, get only the first three characters
+		var format string
+
 		if len(v) > 3 {
 			format = strings.ToLower(v[0:3])
 		} else {
