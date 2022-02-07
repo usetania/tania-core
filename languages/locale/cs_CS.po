@@ -1,0 +1,1004 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-16 14:10+0800\n"
+"PO-Revision-Date: 2021-10-16 23:43+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: Jiří Podhorecký <j.podhorecky@volny.cz>\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n>=2 && n<=4 ? 1 : 2);\n"
+"Language: cs\n"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:19
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:25
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:37
+#: resources/js/pages/inventories/materials-form-potharvest.vue:19
+#: resources/js/pages/inventories/materials-form-seed.vue:37
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:20
+msgid "€"
+msgstr "€"
+
+#: resources/js/components/aside.vue:56
+msgid "Account"
+msgstr "Účet"
+
+#: resources/js/pages/settings/account.vue:6
+msgid "Account Settings"
+msgstr "Nastavení účtu"
+
+#: resources/js/pages/farms/crop.vue:134
+msgid "Activity"
+msgstr "Aktivita"
+
+#: resources/js/pages/farms/areas.vue:12
+msgid "Add Area"
+msgstr "Přidat místo"
+
+#: resources/js/pages/farms/reservoirs.vue:12
+msgid "Add Reservoir"
+msgstr "Přidat nádrž"
+
+#: resources/js/pages/home.vue:12
+msgid "At A Glance"
+msgstr "Přehledně"
+
+#: resources/js/pages/farms/crops-form.vue:5
+msgid "Add a New Batch"
+msgstr "Přidat novou sadbu"
+
+#: resources/js/pages/inventories/materials.vue:13
+msgid "Add Material"
+msgstr "Přidat materiál"
+
+#: resources/js/pages/inventories/materials-form.vue:8
+msgid "Add Material to Inventory"
+msgstr "Přidat materiál do inventáře"
+
+#: resources/js/pages/intro/area.vue:19
+#: resources/js/pages/farms/areas-form.vue:5
+msgid "Add New Area"
+msgstr "Přidat nové místo"
+
+#: resources/js/pages/farms/crops.vue:20
+msgid "Add New Batch"
+msgstr "Přidat novou sadbu"
+
+#: resources/js/pages/farms/reservoirs-form.vue:5
+msgid "Add New Reservoir"
+msgstr "Přidat novou nádrž"
+
+#: resources/js/pages/farms/tasks/task-form.vue:14
+msgid "Add New Task"
+msgstr "Přidat nový úkol"
+
+#: resources/js/pages/farms/tasks/task-form.vue:10
+msgid "Add New Task on"
+msgstr "Přidat nový úkol na"
+
+#: resources/js/pages/farms/crop-notes.vue:49
+msgid "Add Notes"
+msgstr "Přidat poznámky"
+
+#: resources/js/pages/farms/area.vue:18
+#: resources/js/pages/farms/crop-notes.vue:31
+#: resources/js/pages/farms/reservoir.vue:9
+#: resources/js/pages/tasks/task.vue:15
+msgid "Add Task"
+msgstr "Přidat úkol"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:63
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:44
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:30
+#: resources/js/pages/inventories/materials-form-other.vue:38
+#: resources/js/pages/inventories/materials-form-plant.vue:63
+#: resources/js/pages/inventories/materials-form-potharvest.vue:38
+#: resources/js/pages/inventories/materials-form-seed.vue:63
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:46
+#: resources/js/pages/inventories/materials.vue:38
+msgid "Additional Notes"
+msgstr "Další poznámky"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:35
+#: resources/js/pages/farms/crop.vue:210
+#: resources/js/pages/farms/tasks/water-task.vue:16
+#: resources/js/pages/tasks/task.vue:33 resources/js/pages/tasks/task.vue:56
+msgid "All"
+msgstr "Vše"
+
+#: resources/js/pages/farms/crop.vue:245 resources/js/pages/farms/crop.vue:278
+#: resources/js/pages/farms/tasks/task-list.vue:60
+msgid "Apply"
+msgstr "Použít"
+
+#: resources/js/pages/farms/crops.vue:25
+msgid "Archives"
+msgstr "Archivy"
+
+#: resources/js/pages/farms/crop.vue:229
+#: resources/js/pages/farms/tasks/task-form.vue:60
+#: resources/js/pages/tasks/task.vue:36
+msgid "Area"
+msgstr "Místo"
+
+#: resources/js/pages/farms/tasks/task-label.vue:4
+msgid "AREA"
+msgstr "MÍSTO"
+
+#: resources/js/pages/intro/area.vue:19
+#: resources/js/pages/farms/areas-form.vue:8
+msgid ""
+"Area is a space where you grow your plants. It could be a seeding tray, a "
+"garden bed, or a pot or anything that describes the different physical "
+"locations in your facility."
+msgstr ""
+"Místo je prostor, kde pěstujete své rostliny. Může to být pole, zahradní "
+"záhon nebo květináč nebo cokoli, co popisuje různá fyzická umístění ve vašem "
+"zařízení."
+
+#: resources/js/pages/farms/areas-form.vue:14
+#: resources/js/pages/intro/area.vue:33
+msgid "Area Name"
+msgstr "Název Místa"
+
+#: resources/js/pages/farms/area.vue:29
+msgid "Area Size"
+msgstr "Velikost Místa"
+
+#: resources/js/components/aside.vue:24 resources/js/pages/farms/areas.vue:6
+#: resources/js/pages/home.vue:19
+msgid "Areas"
+msgstr "Místa"
+
+#: resources/js/components/timestamp.vue:4 resources/js/pages/farms/crop.vue:88
+#: resources/js/pages/farms/crop.vue:97
+msgid "at"
+msgstr "na"
+
+#: resources/js/pages/intro/reservoir.vue:11
+msgid "Awesome! Now let's create a new water source for your farm."
+msgstr "Skvělý! Nyní vytvořme nový zdroj vody pro vaši farmu."
+
+#: resources/js/components/common/btn-back.vue:3
+msgid "Back"
+msgstr "Zpět"
+
+#: resources/js/pages/farms/crop-notes.vue:10
+#: resources/js/pages/farms/crop.vue:19
+msgid "Back to Crop Batches"
+msgstr "Zpět na sadbu plodin"
+
+#: resources/js/pages/farms/area.vue:28
+#: resources/js/pages/farms/crop-notes.vue:15
+#: resources/js/pages/farms/crop.vue:24
+#: resources/js/pages/farms/reservoir.vue:21
+msgid "Basic Info"
+msgstr "Základní info"
+
+#: resources/js/pages/farms/crops.vue:16
+msgid "Batch"
+msgstr "Sadba"
+
+#: resources/js/pages/farms/crops-listing.vue:10
+msgid "Batch ID"
+msgstr "ID Sadby"
+
+#: resources/js/pages/farms/area.vue:34 resources/js/pages/farms/areas.vue:34
+msgid "Batches"
+msgstr "Sadby"
+
+#: resources/js/components/upload.vue:5
+msgid "Browse"
+msgstr "Procházet"
+
+#: resources/js/components/common/btn-cancel.vue:3
+#: resources/js/pages/farms/activities/dump-crop-task.vue:38
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:77
+#: resources/js/pages/farms/activities/move-crop-task.vue:44
+#: resources/js/pages/farms/activities/upload-crop-task.vue:27
+#: resources/js/pages/farms/tasks/crop-task-form.vue:113
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: resources/js/pages/farms/reservoir.vue:25
+#: resources/js/pages/farms/reservoirs.vue:32
+msgid "Capacity"
+msgstr "Kapacita"
+
+#: resources/js/pages/intro/reservoir.vue:54
+msgid "Capacity (litre)"
+msgstr "Kapacita (litrů)"
+
+#: resources/js/pages/farms/tasks/task-list.vue:11
+#: resources/js/pages/inventories/materials.vue:23
+#: resources/js/pages/tasks/task.vue:27
+msgid "Category"
+msgstr "Kategorie"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:13
+msgid "Chemical Type"
+msgstr "Chemický typ"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:12
+msgid "Choose area"
+msgstr "Zvolit místo"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:15
+msgid "Choose area to be harvested"
+msgstr "Vyberte místo, ke sklizni"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:12
+msgid "Choose photo"
+msgstr "Vybrat fotku"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:28
+msgid "Choose type of harvesting"
+msgstr "Vybrat typ sklizně"
+
+#: resources/js/pages/inventories/materials-form.vue:18
+msgid "Choose type of material"
+msgstr "Vybrat typ matriálu"
+
+#: resources/js/pages/farms/tasks/water-task.vue:12
+msgid "Choose type of watering"
+msgstr "Vybrat typ zalévání"
+
+#: resources/js/pages/intro/farm.vue:66
+msgid "City"
+msgstr "Město"
+
+#: resources/js/components/more-detail.vue:5
+msgid "Close details"
+msgstr "Zavřít detaily"
+
+#: resources/js/pages/tasks/task.vue:71
+msgid "Completed"
+msgstr "Dokončeno"
+
+#: resources/js/pages/settings/account.vue:34
+msgid "Confirm Password"
+msgstr "Potvrdit heslo"
+
+#: resources/js/pages/intro/farm.vue:110
+#: resources/js/pages/intro/reservoir.vue:60
+#: resources/js/pages/farms/create.vue:72
+msgid "Continue"
+msgstr "Pokračovat"
+
+#: resources/js/pages/intro/farm.vue:87
+msgid "Country"
+msgstr "Země"
+
+#: resources/js/pages/intro/farm.vue:21 resources/js/pages/farms/create.vue:13
+msgid "Create Farm"
+msgstr "Vytvořit farmu"
+
+#: resources/js/pages/intro/reservoir.vue:19
+msgid "Create Reservoir"
+msgstr "Vytvořit nádrž"
+
+#: resources/js/pages/farms/reservoir.vue:33
+#: resources/js/pages/farms/reservoirs.vue:26
+msgid "Created On"
+msgstr "Vytvořeno na"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:64
+#: resources/js/pages/tasks/task.vue:42
+msgid "Crop"
+msgstr "Plodina"
+
+#: resources/js/pages/farms/tasks/task-label.vue:8
+msgid "CROP"
+msgstr "PLODINA"
+
+#: resources/js/pages/farms/crops-form.vue:8
+msgid "Crop Batch is a quantity or consignment of crops done at one time."
+msgstr "Sadba plodiny je množství nebo zásilka plodin zpracovaná najednou."
+
+#: resources/js/pages/farms/area.vue:36
+#: resources/js/pages/farms/crops-listing.vue:7
+msgid "Crop Variety"
+msgstr "Odrůda plodin"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:4
+msgid "Crop: Add New Task for"
+msgstr "Plodina: Přidat nový úkol pro"
+
+#: resources/js/components/aside.vue:40 resources/js/pages/farms/crops.vue:6
+msgid "Crops"
+msgstr "Plodiny"
+
+#: resources/js/pages/farms/crop.vue:111
+msgid "Current Quantity"
+msgstr "Aktuální množství"
+
+#: resources/js/pages/farms/area.vue:58
+msgid "Current Status"
+msgstr "Aktuální stav"
+
+#: resources/js/components/aside.vue:8 resources/js/pages/home.vue:6
+msgid "Dashboard"
+msgstr "Ovládací panel"
+
+#: resources/js/components/aside.vue:16
+msgid "Reservoirs"
+msgstr "Nádrže"
+
+#: resources/js/pages/farms/crops-listing.vue:16
+msgid "Days Since Seeding"
+msgstr "Dny od setí nebo výsadby"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:18
+msgid "Describe a bit about this photo"
+msgstr "Popište něco o této fotografii"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:104
+#: resources/js/pages/farms/tasks/task-form.vue:82
+msgid "Description"
+msgstr "Popis"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:12
+#: resources/js/pages/farms/tasks/task-form.vue:23
+msgid "Due Date"
+msgstr "Datum vypršení"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:58
+msgid "Dump"
+msgstr "Vyhodit"
+
+#: resources/js/pages/farms/crop.vue:47 resources/js/pages/farms/crop.vue:179
+#: resources/js/pages/farms/crops-listing.vue:60
+msgid "Dumped"
+msgstr "Vyhozeno"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:47
+#: resources/js/pages/inventories/materials-form-plant.vue:53
+#: resources/js/pages/inventories/materials-form-seed.vue:53
+msgid "Expiration date"
+msgstr "Datum spotřeby"
+
+#: resources/js/pages/farms/create.vue:24 resources/js/pages/intro/farm.vue:28
+msgid "Farm Description"
+msgstr "Popis farmy"
+
+#: resources/js/pages/farms/create.vue:18 resources/js/pages/intro/farm.vue:22
+msgid "Farm Name"
+msgstr "Název farmy"
+
+#: resources/js/pages/farms/create.vue:30 resources/js/pages/intro/farm.vue:34
+msgid "Farm Type"
+msgstr "Typ farmy"
+
+#: resources/js/pages/farms/tasks/task-label.vue:7
+msgid "FINANCE"
+msgstr "FINANCE"
+
+#: resources/js/pages/intro/area.vue:122
+msgid "Finish Setup"
+msgstr "Dokončit nastavení"
+
+#: resources/js/pages/farms/crop.vue:147
+msgid "from"
+msgstr "od"
+
+#: resources/js/pages/farms/tasks/task-form.vue:66
+#: resources/js/pages/tasks/task.vue:45
+msgid "General"
+msgstr "Všeobecné"
+
+#: resources/js/pages/farms/tasks/task-label.vue:11
+msgid "GENERAL"
+msgstr "OBECNÉ"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:57
+#: resources/js/pages/farms/crop.vue:216
+msgid "Grams"
+msgstr "Gramy"
+
+#: resources/js/pages/farms/crop.vue:44
+#: resources/js/pages/farms/crops-listing.vue:56
+msgid "Growing"
+msgstr "Rostoucí"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:53
+msgid "Harvest"
+msgstr "Sklizeň"
+
+#: resources/js/pages/farms/crop.vue:204
+msgid "Harvested"
+msgstr "Sklizeno"
+
+#: resources/js/pages/intro/farm.vue:11
+msgid "Hello! Can you tell me a little about your farm?"
+msgstr "Ahoj! Můžete mi něco říct o vaší farmě?"
+
+#: resources/js/pages/farms/create.vue:5
+msgid "Home"
+msgstr "Úvod"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:35
+msgid "How many plants do you want to move?"
+msgstr "Kolik rostlin chcete přesadit?"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:23
+msgid "How many plants you want to dump?"
+msgstr "Kolik rostlin chcete vyhodit?"
+
+#: resources/js/pages/tasks/task.vue:76
+msgid "Incomplete"
+msgstr "Neúplný"
+
+#: resources/js/pages/farms/crop.vue:104
+msgid "Initial Planting"
+msgstr "Počáteční výsadba"
+
+#: resources/js/pages/farms/crops-listing.vue:22
+msgid "Initial Quantity"
+msgstr "Počáteční množství"
+
+#: resources/js/pages/auth/login.vue:23
+msgid "Input your username here"
+msgstr "Sem zadejte své uživatelské jméno"
+
+#: resources/js/pages/farms/tasks/task-form.vue:70
+msgid "Inventory"
+msgstr "Inventory"
+
+#: resources/js/pages/farms/tasks/task-label.vue:10
+msgid "INVENTORY"
+msgstr "INVENTÁŘ"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:23
+#: resources/js/pages/farms/tasks/task-form.vue:34
+msgid "Is this task urgent?"
+msgstr "Je tento úkol naléhavý?"
+
+#: resources/js/pages/farms/tasks/task-list.vue:8
+msgid "Items"
+msgstr "Položky"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:60
+msgid "Kilograms"
+msgstr "Kilogramy"
+
+#: resources/js/pages/farms/crop.vue:84
+#: resources/js/pages/farms/crops-listing.vue:28
+msgid "Last Watering"
+msgstr "Poslední zalití"
+
+#: resources/js/components/mapbox.vue:5 resources/js/pages/farms/area.vue:32
+msgid "Location"
+msgstr "Lokalita"
+
+#: resources/js/pages/intro/area.vue:70
+msgid "Locations"
+msgstr "Lokality"
+
+#: resources/js/components/common/btn-login.vue:3
+msgid "Login"
+msgstr "Přihlášení"
+
+#: resources/js/components/footer.vue:6
+msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
+msgstr "Vyrobeno pro &#9829; rostlin &copy; Copyright 2019."
+
+#: resources/js/pages/inventories/materials-form.vue:13
+msgid ""
+"Material is a consumable product using in your farm such as seeds, growing "
+"medium, fertilizer, pesticide, and so on."
+msgstr ""
+"Materiál je spotřební produkt používaný ve vaší farmě, jako jsou semena, "
+"pěstební půda, hnojivo, atd."
+
+#: resources/js/components/aside.vue:32
+#: resources/js/pages/inventories/materials.vue:6
+msgid "Materials"
+msgstr "Materiály"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:65
+msgid "Move"
+msgstr "Přesadit"
+
+#: resources/js/pages/farms/crop.vue:143
+msgid "Moved"
+msgstr "Přesazeno"
+
+#: resources/js/pages/farms/reservoirs.vue:23
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:6
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:6
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:6
+#: resources/js/pages/inventories/materials-form-other.vue:7
+#: resources/js/pages/inventories/materials-form-potharvest.vue:7
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:7
+#: resources/js/pages/inventories/materials.vue:26
+msgid "Name"
+msgstr "Název"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:34
+#: resources/js/pages/farms/tasks/task-form.vue:45
+msgid "No"
+msgstr "Ne"
+
+#: resources/js/pages/farms/crops-listing.vue:36
+msgid "No crops available."
+msgstr "Nejsou k dispozici žádné plodiny."
+
+#: resources/js/pages/home.vue:59
+msgid "No crops on production."
+msgstr "Žádné plodiny na produkci."
+
+#: resources/js/pages/inventories/materials.vue:46
+msgid "No Inventories Available"
+msgstr "Nejsou k dispozici žádné zásoby"
+
+#: resources/js/pages/farms/tasks/task-list.vue:19
+#: resources/js/pages/farms/tasks/task-list.vue:48
+msgid "No Task Created"
+msgstr "Nebyl vytvořen žádný úkol"
+
+#: resources/js/pages/tasks/task.vue:62
+msgid "Normal"
+msgstr "Normální"
+
+#: resources/js/pages/farms/tasks/task-label.vue:14
+msgid "NORMAL"
+msgstr "NORMÁLNÍ"
+
+#: resources/js/pages/farms/area.vue:68
+#: resources/js/pages/farms/activities/dump-crop-task.vue:29
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:68
+#: resources/js/pages/farms/crop-notes.vue:41
+#: resources/js/pages/farms/reservoir.vue:47
+msgid "Notes"
+msgstr "Poznámky"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:67
+msgid "Nutrient"
+msgstr "Živina"
+
+#: resources/js/pages/farms/tasks/task-label.vue:12
+msgid "NUTRIENT"
+msgstr "ŽIVINA"
+
+#: resources/js/pages/farms/crop.vue:165 resources/js/pages/farms/crop.vue:213
+msgid "of"
+msgstr "z"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:35
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:74
+#: resources/js/pages/farms/activities/move-crop-task.vue:41
+#: resources/js/pages/farms/activities/upload-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:110
+msgid "OK"
+msgstr "OK"
+
+#: resources/js/pages/settings/account.vue:22
+msgid "Old Password"
+msgstr "Staré heslo"
+
+#: resources/js/pages/farms/crop.vue:108 resources/js/pages/farms/crop.vue:115
+#: resources/js/pages/farms/crop.vue:121 resources/js/pages/farms/crop.vue:168
+#: resources/js/pages/farms/crop.vue:183 resources/js/pages/farms/crop.vue:218
+#: resources/js/pages/farms/crop.vue:248 resources/js/pages/farms/crop.vue:258
+#: resources/js/pages/farms/crop.vue:268 resources/js/pages/farms/crop.vue:280
+#: resources/js/pages/farms/crop.vue:289
+#: resources/js/pages/farms/tasks/task-list.vue:67
+#: resources/js/pages/farms/tasks/task-list.vue:70
+msgid "on"
+msgstr "na"
+
+#: resources/js/pages/tasks/task.vue:81
+msgid "Overdue"
+msgstr "Opožděný"
+
+#: resources/js/pages/farms/tasks/task-list.vue:36
+#: resources/js/pages/farms/tasks/task-list.vue:78
+msgid "Overdue!"
+msgstr "Opožděný!"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:32
+#: resources/js/pages/farms/crop.vue:207
+#: resources/js/pages/farms/tasks/water-task.vue:19
+msgid "Partial"
+msgstr "Částečně"
+
+#: resources/js/pages/auth/login.vue:17
+#: resources/js/pages/settings/account.vue:28
+msgid "Password"
+msgstr "Heslo"
+
+#: resources/js/pages/intro/area.vue:11
+msgid "Perfect! Let's create a new area."
+msgstr "Perfektní! Vytvořme nové místo."
+
+#: resources/js/pages/farms/tasks/task-label.vue:2
+msgid "PEST CONTROL"
+msgstr "HUBENÍ ŠKŮDCŮ"
+
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:19
+#: resources/js/pages/inventories/materials-form-other.vue:25
+#: resources/js/pages/inventories/materials-form-potharvest.vue:25
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:26
+msgid "Pieces"
+msgstr "Kusy"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:13
+#: resources/js/pages/inventories/materials-form-seed.vue:13
+msgid "Plant Type"
+msgstr "Typ rostliny"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:16
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:19
+#: resources/js/pages/farms/activities/move-crop-task.vue:17
+#: resources/js/pages/farms/activities/move-crop-task.vue:28
+#: resources/js/pages/farms/tasks/crop-task-form.vue:48
+msgid "Please select area"
+msgstr "Vyberte místo"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:61
+#: resources/js/pages/farms/tasks/task-form.vue:57
+msgid "Please select category"
+msgstr "Vyberte kategorii"
+
+#: resources/js/pages/intro/farm.vue:59
+msgid "Please select country"
+msgstr "Vyberte zemi"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:80
+msgid "Please select fertilizer"
+msgstr "Vyberte hnojivo"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:91
+msgid "Please select pesticide"
+msgstr "Vyberte pesticid"
+
+#: resources/js/pages/intro/area.vue:86
+msgid "Please select reservoir"
+msgstr "Vyberte nádrž"
+
+#: resources/js/pages/farms/reservoirs-form.vue:22
+#: resources/js/pages/intro/reservoir.vue:32
+msgid "Please select source"
+msgstr "Vyberte zdroj"
+
+#: resources/js/pages/intro/farm.vue:38
+msgid "Please select type"
+msgstr "Vyberte typ"
+
+#: resources/js/pages/inventories/materials.vue:29
+msgid "Price"
+msgstr "Cena"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:21
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:29
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:21
+#: resources/js/pages/inventories/materials-form-plant.vue:45
+#: resources/js/pages/inventories/materials-form-potharvest.vue:21
+#: resources/js/pages/inventories/materials-form-seed.vue:45
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:23
+msgid "Price per Unit"
+msgstr "Cena za kus"
+
+#: resources/js/pages/tasks/task.vue:52
+msgid "Priority"
+msgstr "Přiorita"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:56
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:37
+#: resources/js/pages/inventories/materials-form-other.vue:13
+#: resources/js/pages/inventories/materials-form-plant.vue:21
+#: resources/js/pages/inventories/materials-form-potharvest.vue:13
+#: resources/js/pages/inventories/materials-form-seed.vue:21
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:40
+msgid "Produced by"
+msgstr "Vypěstovaný od"
+
+#: resources/js/pages/inventories/materials.vue:32
+msgid "Produced By"
+msgstr "Vypěstovaný Od"
+
+#: resources/js/pages/home.vue:52
+msgid "Qty"
+msgstr "Množství"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:45
+#: resources/js/pages/farms/areas.vue:39
+#: resources/js/pages/farms/crops-listing.vue:19
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:31
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:13
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:21
+#: resources/js/pages/inventories/materials-form-other.vue:29
+#: resources/js/pages/inventories/materials-form-plant.vue:29
+#: resources/js/pages/inventories/materials-form-potharvest.vue:29
+#: resources/js/pages/inventories/materials-form-seed.vue:29
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:31
+#: resources/js/pages/inventories/materials.vue:35
+msgid "Quantity"
+msgstr "Množství"
+
+#: resources/js/components/more-detail.vue:6
+msgid "Read details"
+msgstr "Přečíst detaily"
+
+#: resources/js/pages/farms/area.vue:38
+#: resources/js/pages/farms/tasks/task-form.vue:63
+#: resources/js/pages/tasks/task.vue:39
+msgid "Reservoir"
+msgstr "Nádrž"
+
+#: resources/js/pages/farms/tasks/task-label.vue:5
+msgid "RESERVOIR"
+msgstr "NÁDRŽ"
+
+#: resources/js/pages/farms/reservoirs-form.vue:7
+msgid ""
+"Reservoir is a water source for your farm. It can be a direct line from "
+"well, or water tank that has volume/capacity."
+msgstr ""
+"Nádrž je zdroj vody pro vaši farmu. Může to být přímá trubka ze studny nebo "
+"nádrž na vodu, která má objem / kapacitu."
+
+#: resources/js/pages/farms/reservoirs-form.vue:12
+#: resources/js/pages/intro/reservoir.vue:22
+msgid "Reservoir Name"
+msgstr "Název nádrže"
+
+#: resources/js/pages/farms/tasks/task-label.vue:6
+msgid "SAFETY"
+msgstr "BEZPEČNOST"
+
+#: resources/js/pages/farms/tasks/task-label.vue:3
+msgid "SANITATION"
+msgstr "KANALIZACE"
+
+#: resources/js/components/common/btn-save.vue:3
+msgid "Save"
+msgstr "Uložit"
+
+#: resources/js/pages/home.vue:43
+msgid "See all Crops"
+msgstr "Zobrazit všechny plodiny"
+
+#: resources/js/pages/home.vue:81
+msgid "See all Tasks"
+msgstr "Zobrazit všechny úkoly"
+
+#: resources/js/pages/farms/crop.vue:161
+msgid "Seeded"
+msgstr "Vyseto"
+
+#: resources/js/pages/farms/crop.vue:41
+#: resources/js/pages/farms/crops-listing.vue:52
+msgid "Seeding"
+msgstr "Setí"
+
+#: resources/js/pages/farms/crop.vue:82
+#: resources/js/pages/farms/crops-listing.vue:13
+msgid "Seeding Date"
+msgstr "Datum setí"
+
+#: resources/js/pages/farms/crops-form.vue:14
+msgid "Select activity type of this crop batch"
+msgstr "Vybrat typ aktivity této sadby plodiny"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:44
+msgid "Select area to do your task"
+msgstr "Vyberte místo, kde chcete provést svůj úkol"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:24
+msgid "Select destination area"
+msgstr "Vyberte cílové místo"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:76
+msgid "Select fertilizer you are going to use"
+msgstr "Vyberte hnojivo, které budete používat"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:87
+msgid "Select pesticide you are going to use"
+msgstr "Vyberte pesticid, který budete používat"
+
+#: resources/js/pages/intro/area.vue:95
+msgid "Select photo"
+msgstr "Vyberte fotku"
+
+#: resources/js/pages/intro/area.vue:82
+msgid "Select Reservoir"
+msgstr "Vyberte nádrž"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:13
+msgid "Select source area"
+msgstr "Vymerte místo zdroje"
+
+#: resources/js/components/header.vue:21
+msgid "Sign Out"
+msgstr "Odhlásit"
+
+#: resources/js/pages/farms/areas-form.vue:20
+#: resources/js/pages/intro/area.vue:41
+msgid "Size"
+msgstr "Velikost"
+
+#: resources/js/pages/farms/reservoirs-form.vue:18
+#: resources/js/pages/intro/reservoir.vue:28
+msgid "Source"
+msgstr "Zdroj"
+
+#: resources/js/pages/farms/reservoir.vue:21
+#: resources/js/pages/farms/reservoirs.vue:29
+msgid "Source Type"
+msgstr "Typ zdroje"
+
+#: resources/js/pages/farms/crops-listing.vue:25
+msgid "Status"
+msgstr "Stav"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:70
+msgid "Take Picture"
+msgstr "Vyfotit"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:57
+#: resources/js/pages/farms/tasks/task-form.vue:53
+msgid "Task Category"
+msgstr "Kategorie úkolu"
+
+#: resources/js/pages/home.vue:72 resources/js/pages/farms/crop-notes.vue:24
+#: resources/js/pages/farms/area.vue:91
+#: resources/js/pages/farms/reservoir.vue:86
+#: resources/js/components/aside.vue:48 resources/js/pages/home.vue:33
+#: resources/js/pages/tasks/task.vue:12
+msgid "Tasks"
+msgstr "Úkoly"
+
+#: resources/js/pages/farms/crop-notes.vue:20
+#: resources/js/pages/farms/crop.vue:29
+msgid "Tasks &amp; Notes"
+msgstr "Úkoly &amp; Poznámky"
+
+#: resources/js/components/modal.vue:11
+msgid "This is the Modal Body"
+msgstr "Toto je tělo modálního okna"
+
+#: resources/js/components/modal.vue:9
+msgid "This is the Modal Header"
+msgstr "Toto je nadpis modálního okna"
+
+#: resources/js/pages/tasks/task.vue:96
+msgid "This Month"
+msgstr "Tento měsíc"
+
+#: resources/js/pages/tasks/task.vue:91
+msgid "This Week"
+msgstr "Tento týden"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:98
+#: resources/js/pages/farms/tasks/task-form.vue:76
+msgid "Title"
+msgstr "Nadpis"
+
+#: resources/js/pages/farms/crop.vue:150 resources/js/pages/farms/crop.vue:247
+#: resources/js/pages/farms/tasks/task-list.vue:64
+msgid "to"
+msgstr "do"
+
+#: resources/js/pages/farms/tasks/task-list.vue:37
+#: resources/js/pages/tasks/task.vue:86
+msgid "Today"
+msgstr "Dnes"
+
+#: resources/js/pages/farms/areas-form.vue:37
+#: resources/js/pages/intro/area.vue:60
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:13
+msgid "Type"
+msgstr "Typ"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:37
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:35
+#: resources/js/pages/inventories/materials-form-seed.vue:35
+msgid "Unit"
+msgstr "Jednotka"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:53
+msgid "Units"
+msgstr "Jednotky"
+
+#: resources/js/pages/farms/areas-form.vue:4
+msgid "Update Area"
+msgstr "Aktualizovat místo"
+
+#: resources/js/pages/farms/crops-form.vue:4
+msgid "Update Crop"
+msgstr "Aktualizovat plodinu"
+
+#: resources/js/pages/inventories/materials-form.vue:5
+msgid "Update Material"
+msgstr "Aktualizovat materiál"
+
+#: resources/js/pages/farms/reservoirs-form.vue:4
+msgid "Update Reservoir"
+msgstr "Aktualizovat nádrž"
+
+#: resources/js/pages/farms/tasks/task-form.vue:5
+msgid "Update Task"
+msgstr "Aktualizovat úkol"
+
+#: resources/js/pages/tasks/task.vue:59
+msgid "Urgent"
+msgstr "Neodkladné"
+
+#: resources/js/pages/farms/tasks/task-label.vue:13
+#: resources/js/pages/farms/tasks/task-list.vue:76
+msgid "URGENT"
+msgstr "NEODKLADNÉ"
+
+#: resources/js/pages/farms/reservoir.vue:29
+#: resources/js/pages/farms/reservoirs.vue:35
+msgid "Used In"
+msgstr "Použito v"
+
+#: resources/js/pages/auth/login.vue:11
+#: resources/js/pages/settings/account.vue:16
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: resources/js/pages/home.vue:26 resources/js/pages/home.vue:49
+msgid "Varieties"
+msgstr "Odrůdy"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:6
+#: resources/js/pages/inventories/materials-form-seed.vue:6
+msgid "Variety Name"
+msgstr "Název odrůdy"
+
+#: resources/js/pages/farms/tasks/task-label.vue:9
+msgid "WATER"
+msgstr "VODA"
+
+#: resources/js/pages/farms/reservoirs.vue:6
+msgid "Water Reservoir"
+msgstr "Nádrž na vodu"
+
+#: resources/js/pages/farms/crop.vue:235
+msgid "Watered"
+msgstr "Zalito"
+
+#: resources/js/components/common/btn-watering.vue:3
+#: resources/js/pages/farms/tasks/water-task.vue:5
+msgid "Watering"
+msgstr "Zalévání"
+
+#: resources/js/pages/home.vue:41
+msgid "What is On Production"
+msgstr "Co se pěstuje"
+
+#: resources/js/pages/farms/tasks/water-task.vue:25
+msgid "Which crop do you want to water?"
+msgstr "Kterou plodinu chcete zalévat?"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:28
+#: resources/js/pages/farms/tasks/task-form.vue:39
+msgid "Yes"
+msgstr "Ano"
+
+#: resources/js/pages/home.vue:13
+msgid "You are using Tania 1.7 right now"
+msgstr "Právě používáte Tania 1.7"
+
+#: resources/js/pages/auth/login.vue:37
+msgid "Your password here"
+msgstr "Vaše heslo zde"
