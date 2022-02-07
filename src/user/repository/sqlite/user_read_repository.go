@@ -12,7 +12,7 @@ type UserReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserReadRepositorySqlite(db *sql.DB) repository.UserReadRepository {
+func NewUserReadRepositorySqlite(db *sql.DB) repository.UserRead {
 	return &UserReadRepositorySqlite{DB: db}
 }
 
@@ -21,6 +21,7 @@ func (f *UserReadRepositorySqlite) Save(userRead *storage.UserRead) <-chan error
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM USER_READ WHERE UID = ?`, userRead.UID).Scan(&count)
 		if err != nil {
 			result <- err
@@ -34,7 +35,6 @@ func (f *UserReadRepositorySqlite) Save(userRead *storage.UserRead) <-chan error
 				userRead.Username, userRead.Password,
 				userRead.CreatedDate.Format(time.RFC3339), userRead.LastUpdated.Format(time.RFC3339),
 				userRead.UID)
-
 			if err != nil {
 				result <- err
 			}
@@ -44,7 +44,6 @@ func (f *UserReadRepositorySqlite) Save(userRead *storage.UserRead) <-chan error
 				VALUES (?, ?, ?, ?, ?)`,
 				userRead.UID, userRead.Username, userRead.Password,
 				userRead.CreatedDate.Format(time.RFC3339), userRead.LastUpdated.Format(time.RFC3339))
-
 			if err != nil {
 				result <- err
 			}

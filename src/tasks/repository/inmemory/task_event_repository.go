@@ -10,11 +10,11 @@ type TaskEventRepositoryInMemory struct {
 	Storage *storage.TaskEventStorage
 }
 
-func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) repository.TaskEventRepository {
+func NewTaskEventRepositoryInMemory(s *storage.TaskEventStorage) repository.TaskEvent {
 	return &TaskEventRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *TaskEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 
@@ -24,6 +24,7 @@ func (f *TaskEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.TaskEvents = append(f.Storage.TaskEvents, storage.TaskEvent{
 				TaskUID: uid,
 				Version: latestVersion,

@@ -10,11 +10,11 @@ type FarmEventRepositoryInMemory struct {
 	Storage *storage.FarmEventStorage
 }
 
-func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) repository.FarmEventRepository {
+func NewFarmEventRepositoryInMemory(s *storage.FarmEventStorage) repository.FarmEvent {
 	return &FarmEventRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *FarmEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 
@@ -24,6 +24,7 @@ func (f *FarmEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.FarmEvents = append(f.Storage.FarmEvents, storage.FarmEvent{
 				FarmUID: uid,
 				Version: latestVersion,

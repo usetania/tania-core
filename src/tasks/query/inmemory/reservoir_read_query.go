@@ -10,28 +10,28 @@ type ReservoirQueryInMemory struct {
 	Storage *storage.ReservoirReadStorage
 }
 
-func NewReservoirQueryInMemory(s *storage.ReservoirReadStorage) query.ReservoirQuery {
+func NewReservoirQueryInMemory(s *storage.ReservoirReadStorage) query.Reservoir {
 	return ReservoirQueryInMemory{Storage: s}
 }
 
-func (s ReservoirQueryInMemory) FindReservoirByID(reservoirUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s ReservoirQueryInMemory) FindReservoirByID(reservoirUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		ci := query.TaskReservoirQueryResult{}
+		ci := query.TaskReservoirResult{}
+
 		for _, val := range s.Storage.ReservoirReadMap {
 			// WARNING, domain leakage
-
 			if val.UID == reservoirUID {
 				ci.UID = val.UID
 				ci.Name = val.Name
 			}
 		}
 
-		result <- query.QueryResult{Result: ci}
+		result <- query.Result{Result: ci}
 
 		close(result)
 	}()

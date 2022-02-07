@@ -32,7 +32,7 @@ type TaskRead struct {
 }
 
 // Implements TaskDomain interface in domain
-// But contains more detailed information of material, area and crop
+// But contains more detailed information of material, area and crop.
 type TaskDomainDetailedCrop struct {
 	Material *TaskDomainCropMaterial `json:"material"`
 	Area     *TaskDomainCropArea     `json:"area"`

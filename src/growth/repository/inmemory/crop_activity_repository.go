@@ -9,7 +9,7 @@ type CropActivityRepositoryInMemory struct {
 	Storage *storage.CropActivityStorage
 }
 
-func NewCropActivityRepositoryInMemory(s *storage.CropActivityStorage) repository.CropActivityRepository {
+func NewCropActivityRepositoryInMemory(s *storage.CropActivityStorage) repository.CropActivity {
 	return &CropActivityRepositoryInMemory{Storage: s}
 }
 

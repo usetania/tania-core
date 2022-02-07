@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-core/src/user/query"
@@ -13,7 +14,7 @@ type UserAuthQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserAuthQueryMysql(db *sql.DB) query.UserAuthQuery {
+func NewUserAuthQueryMysql(db *sql.DB) query.UserAuth {
 	return UserAuthQueryMysql{DB: db}
 }
 
@@ -25,8 +26,8 @@ type userAuthResult struct {
 	LastUpdated  time.Time
 }
 
-func (s UserAuthQueryMysql) FindByUserID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserAuthQueryMysql) FindByUserID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userAuth := storage.UserAuth{}
@@ -41,17 +42,17 @@ func (s UserAuthQueryMysql) FindByUserID(uid uuid.UUID) <-chan query.QueryResult
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userAuth}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: userAuth}
 		}
 
 		userUID, err := uuid.FromBytes(rowsData.UserUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userAuth = storage.UserAuth{
@@ -62,7 +63,7 @@ func (s UserAuthQueryMysql) FindByUserID(uid uuid.UUID) <-chan query.QueryResult
 			LastUpdated:  rowsData.LastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userAuth}
+		result <- query.Result{Result: userAuth}
 		close(result)
 	}()
 

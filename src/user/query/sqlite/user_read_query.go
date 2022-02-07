@@ -2,20 +2,20 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 	"time"
-
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/Tanibox/tania-core/src/user/query"
 	"github.com/Tanibox/tania-core/src/user/storage"
 	"github.com/gofrs/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserReadQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserReadQuerySqlite(db *sql.DB) query.UserReadQuery {
+func NewUserReadQuerySqlite(db *sql.DB) query.UserRead {
 	return UserReadQuerySqlite{DB: db}
 }
 
@@ -27,8 +27,8 @@ type userReadResult struct {
 	LastUpdated string
 }
 
-func (s UserReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userRead := storage.UserRead{}
@@ -42,27 +42,27 @@ func (s UserReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userRead}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: userRead}
 		}
 
 		userUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		lastUpdated, err := time.Parse(time.RFC3339, rowsData.LastUpdated)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userRead = storage.UserRead{
@@ -73,15 +73,15 @@ func (s UserReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			LastUpdated: lastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userRead}
+		result <- query.Result{Result: userRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s UserReadQuerySqlite) FindByUsername(username string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserReadQuerySqlite) FindByUsername(username string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userRead := storage.UserRead{}
@@ -95,27 +95,27 @@ func (s UserReadQuerySqlite) FindByUsername(username string) <-chan query.QueryR
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userRead}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: userRead}
 		}
 
 		userUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		lastUpdated, err := time.Parse(time.RFC3339, rowsData.LastUpdated)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userRead = storage.UserRead{
@@ -126,15 +126,15 @@ func (s UserReadQuerySqlite) FindByUsername(username string) <-chan query.QueryR
 			LastUpdated: lastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userRead}
+		result <- query.Result{Result: userRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s UserReadQuerySqlite) FindByUsernameAndPassword(username, password string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s UserReadQuerySqlite) FindByUsernameAndPassword(username, password string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		userRead := storage.UserRead{}
@@ -149,32 +149,32 @@ func (s UserReadQuerySqlite) FindByUsernameAndPassword(username, password string
 			&rowsData.LastUpdated,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: userRead}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: userRead}
 		}
 
 		err = bcrypt.CompareHashAndPassword([]byte(rowsData.Password), []byte(password))
 		if err != nil {
-			result <- query.QueryResult{Result: userRead}
+			result <- query.Result{Result: userRead}
 		}
 
 		userUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		lastUpdated, err := time.Parse(time.RFC3339, rowsData.LastUpdated)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		userRead = storage.UserRead{
@@ -185,7 +185,7 @@ func (s UserReadQuerySqlite) FindByUsernameAndPassword(username, password string
 			LastUpdated: lastUpdated,
 		}
 
-		result <- query.QueryResult{Result: userRead}
+		result <- query.Result{Result: userRead}
 		close(result)
 	}()
 

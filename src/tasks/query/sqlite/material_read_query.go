@@ -11,12 +11,12 @@ type MaterialQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewMaterialQuerySqlite(db *sql.DB) query.MaterialQuery {
+func NewMaterialQuerySqlite(db *sql.DB) query.Material {
 	return MaterialQuerySqlite{DB: db}
 }
 
-func (s MaterialQuerySqlite) FindMaterialByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s MaterialQuerySqlite) FindMaterialByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		rowsData := struct {
@@ -25,14 +25,14 @@ func (s MaterialQuerySqlite) FindMaterialByID(uid uuid.UUID) <-chan query.QueryR
 			Type     string
 			TypeData string
 		}{}
-		material := query.TaskMaterialQueryResult{}
+		material := query.TaskMaterialResult{}
 
-		s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA 
+		s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA
 			FROM MATERIAL_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name, &rowsData.Type, &rowsData.TypeData)
 
 		materialUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		material.UID = materialUID
@@ -40,7 +40,7 @@ func (s MaterialQuerySqlite) FindMaterialByID(uid uuid.UUID) <-chan query.QueryR
 		material.TypeCode = rowsData.Type
 		material.DetailedTypeCode = rowsData.TypeData
 
-		result <- query.QueryResult{Result: material}
+		result <- query.Result{Result: material}
 
 		close(result)
 	}()

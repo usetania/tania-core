@@ -12,18 +12,19 @@ type FarmEventQueryInMemory struct {
 	Storage *storage.FarmEventStorage
 }
 
-func NewFarmEventQueryInMemory(s *storage.FarmEventStorage) query.FarmEventQuery {
+func NewFarmEventQueryInMemory(s *storage.FarmEventStorage) query.FarmEvent {
 	return &FarmEventQueryInMemory{Storage: s}
 }
 
-func (f *FarmEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *FarmEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		f.Storage.Lock.RLock()
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.FarmEvent{}
+
 		for _, v := range f.Storage.FarmEvents {
 			if v.FarmUID == uid {
 				events = append(events, v)
@@ -34,7 +35,7 @@ func (f *FarmEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryRe
 			return events[i].Version < events[j].Version
 		})
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 	}()
 
 	return result

@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/gofrs/uuid"
@@ -20,8 +21,8 @@ type farmReadResult struct {
 	Name string
 }
 
-func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		farmRead := query.CropFarmQueryResult{}
@@ -32,23 +33,23 @@ func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			&rowsData.Name,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: farmRead}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: farmRead}
 		}
 
 		farmUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmRead.UID = farmUID
 		farmRead.Name = rowsData.Name
 
-		result <- query.QueryResult{Result: farmRead}
+		result <- query.Result{Result: farmRead}
 		close(result)
 	}()
 

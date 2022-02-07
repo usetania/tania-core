@@ -16,14 +16,15 @@ func NewCropEventQueryInMemory(s *storage.CropEventStorage) query.CropEventQuery
 	return &CropEventQueryInMemory{Storage: s}
 }
 
-func (f *CropEventQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *CropEventQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		f.Storage.Lock.RLock()
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.CropEvent{}
+
 		for _, v := range f.Storage.CropEvents {
 			if v.CropUID == uid {
 				events = append(events, v)
@@ -34,7 +35,7 @@ func (f *CropEventQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 			return events[i].Version < events[j].Version
 		})
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 	}()
 
 	return result

@@ -9,9 +9,9 @@ import (
 var Config Configuration
 
 const (
-	DB_INMEMORY = "inmemory"
-	DB_SQLITE   = "sqlite"
-	DB_MYSQL    = "mysql"
+	DBInmemory = "inmemory"
+	DBSqlite   = "sqlite"
+	DBMysql    = "mysql"
 )
 
 type Configuration struct {
@@ -33,12 +33,12 @@ type Configuration struct {
 /*
 InitViperConfig https://github.com/spf13/viper
 Viper uses the following precedence order. Each item takes precedence over the item below it:
-- explicit call to Set
-- flag
-- env
-- config
-- key/value store
-- default
+  - explicit call to Set
+  - flag
+  - env
+  - config
+  - key/value store
+  - default
 */
 func InitViperConfig() {
 	v := viper.New()
@@ -73,6 +73,7 @@ func InitViperConfig() {
 	pflag.String("client_id", "f0ece679-3f53-463e-b624-73e83049d6ac", "OAuth2 Implicit Grant Client ID for frontend")
 
 	pflag.Parse()
+
 	err := v.BindPFlags(pflag.CommandLine)
 	if err != nil {
 		log.Fatal(err)

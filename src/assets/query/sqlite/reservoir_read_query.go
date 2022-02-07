@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-core/src/assets/query"
@@ -13,7 +14,7 @@ type ReservoirReadQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewReservoirReadQuerySqlite(db *sql.DB) query.ReservoirReadQuery {
+func NewReservoirReadQuerySqlite(db *sql.DB) query.ReservoirRead {
 	return ReservoirReadQuerySqlite{DB: db}
 }
 
@@ -34,8 +35,8 @@ type reservoirNotesReadResult struct {
 	CreatedDate  string
 }
 
-func (s ReservoirReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s ReservoirReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		reservoirRead := storage.ReservoirRead{}
@@ -52,51 +53,55 @@ func (s ReservoirReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResu
 			&rowsData.CreatedDate,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: reservoirRead}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: reservoirRead}
 		}
 
 		reservoirUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmUID, err := uuid.FromString(rowsData.FarmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		resCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rows, err := s.DB.Query("SELECT * FROM RESERVOIR_READ_NOTES WHERE RESERVOIR_UID = ?", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		notes := []storage.ReservoirNote{}
+
 		for rows.Next() {
-			rows.Scan(
+			err = rows.Scan(
 				&notesRowsData.UID,
 				&notesRowsData.ReservoirUID,
 				&notesRowsData.Content,
 				&notesRowsData.CreatedDate,
 			)
+			if err != nil {
+				result <- query.Result{Error: err}
+			}
 
 			noteUID, err := uuid.FromString(notesRowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			notes = append(notes, storage.ReservoirNote{
@@ -121,22 +126,22 @@ func (s ReservoirReadQuerySqlite) FindByID(uid uuid.UUID) <-chan query.QueryResu
 			Notes:       notes,
 		}
 
-		result <- query.QueryResult{Result: reservoirRead}
+		result <- query.Result{Result: reservoirRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		reservoirReads := []storage.ReservoirRead{}
 
 		rows, err := s.DB.Query("SELECT * FROM RESERVOIR_READ WHERE FARM_UID = ?", farmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -152,51 +157,52 @@ func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.
 			)
 
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			reservoirUID, err := uuid.FromString(rowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmUID, err := uuid.FromString(rowsData.FarmUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			resCreatedDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			noteRows, err := s.DB.Query("SELECT * FROM RESERVOIR_READ_NOTES WHERE RESERVOIR_UID = ?", reservoirUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			notes := []storage.ReservoirNote{}
+
 			for noteRows.Next() {
 				notesRowsData := reservoirNotesReadResult{}
+
 				err := noteRows.Scan(
 					&notesRowsData.UID,
 					&notesRowsData.ReservoirUID,
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
 				)
-
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				noteUID, err := uuid.FromString(notesRowsData.UID)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				noteCreatedDate, err := time.Parse(time.RFC3339, notesRowsData.CreatedDate)
 				if err != nil {
-					result <- query.QueryResult{Error: err}
+					result <- query.Result{Error: err}
 				}
 
 				notes = append(notes, storage.ReservoirNote{
@@ -222,7 +228,7 @@ func (s ReservoirReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.
 			})
 		}
 
-		result <- query.QueryResult{Result: reservoirReads}
+		result <- query.Result{Result: reservoirReads}
 		close(result)
 	}()
 

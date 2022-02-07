@@ -140,7 +140,6 @@ func (w *CropActivityTypeWrapper) UnmarshalJSON(b []byte) error {
 		}
 
 		w.Data = a
-
 	}
 
 	return nil

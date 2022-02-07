@@ -15,7 +15,7 @@ type UserEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserEventRepositorySqlite(db *sql.DB) repository.UserEventRepository {
+func NewUserEventRepositorySqlite(db *sql.DB) repository.UserEvent {
 	return &UserEventRepositorySqlite{DB: db}
 }
 

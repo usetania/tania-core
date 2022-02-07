@@ -14,14 +14,15 @@ func NewAreaReadQueryInMemory(s *storage.AreaReadStorage) query.AreaReadQuery {
 	return AreaReadQueryInMemory{Storage: s}
 }
 
-func (s AreaReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		area := query.CropAreaQueryResult{}
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.UID == uid {
 				area.UID = uid
@@ -34,7 +35,7 @@ func (s AreaReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 			}
 		}
 
-		result <- query.QueryResult{Result: area}
+		result <- query.Result{Result: area}
 
 		close(result)
 	}()

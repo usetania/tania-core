@@ -15,7 +15,7 @@ type FarmEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewFarmEventRepositorySqlite(db *sql.DB) repository.FarmEventRepository {
+func NewFarmEventRepositorySqlite(db *sql.DB) repository.FarmEvent {
 	return &FarmEventRepositorySqlite{DB: db}
 }
 

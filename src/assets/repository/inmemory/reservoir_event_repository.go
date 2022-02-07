@@ -10,7 +10,7 @@ type ReservoirEventRepositoryInMemory struct {
 	Storage *storage.ReservoirEventStorage
 }
 
-func NewReservoirEventRepositoryInMemory(s *storage.ReservoirEventStorage) repository.ReservoirEventRepository {
+func NewReservoirEventRepositoryInMemory(s *storage.ReservoirEventStorage) repository.ReservoirEvent {
 	return &ReservoirEventRepositoryInMemory{Storage: s}
 }
 
@@ -23,6 +23,7 @@ func (f *ReservoirEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.ReservoirEvents = append(f.Storage.ReservoirEvents, storage.ReservoirEvent{
 				ReservoirUID: uid,
 				Version:      latestVersion,

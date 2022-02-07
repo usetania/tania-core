@@ -50,8 +50,7 @@ func (b Bucket) Type() string {
 }
 
 // Tap is value object attached to the Reservoir.waterSource domain.
-type Tap struct {
-}
+type Tap struct{}
 
 func (t Tap) Type() string {
 	return TapType
@@ -77,46 +76,45 @@ type ReservoirNote struct {
 	CreatedDate time.Time `json:"created_date"`
 }
 
-func (state *Reservoir) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (r *Reservoir) TrackChange(event interface{}) {
+	r.UncommittedChanges = append(r.UncommittedChanges, event)
+	r.Transition(event)
 }
 
-func (state *Reservoir) Transition(event interface{}) {
+func (r *Reservoir) Transition(event interface{}) {
 	switch e := event.(type) {
 	case ReservoirCreated:
-		state.UID = e.UID
-		state.Name = e.Name
-		state.WaterSource = e.WaterSource
-		state.FarmUID = e.FarmUID
-		state.CreatedDate = e.CreatedDate
+		r.UID = e.UID
+		r.Name = e.Name
+		r.WaterSource = e.WaterSource
+		r.FarmUID = e.FarmUID
+		r.CreatedDate = e.CreatedDate
 
 	case ReservoirWaterSourceChanged:
-		state.WaterSource = e.WaterSource
+		r.WaterSource = e.WaterSource
 
 	case ReservoirNameChanged:
-		state.Name = e.Name
+		r.Name = e.Name
 
 	case ReservoirNoteAdded:
-		if len(state.Notes) == 0 {
-			state.Notes = make(map[uuid.UUID]ReservoirNote)
+		if len(r.Notes) == 0 {
+			r.Notes = make(map[uuid.UUID]ReservoirNote)
 		}
 
-		state.Notes[e.UID] = ReservoirNote{
+		r.Notes[e.UID] = ReservoirNote{
 			UID:         e.UID,
 			Content:     e.Content,
 			CreatedDate: e.CreatedDate,
 		}
 
 	case ReservoirNoteRemoved:
-		delete(state.Notes, e.UID)
-
+		delete(r.Notes, e.UID)
 	}
 }
 
 // CreateReservoir registers a new Reservoir.
-func CreateReservoir(reservoirService ReservoirService, farmUID uuid.UUID, name string, waterSourceType string, capacity float32) (*Reservoir, error) {
-	farmServiceResult, err := reservoirService.FindFarmByID(farmUID)
+func CreateReservoir(rs ReservoirService, farmUID uuid.UUID, name, waterSourceType string, capacity float32) (*Reservoir, error) {
+	farmServiceResult, err := rs.FindFarmByID(farmUID)
 	if err != nil {
 		return nil, err
 	}
@@ -214,6 +212,7 @@ func (r *Reservoir) RemoveNote(uid uuid.UUID) error {
 	}
 
 	found := false
+
 	for _, v := range r.Notes {
 		if v.UID == uid {
 			found = true
@@ -234,11 +233,13 @@ func (r *Reservoir) RemoveNote(uid uuid.UUID) error {
 
 func validateWaterSource(waterSourceType string, capacity float32) (WaterSource, error) {
 	var ws WaterSource
+
 	if waterSourceType == BucketType {
 		b, err := CreateBucket(capacity)
 		if err != nil {
 			return nil, err
 		}
+
 		ws = b
 	} else if waterSourceType == TapType {
 		t, err := CreateTap()
@@ -255,12 +256,15 @@ func validateReservoirName(name string) error {
 	if name == "" {
 		return ReservoirError{ReservoirErrorNameEmptyCode}
 	}
+
 	if !validationhelper.IsAlphanumSpaceHyphenUnderscore(name) {
 		return ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}
 	}
+
 	if len(name) < 5 {
 		return ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}
 	}
+
 	if len(name) > 100 {
 		return ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}
 	}

@@ -37,24 +37,21 @@ func (d TaskDomainCrop) Code() string {
 }
 
 // FINANCE
-type TaskDomainFinance struct {
-}
+type TaskDomainFinance struct{}
 
 func (d TaskDomainFinance) Code() string {
 	return TaskDomainFinanceCode
 }
 
 // GENERAL
-type TaskDomainGeneral struct {
-}
+type TaskDomainGeneral struct{}
 
 func (d TaskDomainGeneral) Code() string {
 	return TaskDomainGeneralCode
 }
 
 // INVENTORY
-type TaskDomainInventory struct {
-}
+type TaskDomainInventory struct{}
 
 func (d TaskDomainInventory) Code() string {
 	return TaskDomainInventoryCode
@@ -71,7 +68,6 @@ func (d TaskDomainReservoir) Code() string {
 
 // CreateTaskDomainArea
 func CreateTaskDomainArea(taskService TaskService, category string, materialID *uuid.UUID) (TaskDomainArea, error) {
-
 	err := validateTaskCategory(category)
 	if err != nil {
 		return TaskDomainArea{}, err
@@ -90,22 +86,21 @@ func CreateTaskDomainArea(taskService TaskService, category string, materialID *
 }
 
 // CreateTaskDomainCrop
-func CreateTaskDomainCrop(taskService TaskService, category string, materialID *uuid.UUID, areaID *uuid.UUID) (TaskDomainCrop, error) {
-
+func CreateTaskDomainCrop(ts TaskService, category string, materialID, areaID *uuid.UUID) (TaskDomainCrop, error) {
 	err := validateTaskCategory(category)
 	if err != nil {
 		return TaskDomainCrop{}, err
 	}
 
 	if materialID != nil {
-		err := validateAssetID(taskService, materialID, TaskDomainInventoryCode)
+		err := validateAssetID(ts, materialID, TaskDomainInventoryCode)
 		if err != nil {
 			return TaskDomainCrop{}, err
 		}
 	}
 
 	if areaID != nil {
-		err := validateAssetID(taskService, areaID, TaskDomainAreaCode)
+		err := validateAssetID(ts, areaID, TaskDomainAreaCode)
 		if err != nil {
 			return TaskDomainCrop{}, err
 		}
@@ -133,15 +128,14 @@ func CreateTaskDomainInventory() (TaskDomainInventory, error) {
 }
 
 // CreateTaskDomainReservoir
-func CreateTaskDomainReservoir(taskService TaskService, category string, materialID *uuid.UUID) (TaskDomainReservoir, error) {
-
+func CreateTaskDomainReservoir(ts TaskService, category string, materialID *uuid.UUID) (TaskDomainReservoir, error) {
 	err := validateTaskCategory(category)
 	if err != nil {
 		return TaskDomainReservoir{}, err
 	}
 
 	if materialID != nil {
-		err := validateAssetID(taskService, materialID, TaskDomainInventoryCode)
+		err := validateAssetID(ts, materialID, TaskDomainInventoryCode)
 		if err != nil {
 			return TaskDomainReservoir{}, err
 		}

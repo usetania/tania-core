@@ -9,19 +9,17 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/eventbus"
-	"github.com/asaskevich/EventBus"
-	"golang.org/x/term"
-
 	"github.com/Tanibox/tania-core/config"
 	assetsserver "github.com/Tanibox/tania-core/src/assets/server"
 	assetsstorage "github.com/Tanibox/tania-core/src/assets/storage"
+	"github.com/Tanibox/tania-core/src/eventbus"
 	growthserver "github.com/Tanibox/tania-core/src/growth/server"
 	growthstorage "github.com/Tanibox/tania-core/src/growth/storage"
 	locationserver "github.com/Tanibox/tania-core/src/location/server"
 	tasksserver "github.com/Tanibox/tania-core/src/tasks/server"
 	taskstorage "github.com/Tanibox/tania-core/src/tasks/storage"
 	userserver "github.com/Tanibox/tania-core/src/user/server"
+	"github.com/asaskevich/EventBus"
 	"github.com/go-sql-driver/mysql"
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
@@ -29,9 +27,10 @@ import (
 	"github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/term"
 )
 
-func init() {
+func main() {
 	if term.IsTerminal(int(os.Stdout.Fd())) {
 		log.SetFormatter(&log.TextFormatter{ForceColors: true})
 
@@ -43,9 +42,7 @@ func init() {
 	}
 
 	config.InitViperConfig()
-}
 
-func main() {
 	e := echo.New()
 
 	// Initialize DB.
@@ -55,10 +52,11 @@ func main() {
 	inMem := initInMemory()
 
 	var db *sql.DB
+
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		db = initSqlite()
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		db = initMysql()
 	}
 
@@ -122,7 +120,7 @@ func main() {
 		e.Logger.Fatal(err)
 	}
 
-	locationServer, err := locationserver.NewLocationServer()
+	locationServer, err := locationserver.NewServer()
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -178,6 +176,7 @@ func initUser(authServer *userserver.AuthServer) error {
 	_, _, err := authServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
 		log.Print("User ", defaultUsername, " has already created")
+
 		return err
 	}
 
@@ -193,6 +192,7 @@ func headerNoCache(next echo.HandlerFunc) echo.HandlerFunc {
 		c.Response().Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 		c.Response().Header().Set("Pragma", "no-cache")                                   // HTTP 1.0.
 		c.Response().Header().Set("Expires", "0")                                         // Proxies.
+
 		return next(c)
 	}
 }
@@ -256,6 +256,7 @@ func initMysql() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	sqls := string(ddl)
 
 	// We need to split the DDL query by `;` and execute it one by one.
@@ -280,9 +281,9 @@ func initMysql() *sql.DB {
 				// because CREATE INDEX doesn't have IF NOT EXISTS clause,
 				// otherwise we will stop the loop and print the error
 				if me.Number == 1061 {
-
 				} else {
 					log.Print(err)
+
 					return db
 				}
 			}
@@ -312,6 +313,7 @@ func initSqlite() *sql.DB {
 	if err != nil {
 		panic(err)
 	}
+
 	sql := string(ddl)
 
 	_, err = db.Exec(sql)
@@ -339,6 +341,7 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 			}
 
 			var uid interface{}
+
 			err := db.QueryRow(`SELECT USER_UID
 				FROM USER_AUTH WHERE ACCESS_TOKEN = ?`, splitted[1]).Scan(&uid)
 			if err != nil {
@@ -351,9 +354,9 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 			}
 
 			var userUID uuid.UUID
-			if *config.Config.TaniaPersistenceEngine == config.DB_SQLITE {
+			if *config.Config.TaniaPersistenceEngine == config.DBSqlite {
 				userUID, err = uuid.FromString(string(ubyte))
-			} else if *config.Config.TaniaPersistenceEngine == config.DB_MYSQL {
+			} else if *config.Config.TaniaPersistenceEngine == config.DBMysql {
 				ubyte := uid.([]byte)
 				userUID, err = uuid.FromBytes(ubyte)
 			}

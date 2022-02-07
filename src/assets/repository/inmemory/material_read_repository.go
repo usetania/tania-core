@@ -9,11 +9,11 @@ type MaterialReadRepositoryInMemory struct {
 	Storage *storage.MaterialReadStorage
 }
 
-func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) repository.MaterialReadRepository {
+func NewMaterialReadRepositoryInMemory(s *storage.MaterialReadStorage) repository.MaterialRead {
 	return &MaterialReadRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *MaterialReadRepositoryInMemory) Save(materialRead *storage.MaterialRead) <-chan error {
 	result := make(chan error)
 

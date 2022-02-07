@@ -6,57 +6,57 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type FarmEventQuery interface {
-	FindAllByID(farmUID uuid.UUID) <-chan QueryResult
+type FarmEvent interface {
+	FindAllByID(farmUID uuid.UUID) <-chan Result
 }
 
-type FarmReadQuery interface {
-	FindByID(farmUID uuid.UUID) <-chan QueryResult
-	FindAll() <-chan QueryResult
+type FarmRead interface {
+	FindByID(farmUID uuid.UUID) <-chan Result
+	FindAll() <-chan Result
 }
 
-type ReservoirEventQuery interface {
-	FindAllByID(reservoirUID uuid.UUID) <-chan QueryResult
+type ReservoirEvent interface {
+	FindAllByID(reservoirUID uuid.UUID) <-chan Result
 }
 
-type ReservoirReadQuery interface {
-	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
-	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
+type ReservoirRead interface {
+	FindByID(reservoirUID uuid.UUID) <-chan Result
+	FindAllByFarm(farmUID uuid.UUID) <-chan Result
 }
 
-type AreaEventQuery interface {
-	FindAllByID(areaUID uuid.UUID) <-chan QueryResult
+type AreaEvent interface {
+	FindAllByID(areaUID uuid.UUID) <-chan Result
 }
 
-type AreaReadQuery interface {
-	FindByID(reservoirUID uuid.UUID) <-chan QueryResult
-	FindAllByFarm(farmUID uuid.UUID) <-chan QueryResult
-	FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan QueryResult
-	FindAreasByReservoirID(reservoirUID uuid.UUID) <-chan QueryResult
-	CountAreas(farmUID uuid.UUID) <-chan QueryResult
+type AreaRead interface {
+	FindByID(reservoirUID uuid.UUID) <-chan Result
+	FindAllByFarm(farmUID uuid.UUID) <-chan Result
+	FindByIDAndFarm(areaUID, farmUID uuid.UUID) <-chan Result
+	FindAreasByReservoirID(reservoirUID uuid.UUID) <-chan Result
+	CountAreas(farmUID uuid.UUID) <-chan Result
 }
 
-type CropReadQuery interface {
-	FindAllCropByArea(areaUID uuid.UUID) <-chan QueryResult
-	CountCropsByArea(areaUID uuid.UUID) <-chan QueryResult
+type CropRead interface {
+	FindAllCropByArea(areaUID uuid.UUID) <-chan Result
+	CountCropsByArea(areaUID uuid.UUID) <-chan Result
 }
 
-type MaterialEventQuery interface {
-	FindAllByID(materialUID uuid.UUID) <-chan QueryResult
+type MaterialEvent interface {
+	FindAllByID(materialUID uuid.UUID) <-chan Result
 }
 
-type MaterialReadQuery interface {
-	FindAll(materialType, materialTypeDetail string, page, limit int) <-chan QueryResult
-	CountAll(materialType, materialTypeDetail string) <-chan QueryResult
-	FindByID(materialUID uuid.UUID) <-chan QueryResult
+type MaterialRead interface {
+	FindAll(materialType, materialTypeDetail string, page, limit int) <-chan Result
+	CountAll(materialType, materialTypeDetail string) <-chan Result
+	FindByID(materialUID uuid.UUID) <-chan Result
 }
 
-type QueryResult struct {
+type Result struct {
 	Result interface{}
 	Error  error
 }
 
-type FarmReadQueryResult struct {
+type FarmResult struct {
 	UID         uuid.UUID
 	Name        string
 	Type        string
@@ -67,7 +67,7 @@ type FarmReadQueryResult struct {
 	CreatedDate time.Time
 }
 
-type ReservoirReadQueryResult struct {
+type ReservoirResult struct {
 	UID         uuid.UUID
 	Name        string
 	WaterSource WaterSource
@@ -87,12 +87,12 @@ type ReservoirNote struct {
 	CreatedDate time.Time
 }
 
-type CountAreaCropQueryResult struct {
+type CountAreaCropResult struct {
 	PlantQuantity  int
 	TotalCropBatch int
 }
 
-type AreaCropQueryResult struct {
+type AreaCropResult struct {
 	CropUID          uuid.UUID   `json:"uid"`
 	BatchID          string      `json:"batch_id"`
 	InitialArea      InitialArea `json:"initial_area"`

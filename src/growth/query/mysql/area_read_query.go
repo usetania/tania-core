@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/gofrs/uuid"
@@ -25,8 +26,8 @@ type areaReadResult struct {
 	FarmUID  []byte
 }
 
-func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		areaQueryResult := query.CropAreaQueryResult{}
@@ -43,22 +44,22 @@ func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			&rowsData.FarmUID,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: areaQueryResult}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: areaQueryResult}
 		}
 
 		areaUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmUID, err := uuid.FromBytes(rowsData.FarmUID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		areaQueryResult.UID = areaUID
@@ -69,7 +70,7 @@ func (s AreaReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 		areaQueryResult.Location = rowsData.Location
 		areaQueryResult.FarmUID = farmUID
 
-		result <- query.QueryResult{Result: areaQueryResult}
+		result <- query.Result{Result: areaQueryResult}
 		close(result)
 	}()
 

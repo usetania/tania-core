@@ -9,7 +9,7 @@ type ReservoirReadRepositoryInMemory struct {
 	Storage *storage.ReservoirReadStorage
 }
 
-func NewReservoirReadRepositoryInMemory(s *storage.ReservoirReadStorage) repository.ReservoirReadRepository {
+func NewReservoirReadRepositoryInMemory(s *storage.ReservoirReadStorage) repository.ReservoirRead {
 	return &ReservoirReadRepositoryInMemory{Storage: s}
 }
 

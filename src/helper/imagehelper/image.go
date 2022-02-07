@@ -2,8 +2,6 @@ package imagehelper
 
 import (
 	"image"
-	_ "image/jpeg"
-	_ "image/png"
 	"os"
 )
 

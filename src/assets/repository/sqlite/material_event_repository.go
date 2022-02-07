@@ -16,7 +16,7 @@ type MaterialEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewMaterialEventRepositorySqlite(db *sql.DB) repository.MaterialEventRepository {
+func NewMaterialEventRepositorySqlite(db *sql.DB) repository.MaterialEvent {
 	return &MaterialEventRepositorySqlite{DB: db}
 }
 
@@ -33,6 +33,7 @@ func (f *MaterialEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, e
 			latestVersion++
 
 			var eTemp interface{}
+
 			switch val := v.(type) {
 			case domain.MaterialCreated:
 				val.Type = repository.MaterialEventTypeWrapper{

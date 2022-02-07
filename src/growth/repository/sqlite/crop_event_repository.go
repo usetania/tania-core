@@ -15,7 +15,7 @@ type CropEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewCropEventRepositorySqlite(db *sql.DB) repository.CropEventRepository {
+func NewCropEventRepositorySqlite(db *sql.DB) repository.CropEvent {
 	return &CropEventRepositorySqlite{DB: db}
 }
 

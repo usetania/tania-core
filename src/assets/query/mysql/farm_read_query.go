@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Tanibox/tania-core/src/assets/query"
@@ -13,7 +14,7 @@ type FarmReadQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewFarmReadQueryMysql(db *sql.DB) query.FarmReadQuery {
+func NewFarmReadQueryMysql(db *sql.DB) query.FarmRead {
 	return FarmReadQueryMysql{DB: db}
 }
 
@@ -29,8 +30,8 @@ type farmReadResult struct {
 	CreatedDate time.Time
 }
 
-func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		farmRead := storage.FarmRead{}
@@ -48,17 +49,17 @@ func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			&rowsData.CreatedDate,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: farmRead}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: farmRead}
 		}
 
 		farmUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		farmRead = storage.FarmRead{
@@ -73,15 +74,15 @@ func (s FarmReadQueryMysql) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			CreatedDate: rowsData.CreatedDate,
 		}
 
-		result <- query.QueryResult{Result: farmRead}
+		result <- query.Result{Result: farmRead}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s FarmReadQueryMysql) FindAll() <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s FarmReadQueryMysql) FindAll() <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		farmReads := []storage.FarmRead{}
@@ -89,7 +90,7 @@ func (s FarmReadQueryMysql) FindAll() <-chan query.QueryResult {
 
 		rows, err := s.DB.Query("SELECT * FROM FARM_READ ORDER BY CREATED_DATE ASC")
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -106,12 +107,12 @@ func (s FarmReadQueryMysql) FindAll() <-chan query.QueryResult {
 			)
 
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmUID, err := uuid.FromBytes(rowsData.UID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			farmReads = append(farmReads, storage.FarmRead{
@@ -127,7 +128,7 @@ func (s FarmReadQueryMysql) FindAll() <-chan query.QueryResult {
 			})
 		}
 
-		result <- query.QueryResult{Result: farmReads}
+		result <- query.Result{Result: farmReads}
 		close(result)
 	}()
 

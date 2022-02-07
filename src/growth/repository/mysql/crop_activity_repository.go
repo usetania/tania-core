@@ -13,7 +13,7 @@ type CropActivityRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewCropActivityRepositoryMysql(db *sql.DB) repository.CropActivityRepository {
+func NewCropActivityRepositoryMysql(db *sql.DB) repository.CropActivity {
 	return &CropActivityRepositoryMysql{DB: db}
 }
 

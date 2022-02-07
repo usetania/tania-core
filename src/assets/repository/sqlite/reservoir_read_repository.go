@@ -12,7 +12,7 @@ type ReservoirReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewReservoirReadRepositorySqlite(db *sql.DB) repository.ReservoirReadRepository {
+func NewReservoirReadRepositorySqlite(db *sql.DB) repository.ReservoirRead {
 	return &ReservoirReadRepositorySqlite{DB: db}
 }
 
@@ -21,6 +21,7 @@ func (f *ReservoirReadRepositorySqlite) Save(reservoirRead *storage.ReservoirRea
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM RESERVOIR_READ WHERE UID = ?`, reservoirRead.UID).Scan(&count)
 		if err != nil {
 			result <- err
@@ -54,13 +55,11 @@ func (f *ReservoirReadRepositorySqlite) Save(reservoirRead *storage.ReservoirRea
 				for _, v := range reservoirRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO RESERVOIR_READ_NOTES (UID, RESERVOIR_UID, CONTENT, CREATED_DATE)
 							VALUES (?, ?, ?, ?)`, v.UID, reservoirRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
-
 					if err != nil {
 						result <- err
 					}
 				}
 			}
-
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO RESERVOIR_READ
 				(UID, NAME, WATERSOURCE_TYPE, WATERSOURCE_CAPACITY, FARM_UID, FARM_NAME, CREATED_DATE)

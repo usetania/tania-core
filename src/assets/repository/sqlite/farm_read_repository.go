@@ -12,7 +12,7 @@ type FarmReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewFarmReadRepositorySqlite(db *sql.DB) repository.FarmReadRepository {
+func NewFarmReadRepositorySqlite(db *sql.DB) repository.FarmRead {
 	return &FarmReadRepositorySqlite{DB: db}
 }
 
@@ -21,6 +21,7 @@ func (f *FarmReadRepositorySqlite) Save(farmRead *storage.FarmRead) <-chan error
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM FARM_READ WHERE UID = ?`, farmRead.UID).Scan(&count)
 		if err != nil {
 			result <- err
@@ -34,7 +35,6 @@ func (f *FarmReadRepositorySqlite) Save(farmRead *storage.FarmRead) <-chan error
 				farmRead.Name, farmRead.Latitude, farmRead.Longitude, farmRead.Type,
 				farmRead.Country, farmRead.City, farmRead.IsActive, farmRead.CreatedDate.Format(time.RFC3339),
 				farmRead.UID)
-
 			if err != nil {
 				result <- err
 			}
@@ -44,7 +44,6 @@ func (f *FarmReadRepositorySqlite) Save(farmRead *storage.FarmRead) <-chan error
 				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
 				farmRead.UID, farmRead.Name, farmRead.Latitude, farmRead.Longitude, farmRead.Type,
 				farmRead.Country, farmRead.City, farmRead.IsActive, farmRead.CreatedDate.Format(time.RFC3339))
-
 			if err != nil {
 				result <- err
 			}

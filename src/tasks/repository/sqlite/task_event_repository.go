@@ -15,7 +15,7 @@ type TaskEventRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewTaskEventRepositorySqlite(s *sql.DB) repository.TaskEventRepository {
+func NewTaskEventRepositorySqlite(s *sql.DB) repository.TaskEvent {
 	return &TaskEventRepositorySqlite{DB: s}
 }
 
@@ -29,7 +29,6 @@ func (s *TaskEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 			stmt, err := s.DB.Prepare(`INSERT INTO TASK_EVENT
 				(TASK_UID, VERSION, CREATED_DATE, EVENT)
 				VALUES (?, ?, ?, ?)`)
-
 			if err != nil {
 				result <- err
 			}
@@ -38,7 +37,6 @@ func (s *TaskEventRepositorySqlite) Save(uid uuid.UUID, latestVersion int, event
 				Name: structhelper.GetName(v),
 				Data: v,
 			})
-
 			if err != nil {
 				panic(err)
 			}

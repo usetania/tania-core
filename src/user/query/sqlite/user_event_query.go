@@ -15,19 +15,19 @@ type UserEventQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewUserEventQuerySqlite(db *sql.DB) query.UserEventQuery {
+func NewUserEventQuerySqlite(db *sql.DB) query.UserEvent {
 	return &UserEventQuerySqlite{DB: db}
 }
 
-func (f *UserEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *UserEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.UserEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM USER_EVENT WHERE USER_UID = ? ORDER BY VERSION ASC", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -42,19 +42,20 @@ func (f *UserEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 			rows.Scan(&rowsData.ID, &rowsData.UserUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
 
 			wrapper := decoder.UserEventWrapper{}
+
 			err := json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			userUID, err := uuid.FromString(rowsData.UserUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.UserEvent{
@@ -65,7 +66,7 @@ func (f *UserEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResu
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

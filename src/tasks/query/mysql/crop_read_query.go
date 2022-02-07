@@ -11,32 +11,32 @@ type CropQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewCropQueryMysql(db *sql.DB) query.CropQuery {
+func NewCropQueryMysql(db *sql.DB) query.Crop {
 	return CropQueryMysql{DB: db}
 }
 
-func (s CropQueryMysql) FindCropByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropQueryMysql) FindCropByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		rowsData := struct {
 			UID     []byte
 			BatchID string
 		}{}
-		crop := query.TaskCropQueryResult{}
+		crop := query.TaskCropResult{}
 
 		s.DB.QueryRow(`SELECT UID, BATCH_ID
 			FROM CROP_READ WHERE UID = ?`, uid.Bytes()).Scan(&rowsData.UID, &rowsData.BatchID)
 
 		cropUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		crop.UID = cropUID
 		crop.BatchID = rowsData.BatchID
 
-		result <- query.QueryResult{Result: crop}
+		result <- query.Result{Result: crop}
 
 		close(result)
 	}()

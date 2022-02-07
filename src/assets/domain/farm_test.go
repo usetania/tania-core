@@ -1,14 +1,14 @@
-package domain
+package domain_test
 
 import (
 	"testing"
 
+	. "github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateFarm(t *testing.T) {
 	// Given
-
 	// When
 	farm, err := CreateFarm("My Farm 1", FarmTypeOrganic, "10.00", "11.00", "Indonesia", "Jakarta")
 
@@ -22,7 +22,7 @@ func TestCreateFarm(t *testing.T) {
 }
 
 func TestInvalidCreateFarm(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		name               string
 		latitude           string
 		longitude          string

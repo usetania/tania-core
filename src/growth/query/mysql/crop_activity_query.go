@@ -31,8 +31,8 @@ type cropActivityResult struct {
 	Description      string
 }
 
-func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropActivities := []storage.CropActivity{}
@@ -40,7 +40,7 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Quer
 
 		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY WHERE CROP_UID = ? ORDER BY CREATED_DATE DESC`, uid.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -55,7 +55,7 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Quer
 				&rowsData.Description,
 			)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
@@ -63,12 +63,12 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Quer
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("error type assertion")}
+				result <- query.Result{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromBytes(rowsData.CropUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropActivities = append(cropActivities, storage.CropActivity{
@@ -81,15 +81,15 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Quer
 			})
 		}
 
-		result <- query.QueryResult{Result: cropActivities}
+		result <- query.Result{Result: cropActivities}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropActivity := storage.CropActivity{}
@@ -97,13 +97,13 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 
 		at, ok := activityType.(storage.ActivityType)
 		if !ok {
-			result <- query.QueryResult{Error: errors.New("wrong activity type")}
+			result <- query.Result{Error: errors.New("wrong activity type")}
 		}
 
 		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY
 			WHERE CROP_UID = ? AND ACTIVITY_TYPE_CODE = ?`, uid.Bytes(), at.Code())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -118,7 +118,7 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 				&rowsData.Description,
 			)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
@@ -126,12 +126,12 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("error type assertion")}
+				result <- query.Result{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromBytes(rowsData.CropUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropActivity = storage.CropActivity{
@@ -144,7 +144,7 @@ func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activ
 			}
 		}
 
-		result <- query.QueryResult{Result: cropActivity}
+		result <- query.Result{Result: cropActivity}
 		close(result)
 	}()
 

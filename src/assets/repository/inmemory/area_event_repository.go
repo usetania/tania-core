@@ -10,7 +10,7 @@ type AreaEventRepositoryInMemory struct {
 	Storage *storage.AreaEventStorage
 }
 
-func NewAreaEventRepositoryInMemory(s *storage.AreaEventStorage) repository.AreaEventRepository {
+func NewAreaEventRepositoryInMemory(s *storage.AreaEventStorage) repository.AreaEvent {
 	return &AreaEventRepositoryInMemory{Storage: s}
 }
 
@@ -23,6 +23,7 @@ func (f *AreaEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, eve
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.AreaEvents = append(f.Storage.AreaEvents, storage.AreaEvent{
 				AreaUID: uid,
 				Version: latestVersion,

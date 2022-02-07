@@ -15,19 +15,19 @@ type ReservoirEventQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewReservoirEventQuerySqlite(db *sql.DB) query.ReservoirEventQuery {
+func NewReservoirEventQuerySqlite(db *sql.DB) query.ReservoirEvent {
 	return &ReservoirEventQuerySqlite{DB: db}
 }
 
-func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.ReservoirEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM RESERVOIR_EVENT WHERE RESERVOIR_UID = ? ORDER BY VERSION ASC", uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -39,22 +39,26 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Quer
 		}{}
 
 		for rows.Next() {
-			rows.Scan(&rowsData.ID, &rowsData.ReservoirUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			err := rows.Scan(&rowsData.ID, &rowsData.ReservoirUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			if err != nil {
+				result <- query.Result{Error: err}
+			}
 
 			wrapper := decoder.ReservoirEventWrapper{}
-			err := json.Unmarshal(rowsData.Event, &wrapper)
+
+			err = json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			reservoirUID, err := uuid.FromString(rowsData.ReservoirUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.ReservoirEvent{
@@ -65,7 +69,7 @@ func (f *ReservoirEventQuerySqlite) FindAllByID(uid uuid.UUID) <-chan query.Quer
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

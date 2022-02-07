@@ -4,13 +4,12 @@ import (
 	"errors"
 
 	"github.com/Tanibox/tania-core/src/user/domain"
-
 	"github.com/Tanibox/tania-core/src/user/query"
 	"github.com/Tanibox/tania-core/src/user/storage"
 )
 
 type UserServiceImpl struct {
-	UserReadQuery query.UserReadQuery
+	UserReadQuery query.UserRead
 }
 
 func (s UserServiceImpl) FindUserByUsername(username string) (domain.UserServiceResult, error) {

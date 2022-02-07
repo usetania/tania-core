@@ -15,7 +15,7 @@ type FarmEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewFarmEventRepositoryMysql(db *sql.DB) repository.FarmEventRepository {
+func NewFarmEventRepositoryMysql(db *sql.DB) repository.FarmEvent {
 	return &FarmEventRepositoryMysql{DB: db}
 }
 

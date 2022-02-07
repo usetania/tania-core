@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/Tanibox/tania-core/src/growth/query"
 	"github.com/gofrs/uuid"
@@ -22,14 +23,14 @@ type materialReadResult struct {
 	TypeData string
 }
 
-func (s MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		materialQueryResult := query.CropMaterialQueryResult{}
 		rowsData := materialReadResult{}
 
-		err := s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA FROM MATERIAL_READ
+		err := q.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA FROM MATERIAL_READ
 			WHERE UID = ?`, materialUID).Scan(
 			&rowsData.UID,
 			&rowsData.Name,
@@ -37,17 +38,17 @@ func (s MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 			&rowsData.TypeData,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: materialQueryResult}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: materialQueryResult}
 		}
 
 		materialUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		materialQueryResult.UID = materialUID
@@ -55,15 +56,15 @@ func (s MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Qu
 		materialQueryResult.TypeCode = rowsData.Type
 		materialQueryResult.PlantTypeCode = rowsData.TypeData
 
-		result <- query.QueryResult{Result: materialQueryResult}
+		result <- query.Result{Result: materialQueryResult}
 		close(result)
 	}()
 
 	return result
 }
 
-func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		materialQueryResult := query.CropMaterialQueryResult{}
@@ -77,17 +78,17 @@ func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCod
 			&rowsData.TypeData,
 		)
 
-		if err != nil && err != sql.ErrNoRows {
-			result <- query.QueryResult{Error: err}
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Error: err}
 		}
 
-		if err == sql.ErrNoRows {
-			result <- query.QueryResult{Result: materialQueryResult}
+		if errors.Is(err, sql.ErrNoRows) {
+			result <- query.Result{Result: materialQueryResult}
 		}
 
 		materialUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		materialQueryResult.UID = materialUID
@@ -95,7 +96,7 @@ func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCod
 		materialQueryResult.TypeCode = rowsData.Type
 		materialQueryResult.PlantTypeCode = rowsData.TypeData
 
-		result <- query.QueryResult{Result: materialQueryResult}
+		result <- query.Result{Result: materialQueryResult}
 		close(result)
 	}()
 

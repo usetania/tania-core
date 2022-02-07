@@ -13,7 +13,7 @@ type MaterialReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewMaterialReadRepositorySqlite(db *sql.DB) repository.MaterialReadRepository {
+func NewMaterialReadRepositorySqlite(db *sql.DB) repository.MaterialRead {
 	return &MaterialReadRepositorySqlite{DB: db}
 }
 
@@ -22,6 +22,7 @@ func (f *MaterialReadRepositorySqlite) Save(materialRead *storage.MaterialRead) 
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM MATERIAL_READ WHERE UID = ?`, materialRead.UID).Scan(&count)
 		if err != nil {
 			result <- err
@@ -66,7 +67,6 @@ func (f *MaterialReadRepositorySqlite) Save(materialRead *storage.MaterialRead) 
 			if err != nil {
 				result <- err
 			}
-
 		} else {
 			_, err = f.DB.Exec(`INSERT INTO MATERIAL_READ
 				(UID, NAME, PRICE_PER_UNIT, CURRENCY_CODE, TYPE, TYPE_DATA, QUANTITY,

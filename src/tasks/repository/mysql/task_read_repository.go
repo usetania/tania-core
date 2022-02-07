@@ -12,7 +12,7 @@ type TaskReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewTaskReadRepositoryMysql(s *sql.DB) repository.TaskReadRepository {
+func NewTaskReadRepositoryMysql(s *sql.DB) repository.TaskRead {
 	return &TaskReadRepositoryMysql{DB: s}
 }
 
@@ -21,12 +21,15 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 
 	go func() {
 		var domainDataMaterialID []byte
+
 		var domainDataAreaID []byte
+
 		switch v := taskRead.DomainDetails.(type) {
 		case domain.TaskDomainCrop:
 			if v.MaterialID != nil {
 				domainDataMaterialID = v.MaterialID.Bytes()
 			}
+
 			if v.AreaID != nil {
 				domainDataAreaID = v.AreaID.Bytes()
 			}
@@ -48,7 +51,6 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 			taskRead.Domain, domainDataMaterialID, domainDataAreaID,
 			taskRead.Category, taskRead.IsDue, assetID,
 			taskRead.UID.Bytes())
-
 		if err != nil {
 			result <- err
 		}
@@ -71,7 +73,6 @@ func (f *TaskReadRepositoryMysql) Save(taskRead *storage.TaskRead) <-chan error 
 				taskRead.CompletedDate, taskRead.CancelledDate, taskRead.Priority, taskRead.Status,
 				taskRead.Domain, domainDataMaterialID, domainDataAreaID,
 				taskRead.Category, taskRead.IsDue, assetID)
-
 			if err != nil {
 				result <- err
 			}

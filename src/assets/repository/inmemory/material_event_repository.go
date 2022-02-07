@@ -10,7 +10,7 @@ type MaterialEventRepositoryInMemory struct {
 	Storage *storage.MaterialEventStorage
 }
 
-func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) repository.MaterialEventRepository {
+func NewMaterialEventRepositoryInMemory(s *storage.MaterialEventStorage) repository.MaterialEvent {
 	return &MaterialEventRepositoryInMemory{Storage: s}
 }
 
@@ -23,6 +23,7 @@ func (f *MaterialEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int,
 
 		for _, v := range events {
 			latestVersion++
+
 			f.Storage.MaterialEvents = append(f.Storage.MaterialEvents, storage.MaterialEvent{
 				MaterialUID: uid,
 				Version:     latestVersion,

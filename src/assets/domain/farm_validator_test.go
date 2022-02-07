@@ -1,13 +1,14 @@
 package domain
 
 import (
+	"errors"
 	"testing"
 )
 
 func TestValidateFarmName(t *testing.T) {
 	t.Parallel()
 	// Given
-	var tests = []struct {
+	tests := []struct {
 		param    string
 		expected error
 	}{
@@ -20,7 +21,7 @@ func TestValidateFarmName(t *testing.T) {
 	for _, test := range tests {
 		// When
 		actual := validateFarmName(test.param)
-		if actual != test.expected {
+		if !errors.Is(actual, test.expected) {
 			t.Errorf("Expected (%q) to be %v, got %v", test.param, test.expected, actual)
 		}
 	}
@@ -30,7 +31,7 @@ func TestValidGeoLocation(t *testing.T) {
 	t.Parallel()
 
 	// Given
-	var tests = []struct {
+	tests := []struct {
 		latitude  string
 		longitude string
 		expected  error
@@ -53,7 +54,7 @@ func TestValidGeoLocation(t *testing.T) {
 
 	for _, test := range tests {
 		actual := validateGeoLocation(test.latitude, test.longitude)
-		if actual != test.expected {
+		if !errors.Is(actual, test.expected) {
 			t.Errorf("Expected latitude (%q) longitude(%q) to be %v, got %v", test.latitude, test.longitude, test.expected, actual)
 		}
 	}
@@ -62,7 +63,7 @@ func TestValidGeoLocation(t *testing.T) {
 func TestValidateFarmType(t *testing.T) {
 	t.Parallel()
 
-	var tests = []struct {
+	tests := []struct {
 		param    string
 		expected error
 	}{
@@ -73,7 +74,7 @@ func TestValidateFarmType(t *testing.T) {
 
 	for _, test := range tests {
 		actual := validateFarmType(test.param)
-		if actual != test.expected {
+		if !errors.Is(actual, test.expected) {
 			t.Errorf("Expected (%q) to be %v, got %v", test.param, test.expected, actual)
 		}
 	}
@@ -82,7 +83,7 @@ func TestValidateFarmType(t *testing.T) {
 func TestValidateRegion(t *testing.T) {
 	t.Parallel()
 
-	var tests = []struct {
+	tests := []struct {
 		country  string
 		expected error
 	}{
@@ -92,7 +93,7 @@ func TestValidateRegion(t *testing.T) {
 
 	for _, test := range tests {
 		actual := validateCountry(test.country)
-		if actual != test.expected {
+		if !errors.Is(actual, test.expected) {
 			t.Errorf("Expected (%q) to be %v, got %v", test.country, test.expected, actual)
 		}
 	}
@@ -101,7 +102,7 @@ func TestValidateRegion(t *testing.T) {
 func TestValidateCityCode(t *testing.T) {
 	t.Parallel()
 
-	var tests = []struct {
+	tests := []struct {
 		city     string
 		expected error
 	}{
@@ -111,7 +112,7 @@ func TestValidateCityCode(t *testing.T) {
 
 	for _, test := range tests {
 		actual := validateCity(test.city)
-		if actual != test.expected {
+		if !errors.Is(actual, test.expected) {
 			t.Errorf("Expected (%q) to be %v, got %v", test.city, test.expected, actual)
 		}
 	}

@@ -12,18 +12,19 @@ type MaterialEventQueryInMemory struct {
 	Storage *storage.MaterialEventStorage
 }
 
-func NewMaterialEventQueryInMemory(s *storage.MaterialEventStorage) query.MaterialEventQuery {
+func NewMaterialEventQueryInMemory(s *storage.MaterialEventStorage) query.MaterialEvent {
 	return &MaterialEventQueryInMemory{Storage: s}
 }
 
-func (f *MaterialEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *MaterialEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		f.Storage.Lock.RLock()
 		defer f.Storage.Lock.RUnlock()
 
 		events := []storage.MaterialEvent{}
+
 		for _, v := range f.Storage.MaterialEvents {
 			if v.MaterialUID == uid {
 				events = append(events, v)
@@ -34,7 +35,7 @@ func (f *MaterialEventQueryInMemory) FindAllByID(uid uuid.UUID) <-chan query.Que
 			return events[i].Version < events[j].Version
 		})
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 	}()
 
 	return result

@@ -15,7 +15,7 @@ type CropEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewCropEventRepositoryMysql(db *sql.DB) repository.CropEventRepository {
+func NewCropEventRepositoryMysql(db *sql.DB) repository.CropEvent {
 	return &CropEventRepositoryMysql{DB: db}
 }
 

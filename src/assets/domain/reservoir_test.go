@@ -1,8 +1,9 @@
-package domain
+package domain_test
 
 import (
 	"testing"
 
+	. "github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -14,6 +15,7 @@ type ReservoirServiceMock struct {
 
 func (m *ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (ReservoirFarmServiceResult, error) {
 	args := m.Called(uid)
+
 	return args.Get(0).(ReservoirFarmServiceResult), nil
 }
 
@@ -32,7 +34,7 @@ func mockReservoirService(farmUID uuid.UUID, farmName string) *ReservoirServiceM
 func TestCreateReservoir(t *testing.T) {
 	// Given
 	farmUID, _ := uuid.NewV4()
-	serviceMock := mockReservoirService(farmUID, "My Farm")
+	serviceMock := mockReservoirService(farmUID, "My Farm 1")
 
 	// When
 	reservoir, err := CreateReservoir(serviceMock, farmUID, "My Reservoir 1", BucketType, float32(10))
@@ -91,9 +93,11 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 	assert.Equal(t, 1, len(reservoir.Notes))
 
 	uid := uuid.UUID{}
+
 	for k, v := range reservoir.Notes {
 		assert.Equal(t, noteContent, v.Content)
 		assert.NotEqual(t, uuid.UUID{}, v.UID)
+
 		uid = k
 	}
 

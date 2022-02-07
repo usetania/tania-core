@@ -11,7 +11,7 @@ type AreaReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewAreaReadRepositoryMysql(db *sql.DB) repository.AreaReadRepository {
+func NewAreaReadRepositoryMysql(db *sql.DB) repository.AreaRead {
 	return &AreaReadRepositoryMysql{DB: db}
 }
 
@@ -20,6 +20,7 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE UID = ?`, areaRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
@@ -35,7 +36,6 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
 				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate,
 				areaRead.Farm.UID.Bytes(), areaRead.Farm.Name, areaRead.Reservoir.UID.Bytes(), areaRead.Reservoir.Name, areaRead.UID.Bytes())
-
 			if err != nil {
 				result <- err
 			}
@@ -51,7 +51,6 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 				for _, v := range areaRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO AREA_READ_NOTES (UID, AREA_UID, CONTENT, CREATED_DATE)
 							VALUES (?, ?, ?, ?)`, v.UID.Bytes(), areaRead.UID.Bytes(), v.Content, v.CreatedDate)
-
 					if err != nil {
 						result <- err
 					}
@@ -66,7 +65,6 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
 				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate,
 				areaRead.Farm.UID.Bytes(), areaRead.Farm.Name, areaRead.Reservoir.UID.Bytes(), areaRead.Reservoir.Name)
-
 			if err != nil {
 				result <- err
 			}

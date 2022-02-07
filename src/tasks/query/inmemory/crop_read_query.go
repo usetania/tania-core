@@ -10,18 +10,18 @@ type CropQueryInMemory struct {
 	Storage *storage.CropReadStorage
 }
 
-func NewCropQueryInMemory(s *storage.CropReadStorage) query.CropQuery {
+func NewCropQueryInMemory(s *storage.CropReadStorage) query.Crop {
 	return CropQueryInMemory{Storage: s}
 }
 
-func (s CropQueryInMemory) FindCropByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropQueryInMemory) FindCropByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		crop := query.TaskCropQueryResult{}
+		crop := query.TaskCropResult{}
 
 		for _, val := range s.Storage.CropReadMap {
 			if val.UID == uid {
@@ -29,7 +29,7 @@ func (s CropQueryInMemory) FindCropByID(uid uuid.UUID) <-chan query.QueryResult 
 				crop.BatchID = val.BatchID
 			}
 		}
-		result <- query.QueryResult{Result: crop}
+		result <- query.Result{Result: crop}
 
 		close(result)
 	}()

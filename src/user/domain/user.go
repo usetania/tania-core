@@ -29,24 +29,23 @@ type UserServiceResult struct {
 	Username string
 }
 
-func (state *User) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (u *User) TrackChange(event interface{}) {
+	u.UncommittedChanges = append(u.UncommittedChanges, event)
+	u.Transition(event)
 }
 
-func (state *User) Transition(event interface{}) {
+func (u *User) Transition(event interface{}) {
 	switch e := event.(type) {
 	case UserCreated:
-		state.UID = e.UID
-		state.Username = e.Username
-		state.Password = e.Password
-		state.CreatedDate = e.CreatedDate
-		state.LastUpdated = e.LastUpdated
+		u.UID = e.UID
+		u.Username = e.Username
+		u.Password = e.Password
+		u.CreatedDate = e.CreatedDate
+		u.LastUpdated = e.LastUpdated
 
 	case PasswordChanged:
-		state.Password = e.NewPassword
-		state.LastUpdated = e.DateChanged
-
+		u.Password = e.NewPassword
+		u.LastUpdated = e.DateChanged
 	}
 }
 

@@ -11,7 +11,7 @@ type UserReadRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserReadRepositoryMysql(db *sql.DB) repository.UserReadRepository {
+func NewUserReadRepositoryMysql(db *sql.DB) repository.UserRead {
 	return &UserReadRepositoryMysql{DB: db}
 }
 
@@ -20,6 +20,7 @@ func (f *UserReadRepositoryMysql) Save(userRead *storage.UserRead) <-chan error 
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM USER_READ WHERE UID = ?`, userRead.UID.Bytes()).Scan(&count)
 		if err != nil {
 			result <- err
@@ -33,7 +34,6 @@ func (f *UserReadRepositoryMysql) Save(userRead *storage.UserRead) <-chan error 
 				userRead.Username, userRead.Password,
 				userRead.CreatedDate, userRead.LastUpdated,
 				userRead.UID.Bytes())
-
 			if err != nil {
 				result <- err
 			}
@@ -43,7 +43,6 @@ func (f *UserReadRepositoryMysql) Save(userRead *storage.UserRead) <-chan error 
 				VALUES (?, ?, ?, ?, ?)`,
 				userRead.UID.Bytes(), userRead.Username, userRead.Password,
 				userRead.CreatedDate, userRead.LastUpdated)
-
 			if err != nil {
 				result <- err
 			}

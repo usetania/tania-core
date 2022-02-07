@@ -141,45 +141,44 @@ func GetMaterialQuantityUnit(materialTypeCode string, code string) MaterialQuant
 	return MaterialQuantityUnit{}
 }
 
-func (state *Material) TrackChange(event interface{}) {
-	state.UncommittedChanges = append(state.UncommittedChanges, event)
-	state.Transition(event)
+func (m *Material) TrackChange(event interface{}) {
+	m.UncommittedChanges = append(m.UncommittedChanges, event)
+	m.Transition(event)
 }
 
-func (state *Material) Transition(event interface{}) {
+func (m *Material) Transition(event interface{}) {
 	switch e := event.(type) {
 	case MaterialCreated:
-		state.UID = e.UID
-		state.Name = e.Name
-		state.PricePerUnit = e.PricePerUnit
-		state.Type = e.Type
-		state.Quantity = e.Quantity
-		state.ExpirationDate = e.ExpirationDate
-		state.Notes = e.Notes
-		state.ProducedBy = e.ProducedBy
-		state.CreatedDate = e.CreatedDate
+		m.UID = e.UID
+		m.Name = e.Name
+		m.PricePerUnit = e.PricePerUnit
+		m.Type = e.Type
+		m.Quantity = e.Quantity
+		m.ExpirationDate = e.ExpirationDate
+		m.Notes = e.Notes
+		m.ProducedBy = e.ProducedBy
+		m.CreatedDate = e.CreatedDate
 
 	case MaterialNameChanged:
-		state.Name = e.Name
+		m.Name = e.Name
 
 	case MaterialTypeChanged:
-		state.Type = e.MaterialType
+		m.Type = e.MaterialType
 
 	case MaterialPriceChanged:
-		state.PricePerUnit = e.Price
+		m.PricePerUnit = e.Price
 
 	case MaterialQuantityChanged:
-		state.Quantity = e.Quantity
+		m.Quantity = e.Quantity
 
 	case MaterialExpirationDateChanged:
-		state.ExpirationDate = &e.ExpirationDate
+		m.ExpirationDate = &e.ExpirationDate
 
 	case MaterialNotesChanged:
-		state.Notes = &e.Notes
+		m.Notes = &e.Notes
 
 	case MaterialProducedByChanged:
-		state.ProducedBy = &e.ProducedBy
-
+		m.ProducedBy = &e.ProducedBy
 	}
 }
 
@@ -192,8 +191,8 @@ func CreateMaterial(
 	quantityUnit string,
 	expirationDate *time.Time,
 	notes *string,
-	producedBy *string) (*Material, error) {
-
+	producedBy *string) (*Material, error,
+) {
 	uid, err := uuid.NewV4()
 	if err != nil {
 		return nil, err

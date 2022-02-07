@@ -12,7 +12,7 @@ type AreaReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewAreaReadRepositorySqlite(db *sql.DB) repository.AreaReadRepository {
+func NewAreaReadRepositorySqlite(db *sql.DB) repository.AreaRead {
 	return &AreaReadRepositorySqlite{DB: db}
 }
 
@@ -21,6 +21,7 @@ func (f *AreaReadRepositorySqlite) Save(areaRead *storage.AreaRead) <-chan error
 
 	go func() {
 		count := 0
+
 		err := f.DB.QueryRow(`SELECT COUNT(*) FROM AREA_READ WHERE UID = ?`, areaRead.UID).Scan(&count)
 		if err != nil {
 			result <- err
@@ -36,7 +37,6 @@ func (f *AreaReadRepositorySqlite) Save(areaRead *storage.AreaRead) <-chan error
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
 				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate.Format(time.RFC3339),
 				areaRead.Farm.UID, areaRead.Farm.Name, areaRead.Reservoir.UID, areaRead.Reservoir.Name, areaRead.UID)
-
 			if err != nil {
 				result <- err
 			}
@@ -52,7 +52,6 @@ func (f *AreaReadRepositorySqlite) Save(areaRead *storage.AreaRead) <-chan error
 				for _, v := range areaRead.Notes {
 					_, err := f.DB.Exec(`INSERT INTO AREA_READ_NOTES (UID, AREA_UID, CONTENT, CREATED_DATE)
 							VALUES (?, ?, ?, ?)`, v.UID, areaRead.UID, v.Content, v.CreatedDate.Format(time.RFC3339))
-
 					if err != nil {
 						result <- err
 					}
@@ -67,7 +66,6 @@ func (f *AreaReadRepositorySqlite) Save(areaRead *storage.AreaRead) <-chan error
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
 				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate.Format(time.RFC3339),
 				areaRead.Farm.UID, areaRead.Farm.Name, areaRead.Reservoir.UID, areaRead.Reservoir.Name)
-
 			if err != nil {
 				result <- err
 			}

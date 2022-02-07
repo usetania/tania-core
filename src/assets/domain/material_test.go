@@ -1,14 +1,14 @@
-package domain
+package domain_test
 
 import (
 	"testing"
 
+	. "github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateInventorySeed(t *testing.T) {
 	// Given
-
 	// When
 	mts, err1 := CreateMaterialTypeSeed(PlantTypeVegetable)
 	material1, err2 := CreateMaterial("Bayam Lu Hsieh", "12", MoneyEUR, mts, 20, MaterialUnitPackets, nil, nil, nil)

@@ -11,7 +11,7 @@ type UserAuthRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewUserAuthRepositoryMysql(db *sql.DB) repository.UserAuthRepository {
+func NewUserAuthRepositoryMysql(db *sql.DB) repository.UserAuth {
 	return &UserAuthRepositoryMysql{DB: db}
 }
 
@@ -20,6 +20,7 @@ func (s *UserAuthRepositoryMysql) Save(userAuth *storage.UserAuth) <-chan error 
 
 	go func() {
 		total := 0
+
 		err := s.DB.QueryRow(`SELECT COUNT(USER_UID)
 			FROM USER_AUTH WHERE USER_UID = ?`, userAuth.UserUID.Bytes()).Scan(&total)
 		if err != nil {
@@ -33,7 +34,6 @@ func (s *UserAuthRepositoryMysql) Save(userAuth *storage.UserAuth) <-chan error 
 				userAuth.AccessToken, userAuth.TokenExpires,
 				userAuth.CreatedDate, userAuth.LastUpdated,
 				userAuth.UserUID.Bytes())
-
 			if err != nil {
 				result <- err
 			}
@@ -43,7 +43,6 @@ func (s *UserAuthRepositoryMysql) Save(userAuth *storage.UserAuth) <-chan error 
 				VALUES (?,?,?,?,?)`,
 				userAuth.UserUID.Bytes(), userAuth.AccessToken, userAuth.TokenExpires,
 				userAuth.CreatedDate, userAuth.LastUpdated)
-
 			if err != nil {
 				result <- err
 			}

@@ -14,21 +14,22 @@ func NewCropReadQueryInMemory(s *storage.CropReadStorage) query.CropReadQuery {
 	return CropReadQueryInMemory{Storage: s}
 }
 
-func (s CropReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		crop := storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.UID == uid {
 				crop = val
 			}
 		}
 
-		result <- query.QueryResult{Result: crop}
+		result <- query.Result{Result: crop}
 
 		close(result)
 	}()
@@ -36,21 +37,22 @@ func (s CropReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 	return result
 }
 
-func (s CropReadQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) FindByBatchID(batchID string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		crop := storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.BatchID == batchID {
 				crop = val
 			}
 		}
 
-		result <- query.QueryResult{Result: crop}
+		result <- query.Result{Result: crop}
 
 		close(result)
 	}()
@@ -58,17 +60,17 @@ func (s CropReadQueryInMemory) FindByBatchID(batchID string) <-chan query.QueryR
 	return result
 }
 
-func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status string, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		cropRead := []storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-
 				// Check all the current quantity
 				// It should not be zero,
 				// because if all zero then it will show up in the Archieves instead
@@ -86,6 +88,7 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status stri
 				}
 
 				movedEmpty := false
+
 				for _, v := range allMovedEmpty {
 					if v {
 						movedEmpty = true
@@ -98,7 +101,7 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status stri
 			}
 		}
 
-		result <- query.QueryResult{Result: cropRead}
+		result <- query.Result{Result: cropRead}
 
 		close(result)
 	}()
@@ -106,15 +109,15 @@ func (s CropReadQueryInMemory) FindAllCropsByFarm(farmUID uuid.UUID, status stri
 	return result
 }
 
-func (s CropReadQueryInMemory) CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) CountAllCropsByFarm(farmUID uuid.UUID, status string) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		total := len(s.Storage.CropReadMap)
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 
 		close(result)
 	}()
@@ -122,17 +125,17 @@ func (s CropReadQueryInMemory) CountAllCropsByFarm(farmUID uuid.UUID, status str
 	return result
 }
 
-func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, limit int) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		archives := []storage.CropRead{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-
 				// A crop's current quantity which have zero value should go to archives
 				initialEmpty := true
 				allMovedEmpty := []bool{}
@@ -149,6 +152,7 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, lim
 
 				if initialEmpty {
 					movedEmpty := true
+
 					for _, v := range allMovedEmpty {
 						if !v {
 							movedEmpty = false
@@ -162,7 +166,7 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, lim
 			}
 		}
 
-		result <- query.QueryResult{Result: archives}
+		result <- query.Result{Result: archives}
 
 		close(result)
 	}()
@@ -170,17 +174,17 @@ func (s CropReadQueryInMemory) FindAllCropsArchives(farmUID uuid.UUID, page, lim
 	return result
 }
 
-func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		total := 0
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
-
 				// A crop's current quantity which have zero value should go to archives
 				initialEmpty := true
 				allMovedEmpty := []bool{}
@@ -197,6 +201,7 @@ func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-
 
 				if initialEmpty {
 					movedEmpty := true
+
 					for _, v := range allMovedEmpty {
 						if !v {
 							movedEmpty = false
@@ -210,7 +215,7 @@ func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-
 			}
 		}
 
-		result <- query.QueryResult{Result: total}
+		result <- query.Result{Result: total}
 
 		close(result)
 	}()
@@ -218,14 +223,15 @@ func (s CropReadQueryInMemory) CountAllArchivedCropsByFarm(farmUID uuid.UUID) <-
 	return result
 }
 
-func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		crops := []query.CropAreaByAreaQueryResult{}
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.InitialArea.AreaUID == areaUID {
 				crops = append(crops, query.CropAreaByAreaQueryResult{
@@ -290,10 +296,9 @@ func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan quer
 					})
 				}
 			}
-
 		}
 
-		result <- query.QueryResult{Result: crops}
+		result <- query.Result{Result: crops}
 
 		close(result)
 	}()
@@ -301,8 +306,8 @@ func (s CropReadQueryInMemory) FindAllCropsByArea(areaUID uuid.UUID) <-chan quer
 	return result
 }
 
-func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -312,6 +317,7 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 		harvestProduced := float32(0)
 		plantType := make(map[string]bool)
 		totalPlantVariety := 0
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 				for _, val2 := range val.HarvestedStorage {
@@ -320,6 +326,7 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 
 				if _, ok := plantType[val.Inventory.Name]; !ok {
 					totalPlantVariety++
+
 					plantType[val.Inventory.Name] = true
 				}
 			}
@@ -328,7 +335,7 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 		cropInf.TotalHarvestProduced = harvestProduced
 		cropInf.TotalPlantVariety = totalPlantVariety
 
-		result <- query.QueryResult{Result: cropInf}
+		result <- query.Result{Result: cropInf}
 
 		close(result)
 	}()
@@ -336,8 +343,8 @@ func (s CropReadQueryInMemory) FindCropsInformation(farmUID uuid.UUID) <-chan qu
 	return result
 }
 
-func (s CropReadQueryInMemory) CountTotalBatch(farmUID uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropReadQueryInMemory) CountTotalBatch(farmUID uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
@@ -345,6 +352,7 @@ func (s CropReadQueryInMemory) CountTotalBatch(farmUID uuid.UUID) <-chan query.Q
 
 		varQty := []query.CountTotalBatchQueryResult{}
 		varietyName := make(map[string]int)
+
 		for _, val := range s.Storage.CropReadMap {
 			if val.FarmUID == farmUID {
 				if _, ok := varietyName[val.Inventory.Name]; !ok {
@@ -360,7 +368,7 @@ func (s CropReadQueryInMemory) CountTotalBatch(farmUID uuid.UUID) <-chan query.Q
 			})
 		}
 
-		result <- query.QueryResult{Result: varQty}
+		result <- query.Result{Result: varQty}
 
 		close(result)
 	}()

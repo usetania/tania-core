@@ -31,25 +31,25 @@ import (
 
 // FarmServer ties the routes and handlers with injected dependencies
 type FarmServer struct {
-	FarmEventRepo       repository.FarmEventRepository
-	FarmEventQuery      query.FarmEventQuery
-	FarmReadRepo        repository.FarmReadRepository
-	FarmReadQuery       query.FarmReadQuery
-	ReservoirEventRepo  repository.ReservoirEventRepository
-	ReservoirEventQuery query.ReservoirEventQuery
-	ReservoirReadRepo   repository.ReservoirReadRepository
-	ReservoirReadQuery  query.ReservoirReadQuery
+	FarmEventRepo       repository.FarmEvent
+	FarmEventQuery      query.FarmEvent
+	FarmReadRepo        repository.FarmRead
+	FarmReadQuery       query.FarmRead
+	ReservoirEventRepo  repository.ReservoirEvent
+	ReservoirEventQuery query.ReservoirEvent
+	ReservoirReadRepo   repository.ReservoirRead
+	ReservoirReadQuery  query.ReservoirRead
 	ReservoirService    domain.ReservoirService
-	AreaEventRepo       repository.AreaEventRepository
-	AreaReadRepo        repository.AreaReadRepository
-	AreaEventQuery      query.AreaEventQuery
-	AreaReadQuery       query.AreaReadQuery
+	AreaEventRepo       repository.AreaEvent
+	AreaReadRepo        repository.AreaRead
+	AreaEventQuery      query.AreaEvent
+	AreaReadQuery       query.AreaRead
 	AreaService         domain.AreaService
-	MaterialEventRepo   repository.MaterialEventRepository
-	MaterialEventQuery  query.MaterialEventQuery
-	MaterialReadRepo    repository.MaterialReadRepository
-	MaterialReadQuery   query.MaterialReadQuery
-	CropReadQuery       query.CropReadQuery
+	MaterialEventRepo   repository.MaterialEvent
+	MaterialEventQuery  query.MaterialEvent
+	MaterialReadRepo    repository.MaterialRead
+	MaterialReadQuery   query.MaterialRead
+	CropReadQuery       query.CropRead
 	File                File
 	EventBus            eventbus.TaniaEventBus
 }
@@ -74,7 +74,7 @@ func NewFarmServer(
 	}
 
 	switch *config.Config.TaniaPersistenceEngine {
-	case config.DB_INMEMORY:
+	case config.DBInmemory:
 		farmServer.FarmEventRepo = repoInMem.NewFarmEventRepositoryInMemory(farmEventStorage)
 		farmServer.FarmEventQuery = queryInMem.NewFarmEventQueryInMemory(farmEventStorage)
 		farmServer.FarmReadRepo = repoInMem.NewFarmReadRepositoryInMemory(farmReadStorage)
@@ -108,7 +108,7 @@ func NewFarmServer(
 			FarmReadQuery: farmServer.FarmReadQuery,
 		}
 
-	case config.DB_SQLITE:
+	case config.DBSqlite:
 		farmServer.FarmEventRepo = repoSqlite.NewFarmEventRepositorySqlite(db)
 		farmServer.FarmEventQuery = querySqlite.NewFarmEventQuerySqlite(db)
 		farmServer.FarmReadRepo = repoSqlite.NewFarmReadRepositorySqlite(db)
@@ -142,7 +142,7 @@ func NewFarmServer(
 			FarmReadQuery: farmServer.FarmReadQuery,
 		}
 
-	case config.DB_MYSQL:
+	case config.DBMysql:
 		farmServer.FarmEventRepo = repoMysql.NewFarmEventRepositoryMysql(db)
 		farmServer.FarmEventQuery = queryMysql.NewFarmEventQueryMysql(db)
 		farmServer.FarmReadRepo = repoMysql.NewFarmReadRepositoryMysql(db)
@@ -214,7 +214,6 @@ func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("MaterialExpirationDateChanged", s.SaveToMaterialReadModel)
 	s.EventBus.Subscribe("MaterialNotesChanged", s.SaveToMaterialReadModel)
 	s.EventBus.Subscribe("MaterialProducedByChanged", s.SaveToMaterialReadModel)
-
 }
 
 // Mount defines the FarmServer's endpoints with its handlers
@@ -270,6 +269,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 
 	data := make(map[string][]storage.FarmRead)
 	data["data"] = farms
+
 	if len(farms) == 0 {
 		data["data"] = []storage.FarmRead{}
 	}
@@ -329,23 +329,23 @@ func (s *FarmServer) UpdateFarm(c echo.Context) error {
 	}
 
 	if farmRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if latitude != "" && longitude == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "longitude"))
+		return Error(c, NewRequestValidationError(Required, "longitude"))
 	}
 
 	if longitude != "" && latitude == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "latitude"))
+		return Error(c, NewRequestValidationError(Required, "latitude"))
 	}
 
 	if country != "" && city == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "city"))
+		return Error(c, NewRequestValidationError(Required, "city"))
 	}
 
 	if city != "" && country == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "country"))
+		return Error(c, NewRequestValidationError(Required, "country"))
 	}
 
 	// Process //
@@ -499,11 +499,11 @@ func (s *FarmServer) UpdateReservoir(c echo.Context) error {
 	}
 
 	if reservoirRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(REQUIRED, "id"))
+		return Error(c, NewRequestValidationError(Required, "id"))
 	}
 
 	if resType == domain.BucketType && capacity == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "capacity"))
+		return Error(c, NewRequestValidationError(Required, "capacity"))
 	}
 
 	if resType != "" {
@@ -584,11 +584,11 @@ func (s *FarmServer) SaveReservoirNotes(c echo.Context) error {
 	}
 
 	if reservoirRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(REQUIRED, "id"))
+		return Error(c, NewRequestValidationError(Required, "id"))
 	}
 
 	if content == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+		return Error(c, NewRequestValidationError(Required, "content"))
 	}
 
 	// Process //
@@ -648,10 +648,11 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 	}
 
 	if reservoirRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "reservoir_id"))
+		return Error(c, NewRequestValidationError(NotFound, "reservoir_id"))
 	}
 
 	noteFound := false
+
 	for _, v := range reservoirRead.Notes {
 		if v.UID == noteUID {
 			noteFound = true
@@ -659,7 +660,7 @@ func (s *FarmServer) RemoveReservoirNotes(c echo.Context) error {
 	}
 
 	if !noteFound {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "note_id"))
+		return Error(c, NewRequestValidationError(NotFound, "note_id"))
 	}
 
 	// Process //
@@ -713,6 +714,7 @@ func (s *FarmServer) GetFarmReservoirs(c echo.Context) error {
 	}
 
 	data := make(map[string][]storage.ReservoirRead)
+
 	for _, v := range reservoirs {
 		r, err := MapToReservoirReadFromRead(s, v)
 		if err != nil {
@@ -743,10 +745,11 @@ func (s *FarmServer) GetReservoirsByID(c echo.Context) error {
 	}
 
 	if reservoir.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(REQUIRED, "reservoir_id"))
+		return Error(c, NewRequestValidationError(Required, "reservoir_id"))
 	}
 
 	data := make(map[string]storage.ReservoirRead)
+
 	data["data"], err = MapToReservoirReadFromRead(s, reservoir)
 	if err != nil {
 		Error(c, err)
@@ -830,6 +833,7 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	s.publishUncommittedEvents(area)
 
 	data := make(map[string]DetailArea)
+
 	detailArea, err := MapToDetailArea(s, *area)
 	if err != nil {
 		return Error(c, err)
@@ -868,15 +872,15 @@ func (s *FarmServer) UpdateArea(c echo.Context) error {
 	}
 
 	if areaRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if size != "" && sizeUnit == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "size_unit"))
+		return Error(c, NewRequestValidationError(Required, "size_unit"))
 	}
 
 	if sizeUnit != "" && size == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "size"))
+		return Error(c, NewRequestValidationError(Required, "size"))
 	}
 
 	// Process //
@@ -983,6 +987,7 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 	if err != nil {
 		return Error(c, err)
 	}
+
 	content := c.FormValue("content")
 
 	// Validate //
@@ -997,11 +1002,11 @@ func (s *FarmServer) SaveAreaNotes(c echo.Context) error {
 	}
 
 	if areaRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	if content == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "content"))
+		return Error(c, NewRequestValidationError(Required, "content"))
 	}
 
 	// Process //
@@ -1063,10 +1068,11 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	}
 
 	if areaRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "area_id"))
+		return Error(c, NewRequestValidationError(NotFound, "area_id"))
 	}
 
 	found := false
+
 	for _, v := range areaRead.Notes {
 		if v.UID == noteUID {
 			found = true
@@ -1074,7 +1080,7 @@ func (s *FarmServer) RemoveAreaNotes(c echo.Context) error {
 	}
 
 	if !found {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "note_id"))
+		return Error(c, NewRequestValidationError(NotFound, "note_id"))
 	}
 
 	// // Process //
@@ -1160,7 +1166,7 @@ func (s *FarmServer) GetAreasByID(c echo.Context) error {
 	}
 
 	if farmRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "farm_id"))
+		return Error(c, NewRequestValidationError(NotFound, "farm_id"))
 	}
 
 	queryResult = <-s.AreaReadQuery.FindByIDAndFarm(areaUID, farmUID)
@@ -1174,7 +1180,7 @@ func (s *FarmServer) GetAreasByID(c echo.Context) error {
 	}
 
 	if areaRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "area_id"))
+		return Error(c, NewRequestValidationError(NotFound, "area_id"))
 	}
 
 	detailArea, err := MapToDetailAreaFromStorage(s, areaRead)
@@ -1211,7 +1217,7 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	}
 
 	if farmRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "farm_id"))
+		return Error(c, NewRequestValidationError(NotFound, "farm_id"))
 	}
 
 	queryResult = <-s.AreaReadQuery.FindByIDAndFarm(areaUID, farmUID)
@@ -1225,11 +1231,11 @@ func (s *FarmServer) GetAreaPhotos(c echo.Context) error {
 	}
 
 	if areaRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "area_id"))
+		return Error(c, NewRequestValidationError(NotFound, "area_id"))
 	}
 
 	if areaRead.Photo.Filename == "" {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "photo"))
+		return Error(c, NewRequestValidationError(NotFound, "photo"))
 	}
 
 	// Process //
@@ -1355,14 +1361,15 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	// Validate //
 	q, err := strconv.ParseFloat(quantity, 32)
 	if err != nil {
-		return Error(c, NewRequestValidationError(INVALID_OPTION, "quantity"))
+		return Error(c, NewRequestValidationError(InvalidOption, "quantity"))
 	}
 
 	var expDate *time.Time
+
 	if expirationDate != "" {
 		tp, err := time.Parse("2006-01-02", expirationDate)
 		if err != nil {
-			return Error(c, NewRequestValidationError(PARSE_FAILED, "expiration_date"))
+			return Error(c, NewRequestValidationError(ParseFailed, "expiration_date"))
 		}
 
 		expDate = &tp
@@ -1380,26 +1387,27 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 
 	// Process //
 	var mt domain.MaterialType
+
 	switch materialTypeParam {
 	case strings.ToLower(domain.MaterialTypeSeedCode):
 		pt := domain.GetPlantType(plantType)
 		if pt == (domain.PlantType{}) {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "plant_type"))
 		}
 
 		mt, err = domain.CreateMaterialTypeSeed(pt.Code)
 		if err != nil {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "type"))
 		}
 	case strings.ToLower(domain.MaterialTypeAgrochemicalCode):
 		ct := domain.GetChemicalType(chemicalType)
 		if ct == (domain.ChemicalType{}) {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "chemical_type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "chemical_type"))
 		}
 
 		mt, err = domain.CreateMaterialTypeAgrochemical(ct.Code)
 		if err != nil {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "type"))
 		}
 	case strings.ToLower(domain.MaterialTypeGrowingMediumCode):
 		mt = domain.MaterialTypeGrowingMedium{}
@@ -1408,12 +1416,12 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	case strings.ToLower(domain.MaterialTypeSeedingContainerCode):
 		ct := domain.GetContainerType(containerType)
 		if ct == (domain.ContainerType{}) {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "container_type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "container_type"))
 		}
 
 		mt, err = domain.CreateMaterialTypeSeedingContainer(ct.Code)
 		if err != nil {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "type"))
 		}
 	case strings.ToLower(domain.MaterialTypePostHarvestSupplyCode):
 		mt = domain.MaterialTypePostHarvestSupply{}
@@ -1422,12 +1430,12 @@ func (s *FarmServer) SaveMaterial(c echo.Context) error {
 	case strings.ToLower(domain.MaterialTypePlantCode):
 		pt := domain.GetPlantType(plantType)
 		if pt == (domain.PlantType{}) {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "plant_type"))
 		}
 
 		mt, err = domain.CreateMaterialTypePlant(pt.Code)
 		if err != nil {
-			return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+			return Error(c, NewRequestValidationError(InvalidOption, "type"))
 		}
 	}
 
@@ -1477,26 +1485,27 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 
 	// Validate //
 	if pricePerUnit != "" && currencyCode == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "currency_code"))
+		return Error(c, NewRequestValidationError(Required, "currency_code"))
 	}
 
 	if currencyCode != "" && pricePerUnit == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "price_per_unit"))
+		return Error(c, NewRequestValidationError(Required, "price_per_unit"))
 	}
 
 	if quantity != "" && quantityUnit == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "quantity_unit"))
+		return Error(c, NewRequestValidationError(Required, "quantity_unit"))
 	}
 
 	if quantityUnit != "" && quantity == "" {
-		return Error(c, NewRequestValidationError(REQUIRED, "quantity"))
+		return Error(c, NewRequestValidationError(Required, "quantity"))
 	}
 
 	var expDate *time.Time
+
 	if expirationDate != "" {
 		tp, err := time.Parse("2006-01-02", expirationDate)
 		if err != nil {
-			return Error(c, NewRequestValidationError(PARSE_FAILED, "expiration_date"))
+			return Error(c, NewRequestValidationError(ParseFailed, "expiration_date"))
 		}
 
 		expDate = &tp
@@ -1523,22 +1532,23 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 	}
 
 	if materialRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	// Process //
 	var mt domain.MaterialType
+
 	switch materialTypeParam {
 	case strings.ToLower(domain.MaterialTypeSeedCode):
 		if plantType != "" {
 			pt := domain.GetPlantType(plantType)
 			if pt == (domain.PlantType{}) {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "plant_type"))
 			}
 
 			mt, err = domain.CreateMaterialTypeSeed(pt.Code)
 			if err != nil {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "type"))
 			}
 
 			materialRead.Type = mt
@@ -1547,12 +1557,12 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 		if chemicalType != "" {
 			ct := domain.GetChemicalType(chemicalType)
 			if ct == (domain.ChemicalType{}) {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "chemical_type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "chemical_type"))
 			}
 
 			mt, err = domain.CreateMaterialTypeAgrochemical(ct.Code)
 			if err != nil {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "type"))
 			}
 
 			materialRead.Type = mt
@@ -1561,12 +1571,12 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 		if containerType != "" {
 			ct := domain.GetContainerType(containerType)
 			if ct == (domain.ContainerType{}) {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "container_type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "container_type"))
 			}
 
 			mt, err = domain.CreateMaterialTypeSeedingContainer(ct.Code)
 			if err != nil {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "type"))
 			}
 
 			materialRead.Type = mt
@@ -1575,12 +1585,12 @@ func (s *FarmServer) UpdateMaterial(c echo.Context) error {
 		if plantType != "" {
 			pt := domain.GetPlantType(plantType)
 			if pt == (domain.PlantType{}) {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "plant_type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "plant_type"))
 			}
 
 			mt, err = domain.CreateMaterialTypePlant(pt.Code)
 			if err != nil {
-				return Error(c, NewRequestValidationError(INVALID_OPTION, "type"))
+				return Error(c, NewRequestValidationError(InvalidOption, "type"))
 			}
 
 			materialRead.Type = mt
@@ -1656,7 +1666,7 @@ func (s *FarmServer) GetMaterialByID(c echo.Context) error {
 	materialRead := queryResult.Result.(storage.MaterialRead)
 
 	if materialRead.UID == (uuid.UUID{}) {
-		return Error(c, NewRequestValidationError(NOT_FOUND, "id"))
+		return Error(c, NewRequestValidationError(NotFound, "id"))
 	}
 
 	data := make(map[string]Material)
@@ -1684,7 +1694,7 @@ func (s *FarmServer) GetAvailableMaterialPlantType(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
+func (s *FarmServer) publishUncommittedEvents(entity interface{}) {
 	switch e := entity.(type) {
 	case *domain.Farm:
 		for _, v := range e.UncommittedChanges {
@@ -1707,6 +1717,4 @@ func (s *FarmServer) publishUncommittedEvents(entity interface{}) error {
 			s.EventBus.Publish(name, v)
 		}
 	}
-
-	return nil
 }

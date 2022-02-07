@@ -9,11 +9,11 @@ type TaskReadRepositoryInMemory struct {
 	Storage *storage.TaskReadStorage
 }
 
-func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) repository.TaskReadRepository {
+func NewTaskReadRepositoryInMemory(s *storage.TaskReadStorage) repository.TaskRead {
 	return &TaskReadRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *TaskReadRepositoryInMemory) Save(taskRead *storage.TaskRead) <-chan error {
 	result := make(chan error)
 

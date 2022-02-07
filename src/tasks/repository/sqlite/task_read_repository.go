@@ -14,7 +14,7 @@ type TaskReadRepositorySqlite struct {
 	DB *sql.DB
 }
 
-func NewTaskReadRepositorySqlite(s *sql.DB) repository.TaskReadRepository {
+func NewTaskReadRepositorySqlite(s *sql.DB) repository.TaskRead {
 	return &TaskReadRepositorySqlite{DB: s}
 }
 
@@ -23,25 +23,28 @@ func (f *TaskReadRepositorySqlite) Save(taskRead *storage.TaskRead) <-chan error
 
 	go func() {
 		var dueDate *string
+
 		if taskRead.DueDate != nil && !taskRead.DueDate.IsZero() {
 			d := taskRead.DueDate.Format(time.RFC3339)
 			dueDate = &d
 		}
 
 		var completedDate *string
+
 		if taskRead.CompletedDate != nil && !taskRead.CompletedDate.IsZero() {
 			d := taskRead.CompletedDate.Format(time.RFC3339)
 			completedDate = &d
 		}
 
 		var cancelledDate *string
+
 		if taskRead.CancelledDate != nil && !taskRead.CancelledDate.IsZero() {
 			d := taskRead.CancelledDate.Format(time.RFC3339)
 			cancelledDate = &d
 		}
 
-		var domainDataMaterialID *uuid.UUID
-		var domainDataAreaID *uuid.UUID
+		var domainDataMaterialID, domainDataAreaID *uuid.UUID
+
 		switch v := taskRead.DomainDetails.(type) {
 		case domain.TaskDomainArea:
 			domainDataMaterialID = v.MaterialID
@@ -62,7 +65,6 @@ func (f *TaskReadRepositorySqlite) Save(taskRead *storage.TaskRead) <-chan error
 			completedDate, cancelledDate, taskRead.Priority, taskRead.Status,
 			taskRead.Domain, domainDataMaterialID, domainDataAreaID, taskRead.Category, taskRead.IsDue, taskRead.AssetID,
 			taskRead.UID)
-
 		if err != nil {
 			result <- err
 		}
@@ -84,7 +86,6 @@ func (f *TaskReadRepositorySqlite) Save(taskRead *storage.TaskRead) <-chan error
 				taskRead.UID, taskRead.Title, taskRead.Description, taskRead.CreatedDate.Format(time.RFC3339), dueDate,
 				completedDate, cancelledDate, taskRead.Priority, taskRead.Status,
 				taskRead.Domain, domainDataMaterialID, domainDataAreaID, taskRead.Category, taskRead.IsDue, taskRead.AssetID)
-
 			if err != nil {
 				result <- err
 			}

@@ -16,7 +16,6 @@ func (s *AuthServer) SaveToUserReadModel(event interface{}) error {
 		userRead.Password = e.Password
 		userRead.CreatedDate = e.CreatedDate
 		userRead.LastUpdated = e.LastUpdated
-
 	}
 
 	err := <-s.UserReadRepo.Save(userRead)

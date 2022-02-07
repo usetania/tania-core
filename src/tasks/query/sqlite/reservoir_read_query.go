@@ -11,32 +11,32 @@ type ReservoirQuerySqlite struct {
 	DB *sql.DB
 }
 
-func NewReservoirQuerySqlite(db *sql.DB) query.ReservoirQuery {
+func NewReservoirQuerySqlite(db *sql.DB) query.Reservoir {
 	return ReservoirQuerySqlite{DB: db}
 }
 
-func (s ReservoirQuerySqlite) FindReservoirByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s ReservoirQuerySqlite) FindReservoirByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		rowsData := struct {
 			UID  string
 			Name string
 		}{}
-		reservoir := query.TaskReservoirQueryResult{}
+		reservoir := query.TaskReservoirResult{}
 
 		s.DB.QueryRow(`SELECT UID, NAME
 			FROM RESERVOIR_READ WHERE UID = ?`, uid).Scan(&rowsData.UID, &rowsData.Name)
 
 		reservoirUID, err := uuid.FromString(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		reservoir.UID = reservoirUID
 		reservoir.Name = rowsData.Name
 
-		result <- query.QueryResult{Result: reservoir}
+		result <- query.Result{Result: reservoir}
 
 		close(result)
 	}()

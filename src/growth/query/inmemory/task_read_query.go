@@ -17,14 +17,15 @@ func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskReadQuery {
 	return TaskReadQueryInMemory{Storage: s}
 }
 
-func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		task := query.CropTaskQueryResult{}
+
 		for _, val := range s.Storage.TaskReadMap {
 			if val.UID == uid {
 				task.UID = uid
@@ -37,7 +38,7 @@ func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 				if val.Domain == "CROP" {
 					tdc, ok := val.DomainDetails.(tasksdomain.TaskDomainCrop)
 					if !ok {
-						result <- query.QueryResult{Error: errors.New("error type assertion")}
+						result <- query.Result{Error: errors.New("error type assertion")}
 					}
 
 					task.AreaUID = *tdc.AreaID
@@ -46,7 +47,7 @@ func (s TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult 
 			}
 		}
 
-		result <- query.QueryResult{Result: task}
+		result <- query.Result{Result: task}
 
 		close(result)
 	}()

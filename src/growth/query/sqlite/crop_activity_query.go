@@ -31,8 +31,8 @@ type cropActivityResult struct {
 	Description      string
 }
 
-func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropActivities := []storage.CropActivity{}
@@ -40,7 +40,7 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 
 		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY WHERE CROP_UID = ? ORDER BY CREATED_DATE DESC`, uid)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -55,7 +55,7 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 				&rowsData.Description,
 			)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
@@ -63,17 +63,17 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("error type assertion")}
+				result <- query.Result{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromString(rowsData.CropUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropActivities = append(cropActivities, storage.CropActivity{
@@ -86,15 +86,15 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Que
 			})
 		}
 
-		result <- query.QueryResult{Result: cropActivities}
+		result <- query.Result{Result: cropActivities}
 		close(result)
 	}()
 
 	return result
 }
 
-func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		cropActivity := storage.CropActivity{}
@@ -102,13 +102,13 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 
 		at, ok := activityType.(storage.ActivityType)
 		if !ok {
-			result <- query.QueryResult{Error: errors.New("wrong activity type")}
+			result <- query.Result{Error: errors.New("wrong activity type")}
 		}
 
 		rows, err := s.DB.Query(`SELECT * FROM CROP_ACTIVITY
 			WHERE CROP_UID = ? AND ACTIVITY_TYPE_CODE = ?`, uid, at.Code())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		for rows.Next() {
@@ -123,7 +123,7 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 				&rowsData.Description,
 			)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			wrapper := decoder.CropActivityTypeWrapper{}
@@ -131,17 +131,17 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 
 			activityType, ok := wrapper.Data.(storage.ActivityType)
 			if !ok {
-				result <- query.QueryResult{Error: errors.New("error type assertion")}
+				result <- query.Result{Error: errors.New("error type assertion")}
 			}
 
 			cropUID, err := uuid.FromString(rowsData.CropUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			createdDate, err := time.Parse(time.RFC3339, rowsData.CreatedDate)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			cropActivity = storage.CropActivity{
@@ -154,7 +154,7 @@ func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, acti
 			}
 		}
 
-		result <- query.QueryResult{Result: cropActivity}
+		result <- query.Result{Result: cropActivity}
 		close(result)
 	}()
 

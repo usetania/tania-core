@@ -10,18 +10,19 @@ type AreaQueryInMemory struct {
 	Storage *storage.AreaReadStorage
 }
 
-func NewAreaQueryInMemory(s *storage.AreaReadStorage) query.AreaQuery {
+func NewAreaQueryInMemory(s *storage.AreaReadStorage) query.Area {
 	return AreaQueryInMemory{Storage: s}
 }
 
-func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
-		area := query.TaskAreaQueryResult{}
+		area := query.TaskAreaResult{}
+
 		for _, val := range s.Storage.AreaReadMap {
 			if val.UID == uid {
 				area.UID = uid
@@ -29,7 +30,7 @@ func (s AreaQueryInMemory) FindByID(uid uuid.UUID) <-chan query.QueryResult {
 			}
 		}
 
-		result <- query.QueryResult{Result: area}
+		result <- query.Result{Result: area}
 
 		close(result)
 	}()

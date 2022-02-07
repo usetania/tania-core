@@ -10,7 +10,7 @@ import (
 )
 
 // EventWrapper is used to wrap the event interface with its struct name,
-// so it will be easier to unmarshal later
+// so it will be easier to unmarshal later.
 type EventWrapper struct {
 	EventName string
 	EventData interface{}
@@ -40,6 +40,7 @@ func UIDHook() mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(uuid.UUID{}) {
 			return data, nil
 		}
@@ -53,6 +54,7 @@ func TimeHook(layout string) mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(time.Time{}) {
 			return data, nil
 		}
@@ -70,6 +72,7 @@ func PasswordHook() mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf([]byte{}) {
 			return data, nil
 		}

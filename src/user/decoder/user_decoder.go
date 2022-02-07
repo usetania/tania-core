@@ -50,7 +50,6 @@ func (w *UserEventWrapper) UnmarshalJSON(b []byte) error {
 		}
 
 		w.EventData = e
-
 	}
 
 	return nil

@@ -15,19 +15,19 @@ type AreaEventQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewAreaEventQueryMysql(db *sql.DB) query.AreaEventQuery {
+func NewAreaEventQueryMysql(db *sql.DB) query.AreaEvent {
 	return &AreaEventQueryMysql{DB: db}
 }
 
-func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		events := []storage.AreaEvent{}
 
 		rows, err := f.DB.Query("SELECT * FROM AREA_EVENT WHERE AREA_UID = ? ORDER BY VERSION ASC", uid.Bytes())
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		rowsData := struct {
@@ -39,17 +39,21 @@ func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResul
 		}{}
 
 		for rows.Next() {
-			rows.Scan(&rowsData.ID, &rowsData.AreaUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			err := rows.Scan(&rowsData.ID, &rowsData.AreaUID, &rowsData.Version, &rowsData.CreatedDate, &rowsData.Event)
+			if err != nil {
+				result <- query.Result{Error: err}
+			}
 
 			wrapper := decoder.AreaEventWrapper{}
-			err := json.Unmarshal(rowsData.Event, &wrapper)
+
+			err = json.Unmarshal(rowsData.Event, &wrapper)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			areaUID, err := uuid.FromBytes(rowsData.AreaUID)
 			if err != nil {
-				result <- query.QueryResult{Error: err}
+				result <- query.Result{Error: err}
 			}
 
 			events = append(events, storage.AreaEvent{
@@ -60,7 +64,7 @@ func (f *AreaEventQueryMysql) FindAllByID(uid uuid.UUID) <-chan query.QueryResul
 			})
 		}
 
-		result <- query.QueryResult{Result: events}
+		result <- query.Result{Result: events}
 		close(result)
 	}()
 

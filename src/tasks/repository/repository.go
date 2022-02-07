@@ -6,9 +6,9 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-// RepositoryResult is a struct to wrap repository result
-// so its easy to use it in channel
-type RepositoryResult struct {
+// Result is a struct to wrap repository result
+// so its easy to use it in channel.
+type Result struct {
 	Result interface{}
 	Error  error
 }
@@ -20,7 +20,7 @@ type EventWrapper struct {
 	EventData interface{}
 }
 
-type TaskEventRepository interface {
+type TaskEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
@@ -30,9 +30,10 @@ func BuildTaskFromEventHistory(taskService domain.TaskService, events []storage.
 		state.Transition(taskService, v.Event)
 		state.Version++
 	}
+
 	return state
 }
 
-type TaskReadRepository interface {
+type TaskRead interface {
 	Save(taskRead *storage.TaskRead) <-chan error
 }

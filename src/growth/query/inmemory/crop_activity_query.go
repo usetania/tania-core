@@ -14,21 +14,22 @@ func NewCropActivityQueryInMemory(s *storage.CropActivityStorage) query.CropActi
 	return CropActivityQueryInMemory{Storage: s}
 }
 
-func (s CropActivityQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropActivityQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		activities := []storage.CropActivity{}
+
 		for _, val := range s.Storage.CropActivityMap {
 			if val.UID == uid {
 				activities = append(activities, val)
 			}
 		}
 
-		result <- query.QueryResult{Result: activities}
+		result <- query.Result{Result: activities}
 
 		close(result)
 	}()
@@ -36,14 +37,15 @@ func (s CropActivityQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.Q
 	return result
 }
 
-func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		s.Storage.Lock.RLock()
 		defer s.Storage.Lock.RUnlock()
 
 		activity := storage.CropActivity{}
+
 		for _, val := range s.Storage.CropActivityMap {
 			var at storage.ActivityType
 			switch v := activityType.(type) {
@@ -56,7 +58,7 @@ func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(uid uuid.UUID, ac
 			}
 		}
 
-		result <- query.QueryResult{Result: activity}
+		result <- query.Result{Result: activity}
 
 		close(result)
 	}()

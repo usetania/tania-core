@@ -3,10 +3,9 @@ package inmemory
 import (
 	"testing"
 
+	"github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/Tanibox/tania-core/src/assets/storage"
 	"github.com/gofrs/uuid"
-
-	"github.com/Tanibox/tania-core/src/assets/domain"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -17,6 +16,7 @@ type ReservoirServiceMock struct {
 
 func (m *ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarmServiceResult, error) {
 	args := m.Called(uid)
+
 	return args.Get(0).(domain.ReservoirFarmServiceResult), nil
 }
 
@@ -41,6 +41,7 @@ func TestReservoirEventInMemorySave(t *testing.T) {
 
 	// When
 	var err1, err2 error
+
 	go func() {
 		err1 = <-repo.Save(reservoir1.UID, reservoir1.Version, reservoir1.UncommittedChanges)
 		err2 = <-repo.Save(reservoir2.UID, reservoir2.Version, reservoir2.UncommittedChanges)

@@ -241,6 +241,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		isFound := false
+
 		for i, v := range cropRead.MovedArea {
 			ma, ok := e.UpdatedDstArea.(domain.MovedArea)
 			if ok {
@@ -270,12 +271,15 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		if dstArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding += e.Quantity
 		}
+
 		if dstArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing += e.Quantity
 		}
+
 		if srcArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding -= e.Quantity
 		}
+
 		if srcArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing -= e.Quantity
 		}
@@ -313,6 +317,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		isFound := false
+
 		for i, v := range cropRead.HarvestedStorage {
 			if v.SourceAreaUID == e.UpdatedHarvestedStorage.SourceAreaUID {
 				cropRead.HarvestedStorage[i] = hs
@@ -368,6 +373,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		}
 
 		isFound := false
+
 		for i, v := range cropRead.Trash {
 			if v.SourceAreaUID == e.UpdatedTrash.SourceAreaUID {
 				cropRead.Trash[i] = storage.Trash{
@@ -396,7 +402,6 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			da := e.DumpedArea.(domain.InitialArea)
 			cropRead.InitialArea.CurrentQuantity = da.CurrentQuantity
 			cropRead.InitialArea.LastUpdated = da.LastUpdated
-
 		} else if e.DumpedAreaCode == "MOVED_AREA" {
 			da := e.DumpedArea.(domain.MovedArea)
 
@@ -411,6 +416,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		if srcArea.Type == "SEEDING" {
 			cropRead.AreaStatus.Seeding -= e.Quantity
 		}
+
 		if srcArea.Type == "GROWING" {
 			cropRead.AreaStatus.Growing -= e.Quantity
 		}
@@ -479,6 +485,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 		cropRead = &cr
 
 		cropNoteTmp := []domain.CropNote{}
+
 		for _, v := range cropRead.Notes {
 			if v.UID != e.UID {
 				cropNoteTmp = append(cropNoteTmp, v)
@@ -770,6 +777,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			}
 
 			areaQueryResult := query.CropAreaQueryResult{}
+
 			if taskQueryResult.AreaUID != (uuid.UUID{}) {
 				queryResult := <-s.AreaReadQuery.FindByID(taskQueryResult.AreaUID)
 				if queryResult.Error != nil {
@@ -783,6 +791,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			}
 
 			materialQueryResult := query.CropMaterialQueryResult{}
+
 			if taskQueryResult.MaterialUID != (uuid.UUID{}) {
 				queryResult := <-s.MaterialReadQuery.FindByID(taskQueryResult.MaterialUID)
 				if queryResult.Error != nil {
@@ -838,7 +847,6 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 				}
 			}
 		}
-
 	}
 
 	if cropActivity.UID != (uuid.UUID{}) {

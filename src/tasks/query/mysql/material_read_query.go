@@ -11,12 +11,12 @@ type MaterialQueryMysql struct {
 	DB *sql.DB
 }
 
-func NewMaterialQueryMysql(db *sql.DB) query.MaterialQuery {
+func NewMaterialQueryMysql(db *sql.DB) query.Material {
 	return MaterialQueryMysql{DB: db}
 }
 
-func (s MaterialQueryMysql) FindMaterialByID(uid uuid.UUID) <-chan query.QueryResult {
-	result := make(chan query.QueryResult)
+func (s MaterialQueryMysql) FindMaterialByID(uid uuid.UUID) <-chan query.Result {
+	result := make(chan query.Result)
 
 	go func() {
 		rowsData := struct {
@@ -25,14 +25,14 @@ func (s MaterialQueryMysql) FindMaterialByID(uid uuid.UUID) <-chan query.QueryRe
 			Type     string
 			TypeData string
 		}{}
-		material := query.TaskMaterialQueryResult{}
+		material := query.TaskMaterialResult{}
 
 		s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA
 			FROM MATERIAL_READ WHERE UID = ?`, uid.Bytes()).Scan(&rowsData.UID, &rowsData.Name, &rowsData.Type, &rowsData.TypeData)
 
 		materialUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {
-			result <- query.QueryResult{Error: err}
+			result <- query.Result{Error: err}
 		}
 
 		material.UID = materialUID
@@ -40,7 +40,7 @@ func (s MaterialQueryMysql) FindMaterialByID(uid uuid.UUID) <-chan query.QueryRe
 		material.TypeCode = rowsData.Type
 		material.DetailedTypeCode = rowsData.TypeData
 
-		result <- query.QueryResult{Result: material}
+		result <- query.Result{Result: material}
 
 		close(result)
 	}()

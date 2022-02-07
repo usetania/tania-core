@@ -14,8 +14,10 @@ type UserServiceMock struct {
 
 func (m *UserServiceMock) FindUserByUsername(username string) (UserServiceResult, error) {
 	args := m.Called(username)
+
 	return args.Get(0).(UserServiceResult), nil
 }
+
 func TestCreateUser(t *testing.T) {
 	// Given
 	userServiceMock := new(UserServiceMock)
@@ -32,6 +34,7 @@ func TestCreateUser(t *testing.T) {
 	// Given
 	userServiceMock2 := new(UserServiceMock)
 	userUID, _ := uuid.NewV4()
+
 	userServiceMock2.On("FindUserByUsername", "username").Return(UserServiceResult{
 		UID:      userUID,
 		Username: "username",

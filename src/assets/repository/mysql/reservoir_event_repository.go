@@ -15,7 +15,7 @@ type ReservoirEventRepositoryMysql struct {
 	DB *sql.DB
 }
 
-func NewReservoirEventRepositoryMysql(db *sql.DB) repository.ReservoirEventRepository {
+func NewReservoirEventRepositoryMysql(db *sql.DB) repository.ReservoirEvent {
 	return &ReservoirEventRepositoryMysql{DB: db}
 }
 
@@ -29,7 +29,6 @@ func (f *ReservoirEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, e
 			stmt, err := f.DB.Prepare(`INSERT INTO RESERVOIR_EVENT
 				(RESERVOIR_UID, VERSION, CREATED_DATE, EVENT)
 				VALUES (?, ?, ?, ?)`)
-
 			if err != nil {
 				result <- err
 			}
@@ -38,7 +37,6 @@ func (f *ReservoirEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, e
 				EventName: structhelper.GetName(v),
 				EventData: v,
 			})
-
 			if err != nil {
 				panic(err)
 			}

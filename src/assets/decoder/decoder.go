@@ -40,6 +40,7 @@ func UIDHook() mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(uuid.UUID{}) {
 			return data, nil
 		}
@@ -53,6 +54,7 @@ func TimeHook(layout string) mapstructure.DecodeHookFunc {
 		if f.Kind() != reflect.String {
 			return data, nil
 		}
+
 		if t != reflect.TypeOf(time.Time{}) {
 			return data, nil
 		}
@@ -75,7 +77,7 @@ func WaterSourceHook() mapstructure.DecodeHookFunc {
 		}
 
 		mapped := data.(map[string]interface{})
-		cap := float32(0)
+		capacity := float32(0)
 
 		// If Tap, it won't have Capacity, then it won't go inside loop.
 		for key, val := range mapped {
@@ -84,14 +86,14 @@ func WaterSourceHook() mapstructure.DecodeHookFunc {
 			}
 
 			c := val.(float64)
-			cap = float32(c)
+			capacity = float32(c)
 		}
 
-		if cap == 0 {
+		if capacity == 0 {
 			return domain.Tap{}, nil
 		}
 
-		return domain.Bucket{Capacity: cap}, nil
+		return domain.Bucket{Capacity: capacity}, nil
 	}
 }
 

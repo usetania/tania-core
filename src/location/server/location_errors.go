@@ -1,7 +1,7 @@
 package location
 
-// LocationError is a custom error from Go built-in error
-type LocationError struct {
+// Error is a custom error from Go built-in error
+type Error struct {
 	code int
 }
 
@@ -10,7 +10,7 @@ const (
 	LocationErrorInvalidCityCode           // 1
 )
 
-func (e LocationError) Error() string {
+func (e Error) Error() string {
 	switch e.code {
 	case LocationErrorInvalidCountryCode:
 		return "Country code value is invalid."

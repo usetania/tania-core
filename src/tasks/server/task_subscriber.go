@@ -15,7 +15,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 
 	switch e := event.(type) {
 	case domain.TaskCreated:
-
 		taskRead.Title = e.Title
 		taskRead.UID = e.UID
 		taskRead.Description = e.Description
@@ -29,7 +28,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead.IsDue = e.IsDue
 		taskRead.AssetID = e.AssetID
 	case domain.TaskTitleChanged:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -39,7 +37,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.Title = e.Title
 		taskRead = taskReadFromRepo
 	case domain.TaskDescriptionChanged:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -49,7 +46,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.Description = e.Description
 		taskRead = taskReadFromRepo
 	case domain.TaskPriorityChanged:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -59,7 +55,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.Priority = e.Priority
 		taskRead = taskReadFromRepo
 	case domain.TaskDueDateChanged:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -69,7 +64,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.DueDate = e.DueDate
 		taskRead = taskReadFromRepo
 	case domain.TaskCategoryChanged:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -79,7 +73,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskReadFromRepo.Category = e.Category
 		taskRead = taskReadFromRepo
 	case domain.TaskDetailsChanged:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -90,7 +83,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead = taskReadFromRepo
 
 	case domain.TaskCompleted:
-
 		// Get TaskRead By UID
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
@@ -102,9 +94,7 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead = taskReadFromRepo
 
 	case domain.TaskCancelled:
-
 		// Get TaskRead By UID
-
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
 			return err
@@ -115,9 +105,7 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 		taskRead = taskReadFromRepo
 
 	case domain.TaskDue:
-
 		// Get TaskRead By UID
-
 		taskReadFromRepo, err := s.getTaskReadFromID(e.UID)
 		if err != nil {
 			return err
@@ -139,7 +127,6 @@ func (s *TaskServer) SaveToTaskReadModel(event interface{}) error {
 }
 
 func (s *TaskServer) getTaskReadFromID(uid uuid.UUID) (*storage.TaskRead, error) {
-
 	readResult := <-s.TaskReadQuery.FindByID(uid)
 
 	taskReadFromRepo, ok := readResult.Result.(storage.TaskRead)
@@ -147,9 +134,10 @@ func (s *TaskServer) getTaskReadFromID(uid uuid.UUID) (*storage.TaskRead, error)
 	if taskReadFromRepo.UID != uid {
 		return &storage.TaskRead{}, domain.TaskError{Code: domain.TaskErrorTaskNotFoundCode}
 	}
+
 	if !ok {
 		return &storage.TaskRead{}, echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
-	} else {
-		return &taskReadFromRepo, nil
 	}
+
+	return &taskReadFromRepo, nil
 }
