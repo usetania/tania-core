@@ -15,6 +15,9 @@
 
 This is the development branch of Tania. Changes can occur nightly. If you need the stable branch you can checkout [the master branch](https://github.com/Tanibox/tania-core/tree/master).
 
+### Roadmap
+
+You can check the roadmap in [Tania's GitHub project](https://github.com/orgs/usetania/projects/6/views/1).
 ---
 
 **Tania** is a free and open source farm management software. You can manage your farm areas, farm reservoirs, farm tasks, inventories, and the crop growing progress. It is designed for any type of farms.
