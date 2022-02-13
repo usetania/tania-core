@@ -252,7 +252,7 @@ func initMysql() *sql.DB {
 
 	log.Print("Using MySQL at ", host, ":", port, "/", dbname)
 
-	ddl, err := ioutil.ReadFile("db/mysql/ddl.sql")
+	ddl, err := ioutil.ReadFile("database/mysql/ddl.sql")
 	if err != nil {
 		panic(err)
 	}
@@ -309,7 +309,7 @@ func initSqlite() *sql.DB {
 
 	log.Print("Executing DDL file for ", *config.Config.SqlitePath)
 
-	ddl, err := ioutil.ReadFile("db/sqlite/ddl.sql")
+	ddl, err := ioutil.ReadFile("database/sqlite/ddl.sql")
 	if err != nil {
 		panic(err)
 	}
