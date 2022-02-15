@@ -57,15 +57,10 @@ If your OS is not listed on our releases page, you have to build Tania for your 
 - [NodeJS](https://nodejs.org/en/) 8 or 10
 
 ### Building Instructions
-1. Clone the repo using `git clone https://github.com/Tanibox/tania-core.git`
-2. Checkout the current stable version by using `git checkout tags/1.7.2 -b v1.7.2`
-3. From the project root, call `go get` to install the Go dependencies.
-4. Create a new file `conf.json` using the values from the `conf.json.example` and set it with your own values.
-5. Issue `npm install` to install Vue.js dependencies.
-6. To build the Vue.js, just run `npm run dev` for development purpose or `npm run prod` for production purpose.
-7. Compile the source code with `go build`. It will produces `tania-core.exe` (on Windows) or `tania-core` (on Linux and OSX.)
-8. Run the program from Terminal by issuing `./tania-core`, or from Windows Command Prompt by issuing `.\tania-core.exe`.
-9. The default username and password are `tania / tania`.
+
+**THIS DOCUMENTATION WILL BE UPDATED LATER**
+
+We are in the progress of building the new frontend application.
 
 ### Database Engine
 
@@ -93,8 +88,8 @@ Tania uses SQLite as the default database engine. You may use MySQL as your data
 ```
 
 ### Run The Test
-- Use `go test ./...` to run all the Go tests.
-- Use `npm run cypress:run` to run the end-to-end test
+
+Use `go test ./...` inside the `backend` folder to run all the Go tests.
 
 ## REST APIs
 **Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can import the JSON file inside Postman directory to [Postman app](https://www.getpostman.com).
@@ -110,37 +105,22 @@ We welcome contributions, but request you to follow these [guidelines](contribut
 
 You can help us to localise Tania into your language by following these steps:
 
-1. Copy `languages/template.pot` and paste it to `languages/locale` directory.
+1. Copy `frontend/languages/template.pot` and paste it to `frontend/languages/locale` directory.
 2. Rename it with your language locale code e.g: `en_AU.po`, `de_DE.po`, etc.
 3. Fill `msgstr` key with your translation. You can edit the `.po` file by using text editor or PO Edit software.
 4. Pull request your translation to the `master` branch.
 
 ### Build Tania localisation by yourself
 
-**Note:** You will need to install GNU Gettext for your OS. Get it [here](https://www.gnu.org/software/gettext/).
+**THIS DOCUMENTATION WILL BE UPDATED LATER**
 
-You can build Tania in your language by changing the default language inside `resources/js/app.js`.
-
-```
-Vue.use(GetTextPlugin, {
-  availableLanguages: { // add your language here
-    en_GB: 'British English',
-    id_ID: 'Bahasa Indonesia',
-    hu_HU: 'Magyar Nyelv'
-  },
-  defaultLanguage: 'en_GB', // change this to your language
-  translations: translations,
-  silent: false
-})
-```
+We are in the progress of building the new frontend application.
 
 Then follow the instruction to [build Tania](#building-instructions).
 
 ## Support Us
 
-You can become a backer or a sponsor for Tania through our [Open Collective page](https://opencollective.com/tania).
-
-You can also support Tania development by buying the merchandise from [Tania Swag Store](https://teespring.com/stores/usetania).
+We will move from OpenCollective to GitHub sponsorship. Thank you for all your donation in OpenCollective.
 
 ### Contributors
 
