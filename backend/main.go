@@ -409,8 +409,6 @@ func logrusMiddleware() echo.MiddlewareFunc {
 				}
 			}
 
-			log.WithFields(fields).Info("Response Info")
-
 			return nil
 		}
 	}
