@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="resources/images/logobig.png" alt="Tania The Farmer Journal" width="200">
+    <img src="logo.png" alt="Tania The Farmer Journal" width="200">
     <h1>The Farmer Journal</h1>
     <img src="https://opencollective.com/tania/tiers/backer/badge.svg?label=backer&color=brightgreen" />
     <img src="https://opencollective.com/tania/tiers/sponsor/badge.svg?label=sponsor&color=brightgreen" />
