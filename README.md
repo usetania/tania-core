@@ -27,25 +27,6 @@ Download Tania for Windows x64 and Linux x64 on [the release page](https://githu
 
 ![Screenshot](screenshot.PNG)
 
-## Table of Contents
-
-* [Getting Started](#getting-started)
-    * [Prerequisites](#prerequisites)
-    * [Building Instructions](#building-instructions)
-    * [Database Engine](#database-engine)
-    * [Run The Test](#run-the-test)
-    * [Run Tania Core On Portainer](#Run-Tania-Core-On-Portainer)
-* [REST APIs](#rest-apis)
-* [Roadmap](#roadmap)
-* [Contributing to Tania](#contributing-to-tania)
-    * [Localisation](#localisation)
-* [Support Us](#support-us)
-    * [Contributors](#contributors)
-    * [Backers](#backers)
-    * [Sponsors](#sponsors)
-* [Authors](#authors)
-* [Copyright and License](#copyright-and-license)
-
 ## Getting Started
 
 This software is built with [Go](https://golang.org) programming language. It means you will get an executable binary to run on your machine. You **don't need** extra software like MAMP, XAMPP, or WAMP to run **Tania**, but you may need MySQL database if you choose to use it instead of SQLite *(the default database.)*
@@ -53,8 +34,8 @@ This software is built with [Go](https://golang.org) programming language. It me
 If your OS is not listed on our releases page, you have to build Tania for your OS by yourself. You can follow our instructions to build **Tania**.
 
 ### Prerequisites
-- [Go](https://golang.org) >= 1.11
-- [NodeJS](https://nodejs.org/en/) 8 or 10
+- [Go](https://golang.org) >= 1.16
+- [NodeJS](https://nodejs.org/en/) >= 16
 
 ### Building Instructions
 
@@ -64,7 +45,7 @@ We are in the progress of building the new frontend application.
 
 ### Database Engine
 
-Tania uses SQLite as the default database engine. You may use MySQL as your database engine by replacing `sqlite` with `mysql` at `tania_persistence_engine` field in your `conf.json`.
+Tania uses SQLite as the default database engine. You may use MySQL as your database engine by replacing `sqlite` with `mysql` at `tania_persistence_engine` field in your `backend/conf.json`.
 
 ```
 {
@@ -93,9 +74,6 @@ Use `go test ./...` inside the `backend` folder to run all the Go tests.
 
 ## REST APIs
 **Tania** have REST APIs to easily integrate with any softwares, even you can build a mobile app client for it. You can import the JSON file inside Postman directory to [Postman app](https://www.getpostman.com).
-## Roadmap
-
-We want to share our high-level details of our roadmap, so that others can see our priorities in Tania development. You can read our roadmap on [the wiki](https://github.com/Tanibox/tania-core/wiki/Roadmap).
 
 ## Contributing to Tania
 
@@ -129,16 +107,8 @@ This project exists thanks to all the people who contribute.
 
 ### Backers
 
-Become a backer with a monthly donation and help us continue our activities. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/backers.svg?width=890&button=false" alt="backers"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
-
-### Sponsors
-
-Become a sponsor and get your logo on our README on GitHub with a link to your site. <a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/tiers/sponsor.svg?avatarHeight=36&width=600" alt="backers"></a>
-
-## Authors
-
-Tania is a project of [Tanibox](https://tanibox.com).
+<a href="https://opencollective.com/tania"><img src="https://opencollective.com/tania/backers.svg?width=890&button=false" alt="backers"><img src="https://opencollective.com/tania/tiers/backer.svg?avatarHeight=36&width=600" alt="backers"></a>
 
 ## Copyright and License
 
-Copyright to Tanibox and other contributors under [Apache 2.0](https://github.com/Tanibox/tania-core/blob/master/LICENSE) open source license.
+Copyright to Tania and other contributors under [Apache 2.0](https://github.com/usetania/tania-core/blob/master/LICENSE) open source license.
