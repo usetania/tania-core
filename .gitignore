@@ -14,8 +14,6 @@ tania-core
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
-package-lock.json
-yarn.lock
 public/
 node_modules/
 cypress/
