@@ -23,11 +23,11 @@ vendor/
 storage.db
 notes.md
 .vscode
-conf.json
 db/sqlite/tania.db
 tania.db
 tania-server
 tania-uploads
+dist/
 
 /resources/tests/unit/coverage/
 /resources/tests/assets/screenshots/

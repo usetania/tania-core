@@ -1,0 +1,15 @@
+{
+  "app_port": "8080",
+  "tania_persistence_engine": "sqlite",
+  "demo_mode": true,
+  "upload_path_area": "uploads/areas",
+  "upload_path_crop": "uploads/crops",
+  "sqlite_path": "database/sqlite/tania.db",
+  "mysql_host": "127.0.0.1",
+  "mysql_port": "3306",
+  "mysql_dbname": "tania",
+  "mysql_user": "root",
+  "mysql_password": "root",
+  "redirect_uri": ["http://localhost:8080", "http://127.0.0.1:8080"],
+  "client_id": "f0ece679-3f53-463e-b624-73e83049d6ac"
+}
