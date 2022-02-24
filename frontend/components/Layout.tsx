@@ -4,7 +4,7 @@ import React from "react";
 import { Container, Col, Nav, Navbar, Row } from "react-bootstrap";
 import { FaPowerOff } from "react-icons/fa";
 
-import Footer from "../components/Footer";
+import Footer from "@/components/Footer";
 import Sidebar from "./Sidebar";
 import { navData } from "../data";
 
@@ -21,7 +21,7 @@ const Layout = ({ children }: iLayout) => {
           <Navbar.Brand href="/">
             <div className="d-flex justify-content-center d-md-none">
               <Image
-                src={"/images/logobig.png"}
+                src={"/img/logo.png"}
                 layout="fixed"
                 width={100}
                 height={33}
