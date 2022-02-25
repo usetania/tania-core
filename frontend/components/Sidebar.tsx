@@ -3,8 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Col, Nav } from "react-bootstrap";
 
-import iNavData from "../types/iNavData";
-import { navData } from "../data";
+import iNavData from "@/types/iNavData";
+import { navData } from "@/data/index";
 
 const Sidebar = (): JSX.Element => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const Sidebar = (): JSX.Element => {
           <Nav.Link href="/">
             <div className="d-flex justify-content-center py-3 mb-3">
               <Image
-                src={"/images/logo.png"}
+                src={"/img/logo.png"}
                 layout="fixed"
                 width={100}
                 height={33}
