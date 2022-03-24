@@ -77,10 +77,10 @@ const Tasks: NextPage = () => {
             <Table responsive>
               <thead>
                 <tr>
-                  <th></th>
+                  <th />
                   <th className="w-75">Items</th>
                   <th>Category</th>
-                  <th></th>
+                  <th />
                 </tr>
               </thead>
               <tbody>
