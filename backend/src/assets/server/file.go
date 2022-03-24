@@ -39,7 +39,13 @@ func (LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
 
 	if _, err := os.Stat(sJoin); os.IsNotExist(err) {
 		log.Print("Upload folder is missing. Creating folder...")
-		os.MkdirAll(sJoin, os.ModePerm)
+
+		if err := os.MkdirAll(sJoin, os.ModePerm); err != nil {
+			log.Println("Can't create folder")
+
+			return err
+		}
+
 		log.Print("Folder created in ", sJoin)
 	}
 

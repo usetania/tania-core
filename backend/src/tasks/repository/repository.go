@@ -24,10 +24,10 @@ type TaskEvent interface {
 	Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error
 }
 
-func BuildTaskFromEventHistory(taskService domain.TaskService, events []storage.TaskEvent) *domain.Task {
+func BuildTaskFromEventHistory(events []storage.TaskEvent) *domain.Task {
 	state := &domain.Task{}
 	for _, v := range events {
-		state.Transition(taskService, v.Event)
+		state.Transition(v.Event)
 		state.Version++
 	}
 

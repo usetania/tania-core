@@ -166,7 +166,9 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 	}
 
 	for i := range tasks {
-		s.AppendTaskDomainDetails(&tasks[i])
+		if err := s.AppendTaskDomainDetails(&tasks[i]); err != nil {
+			return Error(c, err)
+		}
 	}
 
 	// Return list of tasks
@@ -222,7 +224,9 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	}
 
 	for i := range tasks {
-		s.AppendTaskDomainDetails(&tasks[i])
+		if err := s.AppendTaskDomainDetails(&tasks[i]); err != nil {
+			return Error(c, err)
+		}
 	}
 
 	// Return list of tasks
@@ -302,7 +306,9 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	s.publishUncommittedEvents(task)
 
 	taskRead := MapTaskToTaskRead(task)
-	s.AppendTaskDomainDetails(taskRead)
+	if err := s.AppendTaskDomainDetails(taskRead); err != nil {
+		return Error(c, err)
+	}
 
 	data["data"] = *taskRead
 
@@ -410,7 +416,9 @@ func (s *TaskServer) FindTaskByID(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	s.AppendTaskDomainDetails(&task)
+	if err := s.AppendTaskDomainDetails(&task); err != nil {
+		return Error(c, err)
+	}
 
 	data["task"] = task
 
@@ -542,7 +550,7 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(events)
 
 	updatedTask, err := s.updateTaskAttributes(task, c)
 	if err != nil {
@@ -559,7 +567,9 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 	s.publishUncommittedEvents(updatedTask)
 	read := MapTaskToTaskRead(updatedTask)
 
-	s.AppendTaskDomainDetails(read)
+	if err := s.AppendTaskDomainDetails(read); err != nil {
+		return Error(c, err)
+	}
 
 	data["data"] = *read
 
@@ -569,13 +579,15 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 func (s *TaskServer) updateTaskAttributes(task *domain.Task, c echo.Context) (*domain.Task, error) {
 	// Change Task Title
 	if title := c.FormValue("title"); title != "" {
-		task.ChangeTaskTitle(s.TaskService, title)
+		if err := task.ChangeTaskTitle(title); err != nil {
+			return task, Error(c, err)
+		}
 	}
 
 	// Change Task Description
 	description := c.FormValue("description")
 	if description != "" {
-		task.ChangeTaskDescription(s.TaskService, description)
+		task.ChangeTaskDescription(description)
 	}
 
 	// Change Task Due Date
@@ -589,26 +601,26 @@ func (s *TaskServer) updateTaskAttributes(task *domain.Task, c echo.Context) (*d
 		}
 
 		duePtr = &dueDate
-		task.ChangeTaskDueDate(s.TaskService, duePtr)
+		task.ChangeTaskDueDate(duePtr)
 	}
 
 	// Change Task Priority
 	priority := c.FormValue("priority")
 	if priority != "" {
-		task.ChangeTaskPriority(s.TaskService, priority)
+		task.ChangeTaskPriority(priority)
 	}
 
 	// Change Task Category & Domain Details
 	category := c.FormValue("category")
 	if category != "" {
-		task.ChangeTaskCategory(s.TaskService, category)
+		task.ChangeTaskCategory(category)
 
 		details, err := s.CreateTaskDomainByCode(task.Domain, c)
 		if err != nil {
 			return &domain.Task{}, Error(c, err)
 		}
 
-		task.ChangeTaskDetails(s.TaskService, details)
+		task.ChangeTaskDetails(details)
 	}
 
 	return task, nil
@@ -640,14 +652,14 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(events)
 
 	updatedTask, err := s.updateTaskAttributes(task, c)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	updatedTask.CancelTask(s.TaskService)
+	updatedTask.CancelTask()
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updatedTask.UID, updatedTask.Version, updatedTask.UncommittedChanges)
@@ -660,7 +672,9 @@ func (s *TaskServer) CancelTask(c echo.Context) error {
 
 	read := MapTaskToTaskRead(updatedTask)
 
-	s.AppendTaskDomainDetails(read)
+	if err := s.AppendTaskDomainDetails(read); err != nil {
+		return Error(c, err)
+	}
 
 	data["data"] = *read
 
@@ -700,14 +714,14 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	}
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(events)
 
 	updatedTask, err := s.updateTaskAttributes(task, c)
 	if err != nil {
 		return Error(c, err)
 	}
 
-	updatedTask.CompleteTask(s.TaskService)
+	updatedTask.CompleteTask()
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(updatedTask.UID, updatedTask.Version, updatedTask.UncommittedChanges)
@@ -719,7 +733,9 @@ func (s *TaskServer) CompleteTask(c echo.Context) error {
 	s.publishUncommittedEvents(updatedTask)
 	read := MapTaskToTaskRead(updatedTask)
 
-	s.AppendTaskDomainDetails(read)
+	if err := s.AppendTaskDomainDetails(read); err != nil {
+		return Error(c, err)
+	}
 
 	data["data"] = *read
 
@@ -752,9 +768,9 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 	events := eventQueryResult.Result.([]storage.TaskEvent)
 
 	// Build TaskEvents from history
-	task := repository.BuildTaskFromEventHistory(s.TaskService, events)
+	task := repository.BuildTaskFromEventHistory(events)
 
-	task.SetTaskAsDue(s.TaskService)
+	task.SetTaskAsDue()
 
 	// Save new TaskEvent
 	err = <-s.TaskEventRepo.Save(task.UID, task.Version, task.UncommittedChanges)
@@ -767,7 +783,9 @@ func (s *TaskServer) SetTaskAsDue(c echo.Context) error {
 
 	read := MapTaskToTaskRead(task)
 
-	s.AppendTaskDomainDetails(read)
+	if err := s.AppendTaskDomainDetails(read); err != nil {
+		return Error(c, err)
+	}
 
 	data["data"] = *read
 

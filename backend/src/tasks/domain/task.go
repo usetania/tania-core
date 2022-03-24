@@ -81,7 +81,7 @@ func CreateTask(ts TaskService, title, description, priority, category string, d
 
 	initial := &Task{}
 
-	initial.TrackChange(ts, TaskCreated{
+	initial.TrackChange(TaskCreated{
 		Title:         title,
 		UID:           uid,
 		Description:   description,
@@ -99,10 +99,9 @@ func CreateTask(ts TaskService, title, description, priority, category string, d
 	return initial, nil
 }
 
-func (t *Task) ChangeTaskTitle(taskService TaskService, title string) (*Task, error) {
-	err := validateTaskTitle(title)
-	if err != nil {
-		return &Task{}, err
+func (t *Task) ChangeTaskTitle(title string) error {
+	if err := validateTaskTitle(title); err != nil {
+		return err
 	}
 
 	event := TaskTitleChanged{
@@ -110,12 +109,12 @@ func (t *Task) ChangeTaskTitle(taskService TaskService, title string) (*Task, er
 		Title: title,
 	}
 
-	t.TrackChange(taskService, event)
+	t.TrackChange(event)
 
-	return t, nil
+	return nil
 }
 
-func (t *Task) ChangeTaskDescription(taskService TaskService, description string) (*Task, error) {
+func (t *Task) ChangeTaskDescription(description string) (*Task, error) {
 	err := validateTaskDescription(description)
 	if err != nil {
 		return &Task{}, err
@@ -126,12 +125,12 @@ func (t *Task) ChangeTaskDescription(taskService TaskService, description string
 		Description: description,
 	}
 
-	t.TrackChange(taskService, event)
+	t.TrackChange(event)
 
 	return t, nil
 }
 
-func (t *Task) ChangeTaskDueDate(taskService TaskService, duedate *time.Time) (*Task, error) {
+func (t *Task) ChangeTaskDueDate(duedate *time.Time) (*Task, error) {
 	err := validateTaskDueDate(duedate)
 	if err != nil {
 		return &Task{}, err
@@ -142,12 +141,12 @@ func (t *Task) ChangeTaskDueDate(taskService TaskService, duedate *time.Time) (*
 		DueDate: duedate,
 	}
 
-	t.TrackChange(taskService, event)
+	t.TrackChange(event)
 
 	return t, nil
 }
 
-func (t *Task) ChangeTaskPriority(taskService TaskService, priority string) (*Task, error) {
+func (t *Task) ChangeTaskPriority(priority string) (*Task, error) {
 	err := validateTaskPriority(priority)
 	if err != nil {
 		return &Task{}, err
@@ -158,12 +157,12 @@ func (t *Task) ChangeTaskPriority(taskService TaskService, priority string) (*Ta
 		Priority: priority,
 	}
 
-	t.TrackChange(taskService, event)
+	t.TrackChange(event)
 
 	return t, nil
 }
 
-func (t *Task) ChangeTaskCategory(taskService TaskService, category string) (*Task, error) {
+func (t *Task) ChangeTaskCategory(category string) (*Task, error) {
 	err := validateTaskCategory(category)
 	if err != nil {
 		return &Task{}, err
@@ -174,34 +173,34 @@ func (t *Task) ChangeTaskCategory(taskService TaskService, category string) (*Ta
 		Category: category,
 	}
 
-	t.TrackChange(taskService, event)
+	t.TrackChange(event)
 
 	return t, nil
 }
 
-func (t *Task) ChangeTaskDetails(taskService TaskService, details TaskDomain) (*Task, error) {
+func (t *Task) ChangeTaskDetails(details TaskDomain) (*Task, error) {
 	event := TaskDetailsChanged{
 		UID:           t.UID,
 		DomainDetails: details,
 	}
 
-	t.TrackChange(taskService, event)
+	t.TrackChange(event)
 
 	return t, nil
 }
 
 // SetTaskAsDue.
-func (t *Task) SetTaskAsDue(taskService TaskService) {
-	t.TrackChange(taskService, TaskDue{
+func (t *Task) SetTaskAsDue() {
+	t.TrackChange(TaskDue{
 		UID: t.UID,
 	})
 }
 
 // CompleteTask.
-func (t *Task) CompleteTask(taskService TaskService) {
+func (t *Task) CompleteTask() {
 	completedTime := time.Now()
 
-	t.TrackChange(taskService, TaskCompleted{
+	t.TrackChange(TaskCompleted{
 		UID:           t.UID,
 		Status:        TaskCompletedCode,
 		CompletedDate: &completedTime,
@@ -209,10 +208,10 @@ func (t *Task) CompleteTask(taskService TaskService) {
 }
 
 // CompleteTask.
-func (t *Task) CancelTask(taskService TaskService) {
+func (t *Task) CancelTask() {
 	cancelledTime := time.Now()
 
-	t.TrackChange(taskService, TaskCancelled{
+	t.TrackChange(TaskCancelled{
 		UID:           t.UID,
 		Status:        TaskCancelledCode,
 		CancelledDate: &cancelledTime,
@@ -220,19 +219,12 @@ func (t *Task) CancelTask(taskService TaskService) {
 }
 
 // Event Tracking.
-
-func (t *Task) TrackChange(taskService TaskService, event interface{}) error {
+func (t *Task) TrackChange(event interface{}) {
 	t.UncommittedChanges = append(t.UncommittedChanges, event)
-
-	err := t.Transition(taskService, event)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	t.Transition(event)
 }
 
-func (t *Task) Transition(taskService TaskService, event interface{}) error {
+func (t *Task) Transition(event interface{}) {
 	switch e := event.(type) {
 	case TaskCreated:
 		t.Title = e.Title
@@ -268,8 +260,6 @@ func (t *Task) Transition(taskService TaskService, event interface{}) error {
 	case TaskDue:
 		t.IsDue = true
 	}
-
-	return nil
 }
 
 // Validation
