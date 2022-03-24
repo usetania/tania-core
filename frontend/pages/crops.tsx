@@ -53,7 +53,7 @@ const Crops: NextPage = () => {
                     <th>Days Since Seeding</th>
                     <th>Initial Quantity</th>
                     <th>Status</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
@@ -98,7 +98,7 @@ const Crops: NextPage = () => {
                     <th>Days Since Seeding</th>
                     <th>Initial Quantity</th>
                     <th>Status</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
