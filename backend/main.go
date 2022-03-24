@@ -41,7 +41,10 @@ func main() {
 		log.SetFormatter(&log.JSONFormatter{})
 	}
 
-	config.InitViperConfig()
+	err := config.InitViperConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	e := echo.New()
 

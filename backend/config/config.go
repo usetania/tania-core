@@ -40,7 +40,7 @@ Viper uses the following precedence order. Each item takes precedence over the i
   - key/value store
   - default
 */
-func InitViperConfig() {
+func InitViperConfig() error {
 	v := viper.New()
 
 	v.AutomaticEnv()
@@ -76,7 +76,7 @@ func InitViperConfig() {
 
 	err := v.BindPFlags(pflag.CommandLine)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	c := Configuration{}
@@ -85,7 +85,7 @@ func InitViperConfig() {
 
 	err = v.Unmarshal(&c)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	Config = c
@@ -103,8 +103,10 @@ func InitViperConfig() {
 
 	err = v.Unmarshal(&c)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	Config = c
+
+	return nil
 }
