@@ -56,7 +56,7 @@ const Material: NextPage = () => {
             <th>Produced By</th>
             <th>Quantity</th>
             <th>Additional Notes</th>
-            <th></th>
+            <th />
           </tr>
         </thead>
         <tbody>

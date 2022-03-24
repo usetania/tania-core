@@ -51,7 +51,7 @@ const Reservoir: NextPage = () => {
             <th>Source Type</th>
             <th>Capacity</th>
             <th>Used In</th>
-            <th></th>
+            <th />
           </tr>
         </thead>
         <tbody>
