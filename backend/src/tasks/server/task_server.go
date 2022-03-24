@@ -165,15 +165,12 @@ func (s TaskServer) FindAllTasks(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	taskList := []storage.TaskRead{}
-
-	for i, v := range tasks {
+	for i := range tasks {
 		s.AppendTaskDomainDetails(&tasks[i])
-		taskList = append(taskList, v)
 	}
 
 	// Return list of tasks
-	data["data"] = taskList
+	data["data"] = tasks
 	// Return number of tasks
 	countResult := <-s.TaskReadQuery.CountAll()
 
@@ -224,15 +221,12 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "Internal server error")
 	}
 
-	taskList := []storage.TaskRead{}
-
-	for i, v := range tasks {
+	for i := range tasks {
 		s.AppendTaskDomainDetails(&tasks[i])
-		taskList = append(taskList, v)
 	}
 
 	// Return list of tasks
-	data["data"] = taskList
+	data["data"] = tasks
 	// Return number of tasks
 	countResult := <-s.TaskReadQuery.CountTasksWithFilter(queryparams)
 
