@@ -63,7 +63,7 @@ func (q MaterialReadQueryMysql) FindByID(materialUID uuid.UUID) <-chan query.Res
 	return result
 }
 
-func (q MaterialReadQueryMysql) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.Result {
+func (q MaterialReadQueryMysql) FindMaterialByPlantTypeCodeAndName(plantTypeCode, name string) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

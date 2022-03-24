@@ -45,14 +45,14 @@ type Bucket struct {
 	Capacity float32
 }
 
-func (b Bucket) Type() string {
+func (Bucket) Type() string {
 	return BucketType
 }
 
 // Tap is value object attached to the Reservoir.waterSource domain.
 type Tap struct{}
 
-func (t Tap) Type() string {
+func (Tap) Type() string {
 	return TapType
 }
 

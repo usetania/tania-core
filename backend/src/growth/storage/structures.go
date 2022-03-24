@@ -153,7 +153,7 @@ type SeedActivity struct {
 	SeedingDate time.Time `json:"seeding_date"`
 }
 
-func (a SeedActivity) Code() string {
+func (SeedActivity) Code() string {
 	return SeedActivityCode
 }
 
@@ -166,7 +166,7 @@ type MoveActivity struct {
 	MovedDate   time.Time `json:"moved_date"`
 }
 
-func (a MoveActivity) Code() string {
+func (MoveActivity) Code() string {
 	return MoveActivityCode
 }
 
@@ -179,7 +179,7 @@ type HarvestActivity struct {
 	HarvestDate          time.Time `json:"harvest_date"`
 }
 
-func (a HarvestActivity) Code() string {
+func (HarvestActivity) Code() string {
 	return HarvestActivityCode
 }
 
@@ -190,7 +190,7 @@ type DumpActivity struct {
 	DumpDate    time.Time `json:"dump_date"`
 }
 
-func (a DumpActivity) Code() string {
+func (DumpActivity) Code() string {
 	return DumpActivityCode
 }
 
@@ -200,7 +200,7 @@ type WaterActivity struct {
 	WateringDate time.Time `json:"watering_date"`
 }
 
-func (a WaterActivity) Code() string {
+func (WaterActivity) Code() string {
 	return WaterActivityCode
 }
 
@@ -214,7 +214,7 @@ type PhotoActivity struct {
 	Description string    `json:"description"`
 }
 
-func (a PhotoActivity) Code() string {
+func (PhotoActivity) Code() string {
 	return PhotoActivityCode
 }
 
@@ -225,7 +225,7 @@ type TaskCropActivity struct {
 	AreaName    string    `json:"area_name"`
 }
 
-func (a TaskCropActivity) Code() string {
+func (TaskCropActivity) Code() string {
 	return TaskCropActivityCode
 }
 
@@ -236,7 +236,7 @@ type TaskNutrientActivity struct {
 	AreaName     string    `json:"area_name"`
 }
 
-func (a TaskNutrientActivity) Code() string {
+func (TaskNutrientActivity) Code() string {
 	return TaskNutrientActivityCode
 }
 
@@ -247,7 +247,7 @@ type TaskPestControlActivity struct {
 	AreaName     string    `json:"area_name"`
 }
 
-func (a TaskPestControlActivity) Code() string {
+func (TaskPestControlActivity) Code() string {
 	return TaskPestControlActivityCode
 }
 
@@ -258,7 +258,7 @@ type TaskSafetyActivity struct {
 	AreaName    string    `json:"area_name"`
 }
 
-func (a TaskSafetyActivity) Code() string {
+func (TaskSafetyActivity) Code() string {
 	return TaskSafetyActivityCode
 }
 
@@ -269,6 +269,6 @@ type TaskSanitationActivity struct {
 	AreaName    string    `json:"area_name"`
 }
 
-func (a TaskSanitationActivity) Code() string {
+func (TaskSanitationActivity) Code() string {
 	return TaskSanitationActivityCode
 }

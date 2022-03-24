@@ -26,7 +26,7 @@ func validateFarmName(name string) error {
 	return nil
 }
 
-func validateGeoLocation(latitude string, longitude string) error {
+func validateGeoLocation(latitude, longitude string) error {
 	patternLatitude := "^[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?)$"
 	patternLongitude := "^[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$"
 

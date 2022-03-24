@@ -131,7 +131,7 @@ func MaterialQuantityUnits(materialTypeCode string) []MaterialQuantityUnit {
 	return nil
 }
 
-func GetMaterialQuantityUnit(materialTypeCode string, code string) MaterialQuantityUnit {
+func GetMaterialQuantityUnit(materialTypeCode, code string) MaterialQuantityUnit {
 	for _, v := range MaterialQuantityUnits(materialTypeCode) {
 		if v.Code == code {
 			return v

@@ -8,7 +8,7 @@ import (
 	"github.com/usetania/tania-core/src/assets/storage"
 )
 
-func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirUID uuid.UUID) (storage.ReservoirRead, error) {
+func (*RequestValidation) ValidateReservoir(s FarmServer, reservoirUID uuid.UUID) (storage.ReservoirRead, error) {
 	result := <-s.ReservoirReadQuery.FindByID(reservoirUID)
 	reservoir, _ := result.Result.(storage.ReservoirRead)
 
@@ -19,7 +19,7 @@ func (rv *RequestValidation) ValidateReservoir(s FarmServer, reservoirUID uuid.U
 	return reservoir, nil
 }
 
-func (rv *RequestValidation) ValidateFarm(s FarmServer, farmUID uuid.UUID) (storage.FarmRead, error) {
+func (*RequestValidation) ValidateFarm(s FarmServer, farmUID uuid.UUID) (storage.FarmRead, error) {
 	result := <-s.FarmReadQuery.FindByID(farmUID)
 	farm, _ := result.Result.(storage.FarmRead)
 
@@ -30,7 +30,7 @@ func (rv *RequestValidation) ValidateFarm(s FarmServer, farmUID uuid.UUID) (stor
 	return farm, nil
 }
 
-func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (domain.AreaSize, error) {
+func (*RequestValidation) ValidateAreaSize(size, sizeUnit string) (domain.AreaSize, error) {
 	if size == "" {
 		return domain.AreaSize{}, NewRequestValidationError(Required, "size")
 	}
@@ -55,7 +55,7 @@ func (rv *RequestValidation) ValidateAreaSize(size string, sizeUnit string) (dom
 	}, nil
 }
 
-func (rv *RequestValidation) ValidateAreaLocation(location string) (string, error) {
+func (*RequestValidation) ValidateAreaLocation(location string) (string, error) {
 	if location == "" {
 		return "", NewRequestValidationError(Required, "location")
 	}

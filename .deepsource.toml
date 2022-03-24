@@ -1,0 +1,31 @@
+version = 1
+
+[[analyzers]]
+name = "test-coverage"
+enabled = true
+
+[[analyzers]]
+name = "shell"
+enabled = true
+
+[[analyzers]]
+name = "go"
+enabled = true
+
+  [analyzers.meta]
+  import_root = "github.com/pablojimpas/tania-core"
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  plugins = ["react"]
+
+[[transformers]]
+name = "gofumpt"
+enabled = true
+
+[[transformers]]
+name = "gofmt"
+enabled = true

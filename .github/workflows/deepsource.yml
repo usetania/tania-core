@@ -1,0 +1,26 @@
+name: deepsource
+on:
+  push:
+    branches: [ 2.0-dev ]
+  pull_request:
+    branches: [ 2.0-dev ]
+jobs:
+  deepsource:
+    name: DeepSource
+    runs-on: ubuntu-latest
+    steps:
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ github.event.pull_request.head.sha }}
+
+        - name: Report results to DeepSource
+          run: |
+            # Generate coverage report
+            cd backend && go test -coverprofile=cover.out ./... && cd ..
+            # Install deepsource CLI
+            curl https://deepsource.io/cli | sh
+            # From the root directory, run the report coverage command
+            ./bin/deepsource report --analyzer test-coverage --key go --value-file backend/cover.out
+          env:
+            DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
+

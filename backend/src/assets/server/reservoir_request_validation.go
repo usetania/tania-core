@@ -7,7 +7,7 @@ import (
 	"github.com/usetania/tania-core/src/helper/validationhelper"
 )
 
-func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) {
+func (*RequestValidation) ValidateReservoirName(name string) (string, error) {
 	if name == "" {
 		return "", NewRequestValidationError(Required, "name")
 	}
@@ -19,7 +19,7 @@ func (rv *RequestValidation) ValidateReservoirName(name string) (string, error) 
 	return name, nil
 }
 
-func (rv *RequestValidation) ValidateCapacity(waterSourceType, capacity string) (float32, error) {
+func (*RequestValidation) ValidateCapacity(waterSourceType, capacity string) (float32, error) {
 	if waterSourceType == domain.TapType {
 		return 0, nil
 	}
@@ -40,7 +40,7 @@ func (rv *RequestValidation) ValidateCapacity(waterSourceType, capacity string) 
 	return float32(c), nil
 }
 
-func (rv *RequestValidation) ValidateType(t string) (string, error) {
+func (*RequestValidation) ValidateType(t string) (string, error) {
 	if t == "" {
 		return "", NewRequestValidationError(Required, "type")
 	}

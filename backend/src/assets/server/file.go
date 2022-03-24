@@ -18,14 +18,14 @@ type File interface {
 
 type LocalFile struct{}
 
-func (f LocalFile) GetFile(srcPath string) ([]byte, error) {
+func (LocalFile) GetFile(srcPath string) ([]byte, error) {
 	file, err := ioutil.ReadFile(srcPath)
 
 	return file, err
 }
 
 // Upload saves uploaded file to the destined path
-func (f LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
+func (LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
 	src, err := file.Open()
 	if err != nil {
 		return err

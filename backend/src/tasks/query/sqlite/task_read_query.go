@@ -127,8 +127,7 @@ func (q TaskReadQuerySqlite) FindTasksWithFilter(params map[string]string, page,
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
 
-			args = append(args, start)
-			args = append(args, end)
+			args = append(args, start, end)
 		}
 
 		if value := params["priority"]; value != "" {
@@ -235,8 +234,7 @@ func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-ch
 		if start != "" && end != "" {
 			sql += " AND DUE_DATE BETWEEN ? AND ? "
 
-			args = append(args, start)
-			args = append(args, end)
+			args = append(args, start, end)
 		}
 
 		if value := params["priority"]; value != "" {
@@ -282,7 +280,7 @@ func (q TaskReadQuerySqlite) CountTasksWithFilter(params map[string]string) <-ch
 	return result
 }
 
-func (q TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRead, error) {
+func (TaskReadQuerySqlite) populateQueryResult(rows *sql.Rows) (storage.TaskRead, error) {
 	rowsData := taskReadQueryResult{}
 
 	err := rows.Scan(

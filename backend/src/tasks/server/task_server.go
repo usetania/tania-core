@@ -258,7 +258,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	formDate := c.FormValue("due_date")
 	duePtr := (*time.Time)(nil)
 
-	if len(formDate) != 0 {
+	if formDate != "" {
 		dueDate, err := time.Parse(time.RFC3339Nano, formDate)
 		if err != nil {
 			return Error(c, err)
@@ -270,7 +270,7 @@ func (s *TaskServer) SaveTask(c echo.Context) error {
 	assetID := c.FormValue("asset_id")
 	assetIDPtr := (*uuid.UUID)(nil)
 
-	if len(assetID) != 0 {
+	if assetID != "" {
 		assetID, err := uuid.FromString(assetID)
 		if err != nil {
 			return Error(c, err)
@@ -328,7 +328,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 		materialPtr := (*uuid.UUID)(nil)
 
-		if len(materialID) != 0 {
+		if materialID != "" {
 			uid, err := uuid.FromString(materialID)
 			if err != nil {
 				return domain.TaskDomainArea{}, err
@@ -345,7 +345,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 		materialPtr := (*uuid.UUID)(nil)
 
-		if len(materialID) != 0 {
+		if materialID != "" {
 			uid, err := uuid.FromString(materialID)
 			if err != nil {
 				return domain.TaskDomainCrop{}, err
@@ -356,7 +356,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 		areaPtr := (*uuid.UUID)(nil)
 
-		if len(areaID) != 0 {
+		if areaID != "" {
 			uid, err := uuid.FromString(areaID)
 			if err != nil {
 				return domain.TaskDomainCrop{}, err
@@ -378,7 +378,7 @@ func (s *TaskServer) CreateTaskDomainByCode(domaincode string, c echo.Context) (
 
 		materialPtr := (*uuid.UUID)(nil)
 
-		if len(materialID) != 0 {
+		if materialID != "" {
 			uid, err := uuid.FromString(materialID)
 			if err != nil {
 				return domain.TaskDomainReservoir{}, err
@@ -574,19 +574,19 @@ func (s *TaskServer) UpdateTask(c echo.Context) error {
 
 func (s *TaskServer) updateTaskAttributes(task *domain.Task, c echo.Context) (*domain.Task, error) {
 	// Change Task Title
-	if title := c.FormValue("title"); len(title) != 0 {
+	if title := c.FormValue("title"); title != "" {
 		task.ChangeTaskTitle(s.TaskService, title)
 	}
 
 	// Change Task Description
 	description := c.FormValue("description")
-	if len(description) != 0 {
+	if description != "" {
 		task.ChangeTaskDescription(s.TaskService, description)
 	}
 
 	// Change Task Due Date
 	formDate := c.FormValue("due_date")
-	if len(formDate) != 0 {
+	if formDate != "" {
 		var duePtr *time.Time
 
 		dueDate, err := time.Parse(time.RFC3339Nano, formDate)
@@ -600,13 +600,13 @@ func (s *TaskServer) updateTaskAttributes(task *domain.Task, c echo.Context) (*d
 
 	// Change Task Priority
 	priority := c.FormValue("priority")
-	if len(priority) != 0 {
+	if priority != "" {
 		task.ChangeTaskPriority(s.TaskService, priority)
 	}
 
 	// Change Task Category & Domain Details
 	category := c.FormValue("category")
-	if len(category) != 0 {
+	if category != "" {
 		task.ChangeTaskCategory(s.TaskService, category)
 
 		details, err := s.CreateTaskDomainByCode(task.Domain, c)

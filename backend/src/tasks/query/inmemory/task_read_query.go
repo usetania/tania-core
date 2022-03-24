@@ -271,7 +271,7 @@ func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 	return result
 }
 
-func checkWithinTimeRange(start time.Time, end time.Time, check time.Time) bool {
+func checkWithinTimeRange(start, end, check time.Time) bool {
 	isStart := check.Equal(start)
 	isEnd := check.Equal(end)
 	isBetween := check.After(start) && check.Before(end)
