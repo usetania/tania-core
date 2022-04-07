@@ -1,7 +1,8 @@
 package config
 
 import (
-	log "github.com/sirupsen/logrus"
+	"log"
+
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -96,9 +97,9 @@ func InitViperConfig() error {
 
 	err = v.ReadInConfig()
 	if err != nil {
-		log.Warnf("No configuration file found. Err %v", err)
+		log.Printf("No configuration file found. Err %v", err)
 	} else {
-		log.Info("Using config file at " + v.ConfigFileUsed())
+		log.Printf("Using config file at " + v.ConfigFileUsed())
 	}
 
 	err = v.Unmarshal(&c)

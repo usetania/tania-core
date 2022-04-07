@@ -2,13 +2,13 @@ package server
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"runtime"
 	"strconv"
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	log "github.com/sirupsen/logrus"
 	"github.com/usetania/tania-core/src/growth/domain"
 )
 
@@ -90,20 +90,19 @@ func Error(c echo.Context, err error) error {
 
 	file, line := getFileAndLineNumber()
 
-	logData := log.WithFields(log.Fields{
-		"user_uid":      c.Get("USER_UID"),
-		"request_id":    c.Response().Header().Get(echo.HeaderXRequestID),
-		"file":          file,
-		"line":          line,
-		"error_message": "",
-		"field_name":    "",
-	})
+	log.Printf(
+		"user_uid: %v\nrequest_id: %v\nfile: %v\nline: %v\n",
+		c.Get("USER_UID"),
+		c.Response().Header().Get(echo.HeaderXRequestID),
+		file,
+		line,
+	)
 
 	if re, ok := err.(domain.CropError); ok {
 		errorResponse["error_code"] = strconv.Itoa(re.Code)
 		errorResponse["error_message"] = re.Error()
 
-		logData.WithField("error_message", re.Error()).Info()
+		log.Printf("error_message: %v\n", re.Error())
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
 	} else if rve, ok := err.(RequestValidationError); ok {
@@ -111,15 +110,14 @@ func Error(c echo.Context, err error) error {
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage
 
-		logData.WithField("error_message", rve.ErrorMessage)
-		logData.WithField("field_name", rve.FieldName)
-		logData.Info()
+		log.Printf("error_message: %v\n", rve.ErrorMessage)
+		log.Printf("field_name: %v\n", rve.FieldName)
 
 		return c.JSON(http.StatusBadRequest, rve)
 	}
 
 	errorResponse["error_message"] = err.Error()
-	logData.WithField("error_message", err.Error()).Error()
+	log.Printf("error_message: %v\n", err.Error())
 
 	return c.JSON(http.StatusInternalServerError, errorResponse)
 }

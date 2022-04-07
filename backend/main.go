@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -14,9 +15,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/mattn/go-colorable"
 	_ "github.com/mattn/go-sqlite3"
-	log "github.com/sirupsen/logrus"
 	"github.com/usetania/tania-core/config"
 	assetsserver "github.com/usetania/tania-core/src/assets/server"
 	assetsstorage "github.com/usetania/tania-core/src/assets/storage"
@@ -27,20 +26,9 @@ import (
 	tasksserver "github.com/usetania/tania-core/src/tasks/server"
 	taskstorage "github.com/usetania/tania-core/src/tasks/storage"
 	userserver "github.com/usetania/tania-core/src/user/server"
-	"golang.org/x/term"
 )
 
 func main() {
-	if term.IsTerminal(int(os.Stdout.Fd())) {
-		log.SetFormatter(&log.TextFormatter{ForceColors: true})
-
-		// We need this for Windows to get coloured
-		// https://github.com/sirupsen/logrus#formatters
-		log.SetOutput(colorable.NewColorableStdout())
-	} else {
-		log.SetFormatter(&log.JSONFormatter{})
-	}
-
 	err := config.InitViperConfig()
 	if err != nil {
 		log.Fatal(err)
@@ -49,7 +37,7 @@ func main() {
 	e := echo.New()
 
 	// Initialize DB.
-	log.Print("Using " + *config.Config.TaniaPersistenceEngine + " persistence engine")
+	log.Println("Using " + *config.Config.TaniaPersistenceEngine + " persistence engine")
 
 	// InMemory DB will always be initialized.
 	inMem := initInMemory()
@@ -134,7 +122,7 @@ func main() {
 	// Initialize Echo Middleware
 	e.Use(middleware.Recover())
 	e.Use(headerNoCache)
-	e.Use(logrusMiddleware())
+	e.Use(logMiddleware())
 	e.Use(middleware.RequestID())
 
 	APIMiddlewares := []echo.MiddlewareFunc{}
@@ -175,12 +163,12 @@ func initUser(authServer *userserver.AuthServer) error {
 
 	_, _, err := authServer.RegisterNewUser(defaultUsername, defaultPassword, defaultPassword)
 	if err != nil {
-		log.Print("User ", defaultUsername, " has already created")
+		log.Println("User ", defaultUsername, " has already created")
 
 		return err
 	}
 
-	log.Print("User created with default username and password")
+	log.Println("User created with default username and password")
 
 	return nil
 }
@@ -250,7 +238,7 @@ func initMysql() *sql.DB {
 		panic(err)
 	}
 
-	log.Print("Using MySQL at ", host, ":", port, "/", dbname)
+	log.Println("Using MySQL at ", host, ":", port, "/", dbname)
 
 	ddl, err := ioutil.ReadFile("database/mysql/ddl.sql")
 	if err != nil {
@@ -282,7 +270,7 @@ func initMysql() *sql.DB {
 				// otherwise we will stop the loop and print the error
 				if me.Number == 1061 {
 				} else {
-					log.Print(err)
+					log.Println(err)
 
 					return db
 				}
@@ -290,14 +278,14 @@ func initMysql() *sql.DB {
 		}
 	}
 
-	log.Print("DDL file executed")
+	log.Println("DDL file executed")
 
 	return db
 }
 
 func initSqlite() *sql.DB {
 	if _, err := os.Stat(*config.Config.SqlitePath); os.IsNotExist(err) {
-		log.Print("Creating database file ", *config.Config.SqlitePath)
+		log.Println("Creating database file ", *config.Config.SqlitePath)
 	}
 
 	db, err := sql.Open("sqlite3", *config.Config.SqlitePath)
@@ -305,9 +293,9 @@ func initSqlite() *sql.DB {
 		panic(err)
 	}
 
-	log.Print("Using SQLite at ", *config.Config.SqlitePath)
+	log.Println("Using SQLite at ", *config.Config.SqlitePath)
 
-	log.Print("Executing DDL file for ", *config.Config.SqlitePath)
+	log.Println("Executing DDL file for ", *config.Config.SqlitePath)
 
 	ddl, err := ioutil.ReadFile("database/sqlite/ddl.sql")
 	if err != nil {
@@ -321,7 +309,7 @@ func initSqlite() *sql.DB {
 		panic(err)
 	}
 
-	log.Print("DDL file executed")
+	log.Println("DDL file executed")
 
 	return db
 }
@@ -372,7 +360,7 @@ func tokenValidationWithConfig(db *sql.DB) echo.MiddlewareFunc {
 	}
 }
 
-func logrusMiddleware() echo.MiddlewareFunc {
+func logMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			req := c.Request()
