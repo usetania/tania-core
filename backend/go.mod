@@ -16,8 +16,7 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.8.1
-	github.com/stretchr/objx v0.3.0 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 	golang.org/x/net v0.0.0-20210825183410-e898025ed96a // indirect
 	golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf // indirect
