@@ -37,7 +37,7 @@ const Register: NextPage = () => {
                     width={200}
                     height={65}
                   />
-                  <h4 className="py-3">Let's setup your account</h4>
+                  <h4 className="py-3">Let&apos;s setup your account</h4>
                 </div>
                 <Form>
                   <Form.Group className="mb-3">
