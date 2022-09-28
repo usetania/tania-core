@@ -250,7 +250,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 }
 
 // GetTypes is a FarmServer's handle to get farm types
-func (s *FarmServer) GetTypes(c echo.Context) error {
+func (*FarmServer) GetTypes(c echo.Context) error {
 	types := domain.FindAllFarmTypes()
 
 	return c.JSON(http.StatusOK, types)
@@ -1266,7 +1266,7 @@ func (s *FarmServer) GetTotalAreas(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-func (s *FarmServer) GetInventoryPlantTypes(c echo.Context) error {
+func (*FarmServer) GetInventoryPlantTypes(c echo.Context) error {
 	data := make(map[string][]string)
 
 	plantTypes := MapToPlantType(domain.PlantTypes())

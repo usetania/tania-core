@@ -119,12 +119,12 @@ type Tray struct {
 	Cell int
 }
 
-func (t Tray) Code() string { return "TRAY" }
+func (Tray) Code() string { return "TRAY" }
 
 // Pot implements CropContainerType
 type Pot struct{}
 
-func (p Pot) Code() string { return "POT" }
+func (Pot) Code() string { return "POT" }
 
 type CropContainer struct {
 	Quantity int
@@ -484,7 +484,7 @@ func CreateCropBatch(
 	return initial, nil
 }
 
-func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID uuid.UUID, destinationAreaUID uuid.UUID, quantity int) error {
+func (c *Crop) MoveToArea(cropService CropService, sourceAreaUID, destinationAreaUID uuid.UUID, quantity int) error {
 	// Validate //
 	// Check if source area is exist in DB
 	serviceResult := cropService.FindAreaByID(sourceAreaUID)
@@ -975,17 +975,17 @@ func (c *Crop) Dump(cropService CropService, sourceAreaUID uuid.UUID, quantity i
 	return nil
 }
 
-func (c *Crop) Fertilize() error {
+func (*Crop) Fertilize() error {
 	// c.LastFertilized = time.Now()
 	return nil
 }
 
-func (c *Crop) Prune() error {
+func (*Crop) Prune() error {
 	// c.LastPruned = time.Now()
 	return nil
 }
 
-func (c *Crop) Pesticide() error {
+func (*Crop) Pesticide() error {
 	// c.LastPesticided = time.Now()
 	return nil
 }

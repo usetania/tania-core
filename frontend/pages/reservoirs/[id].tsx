@@ -126,7 +126,7 @@ const ReservoirDetail: NextPage = () => {
             <Table responsive>
               <thead>
                 <tr>
-                  <th></th>
+                  <th />
                   <th className="w-75">Items</th>
                   <th>Category</th>
                 </tr>

@@ -48,7 +48,7 @@ func (q MaterialReadQueryInMemory) FindByID(inventoryUID uuid.UUID) <-chan query
 	return result
 }
 
-func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.Result {
+func (q MaterialReadQueryInMemory) FindMaterialByPlantTypeCodeAndName(plantTypeCode, name string) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

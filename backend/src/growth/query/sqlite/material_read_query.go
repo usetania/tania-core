@@ -63,7 +63,7 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Re
 	return result
 }
 
-func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCode string, name string) <-chan query.Result {
+func (q MaterialReadQuerySqlite) FindMaterialByPlantTypeCodeAndName(plantTypeCode, name string) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

@@ -14,7 +14,7 @@ func NewMaterialReadQueryInMemory(s *storage.MaterialReadStorage) query.Material
 	return &MaterialReadQueryInMemory{Storage: s}
 }
 
-func (q *MaterialReadQueryInMemory) FindAll(materialType, materialTypeDetail string, page, limit int) <-chan query.Result {
+func (q *MaterialReadQueryInMemory) FindAll(_, _ string, _, _ int) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {
@@ -34,7 +34,7 @@ func (q *MaterialReadQueryInMemory) FindAll(materialType, materialTypeDetail str
 	return result
 }
 
-func (q MaterialReadQueryInMemory) CountAll(materialType, materialTypeDetail string) <-chan query.Result {
+func (q MaterialReadQueryInMemory) CountAll(_, _ string) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

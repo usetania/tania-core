@@ -19,7 +19,7 @@ type MaterialTypeSeed struct {
 	PlantType PlantType
 }
 
-func (mt MaterialTypeSeed) Code() string {
+func (MaterialTypeSeed) Code() string {
 	return MaterialTypeSeedCode
 }
 
@@ -69,7 +69,7 @@ type MaterialTypeAgrochemical struct {
 	ChemicalType ChemicalType
 }
 
-func (mt MaterialTypeAgrochemical) Code() string {
+func (MaterialTypeAgrochemical) Code() string {
 	return MaterialTypeAgrochemicalCode
 }
 
@@ -117,13 +117,13 @@ func CreateMaterialTypeAgrochemical(chemicalType string) (MaterialTypeAgrochemic
 
 type MaterialTypeGrowingMedium struct{}
 
-func (mt MaterialTypeGrowingMedium) Code() string {
+func (MaterialTypeGrowingMedium) Code() string {
 	return MaterialTypeGrowingMediumCode
 }
 
 type MaterialTypeLabelAndCropSupport struct{}
 
-func (mt MaterialTypeLabelAndCropSupport) Code() string {
+func (MaterialTypeLabelAndCropSupport) Code() string {
 	return MaterialTypeLabelAndCropSupportCode
 }
 
@@ -131,7 +131,7 @@ type MaterialTypeSeedingContainer struct {
 	ContainerType ContainerType
 }
 
-func (mt MaterialTypeSeedingContainer) Code() string {
+func (MaterialTypeSeedingContainer) Code() string {
 	return MaterialTypeSeedingContainerCode
 }
 
@@ -173,13 +173,13 @@ func CreateMaterialTypeSeedingContainer(containerType string) (MaterialTypeSeedi
 
 type MaterialTypePostHarvestSupply struct{}
 
-func (mt MaterialTypePostHarvestSupply) Code() string {
+func (MaterialTypePostHarvestSupply) Code() string {
 	return MaterialTypePostHarvestSupplyCode
 }
 
 type MaterialTypeOther struct{}
 
-func (mt MaterialTypeOther) Code() string {
+func (MaterialTypeOther) Code() string {
 	return MaterialTypeOtherCode
 }
 
@@ -187,7 +187,7 @@ type MaterialTypePlant struct {
 	PlantType PlantType
 }
 
-func (mt MaterialTypePlant) Code() string {
+func (MaterialTypePlant) Code() string {
 	return MaterialTypePlantCode
 }
 

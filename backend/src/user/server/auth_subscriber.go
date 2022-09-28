@@ -1,7 +1,8 @@
 package server
 
 import (
-	"github.com/labstack/gommon/log"
+	"log"
+
 	"github.com/usetania/tania-core/src/user/domain"
 	"github.com/usetania/tania-core/src/user/storage"
 )
@@ -20,7 +21,7 @@ func (s *AuthServer) SaveToUserReadModel(event interface{}) error {
 
 	err := <-s.UserReadRepo.Save(userRead)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 	}
 
 	return nil

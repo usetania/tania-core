@@ -17,7 +17,7 @@ func NewTaskReadQueryInMemory(s *storage.TaskReadStorage) query.TaskRead {
 	return &TaskReadQueryInMemory{Storage: s}
 }
 
-func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.Result {
+func (q TaskReadQueryInMemory) FindAll(_, _ int) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {
@@ -28,10 +28,6 @@ func (q TaskReadQueryInMemory) FindAll(page, limit int) <-chan query.Result {
 
 		for _, val := range q.Storage.TaskReadMap {
 			tasks = append(tasks, val)
-		}
-
-		if limit != 0 {
-			tasks = tasks[:limit]
 		}
 
 		result <- query.Result{Result: tasks}
@@ -58,7 +54,7 @@ func (q TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
 	return result
 }
 
-func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, page, limit int) <-chan query.Result {
+func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, _, _ int) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {
@@ -271,7 +267,7 @@ func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 	return result
 }
 
-func checkWithinTimeRange(start time.Time, end time.Time, check time.Time) bool {
+func checkWithinTimeRange(start, end, check time.Time) bool {
 	isStart := check.Equal(start)
 	isEnd := check.Equal(end)
 	isBetween := check.After(start) && check.Before(end)

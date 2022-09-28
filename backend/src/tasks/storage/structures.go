@@ -56,7 +56,7 @@ type TaskDomainCropMaterial struct {
 	MaterialDetailedType string     `json:"material_detailed_type"`
 }
 
-func (d TaskDomainDetailedCrop) Code() string {
+func (TaskDomainDetailedCrop) Code() string {
 	return domain.TaskDomainCropCode
 }
 
@@ -67,7 +67,7 @@ type TaskDomainDetailedArea struct {
 	MaterialDetailedType string     `json:"material_detailed_type"`
 }
 
-func (d TaskDomainDetailedArea) Code() string {
+func (TaskDomainDetailedArea) Code() string {
 	return domain.TaskDomainCropCode
 }
 
@@ -78,6 +78,6 @@ type TaskDomainDetailedReservoir struct {
 	MaterialDetailedType string     `json:"material_detailed_type"`
 }
 
-func (d TaskDomainDetailedReservoir) Code() string {
+func (TaskDomainDetailedReservoir) Code() string {
 	return domain.TaskDomainCropCode
 }

@@ -1,7 +1,8 @@
 package config
 
 import (
-	log "github.com/sirupsen/logrus"
+	"log"
+
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -40,7 +41,7 @@ Viper uses the following precedence order. Each item takes precedence over the i
   - key/value store
   - default
 */
-func InitViperConfig() {
+func InitViperConfig() error {
 	v := viper.New()
 
 	v.AutomaticEnv()
@@ -76,7 +77,7 @@ func InitViperConfig() {
 
 	err := v.BindPFlags(pflag.CommandLine)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	c := Configuration{}
@@ -85,7 +86,7 @@ func InitViperConfig() {
 
 	err = v.Unmarshal(&c)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	Config = c
@@ -96,15 +97,17 @@ func InitViperConfig() {
 
 	err = v.ReadInConfig()
 	if err != nil {
-		log.Warnf("No configuration file found. Err %v", err)
+		log.Printf("No configuration file found. Err %v", err)
 	} else {
-		log.Info("Using config file at " + v.ConfigFileUsed())
+		log.Printf("Using config file at " + v.ConfigFileUsed())
 	}
 
 	err = v.Unmarshal(&c)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	Config = c
+
+	return nil
 }

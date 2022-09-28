@@ -131,7 +131,7 @@ func MaterialQuantityUnits(materialTypeCode string) []MaterialQuantityUnit {
 	return nil
 }
 
-func GetMaterialQuantityUnit(materialTypeCode string, code string) MaterialQuantityUnit {
+func GetMaterialQuantityUnit(materialTypeCode, code string) MaterialQuantityUnit {
 	for _, v := range MaterialQuantityUnits(materialTypeCode) {
 		if v.Code == code {
 			return v
@@ -308,31 +308,25 @@ func (m *Material) ChangeType(materialType MaterialType) error {
 	return nil
 }
 
-func (m *Material) ChangeExpirationDate(expDate time.Time) error {
+func (m *Material) ChangeExpirationDate(expDate time.Time) {
 	m.TrackChange(MaterialExpirationDateChanged{
 		MaterialUID:    m.UID,
 		ExpirationDate: expDate,
 	})
-
-	return nil
 }
 
-func (m *Material) ChangeNotes(notes string) error {
+func (m *Material) ChangeNotes(notes string) {
 	m.TrackChange(MaterialNotesChanged{
 		MaterialUID: m.UID,
 		Notes:       notes,
 	})
-
-	return nil
 }
 
-func (m *Material) ChangeProducedBy(producedBy string) error {
+func (m *Material) ChangeProducedBy(producedBy string) {
 	m.TrackChange(MaterialProducedByChanged{
 		MaterialUID: m.UID,
 		ProducedBy:  producedBy,
 	})
-
-	return nil
 }
 
 func validateQuantity(quantity float32) error {

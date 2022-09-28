@@ -20,7 +20,7 @@ func NewServer() (*Server, error) {
 	return &Server{}, nil
 }
 
-func (s *Server) Mount(g *echo.Group) {
+func (*Server) Mount(g *echo.Group) {
 	g.GET("/countries", LocationsGetCountries)
 }
 

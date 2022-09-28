@@ -22,7 +22,7 @@ type TaskDomainArea struct {
 	MaterialID *uuid.UUID `json:"material_id"`
 }
 
-func (d TaskDomainArea) Code() string {
+func (TaskDomainArea) Code() string {
 	return TaskDomainAreaCode
 }
 
@@ -32,28 +32,28 @@ type TaskDomainCrop struct {
 	AreaID     *uuid.UUID `json:"area_id"`
 }
 
-func (d TaskDomainCrop) Code() string {
+func (TaskDomainCrop) Code() string {
 	return TaskDomainCropCode
 }
 
 // FINANCE
 type TaskDomainFinance struct{}
 
-func (d TaskDomainFinance) Code() string {
+func (TaskDomainFinance) Code() string {
 	return TaskDomainFinanceCode
 }
 
 // GENERAL
 type TaskDomainGeneral struct{}
 
-func (d TaskDomainGeneral) Code() string {
+func (TaskDomainGeneral) Code() string {
 	return TaskDomainGeneralCode
 }
 
 // INVENTORY
 type TaskDomainInventory struct{}
 
-func (d TaskDomainInventory) Code() string {
+func (TaskDomainInventory) Code() string {
 	return TaskDomainInventoryCode
 }
 
@@ -62,7 +62,7 @@ type TaskDomainReservoir struct {
 	MaterialID *uuid.UUID `json:"material_id"`
 }
 
-func (d TaskDomainReservoir) Code() string {
+func (TaskDomainReservoir) Code() string {
 	return TaskDomainReservoirCode
 }
 

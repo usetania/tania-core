@@ -2,8 +2,8 @@ package server
 
 import (
 	"errors"
+	"log"
 
-	"github.com/labstack/gommon/log"
 	"github.com/usetania/tania-core/src/assets/domain"
 	"github.com/usetania/tania-core/src/assets/storage"
 )
@@ -26,12 +26,12 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 	case domain.FarmNameChanged:
 		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -41,12 +41,12 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 	case domain.FarmTypeChanged:
 		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -56,12 +56,12 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 	case domain.FarmGeolocationChanged:
 		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -72,12 +72,12 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 	case domain.FarmRegionChanged:
 		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		farmRead = &farm
@@ -88,7 +88,7 @@ func (s *FarmServer) SaveToFarmReadModel(event interface{}) error {
 
 	err := <-s.FarmReadRepo.Save(farmRead)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -101,12 +101,12 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 	case domain.ReservoirCreated:
 		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead.UID = e.UID
@@ -133,12 +133,12 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 	case domain.ReservoirNameChanged:
 		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -148,12 +148,12 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 	case domain.ReservoirWaterSourceChanged:
 		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -173,12 +173,12 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 	case domain.ReservoirNoteAdded:
 		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -192,12 +192,12 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 	case domain.ReservoirNoteRemoved:
 		queryResult := <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		r, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		reservoirRead = &r
@@ -219,7 +219,7 @@ func (s *FarmServer) SaveToReservoirReadModel(event interface{}) error {
 
 	err := <-s.ReservoirReadRepo.Save(reservoirRead)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -232,22 +232,22 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaCreated:
 		queryResult := <-s.FarmReadQuery.FindByID(e.FarmUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		farm, ok := queryResult.Result.(storage.FarmRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		reservoir, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead.UID = e.UID
@@ -268,12 +268,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaNameChanged:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -283,12 +283,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaSizeChanged:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -298,12 +298,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaTypeChanged:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -313,12 +313,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaLocationChanged:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -328,22 +328,22 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaReservoirChanged:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.ReservoirReadQuery.FindByID(e.ReservoirUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		reservoir, ok := queryResult.Result.(storage.ReservoirRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -356,12 +356,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaPhotoAdded:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -377,12 +377,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaNoteAdded:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -396,12 +396,12 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 	case domain.AreaNoteRemoved:
 		queryResult := <-s.AreaReadQuery.FindByID(e.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		area, ok := queryResult.Result.(storage.AreaRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		areaRead = &area
@@ -423,7 +423,7 @@ func (s *FarmServer) SaveToAreaReadModel(event interface{}) error {
 
 	err := <-s.AreaReadRepo.Save(areaRead)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -447,12 +447,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialNameChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -462,12 +462,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialPriceChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -477,12 +477,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialQuantityChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -495,12 +495,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialTypeChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -510,12 +510,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialExpirationDateChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -525,12 +525,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialNotesChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -540,12 +540,12 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 	case domain.MaterialProducedByChanged:
 		queryResult := <-s.MaterialReadQuery.FindByID(e.MaterialUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		material, ok := queryResult.Result.(storage.MaterialRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		materialRead = &material
@@ -555,7 +555,7 @@ func (s *FarmServer) SaveToMaterialReadModel(event interface{}) error {
 
 	err := <-s.MaterialReadRepo.Save(materialRead)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 	}
 
 	return nil

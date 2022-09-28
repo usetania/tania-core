@@ -6,7 +6,7 @@ import (
 
 // IsNumeric check if the string contains only numbers. Empty string is valid.
 func IsNumeric(val string) bool {
-	if len(val) == 0 {
+	if val == "" {
 		return true
 	}
 
@@ -31,7 +31,7 @@ func IsAlpha(val string) bool {
 
 // IsAlphanumeric check if the string contains only letters and numbers. Empty string is valid.
 func IsAlphanumeric(val string) bool {
-	if len(val) == 0 {
+	if val == "" {
 		return true
 	}
 
@@ -44,7 +44,7 @@ func IsAlphanumeric(val string) bool {
 // Only allow letters and numbers at the start and the end.
 // Empty string is valid.
 func IsAlphanumSpaceHyphenUnderscore(val string) bool {
-	if len(val) == 0 {
+	if val == "" {
 		return true
 	}
 

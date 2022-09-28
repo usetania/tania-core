@@ -2,11 +2,11 @@ package server
 
 import (
 	"errors"
+	"log"
 	"sort"
 	"time"
 
 	"github.com/gofrs/uuid"
-	"github.com/labstack/gommon/log"
 	"github.com/usetania/tania-core/src/growth/domain"
 	"github.com/usetania/tania-core/src/growth/query"
 	"github.com/usetania/tania-core/src/growth/storage"
@@ -20,22 +20,22 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchCreated:
 		queryResult := <-s.AreaReadQuery.FindByID(e.InitialAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.MaterialReadQuery.FindByID(e.InventoryUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		inv, ok := queryResult.Result.(query.CropMaterialQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead.UID = e.UID
@@ -91,12 +91,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchTypeChanged:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
@@ -106,22 +106,22 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchInventoryChanged:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.MaterialReadQuery.FindByID(e.InventoryUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		inv, ok := queryResult.Result.(query.CropMaterialQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
@@ -137,22 +137,22 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchContainerChanged:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.AreaReadQuery.FindByID(cr.InitialArea.AreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		initialArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
@@ -183,34 +183,34 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchMoved:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.SrcAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.DstAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		dstArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		if cropRead.InitialArea.AreaUID == e.SrcAreaUID {
@@ -287,24 +287,24 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchHarvested:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		hs := storage.HarvestedStorage{
@@ -352,24 +352,24 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchDumped:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cl, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cl
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		isFound := false
@@ -428,12 +428,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchWatered:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cl, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cl
@@ -451,12 +451,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchNoteCreated:
 		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
@@ -474,12 +474,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchNoteRemoved:
 		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
@@ -497,12 +497,12 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 	case domain.CropBatchPhotoCreated:
 		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropRead = &cr
@@ -520,7 +520,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 
 	err := <-s.CropReadRepo.Save(cropRead)
 	if err != nil {
-		log.Error(err)
+		log.Println(err)
 	}
 
 	return nil
@@ -537,12 +537,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchCreated:
 		queryResult := <-s.AreaReadQuery.FindByID(e.InitialAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity.UID = e.UID
@@ -559,19 +559,19 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchContainerChanged:
 		queryResult := <-s.CropActivityQuery.FindByCropIDAndActivityType(e.UID, storage.SeedActivity{})
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		ca, ok := queryResult.Result.(storage.CropActivity)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity = &ca
 
 		seedActivity, ok := ca.ActivityType.(storage.SeedActivity)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity.ContainerType = e.Container.Type.Code()
@@ -587,12 +587,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchInventoryChanged:
 		queryResult := <-s.CropActivityQuery.FindByCropIDAndActivityType(e.UID, storage.SeedActivity{})
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		ca, ok := queryResult.Result.(storage.CropActivity)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity = &ca
@@ -604,32 +604,32 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchMoved:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.SrcAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.DstAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		dstArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity.UID = e.UID
@@ -648,22 +648,22 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchHarvested:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedHarvestedStorage.SourceAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity.UID = e.UID
@@ -683,22 +683,22 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchDumped:
 		queryResult := <-s.CropReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		queryResult = <-s.AreaReadQuery.FindByID(e.UpdatedTrash.SourceAreaUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		srcArea, ok := queryResult.Result.(query.CropAreaQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity.UID = e.UID
@@ -727,12 +727,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case domain.CropBatchPhotoCreated:
 		queryResult := <-s.CropReadQuery.FindByID(e.CropUID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		cr, ok := queryResult.Result.(storage.CropRead)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		cropActivity.UID = e.CropUID
@@ -755,12 +755,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	case taskevents.TaskCompleted:
 		queryResult := <-s.TaskReadQuery.FindByID(e.UID)
 		if queryResult.Error != nil {
-			log.Error(queryResult.Error)
+			log.Println(queryResult.Error)
 		}
 
 		taskQueryResult, ok := queryResult.Result.(query.CropTaskQueryResult)
 		if !ok {
-			log.Error(errors.New("internal server error. error type assertion"))
+			log.Println(errors.New("internal server error. error type assertion"))
 		}
 
 		if taskQueryResult.Domain == "CROP" {
@@ -768,12 +768,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 
 			queryResult := <-s.CropReadQuery.FindByID(taskQueryResult.AssetUID)
 			if queryResult.Error != nil {
-				log.Error(queryResult.Error)
+				log.Println(queryResult.Error)
 			}
 
 			cropRead, ok = queryResult.Result.(storage.CropRead)
 			if !ok {
-				log.Error(errors.New("internal server error. error type assertion"))
+				log.Println(errors.New("internal server error. error type assertion"))
 			}
 
 			areaQueryResult := query.CropAreaQueryResult{}
@@ -781,12 +781,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			if taskQueryResult.AreaUID != (uuid.UUID{}) {
 				queryResult := <-s.AreaReadQuery.FindByID(taskQueryResult.AreaUID)
 				if queryResult.Error != nil {
-					log.Error(queryResult.Error)
+					log.Println(queryResult.Error)
 				}
 
 				areaQueryResult, ok = queryResult.Result.(query.CropAreaQueryResult)
 				if !ok {
-					log.Error(errors.New("internal server error. error type assertion"))
+					log.Println(errors.New("internal server error. error type assertion"))
 				}
 			}
 
@@ -795,12 +795,12 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 			if taskQueryResult.MaterialUID != (uuid.UUID{}) {
 				queryResult := <-s.MaterialReadQuery.FindByID(taskQueryResult.MaterialUID)
 				if queryResult.Error != nil {
-					log.Error(queryResult.Error)
+					log.Println(queryResult.Error)
 				}
 
 				materialQueryResult, ok = queryResult.Result.(query.CropMaterialQueryResult)
 				if !ok {
-					log.Error(errors.New("internal server error. error type assertion"))
+					log.Println(errors.New("internal server error. error type assertion"))
 				}
 			}
 
@@ -852,7 +852,7 @@ func (s *GrowthServer) SaveToCropActivityReadModel(event interface{}) error {
 	if cropActivity.UID != (uuid.UUID{}) {
 		err := <-s.CropActivityRepo.Save(cropActivity, isUpdate)
 		if err != nil {
-			log.Error(err)
+			log.Println(err)
 		}
 	}
 
