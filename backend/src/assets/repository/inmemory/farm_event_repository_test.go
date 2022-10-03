@@ -1,10 +1,11 @@
-package inmemory
+package inmemory_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/usetania/tania-core/src/assets/domain"
+	"github.com/usetania/tania-core/src/assets/repository/inmemory"
 	"github.com/usetania/tania-core/src/assets/storage"
 )
 
@@ -14,7 +15,7 @@ func TestFarmEventInMemorySave(t *testing.T) {
 	done := make(chan bool)
 
 	farmEventStorage := storage.CreateFarmEventStorage()
-	repo := NewFarmEventRepositoryInMemory(farmEventStorage)
+	repo := inmemory.NewFarmEventRepositoryInMemory(farmEventStorage)
 
 	farm1, farmErr1 := domain.CreateFarm("My Farm 1", "organic", "10.000", "11.000", "ID", "JK")
 	farm2, farmErr2 := domain.CreateFarm("My Farm 2", "organic", "10.000", "11.000", "ID", "JK")

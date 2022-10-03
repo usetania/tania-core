@@ -1,4 +1,4 @@
-package inmemory
+package inmemory_test
 
 import (
 	"testing"
@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/usetania/tania-core/src/assets/domain"
+	"github.com/usetania/tania-core/src/assets/repository/inmemory"
 	"github.com/usetania/tania-core/src/assets/storage"
 )
 
@@ -26,7 +27,7 @@ func TestReservoirEventInMemorySave(t *testing.T) {
 	done := make(chan bool)
 
 	reservoirEventStorage := storage.CreateReservoirEventStorage()
-	repo := NewReservoirEventRepositoryInMemory(reservoirEventStorage)
+	repo := inmemory.NewReservoirEventRepositoryInMemory(reservoirEventStorage)
 
 	reservoirServiceMock := new(ReservoirServiceMock)
 

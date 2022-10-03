@@ -1,4 +1,4 @@
-package domain
+package domain_test
 
 import (
 	"testing"
@@ -7,6 +7,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	. "github.com/usetania/tania-core/src/tasks/domain"
 	"github.com/usetania/tania-core/src/tasks/query"
 )
 

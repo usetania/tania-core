@@ -67,7 +67,7 @@ linters:
     - stylecheck
     #- tagliatelle
     - tenv
-    #- testpackage
+    - testpackage
     - thelper
     - tparallel
     - unconvert
