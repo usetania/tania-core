@@ -33,7 +33,7 @@ linters:
     #- goconst
     #- gocritic
     #- gocyclo
-    #- godot
+    - godot
     #- godox
     #- goerr113
     - gofmt
@@ -57,7 +57,7 @@ linters:
     - nlreturn
     - noctx
     - nolintlint
-    #- paralleltest
+    - paralleltest
     - prealloc
     - predeclared
     - promlinter

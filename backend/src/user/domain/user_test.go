@@ -19,6 +19,7 @@ func (m *UserServiceMock) FindUserByUsername(username string) (UserServiceResult
 }
 
 func TestCreateUser(t *testing.T) {
+	t.Parallel()
 	// Given
 	userServiceMock := new(UserServiceMock)
 	userServiceMock.On("FindUserByUsername", "username").Return(UserServiceResult{})
@@ -49,6 +50,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestChangePassword(t *testing.T) {
+	t.Parallel()
 	// Given
 	userServiceMock := new(UserServiceMock)
 	userServiceMock.On("FindUserByUsername", "username").Return(UserServiceResult{})

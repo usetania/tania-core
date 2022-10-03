@@ -1,6 +1,6 @@
 package location
 
-// Error is a custom error from Go built-in error
+// Error is a custom error from Go built-in error.
 type Error struct {
 	code int
 }

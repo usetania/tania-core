@@ -10,7 +10,7 @@ import (
 )
 
 // InterfaceWrapper is used to wrap an interface with its struct name,
-// so it will be easier to unmarshal later
+// so it will be easier to unmarshal later.
 type InterfaceWrapper struct {
 	Name string
 	Data interface{}

@@ -37,6 +37,7 @@ type countCropsResult struct {
 }
 
 func TestCreateArea(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	farmResult := AreaFarmServiceResult{UID: farmUID}
@@ -71,6 +72,7 @@ func TestCreateArea(t *testing.T) {
 }
 
 func TestInvalidCreateArea(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	farmResult := AreaFarmServiceResult{UID: farmUID}
@@ -131,6 +133,7 @@ func TestInvalidCreateArea(t *testing.T) {
 }
 
 func TestAreaCreateRemoveNote(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	farmResult := AreaFarmServiceResult{UID: farmUID}
@@ -192,6 +195,7 @@ func TestAreaCreateRemoveNote(t *testing.T) {
 }
 
 func TestAreaChangePhoto(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	farmResult := AreaFarmServiceResult{UID: farmUID}

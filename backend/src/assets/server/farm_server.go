@@ -29,7 +29,7 @@ import (
 	"github.com/usetania/tania-core/src/helper/structhelper"
 )
 
-// FarmServer ties the routes and handlers with injected dependencies
+// FarmServer ties the routes and handlers with injected dependencies.
 type FarmServer struct {
 	FarmEventRepo       repository.FarmEvent
 	FarmEventQuery      query.FarmEvent
@@ -54,7 +54,7 @@ type FarmServer struct {
 	EventBus            eventbus.TaniaEventBus
 }
 
-// NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct
+// NewFarmServer initializes FarmServer's dependencies and create new FarmServer struct.
 func NewFarmServer(
 	db *sql.DB,
 	farmEventStorage *storage.FarmEventStorage,
@@ -182,7 +182,7 @@ func NewFarmServer(
 	return farmServer, nil
 }
 
-// InitSubscriber defines the mapping of which event this domain listen with their handler
+// InitSubscriber defines the mapping of which event this domain listen with their handler.
 func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("FarmCreated", s.SaveToFarmReadModel)
 	s.EventBus.Subscribe("FarmNameChanged", s.SaveToFarmReadModel)
@@ -216,7 +216,7 @@ func (s *FarmServer) InitSubscriber() {
 	s.EventBus.Subscribe("MaterialProducedByChanged", s.SaveToMaterialReadModel)
 }
 
-// Mount defines the FarmServer's endpoints with its handlers
+// Mount defines the FarmServer's endpoints with its handlers.
 func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/types", s.GetTypes)
 	g.GET("/inventories/materials", s.GetMaterials)
@@ -249,7 +249,7 @@ func (s *FarmServer) Mount(g *echo.Group) {
 	g.GET("/:farm_id/areas/:area_id/photos", s.GetAreaPhotos)
 }
 
-// GetTypes is a FarmServer's handle to get farm types
+// GetTypes is a FarmServer's handle to get farm types.
 func (*FarmServer) GetTypes(c echo.Context) error {
 	types := domain.FindAllFarmTypes()
 
@@ -277,7 +277,7 @@ func (s FarmServer) FindAllFarm(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-// SaveFarm is a FarmServer's handler to save new Farm
+// SaveFarm is a FarmServer's handler to save new Farm.
 func (s *FarmServer) SaveFarm(c echo.Context) error {
 	farm, err := domain.CreateFarm(
 		c.FormValue("name"),
@@ -424,7 +424,7 @@ func (s *FarmServer) FindFarmByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-// SaveReservoir is a FarmServer's handler to save new Reservoir and place it to a Farm
+// SaveReservoir is a FarmServer's handler to save new Reservoir and place it to a Farm.
 func (s *FarmServer) SaveReservoir(c echo.Context) error {
 	validation := RequestValidation{}
 

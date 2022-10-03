@@ -13,7 +13,7 @@ func NewCropActivityRepositoryInMemory(s *storage.CropActivityStorage) repositor
 	return &CropActivityRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *CropActivityRepositoryInMemory) Save(cropActivity *storage.CropActivity, isUpdate bool) <-chan error {
 	result := make(chan error)
 

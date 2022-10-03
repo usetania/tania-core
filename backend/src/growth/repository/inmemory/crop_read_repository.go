@@ -13,7 +13,7 @@ func NewCropReadRepositoryInMemory(s *storage.CropReadStorage) repository.CropRe
 	return &CropReadRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *CropReadRepositoryInMemory) Save(cropRead *storage.CropRead) <-chan error {
 	result := make(chan error)
 

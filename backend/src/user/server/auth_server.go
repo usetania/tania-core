@@ -23,7 +23,7 @@ import (
 	"github.com/usetania/tania-core/src/user/storage"
 )
 
-// AuthServer ties the routes and handlers with injected dependencies
+// AuthServer ties the routes and handlers with injected dependencies.
 type AuthServer struct {
 	UserEventRepo  repository.UserEvent
 	UserReadRepo   repository.UserRead
@@ -35,7 +35,7 @@ type AuthServer struct {
 	EventBus       eventbus.TaniaEventBus
 }
 
-// NewAuthServer initializes AuthServer's dependencies and create new AuthServer struct
+// NewAuthServer initializes AuthServer's dependencies and create new AuthServer struct.
 func NewAuthServer(
 	db *sql.DB,
 	eventBus eventbus.TaniaEventBus,
@@ -73,12 +73,12 @@ func NewAuthServer(
 	return authServer, nil
 }
 
-// InitSubscriber defines the mapping of which event this domain listen with their handler
+// InitSubscriber defines the mapping of which event this domain listen with their handler.
 func (s *AuthServer) InitSubscriber() {
 	s.EventBus.Subscribe("UserCreated", s.SaveToUserReadModel)
 }
 
-// Mount defines the AuthServer's endpoints with its handlers
+// Mount defines the AuthServer's endpoints with its handlers.
 func (s *AuthServer) Mount(g *echo.Group) {
 	g.POST("authorize", s.Authorize)
 	g.POST("register", s.Register)
@@ -202,7 +202,7 @@ func (s *AuthServer) Register(c echo.Context) error {
 }
 
 // RegisterNewUser is used to call the behaviour and persist it
-// It is used by the register handler and in the initial user creation
+// It is used by the register handler and in the initial user creation.
 func (s *AuthServer) RegisterNewUser(username, password, confirmPassword string) (*domain.User, *storage.UserAuth, error) {
 	user, err := domain.CreateUser(s.UserService, username, password, confirmPassword)
 	if err != nil {

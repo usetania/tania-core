@@ -39,6 +39,8 @@ func (m *TaskServiceMock) FindReservoirByID(uid uuid.UUID) ServiceResult {
 }
 
 func TestCreateTask(t *testing.T) {
+	t.Parallel()
+
 	taskServiceMock := new(TaskServiceMock)
 
 	assetID, _ := uuid.NewV4()

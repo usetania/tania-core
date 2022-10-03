@@ -7,6 +7,7 @@ import (
 )
 
 func TestIsEqualFloat32(t *testing.T) {
+	t.Parallel()
 	// Given
 	// When
 	val1 := IsEqual(float32(10.0001), float32(10.00009))

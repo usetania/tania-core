@@ -1,49 +1,49 @@
 package domain
 
 const (
-	// Title Errors
+	// Title Errors.
 	TaskErrorTitleEmptyCode = iota
 
-	// Invalid Task ID Error
+	// Invalid Task ID Error.
 	TaskErrorIDInvalidCode
 
-	// Description Errors
+	// Description Errors.
 	TaskErrorDescriptionEmptyCode
 
-	// Date Errors
+	// Date Errors.
 	TaskErrorDueDateEmptyCode
 	TaskErrorDueDateInvalidCode
 
-	// Priority Errors
+	// Priority Errors.
 	TaskErrorPriorityEmptyCode
 	TaskErrorInvalidPriorityCode
 
-	// Status Errors
+	// Status Errors.
 	TaskErrorStatusEmptyCode
 	TaskErrorInvalidStatusCode
 
-	// Domain Errors
+	// Domain Errors.
 	TaskErrorDomainEmptyCode
 	TaskErrorInvalidDomainCode
 
-	// Category Errors
+	// Category Errors.
 	TaskErrorCategoryEmptyCode
 	TaskErrorInvalidCategoryCode
 
-	// Parent UID Errors
+	// Parent UID Errors.
 	TaskErrorAssetIDEmptyCode
 	TaskErrorInvalidAssetIDCode
 
-	// Task Domain Errors
+	// Task Domain Errors.
 	TaskErrorInventoryIDEmptyCode
 	TaskErrorInvalidInventoryIDCode
 	TaskErrorInvalidAreaIDCode
 
-	// Task General Errors
+	// Task General Errors.
 	TaskErrorTaskNotFoundCode
 )
 
-// TaskError is a custom error from Go built-in error
+// TaskError is a custom error from Go built-in error.
 type TaskError struct {
 	Code int
 }

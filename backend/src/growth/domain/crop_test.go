@@ -36,6 +36,7 @@ func (m *CropServiceMock) FindAreaByID(uid uuid.UUID) ServiceResult {
 }
 
 func TestCreateCropBatch(t *testing.T) {
+	t.Parallel()
 	// Given
 	cropServiceMock := new(CropServiceMock)
 
@@ -87,6 +88,7 @@ func TestCreateCropBatch(t *testing.T) {
 }
 
 func TestHarvestCropBatch(t *testing.T) {
+	t.Parallel()
 	// Given
 	cropServiceMock := new(CropServiceMock)
 
@@ -143,6 +145,7 @@ func TestHarvestCropBatch(t *testing.T) {
 }
 
 func TestWaterCrop(t *testing.T) {
+	t.Parallel()
 	// Given
 	cropServiceMock := new(CropServiceMock)
 
@@ -194,6 +197,7 @@ func TestWaterCrop(t *testing.T) {
 }
 
 func TestCropHarvestArchiveStatus(t *testing.T) {
+	t.Parallel()
 	// Given
 	cropServiceMock := new(CropServiceMock)
 
@@ -241,6 +245,7 @@ func TestCropHarvestArchiveStatus(t *testing.T) {
 }
 
 func TestCropDumpArchiveStatus(t *testing.T) {
+	t.Parallel()
 	// Given
 	cropServiceMock := new(CropServiceMock)
 

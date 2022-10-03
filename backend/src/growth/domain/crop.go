@@ -114,14 +114,14 @@ type CropContainerType interface {
 	Code() string
 }
 
-// Tray implements CropContainerType
+// Tray implements CropContainerType.
 type Tray struct {
 	Cell int
 }
 
 func (Tray) Code() string { return "TRAY" }
 
-// Pot implements CropContainerType
+// Pot implements CropContainerType.
 type Pot struct{}
 
 func (Pot) Code() string { return "POT" }

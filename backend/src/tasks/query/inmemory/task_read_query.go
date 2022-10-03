@@ -38,7 +38,7 @@ func (q TaskReadQueryInMemory) FindAll(_, _ int) <-chan query.Result {
 	return result
 }
 
-// FindByID is to find by ID
+// FindByID is to find by ID.
 func (q TaskReadQueryInMemory) FindByID(uid uuid.UUID) <-chan query.Result {
 	result := make(chan query.Result)
 

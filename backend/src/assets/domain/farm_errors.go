@@ -1,6 +1,6 @@
 package domain
 
-// FarmError is a custom error from Go built-in error
+// FarmError is a custom error from Go built-in error.
 type FarmError struct {
 	Code int
 }

@@ -20,7 +20,7 @@ const (
 	ReservoirNoteErrorNotFound
 )
 
-// ReservoirError is a custom error from Go built-in error
+// ReservoirError is a custom error from Go built-in error.
 type ReservoirError struct {
 	Code int
 }

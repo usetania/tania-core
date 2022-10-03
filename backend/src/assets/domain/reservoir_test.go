@@ -32,6 +32,7 @@ func mockReservoirService(farmUID uuid.UUID, farmName string) *ReservoirServiceM
 }
 
 func TestCreateReservoir(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	serviceMock := mockReservoirService(farmUID, "My Farm 1")
@@ -49,6 +50,7 @@ func TestCreateReservoir(t *testing.T) {
 }
 
 func TestInvalidCreateReservoir(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	serviceMock := mockReservoirService(farmUID, "My Farm")
@@ -75,6 +77,7 @@ func TestInvalidCreateReservoir(t *testing.T) {
 }
 
 func TestReservoirCreateRemoveNote(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	serviceMock := mockReservoirService(farmUID, "My Farm")
@@ -117,6 +120,7 @@ func TestReservoirCreateRemoveNote(t *testing.T) {
 }
 
 func TestCreateWaterSource(t *testing.T) {
+	t.Parallel()
 	// Given
 	capacity := float32(100)
 
@@ -136,6 +140,7 @@ func TestCreateWaterSource(t *testing.T) {
 }
 
 func TestInvalidCreateWaterSource(t *testing.T) {
+	t.Parallel()
 	// When
 	bucket1, err1 := CreateBucket(0)
 	bucket2, err2 := CreateBucket(-1)
@@ -149,6 +154,7 @@ func TestInvalidCreateWaterSource(t *testing.T) {
 }
 
 func TestReservoirChangeWaterSource(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	serviceMock := mockReservoirService(farmUID, "My Farm")
@@ -186,6 +192,7 @@ func TestReservoirChangeWaterSource(t *testing.T) {
 }
 
 func TestReservoirChangeName(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmUID, _ := uuid.NewV4()
 	serviceMock := mockReservoirService(farmUID, "My Farm")

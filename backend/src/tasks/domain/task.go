@@ -263,7 +263,7 @@ func (t *Task) Transition(event interface{}) {
 
 // Validation
 
-// validateTaskTitle
+// validateTaskTitle.
 func validateTaskTitle(title string) error {
 	if title == "" {
 		return TaskError{TaskErrorTitleEmptyCode}
@@ -272,7 +272,7 @@ func validateTaskTitle(title string) error {
 	return nil
 }
 
-// validateTaskDescription
+// validateTaskDescription.
 func validateTaskDescription(description string) error {
 	if description == "" {
 		return TaskError{TaskErrorDescriptionEmptyCode}
@@ -281,7 +281,7 @@ func validateTaskDescription(description string) error {
 	return nil
 }
 
-// validateTaskDueDate
+// validateTaskDueDate.
 func validateTaskDueDate(newdate *time.Time) error {
 	if newdate != nil {
 		if newdate.Before(time.Now()) {
@@ -292,7 +292,7 @@ func validateTaskDueDate(newdate *time.Time) error {
 	return nil
 }
 
-// validateTaskPriority
+// validateTaskPriority.
 func validateTaskPriority(priority string) error {
 	if priority == "" {
 		return TaskError{TaskErrorPriorityEmptyCode}
@@ -306,7 +306,7 @@ func validateTaskPriority(priority string) error {
 	return nil
 }
 
-// validateTaskCategory
+// validateTaskCategory.
 func validateTaskCategory(taskcategory string) error {
 	if taskcategory == "" {
 		return TaskError{TaskErrorCategoryEmptyCode}
@@ -320,7 +320,7 @@ func validateTaskCategory(taskcategory string) error {
 	return nil
 }
 
-// validateAssetID
+// validateAssetID.
 func validateAssetID(taskService TaskService, assetid *uuid.UUID, taskdomain string) error {
 	if assetid != nil {
 		if taskdomain == "" {

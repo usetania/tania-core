@@ -29,7 +29,7 @@ import (
 	taskstorage "github.com/usetania/tania-core/src/tasks/storage"
 )
 
-// GrowthServer ties the routes and handlers with injected dependencies
+// GrowthServer ties the routes and handlers with injected dependencies.
 type GrowthServer struct {
 	CropEventRepo     repository.CropEvent
 	CropEventQuery    query.CropEventQuery
@@ -46,7 +46,7 @@ type GrowthServer struct {
 	File              File
 }
 
-// NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct
+// NewGrowthServer initializes GrowthServer's dependencies and create new GrowthServer struct.
 func NewGrowthServer(
 	db *sql.DB,
 	bus eventbus.TaniaEventBus,
@@ -129,7 +129,7 @@ func NewGrowthServer(
 	return growthServer, nil
 }
 
-// InitSubscriber defines the mapping of which event this domain listen with their handler
+// InitSubscriber defines the mapping of which event this domain listen with their handler.
 func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropReadModel)
 	s.EventBus.Subscribe("CropBatchCreated", s.SaveToCropActivityReadModel)
@@ -154,7 +154,7 @@ func (s *GrowthServer) InitSubscriber() {
 	s.EventBus.Subscribe("TaskCompleted", s.SaveToCropActivityReadModel)
 }
 
-// Mount defines the GrowthServer's endpoints with its handlers
+// Mount defines the GrowthServer's endpoints with its handlers.
 func (s *GrowthServer) Mount(g *echo.Group) {
 	g.GET("/:id/crops", s.FindAllCrops)
 	g.GET("/:id/crops/archives", s.FindAllCropArchives)

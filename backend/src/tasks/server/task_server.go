@@ -26,7 +26,7 @@ import (
 	"github.com/usetania/tania-core/src/tasks/storage"
 )
 
-// TaskServer ties the routes and handlers with injected dependencies
+// TaskServer ties the routes and handlers with injected dependencies.
 type TaskServer struct {
 	TaskEventRepo  repository.TaskEvent
 	TaskReadRepo   repository.TaskRead
@@ -36,7 +36,7 @@ type TaskServer struct {
 	EventBus       eventbus.TaniaEventBus
 }
 
-// NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct
+// NewTaskServer initializes TaskServer's dependencies and create new TaskServer struct.
 func NewTaskServer(
 	db *sql.DB,
 	bus eventbus.TaniaEventBus,
@@ -115,7 +115,7 @@ func NewTaskServer(
 	return taskServer, nil
 }
 
-// InitSubscriber defines the mapping of which event this domain listen with their handler
+// InitSubscriber defines the mapping of which event this domain listen with their handler.
 func (s *TaskServer) InitSubscriber() {
 	s.EventBus.Subscribe(domain.TaskCreatedCode, s.SaveToTaskReadModel)
 	s.EventBus.Subscribe(domain.TaskTitleChangedCode, s.SaveToTaskReadModel)
@@ -129,7 +129,7 @@ func (s *TaskServer) InitSubscriber() {
 	s.EventBus.Subscribe(domain.TaskDueCode, s.SaveToTaskReadModel)
 }
 
-// Mount defines the TaskServer's endpoints with its handlers
+// Mount defines the TaskServer's endpoints with its handlers.
 func (s *TaskServer) Mount(g *echo.Group) {
 	g.POST("", s.SaveTask)
 
@@ -249,7 +249,7 @@ func (s TaskServer) FindFilteredTasks(c echo.Context) error {
 	return c.JSON(http.StatusOK, data)
 }
 
-// SaveTask is a TaskServer's handler to save new Task
+// SaveTask is a TaskServer's handler to save new Task.
 func (s *TaskServer) SaveTask(c echo.Context) error {
 	data := make(map[string]storage.TaskRead)
 

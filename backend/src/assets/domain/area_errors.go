@@ -23,7 +23,7 @@ const (
 	AreaNoteErrorNotFound
 )
 
-// AreaError is a custom error from Go built-in error
+// AreaError is a custom error from Go built-in error.
 type AreaError struct {
 	Code int
 }

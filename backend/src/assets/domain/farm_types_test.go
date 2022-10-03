@@ -8,6 +8,8 @@ import (
 )
 
 func TestFindAllFarmTypes(t *testing.T) {
+	t.Parallel()
+
 	types := []FarmType{
 		{Code: "organic", Name: "Organic / Soil-Based"},
 		{Code: "hydroponic", Name: "Hydroponic"},
@@ -24,6 +26,7 @@ func TestFindAllFarmTypes(t *testing.T) {
 }
 
 func TestFindFarmTypeByCode(t *testing.T) {
+	t.Parallel()
 	// Given
 	farmType := FarmType{Code: "organic", Name: "Organic / Soil-Based"}
 
@@ -34,6 +37,8 @@ func TestFindFarmTypeByCode(t *testing.T) {
 }
 
 func TestInvalidFindFarmTypeByCode(t *testing.T) {
+	t.Parallel()
+
 	code := "er"
 
 	_, err := FindFarmTypeByCode(code)

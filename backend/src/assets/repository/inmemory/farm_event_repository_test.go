@@ -9,6 +9,7 @@ import (
 )
 
 func TestFarmEventInMemorySave(t *testing.T) {
+	t.Parallel()
 	// Given
 	done := make(chan bool)
 

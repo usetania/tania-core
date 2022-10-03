@@ -67,7 +67,7 @@ func (f *Farm) Transition(event interface{}) {
 	}
 }
 
-// CreateFarm registers a new farm to Tania
+// CreateFarm registers a new farm to Tania.
 func CreateFarm(name, farmType, latitude, longitude, country, city string) (*Farm, error) {
 	err := validateFarmName(name)
 	if err != nil {
@@ -143,7 +143,7 @@ func (f *Farm) ChangeType(farmType string) error {
 	return nil
 }
 
-// ChangeGeoLocation changes the geolocation of a farm
+// ChangeGeoLocation changes the geolocation of a farm.
 func (f *Farm) ChangeGeoLocation(latitude, longitude string) error {
 	err := validateGeoLocation(latitude, longitude)
 	if err != nil {
@@ -159,7 +159,7 @@ func (f *Farm) ChangeGeoLocation(latitude, longitude string) error {
 	return nil
 }
 
-// ChangeRegion changes country and city of a farm
+// ChangeRegion changes country and city of a farm.
 func (f *Farm) ChangeRegion(country, city string) error {
 	err := validateCountry(country)
 	if err != nil {

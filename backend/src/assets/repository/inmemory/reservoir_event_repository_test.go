@@ -21,6 +21,7 @@ func (m *ReservoirServiceMock) FindFarmByID(uid uuid.UUID) (domain.ReservoirFarm
 }
 
 func TestReservoirEventInMemorySave(t *testing.T) {
+	t.Parallel()
 	// Given
 	done := make(chan bool)
 

@@ -21,7 +21,7 @@ import (
 	"github.com/usetania/tania-core/src/user/storage"
 )
 
-// UserServer ties the routes and handlers with injected dependencies
+// UserServer ties the routes and handlers with injected dependencies.
 type UserServer struct {
 	UserEventRepo  repository.UserEvent
 	UserReadRepo   repository.UserRead
@@ -33,7 +33,7 @@ type UserServer struct {
 	EventBus       eventbus.TaniaEventBus
 }
 
-// NewUserServer initializes UserServer's dependencies and create new UserServer struct
+// NewUserServer initializes UserServer's dependencies and create new UserServer struct.
 func NewUserServer(
 	db *sql.DB,
 	eventBus eventbus.TaniaEventBus,
@@ -71,12 +71,12 @@ func NewUserServer(
 	return userServer, nil
 }
 
-// InitSubscriber defines the mapping of which event this domain listen with their handler
+// InitSubscriber defines the mapping of which event this domain listen with their handler.
 func (s *UserServer) InitSubscriber() {
 	s.EventBus.Subscribe("PasswordChanged", s.SaveToUserReadModel)
 }
 
-// Mount defines the UserServer's endpoints with its handlers
+// Mount defines the UserServer's endpoints with its handlers.
 func (s *UserServer) Mount(g *echo.Group) {
 	g.POST("/change_password", s.ChangePassword)
 }

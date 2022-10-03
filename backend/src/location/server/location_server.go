@@ -8,7 +8,7 @@ import (
 	"github.com/pariz/gountries"
 )
 
-// Country is country
+// Country is country.
 type Country struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -24,7 +24,7 @@ func (*Server) Mount(g *echo.Group) {
 	g.GET("/countries", LocationsGetCountries)
 }
 
-// LocationsGetCountries displays all available location in Tania
+// LocationsGetCountries displays all available location in Tania.
 func LocationsGetCountries(c echo.Context) error {
 	query := gountries.New()
 	items := query.FindAllCountries()

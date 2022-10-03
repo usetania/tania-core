@@ -14,7 +14,7 @@ func NewCropEventRepositoryInMemory(s *storage.CropEventStorage) repository.Crop
 	return &CropEventRepositoryInMemory{Storage: s}
 }
 
-// Save is to save
+// Save is to save.
 func (f *CropEventRepositoryInMemory) Save(uid uuid.UUID, latestVersion int, events []interface{}) <-chan error {
 	result := make(chan error)
 

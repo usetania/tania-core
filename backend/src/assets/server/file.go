@@ -9,7 +9,7 @@ import (
 )
 
 // File used to handle file path and file operation.
-// We use interface so we can swap it to other file storage easily
+// We use interface so we can swap it to other file storage easily.
 type File interface {
 	GetFile(src string) ([]byte, error)
 	Upload(file *multipart.FileHeader, destPath string) error
@@ -23,7 +23,7 @@ func (LocalFile) GetFile(srcPath string) ([]byte, error) {
 	return file, err
 }
 
-// Upload saves uploaded file to the destined path
+// Upload saves uploaded file to the destined path.
 func (LocalFile) Upload(file *multipart.FileHeader, destPath string) error {
 	src, err := file.Open()
 	if err != nil {

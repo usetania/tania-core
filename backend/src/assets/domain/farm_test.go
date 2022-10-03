@@ -8,6 +8,7 @@ import (
 )
 
 func TestCreateFarm(t *testing.T) {
+	t.Parallel()
 	// Given
 	// When
 	farm, err := CreateFarm("My Farm 1", FarmTypeOrganic, "10.00", "11.00", "Indonesia", "Jakarta")
@@ -22,6 +23,8 @@ func TestCreateFarm(t *testing.T) {
 }
 
 func TestInvalidCreateFarm(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name               string
 		latitude           string
@@ -53,6 +56,7 @@ func TestInvalidCreateFarm(t *testing.T) {
 }
 
 func TestChangeGeolocation(t *testing.T) {
+	t.Parallel()
 	// Given
 	farm, farmErr := CreateFarm("my farm", "organic", "90.000", "100.000", "ID", "JK")
 	latitude := "10.00"
@@ -75,6 +79,7 @@ func TestChangeGeolocation(t *testing.T) {
 }
 
 func TestChangeRegion(t *testing.T) {
+	t.Parallel()
 	// Given
 	farm, farmErr := CreateFarm("my farm", "organic", "90.000", "100.000", "Indonesia", "Jakarta")
 	country := "Australia"

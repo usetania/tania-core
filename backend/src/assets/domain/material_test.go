@@ -8,6 +8,7 @@ import (
 )
 
 func TestCreateInventorySeed(t *testing.T) {
+	t.Parallel()
 	// Given
 	// When
 	mts, err1 := CreateMaterialTypeSeed(PlantTypeVegetable)

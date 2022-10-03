@@ -4,7 +4,7 @@ const (
 	MaterialErrorInvalidMaterialType = iota
 )
 
-// MaterialError is a custom error from Go built-in error
+// MaterialError is a custom error from Go built-in error.
 type MaterialError struct {
 	Code int
 }

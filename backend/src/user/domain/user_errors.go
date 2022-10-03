@@ -1,6 +1,6 @@
 package domain
 
-// UserError is a custom error from Go built-in error
+// UserError is a custom error from Go built-in error.
 type UserError struct {
 	Code int
 }

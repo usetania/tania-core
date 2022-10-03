@@ -33,7 +33,7 @@ const (
 // The business process validation will be handled in each entity's behaviour.
 type RequestValidation struct{}
 
-// RequestValidationError contains fields used for JSON error response
+// RequestValidationError contains fields used for JSON error response.
 type RequestValidationError struct {
 	FieldName    string `json:"field_name"`
 	ErrorCode    string `json:"error_code"`
@@ -49,7 +49,7 @@ func (rve RequestValidationError) Error() string {
 	)
 }
 
-// Message translates error code to meaningful message
+// Message translates error code to meaningful message.
 func Message(errorCode string) string {
 	switch errorCode {
 	case Required:
@@ -77,7 +77,7 @@ func Message(errorCode string) string {
 	}
 }
 
-// NewRequestValidationError initializes new RequestValidation struct
+// NewRequestValidationError initializes new RequestValidation struct.
 func NewRequestValidationError(errorCode, fieldName string) RequestValidationError {
 	return RequestValidationError{
 		FieldName:    fieldName,
@@ -87,7 +87,7 @@ func NewRequestValidationError(errorCode, fieldName string) RequestValidationErr
 }
 
 // Error wraps errors from application layer and domain layer
-// to some format in JSON for response
+// to some format in JSON for response.
 func Error(c echo.Context, err error) error {
 	errorResponse := map[string]string{
 		"field_name":    "",

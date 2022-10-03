@@ -5,7 +5,7 @@ const (
 	CropErrorInvalidCropType
 	CropErrorInvalidCropStatus
 
-	// Crop move to area errors
+	// Crop move to area errors.
 	CropMoveToAreaErrorInvalidSourceArea
 	CropMoveToAreaErrorSourceAreaNotFound
 	CropMoveToAreaErrorInvalidDestinationArea
@@ -16,29 +16,29 @@ const (
 	CropMoveToAreaErrorCannotBeSame
 	CropMoveToAreaErrorInvalidExistingArea
 
-	// Crop harvest errors
+	// Crop harvest errors.
 	CropHarvestErrorInvalidSourceArea
 	CropHarvestErrorSourceAreaNotFound
 	CropHarvestErrorInvalidQuantity
 	CropHarvestErrorNotEnoughQuantity
 	CropHarvestErrorInvalidHarvestType
 
-	// Crop dump errors
+	// Crop dump errors.
 	CropDumpErrorInvalidSourceArea
 	CropDumpErrorSourceAreaNotFound
 	CropDumpErrorInvalidQuantity
 	CropDumpErrorNotEnoughQuantity
 
-	// Crop water errors
+	// Crop water errors.
 	CropWaterErrorInvalidWateringDate
 	CropWaterErrorInvalidSourceArea
 	CropWaterErrorSourceAreaNotFound
 
-	// Crop Batch ID errors
+	// Crop Batch ID errors.
 	CropErrorInvalidBatchID
 	CropErrorBatchIDAlreadyCreated
 
-	// Crop Photo errros
+	// Crop Photo errros.
 	CropErrorPhotoInvalidFilename
 	CropErrorPhotoInvalidMimeType
 	CropErrorPhotoInvalidSize
@@ -56,7 +56,7 @@ const (
 	CropNoteErrorNotFound
 )
 
-// CropError is a custom error from Go built-in error
+// CropError is a custom error from Go built-in error.
 type CropError struct {
 	Code int
 }
