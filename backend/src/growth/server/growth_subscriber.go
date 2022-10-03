@@ -73,8 +73,7 @@ func (s *GrowthServer) SaveToCropReadModel(event interface{}) error {
 			LastUpdated:     e.CreatedDate,
 		}
 
-		seeding := 0
-		growing := 0
+		var seeding, growing int
 		if srcArea.Type == "SEEDING" {
 			seeding += e.Quantity
 		} else if srcArea.Type == "GROWING" {

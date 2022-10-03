@@ -95,6 +95,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 				e.UpdatedSrcArea = initialArea
 			}
+
 			if code == "MOVED_AREA" {
 				movedArea, err := makeCropMovedArea(v)
 				if err != nil {
@@ -104,6 +105,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 				e.UpdatedSrcArea = movedArea
 			}
 		}
+
 		if v, ok := mapped["UpdatedDstArea"]; ok {
 			code, ok2 := mapped["UpdatedDstAreaCode"].(string)
 			if !ok2 {
@@ -195,6 +197,7 @@ func (w *CropEventWrapper) UnmarshalJSON(b []byte) error {
 
 			e.UpdatedHarvestedStorage = harvestedStorage
 		}
+
 		if v, ok := mapped["HarvestedArea"]; ok {
 			code, ok2 := mapped["HarvestedAreaCode"].(string)
 			if !ok2 {

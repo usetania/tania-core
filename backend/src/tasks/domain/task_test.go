@@ -55,14 +55,17 @@ func TestCreateTask(t *testing.T) {
 
 	cropID, _ := uuid.NewV4()
 	batchID := "bro-sup-gre-3-4mar"
+
 	taskServiceMock.On("FindCropByID", cropID).Return(ServiceResult{Result: query.TaskCropResult{UID: cropID, BatchID: batchID}})
 
 	materialID, _ := uuid.NewV4()
 	materialName := "A Good One Fertilizer For All"
+
 	taskServiceMock.On("FindMaterialByID", materialID).Return(ServiceResult{Result: query.TaskMaterialResult{UID: materialID, Name: materialName, TypeCode: "AGROCHEMICAL", DetailedTypeCode: "FERTILIZER"}})
 
 	areaID, _ := uuid.NewV4()
 	areaName := "MY AREA SEEDING"
+
 	taskServiceMock.On("FindAreaByID", areaID).Return(ServiceResult{Result: query.TaskAreaResult{UID: areaID, Name: areaName}})
 
 	taskdomain, _ := CreateTaskDomainCrop(taskServiceMock, taskcategory, &materialID, &areaID)

@@ -193,7 +193,7 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Resul
 
 		for rows.Next() {
 			rowsData := areaReadResult{}
-			err = rows.Scan(
+			if err = rows.Scan(
 				&rowsData.UID,
 				&rowsData.Name,
 				&rowsData.SizeUnit,
@@ -210,8 +210,7 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Resul
 				&rowsData.ReservoirName,
 				&rowsData.FarmUID,
 				&rowsData.FarmName,
-			)
-			if err != nil {
+			); err != nil {
 				result <- query.Result{Error: err}
 			}
 
@@ -244,13 +243,12 @@ func (s AreaReadQuerySqlite) FindAllByFarm(farmUID uuid.UUID) <-chan query.Resul
 
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
-				err = rows.Scan(
+				if err = rows.Scan(
 					&notesRowsData.UID,
 					&notesRowsData.AreaUID,
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
-				)
-				if err != nil {
+				); err != nil {
 					result <- query.Result{Error: err}
 				}
 
@@ -465,7 +463,7 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 
 		for rows.Next() {
 			rowsData := areaReadResult{}
-			err = rows.Scan(
+			if err = rows.Scan(
 				&rowsData.UID,
 				&rowsData.Name,
 				&rowsData.SizeUnit,
@@ -482,8 +480,7 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 				&rowsData.ReservoirName,
 				&rowsData.FarmUID,
 				&rowsData.FarmName,
-			)
-			if err != nil {
+			); err != nil {
 				result <- query.Result{Error: err}
 			}
 
@@ -516,13 +513,12 @@ func (s AreaReadQuerySqlite) FindAreasByReservoirID(reservoirUID uuid.UUID) <-ch
 
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
-				err = rows.Scan(
+				if err = rows.Scan(
 					&notesRowsData.UID,
 					&notesRowsData.AreaUID,
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
-				)
-				if err != nil {
+				); err != nil {
 					result <- query.Result{Error: err}
 				}
 

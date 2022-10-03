@@ -109,12 +109,14 @@ func Error(c echo.Context, err error) error {
 	log.Printf("error_message: %v\n", err.Error())
 
 	var ue domain.UserError
-	var rve RequestValidationError
 	if errors.As(err, &ue) {
 		errorResponse["error_code"] = strconv.Itoa(ue.Code)
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if errors.As(err, &rve) {
+	}
+
+	var rve RequestValidationError
+	if errors.As(err, &rve) {
 		errorResponse["field_name"] = rve.FieldName
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage

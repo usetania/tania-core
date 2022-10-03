@@ -136,6 +136,7 @@ func (q MaterialReadQuerySqlite) FindAll(materialType, materialTypeDetail string
 			}
 
 			var materialType storage.MaterialType
+
 			switch rowsData.Type {
 			case domain.MaterialTypePlantCode:
 				materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)
@@ -314,6 +315,7 @@ func (q MaterialReadQuerySqlite) FindByID(materialUID uuid.UUID) <-chan query.Re
 		}
 
 		var materialType storage.MaterialType
+
 		switch rowsData.Type {
 		case domain.MaterialTypePlantCode:
 			materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)

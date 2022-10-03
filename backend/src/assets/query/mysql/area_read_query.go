@@ -183,7 +183,7 @@ func (s AreaReadQueryMysql) FindAllByFarm(farmUID uuid.UUID) <-chan query.Result
 
 		for rows.Next() {
 			rowsData := areaReadResult{}
-			err := rows.Scan(
+			if err := rows.Scan(
 				&rowsData.UID,
 				&rowsData.Name,
 				&rowsData.SizeUnit,
@@ -200,8 +200,7 @@ func (s AreaReadQueryMysql) FindAllByFarm(farmUID uuid.UUID) <-chan query.Result
 				&rowsData.ReservoirName,
 				&rowsData.FarmUID,
 				&rowsData.FarmName,
-			)
-			if err != nil {
+			); err != nil {
 				result <- query.Result{Error: err}
 			}
 
@@ -229,13 +228,12 @@ func (s AreaReadQueryMysql) FindAllByFarm(farmUID uuid.UUID) <-chan query.Result
 
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
-				err := rows.Scan(
+				if err := rows.Scan(
 					&notesRowsData.UID,
 					&notesRowsData.AreaUID,
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
-				)
-				if err != nil {
+				); err != nil {
 					result <- query.Result{Error: err}
 				}
 
@@ -435,7 +433,7 @@ func (s AreaReadQueryMysql) FindAreasByReservoirID(reservoirUID uuid.UUID) <-cha
 
 		for rows.Next() {
 			rowsData := areaReadResult{}
-			err := rows.Scan(
+			if err := rows.Scan(
 				&rowsData.UID,
 				&rowsData.Name,
 				&rowsData.SizeUnit,
@@ -452,8 +450,7 @@ func (s AreaReadQueryMysql) FindAreasByReservoirID(reservoirUID uuid.UUID) <-cha
 				&rowsData.ReservoirName,
 				&rowsData.FarmUID,
 				&rowsData.FarmName,
-			)
-			if err != nil {
+			); err != nil {
 				result <- query.Result{Error: err}
 			}
 
@@ -481,13 +478,12 @@ func (s AreaReadQueryMysql) FindAreasByReservoirID(reservoirUID uuid.UUID) <-cha
 
 			for rows.Next() {
 				notesRowsData := areaNotesReadResult{}
-				err := rows.Scan(
+				if err := rows.Scan(
 					&notesRowsData.UID,
 					&notesRowsData.AreaUID,
 					&notesRowsData.Content,
 					&notesRowsData.CreatedDate,
-				)
-				if err != nil {
+				); err != nil {
 					result <- query.Result{Error: err}
 				}
 

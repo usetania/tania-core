@@ -84,6 +84,7 @@ func CropContainerHook() mapstructure.DecodeHookFunc {
 
 			quantity = int(qty)
 		}
+
 		if v, ok := mapped["Type"]; ok {
 			mapped2, ok2 := v.(map[string]interface{})
 			if !ok2 {

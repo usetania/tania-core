@@ -130,6 +130,7 @@ func (q MaterialReadQueryMysql) FindAll(materialType, materialTypeDetail string,
 			}
 
 			var materialType storage.MaterialType
+
 			switch rowsData.Type {
 			case domain.MaterialTypePlantCode:
 				materialType, err = domain.CreateMaterialTypePlant(rowsData.TypeData)

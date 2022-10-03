@@ -62,6 +62,7 @@ func (q TaskReadQueryInMemory) FindTasksWithFilter(params map[string]string, _, 
 		defer q.Storage.Lock.RUnlock()
 
 		tasks := []storage.TaskRead{}
+
 		for _, val := range q.Storage.TaskReadMap {
 			isMatch := true
 
@@ -177,6 +178,7 @@ func (q TaskReadQueryInMemory) CountTasksWithFilter(params map[string]string) <-
 		defer q.Storage.Lock.RUnlock()
 
 		tasks := []storage.TaskRead{}
+
 		for _, val := range q.Storage.TaskReadMap {
 			isMatch := true
 

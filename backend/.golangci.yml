@@ -45,7 +45,6 @@ linters:
     - gomodguard
     - goprintffuncname
     - gosec
-    #- ifshort
     - importas
     #- ireturn
     #- lll
@@ -74,10 +73,15 @@ linters:
     - unconvert
     - unparam
     #- varnamelen
-    - wastedassign
+    #- wastedassign
     - whitespace
     #- wrapcheck
-    #- wsl
+    - wsl
 
 run:
   tests: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  fix: true
