@@ -2,7 +2,6 @@ package server
 
 import (
 	"io"
-	"io/ioutil"
 	"log"
 	"mime/multipart"
 	"os"
@@ -19,7 +18,7 @@ type File interface {
 type LocalFile struct{}
 
 func (LocalFile) GetFile(srcPath string) ([]byte, error) {
-	file, err := ioutil.ReadFile(srcPath)
+	file, err := os.ReadFile(srcPath)
 
 	return file, err
 }
