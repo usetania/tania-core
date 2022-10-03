@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -104,26 +105,22 @@ func Error(c echo.Context, err error) error {
 		line,
 	)
 
-	if re, ok := err.(domain.UserError); ok {
-		errorResponse["error_code"] = strconv.Itoa(re.Code)
-		errorResponse["error_message"] = re.Error()
+	errorResponse["error_message"] = err.Error()
+	log.Printf("error_message: %v\n", err.Error())
 
-		log.Printf("error_message: %v\n", re.Error())
+	var ue domain.UserError
+	var rve RequestValidationError
+	if errors.As(err, &ue) {
+		errorResponse["error_code"] = strconv.Itoa(ue.Code)
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if rve, ok := err.(RequestValidationError); ok {
+	} else if errors.As(err, &rve) {
 		errorResponse["field_name"] = rve.FieldName
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage
 
-		log.Printf("error_message: %v\n", rve.ErrorMessage)
-		log.Printf("field_name: %v\n", rve.FieldName)
-
 		return c.JSON(http.StatusBadRequest, rve)
 	}
-
-	errorResponse["error_message"] = err.Error()
-	log.Printf("error_message: %v\n", err.Error())
 
 	return c.JSON(http.StatusInternalServerError, errorResponse)
 }

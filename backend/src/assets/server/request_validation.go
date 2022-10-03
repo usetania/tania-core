@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -98,40 +99,32 @@ func Error(c echo.Context, err error) error {
 		line,
 	)
 
-	if re, ok := err.(domain.ReservoirError); ok {
-		errorResponse["error_code"] = strconv.Itoa(re.Code)
-		errorResponse["error_message"] = re.Error()
+	errorResponse["error_message"] = err.Error()
+	log.Printf("error_message: %v\n", err.Error())
 
-		log.Printf("error_message: %v\n", re.Error())
+	var re domain.ReservoirError
+	var fe domain.FarmError
+	var ae domain.AreaError
+	var rve RequestValidationError
+	if errors.As(err, &re) {
+		errorResponse["error_code"] = strconv.Itoa(re.Code)
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if re, ok := err.(domain.FarmError); ok {
-		errorResponse["error_code"] = strconv.Itoa(re.Code)
-		errorResponse["error_message"] = re.Error()
-
-		log.Printf("error_message: %v\n", re.Error())
+	} else if errors.As(err, &fe) {
+		errorResponse["error_code"] = strconv.Itoa(fe.Code)
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if re, ok := err.(domain.AreaError); ok {
-		errorResponse["error_code"] = strconv.Itoa(re.Code)
-		errorResponse["error_message"] = re.Error()
-
-		log.Printf("error_message: %v\n", re.Error())
+	} else if errors.As(err, &ae) {
+		errorResponse["error_code"] = strconv.Itoa(ae.Code)
 
 		return c.JSON(http.StatusBadRequest, errorResponse)
-	} else if rve, ok := err.(RequestValidationError); ok {
+	} else if errors.As(err, &rve) {
 		errorResponse["field_name"] = rve.FieldName
 		errorResponse["error_code"] = rve.ErrorCode
 		errorResponse["error_message"] = rve.ErrorMessage
 
-		log.Printf("error_message: %v\n", rve.ErrorMessage)
-		log.Printf("field_name: %v\n", rve.FieldName)
-
 		return c.JSON(http.StatusBadRequest, rve)
 	}
-
-	errorResponse["error_message"] = err.Error()
-	log.Printf("error_message: %v\n", err.Error())
 
 	return c.JSON(http.StatusInternalServerError, errorResponse)
 }

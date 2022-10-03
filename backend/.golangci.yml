@@ -20,7 +20,7 @@ linters:
     #- dupl
     - durationcheck
     - errname
-    #- errorlint
+    - errorlint
     - exhaustive
     #- exhaustivestruct
     - exportloopref

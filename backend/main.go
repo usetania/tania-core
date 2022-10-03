@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -258,8 +259,8 @@ func initMysql() *sql.DB {
 			_, err = db.Exec(v)
 
 			if err != nil {
-				me, ok := err.(*mysql.MySQLError)
-				if !ok {
+				var me *mysql.MySQLError
+				if !errors.As(err, &me) {
 					panic("Error executing DDL query")
 				}
 
