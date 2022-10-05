@@ -117,7 +117,10 @@ func main() {
 	}
 
 	// Initialize user
-	initUser(authServer)
+	err = initUser(authServer)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
 
 	// Initialize Echo Middleware
 	e.Use(middleware.Recover())
