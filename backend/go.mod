@@ -7,7 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gofrs/uuid v4.3.0+incompatible
 	github.com/labstack/echo/v4 v4.9.1
-	github.com/mattn/go-sqlite3 v1.14.15
+	github.com/mattn/go-sqlite3 v1.14.16
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/pariz/gountries v0.1.6
 	github.com/sasha-s/go-deadlock v0.3.1
