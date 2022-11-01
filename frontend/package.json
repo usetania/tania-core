@@ -11,7 +11,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "bootstrap": "^5.2.2",
-    "next": "^13.0.0",
+    "next": "^13.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
