@@ -16,7 +16,7 @@ go test ./...
 
 # Build the binary
 echo "Building golang binaries..."
-go build -o ../dist/tania
+go build -o ../dist/taniad cmd/taniad/main.go
 
 # Copy all config files and the database file to the dist folder
 cp ./conf.json ../dist/conf.json
