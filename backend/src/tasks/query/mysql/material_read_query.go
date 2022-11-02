@@ -28,7 +28,12 @@ func (s MaterialQueryMysql) FindMaterialByID(uid uuid.UUID) <-chan query.Result 
 		material := query.TaskMaterialResult{}
 
 		s.DB.QueryRow(`SELECT UID, NAME, TYPE, TYPE_DATA
-			FROM MATERIAL_READ WHERE UID = ?`, uid.Bytes()).Scan(&rowsData.UID, &rowsData.Name, &rowsData.Type, &rowsData.TypeData)
+			FROM MATERIAL_READ WHERE UID = ?`, uid.Bytes()).Scan(
+			&rowsData.UID,
+			&rowsData.Name,
+			&rowsData.Type,
+			&rowsData.TypeData,
+		)
 
 		materialUID, err := uuid.FromBytes(rowsData.UID)
 		if err != nil {

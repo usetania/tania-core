@@ -34,11 +34,11 @@ func TestInvalidCreateFarm(t *testing.T) {
 		cityCode           string
 		expectedCreateFarm error
 	}{
-		{"My Farm Family", "-90.000", "-180.000", "organic", "Indonesia", "Jakarta", nil},
-		{"", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}},
-		{"My Farm Family", "-90.000", "-180.000", "wrongtype", "Indonesia", "Jakarta", FarmError{FarmErrorInvalidFarmTypeCode}},
-		{"My Farm Family", "-90.000", "-180.000", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountry}},
-		{"My Farm Family", "-90.000", "-180.000", "organic", "Indonesia", "", FarmError{FarmErrorInvalidCity}},
+		{"My Farm Family", "-90.00", "-180.00", "organic", "Indonesia", "Jakarta", nil},
+		{"", "-90.00", "-180.00", "organic", "", "Jakarta", FarmError{FarmErrorNameEmptyCode}},
+		{"My Farm Family", "-90.00", "-180.00", "wrongtype", "Indonesia", "Jakarta", FarmError{FarmErrorInvalidFarmTypeCode}},
+		{"My Farm Family", "-90.00", "-180.00", "organic", "", "Jakarta", FarmError{FarmErrorInvalidCountry}},
+		{"My Farm Family", "-90.00", "-180.00", "organic", "Indonesia", "", FarmError{FarmErrorInvalidCity}},
 	}
 
 	for _, test := range tests {

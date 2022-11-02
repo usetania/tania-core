@@ -93,7 +93,10 @@ func (s CropActivityQuerySqlite) FindAllByCropID(uid uuid.UUID) <-chan query.Res
 	return result
 }
 
-func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.Result {
+func (s CropActivityQuerySqlite) FindByCropIDAndActivityType(
+	uid uuid.UUID,
+	activityType interface{},
+) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

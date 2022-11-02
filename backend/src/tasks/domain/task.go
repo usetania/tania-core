@@ -41,7 +41,13 @@ type Task struct {
 }
 
 // CreateTask.
-func CreateTask(ts TaskService, title, description, priority, category string, duedate *time.Time, taskdomain TaskDomain, assetid *uuid.UUID) (*Task, error) {
+func CreateTask(
+	ts TaskService,
+	title, description, priority, category string,
+	duedate *time.Time,
+	taskdomain TaskDomain,
+	assetid *uuid.UUID,
+) (*Task, error) {
 	// add validation
 	err := validateTaskTitle(title)
 	if err != nil {

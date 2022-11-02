@@ -53,7 +53,11 @@ func InitViperConfig() error {
 	pflag.Bool("demo_mode", true, "Switch for the demo mode. This will bypass auth check and use hardcoded token demo")
 
 	// Persistence Config
-	pflag.String("tania_persistence_engine", "sqlite", "Tania persistence engine. Available engine: mysql, sqlite, inmemory")
+	pflag.String(
+		"tania_persistence_engine",
+		"sqlite",
+		"Tania persistence engine. Available engines: mysql, sqlite, inmemory",
+	)
 
 	// Persistence Config - SQLite
 	pflag.String("sqlite_path", "tania.db", "Path of sqlite file db")
@@ -70,7 +74,11 @@ func InitViperConfig() error {
 	pflag.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo")
 
 	// Built-In implicit grant OAuth 2
-	pflag.StringSlice("redirect_uri", []string{"http://localhost:8080/oauth2_implicit_callback"}, "URI for redirection after authorization server grants access token")
+	pflag.StringSlice(
+		"redirect_uri",
+		[]string{"http://localhost:8080/oauth2_implicit_callback"},
+		"URI for redirection after authorization server grants access token",
+	)
 	pflag.String("client_id", "f0ece679-3f53-463e-b624-73e83049d6ac", "OAuth2 Implicit Grant Client ID for frontend")
 
 	pflag.Parse()

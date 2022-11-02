@@ -64,7 +64,13 @@ func TestInvalidCreateReservoir(t *testing.T) {
 	}{
 		{farmUID, "My<>Reserv", BucketType, float32(10), ReservoirError{ReservoirErrorNameAlphanumericOnlyCode}},
 		{farmUID, "MyR", TapType, float32(0), ReservoirError{ReservoirErrorNameNotEnoughCharacterCode}},
-		{farmUID, "MyReservoirNameShouldNotBeMoreThanAHundredLongCharactersMyReservoirNameShouldNotBeMoreThanAHundredLongCharacters", TapType, 0, ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode}},
+		{
+			farmUID,
+			"MyReservoirNameShouldNotBeMoreThanAHundredLongCharactersMyReservoirNameShouldNotBeMoreThanAHundredLongCharacters",
+			TapType,
+			0,
+			ReservoirError{ReservoirErrorNameExceedMaximunCharacterCode},
+		},
 	}
 
 	for _, data := range reservoirData {

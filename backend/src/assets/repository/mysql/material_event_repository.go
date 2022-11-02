@@ -25,7 +25,8 @@ func (f *MaterialEventRepositoryMysql) Save(uid uuid.UUID, latestVersion int, ev
 
 	go func() {
 		for _, v := range events {
-			stmt, err := f.DB.Prepare(`INSERT INTO MATERIAL_EVENT (MATERIAL_UID, VERSION, CREATED_DATE, EVENT) VALUES (?, ?, ?, ?)`)
+			stmt, err := f.DB.Prepare(`INSERT INTO MATERIAL_EVENT
+				(MATERIAL_UID, VERSION, CREATED_DATE, EVENT) VALUES (?, ?, ?, ?)`)
 			if err != nil {
 				result <- err
 			}

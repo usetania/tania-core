@@ -88,7 +88,10 @@ func (s CropActivityQueryMysql) FindAllByCropID(uid uuid.UUID) <-chan query.Resu
 	return result
 }
 
-func (s CropActivityQueryMysql) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.Result {
+func (s CropActivityQueryMysql) FindByCropIDAndActivityType(
+	uid uuid.UUID,
+	activityType interface{},
+) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

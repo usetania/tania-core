@@ -35,7 +35,9 @@ func (f *AreaReadRepositoryMysql) Save(areaRead *storage.AreaRead) <-chan error 
 				areaRead.Name, areaRead.Size.Unit.Symbol, areaRead.Size.Value, areaRead.Type,
 				areaRead.Location.Code, areaRead.Photo.Filename, areaRead.Photo.MimeType,
 				areaRead.Photo.Size, areaRead.Photo.Width, areaRead.Photo.Height, areaRead.CreatedDate,
-				areaRead.Farm.UID.Bytes(), areaRead.Farm.Name, areaRead.Reservoir.UID.Bytes(), areaRead.Reservoir.Name, areaRead.UID.Bytes())
+				areaRead.Farm.UID.Bytes(), areaRead.Farm.Name, areaRead.Reservoir.UID.Bytes(),
+				areaRead.Reservoir.Name, areaRead.UID.Bytes(),
+			)
 			if err != nil {
 				result <- err
 			}

@@ -793,7 +793,15 @@ func (s *FarmServer) SaveArea(c echo.Context) error {
 	}
 
 	// Process //
-	area, err := domain.CreateArea(s.AreaService, farm.UID, reservoir.UID, c.FormValue("name"), c.FormValue("type"), size, location)
+	area, err := domain.CreateArea(
+		s.AreaService,
+		farm.UID,
+		reservoir.UID,
+		c.FormValue("name"),
+		c.FormValue("type"),
+		size,
+		location,
+	)
 	if err != nil {
 		return Error(c, err)
 	}

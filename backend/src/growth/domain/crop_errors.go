@@ -85,7 +85,7 @@ func (e CropError) Error() string {
 	case CropMoveToAreaErrorInvalidQuantity:
 		return "Invalid quantity. Make sure your quantity is not zero and enough to be moved"
 	case CropMoveToAreaErrorInvalidAreaRules:
-		return "Invalid move crop to area. Crop can only be moved from Seeding to Growing, Seeding to Seeding or Growing to Growing"
+		return "Invalid move crop to area. Crop can only be moved from Seeding to Growing, Seeding to Seeding or Growing to Growing" //nolint:lll
 	case CropMoveToAreaErrorInvalidExistingSourceArea:
 		return "Invalid existing source area"
 	case CropMoveToAreaErrorCannotBeSame:

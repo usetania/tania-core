@@ -47,7 +47,7 @@ linters:
     - gosec
     - importas
     #- ireturn
-    #- lll
+    - lll
     - makezero
     - misspell
     - nakedret

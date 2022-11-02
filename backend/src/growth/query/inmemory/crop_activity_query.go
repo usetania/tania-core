@@ -37,7 +37,10 @@ func (s CropActivityQueryInMemory) FindAllByCropID(uid uuid.UUID) <-chan query.R
 	return result
 }
 
-func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(uid uuid.UUID, activityType interface{}) <-chan query.Result {
+func (s CropActivityQueryInMemory) FindByCropIDAndActivityType(
+	uid uuid.UUID,
+	activityType interface{},
+) <-chan query.Result {
 	result := make(chan query.Result)
 
 	go func() {

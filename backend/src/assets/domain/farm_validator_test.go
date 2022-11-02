@@ -56,7 +56,10 @@ func TestValidGeoLocation(t *testing.T) {
 	for _, test := range tests {
 		actual := validateGeoLocation(test.latitude, test.longitude)
 		if !errors.Is(actual, test.expected) {
-			t.Errorf("Expected latitude (%q) longitude(%q) to be %v, got %v", test.latitude, test.longitude, test.expected, actual)
+			t.Errorf(
+				"Expected latitude (%q) longitude(%q) to be %v, got %v",
+				test.latitude, test.longitude, test.expected, actual,
+			)
 		}
 	}
 }

@@ -174,7 +174,7 @@ func (s *AuthServer) Authorize(c echo.Context) error {
 		return Error(c, err)
 	}
 
-	selectedRedirectURI += "?" + "access_token=" + accessToken + "&state=" + reqState + "&expires_in=" + strconv.Itoa(expiresIn)
+	selectedRedirectURI += "?" + "access_token=" + accessToken + "&state=" + reqState + "&expires_in=" + strconv.Itoa(expiresIn) //nolint:lll
 
 	c.Response().Header().Set(echo.HeaderAuthorization, "Bearer "+accessToken)
 
@@ -203,7 +203,9 @@ func (s *AuthServer) Register(c echo.Context) error {
 
 // RegisterNewUser is used to call the behaviour and persist it
 // It is used by the register handler and in the initial user creation.
-func (s *AuthServer) RegisterNewUser(username, password, confirmPassword string) (*domain.User, *storage.UserAuth, error) {
+func (s *AuthServer) RegisterNewUser(
+	username, password, confirmPassword string,
+) (*domain.User, *storage.UserAuth, error) {
 	user, err := domain.CreateUser(s.UserService, username, password, confirmPassword)
 	if err != nil {
 		return nil, nil, err

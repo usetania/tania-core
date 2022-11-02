@@ -113,7 +113,12 @@ func (r *Reservoir) Transition(event interface{}) {
 }
 
 // CreateReservoir registers a new Reservoir.
-func CreateReservoir(rs ReservoirService, farmUID uuid.UUID, name, waterSourceType string, capacity float32) (*Reservoir, error) {
+func CreateReservoir(
+	rs ReservoirService,
+	farmUID uuid.UUID,
+	name, waterSourceType string,
+	capacity float32,
+) (*Reservoir, error) {
 	farmServiceResult, err := rs.FindFarmByID(farmUID)
 	if err != nil {
 		return nil, err
