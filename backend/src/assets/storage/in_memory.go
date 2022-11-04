@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -17,7 +17,7 @@ func CreateFarmEventStorage() *FarmEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("FARM EVENT STORAGE DEADLOCK!")
+		log.Println("FARM EVENT STORAGE DEADLOCK!")
 	}
 
 	return &FarmEventStorage{Lock: &rwMutex}
@@ -32,7 +32,7 @@ func CreateFarmReadStorage() *FarmReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("FARM READ STORAGE DEADLOCK!")
+		log.Println("FARM READ STORAGE DEADLOCK!")
 	}
 
 	return &FarmReadStorage{FarmReadMap: make(map[uuid.UUID]FarmRead), Lock: &rwMutex}
@@ -47,7 +47,7 @@ func CreateReservoirEventStorage() *ReservoirEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("RESERVOIR EVENT STORAGE DEADLOCK!")
+		log.Println("RESERVOIR EVENT STORAGE DEADLOCK!")
 	}
 
 	return &ReservoirEventStorage{Lock: &rwMutex}
@@ -62,7 +62,7 @@ func CreateReservoirReadStorage() *ReservoirReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("RESERVOIR READ STORAGE DEADLOCK!")
+		log.Println("RESERVOIR READ STORAGE DEADLOCK!")
 	}
 
 	return &ReservoirReadStorage{ReservoirReadMap: make(map[uuid.UUID]ReservoirRead), Lock: &rwMutex}
@@ -77,7 +77,7 @@ func CreateAreaEventStorage() *AreaEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("AREA EVENT STORAGE DEADLOCK!")
+		log.Println("AREA EVENT STORAGE DEADLOCK!")
 	}
 
 	return &AreaEventStorage{Lock: &rwMutex}
@@ -92,7 +92,7 @@ func CreateAreaReadStorage() *AreaReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("Area READ STORAGE DEADLOCK!")
+		log.Println("Area READ STORAGE DEADLOCK!")
 	}
 
 	return &AreaReadStorage{AreaReadMap: make(map[uuid.UUID]AreaRead), Lock: &rwMutex}
@@ -107,7 +107,7 @@ func CreateMaterialEventStorage() *MaterialEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("MATERIAL EVENT STORAGE DEADLOCK!")
+		log.Println("MATERIAL EVENT STORAGE DEADLOCK!")
 	}
 
 	return &MaterialEventStorage{Lock: &rwMutex}
@@ -122,7 +122,7 @@ func CreateMaterialReadStorage() *MaterialReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("MATERIAL READ STORAGE DEADLOCK!")
+		log.Println("MATERIAL READ STORAGE DEADLOCK!")
 	}
 
 	return &MaterialReadStorage{MaterialReadMap: make(map[uuid.UUID]MaterialRead), Lock: &rwMutex}

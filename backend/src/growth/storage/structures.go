@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -20,7 +20,7 @@ func CreateCropEventStorage() *CropEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("CROP EVENT STORAGE DEADLOCK!")
+		log.Println("CROP EVENT STORAGE DEADLOCK!")
 	}
 
 	return &CropEventStorage{Lock: &rwMutex}

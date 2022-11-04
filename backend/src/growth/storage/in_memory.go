@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -22,7 +22,7 @@ func CreateCropReadStorage() *CropReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("CROP READ STORAGE DEADLOCK!")
+		log.Println("CROP READ STORAGE DEADLOCK!")
 	}
 
 	return &CropReadStorage{CropReadMap: make(map[uuid.UUID]CropRead), Lock: &rwMutex}
@@ -37,7 +37,7 @@ func CreateCropActivityStorage() *CropActivityStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("CROP LIST STORAGE DEADLOCK!")
+		log.Println("CROP LIST STORAGE DEADLOCK!")
 	}
 
 	return &CropActivityStorage{CropActivityMap: []CropActivity{}, Lock: &rwMutex}

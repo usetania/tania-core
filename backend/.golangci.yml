@@ -24,11 +24,11 @@ linters:
     - exhaustive
     #- exhaustivestruct
     - exportloopref
-    #- forbidigo
+    - forbidigo
     #- forcetypeassert
     #- funlen
     - gci
-    #- gochecknoglobals
+    - gochecknoglobals
     #- gocognit
     #- goconst
     #- gocritic
@@ -73,7 +73,7 @@ linters:
     - unconvert
     - unparam
     #- varnamelen
-    #- wastedassign
+    - wastedassign
     - whitespace
     #- wrapcheck
     - wsl

@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-var Config Configuration
+var Config Configuration //nolint:gochecknoglobals
 
 const (
 	DBInmemory = "inmemory"

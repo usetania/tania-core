@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -17,7 +17,7 @@ func CreateTaskEventStorage() *TaskEventStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("TASK EVENT STORAGE DEADLOCK!")
+		log.Println("TASK EVENT STORAGE DEADLOCK!")
 	}
 
 	return &TaskEventStorage{Lock: &rwMutex}
@@ -32,7 +32,7 @@ func CreateTaskReadStorage() *TaskReadStorage {
 	rwMutex := deadlock.RWMutex{}
 	deadlock.Opts.DeadlockTimeout = time.Second * 10
 	deadlock.Opts.OnPotentialDeadlock = func() {
-		fmt.Println("TASK READ STORAGE DEADLOCK!")
+		log.Println("TASK READ STORAGE DEADLOCK!")
 	}
 
 	return &TaskReadStorage{TaskReadMap: make(map[uuid.UUID]TaskRead), Lock: &rwMutex}
