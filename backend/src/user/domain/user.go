@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -60,7 +61,7 @@ func CreateUser(userService UserService, username, password, confirmPassword str
 
 	userResult, err := userService.FindUserByUsername(username)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to find user by username: %w", err)
 	}
 
 	if userResult.UID != (uuid.UUID{}) {
@@ -74,12 +75,12 @@ func CreateUser(userService UserService, username, password, confirmPassword str
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to generate password hash: %w", err)
 	}
 
 	uid, err := uuid.NewV4()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to generate UUID: %w", err)
 	}
 
 	user := &User{
@@ -114,7 +115,7 @@ func (u *User) ChangePassword(oldPassword, newPassword, newConfirmPassword strin
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(newPassword), bcrypt.DefaultCost)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to generate password hash: %w", err)
 	}
 
 	u.TrackChange(PasswordChanged{
