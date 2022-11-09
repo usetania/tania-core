@@ -16,7 +16,7 @@
     "react-bootstrap": "^2.6.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
-    "sass": "^1.56.0"
+    "sass": "^1.56.1"
   },
   "devDependencies": {
     "@types/node": "^18.11.9",
