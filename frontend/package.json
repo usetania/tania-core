@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
-    "bootstrap": "^5.2.2",
+    "bootstrap": "^5.2.3",
     "next": "^13.0.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",
