@@ -70,8 +70,8 @@ func InitViperConfig() error {
 	pflag.String("mysql_password", "root", "Mysql password")
 
 	// Local Upload Path
-	pflag.String("upload_path_area", "tania-uploads/area", "Upload path for the Area photo")
-	pflag.String("upload_path_crop", "tania-uploads/crop", "Upload path for the Crop photo")
+	pflag.String("upload_path_area", "uploads/areas", "Upload path for the Area photo")
+	pflag.String("upload_path_crop", "uploads/crops", "Upload path for the Crop photo")
 
 	// Built-In implicit grant OAuth 2
 	pflag.StringSlice(
