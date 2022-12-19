@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { NextPage } from "next";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { FaUserPlus } from "react-icons/fa";
@@ -31,12 +31,7 @@ const Register: NextPage = () => {
             <Card>
               <Card.Body>
                 <div className="text-center">
-                  <Image
-                    src={"/img/logo.png"}
-                    layout="fixed"
-                    width={200}
-                    height={65}
-                  />
+                  <Image alt="Tania logo" src={"/img/logo.png"} width={200} height={65} />
                   <h4 className="py-3">Let&apos;s setup your account</h4>
                 </div>
                 <Form>
