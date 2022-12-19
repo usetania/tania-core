@@ -14,12 +14,7 @@ const Sidebar = (): JSX.Element => {
         <Nav defaultActiveKey={router.pathname} className="flex-column">
           <Nav.Link href="/">
             <div className="d-flex justify-content-center py-3 mb-3">
-              <Image
-                src={"/img/logo.png"}
-                layout="fixed"
-                width={100}
-                height={33}
-              />
+              <Image alt="Tania logo" src={"/img/logo.png"} width={100} height={33} />
             </div>
           </Nav.Link>
           {navData &&

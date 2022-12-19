@@ -20,12 +20,7 @@ const Layout = ({ children }: iLayout) => {
         <Navbar collapseOnSelect className="bg-light px-3 py-2" expand="lg">
           <Navbar.Brand href="/">
             <div className="d-flex justify-content-center d-md-none">
-              <Image
-                src={"/img/logo.png"}
-                layout="fixed"
-                width={100}
-                height={33}
-              />
+              <Image alt="Tania logo" src={"/img/logo.png"} width={100} height={33} />
             </div>
           </Navbar.Brand>
           <Navbar.Toggle />

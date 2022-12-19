@@ -31,12 +31,7 @@ const SignIn: NextPage = () => {
             <Card>
               <Card.Body>
                 <div className="text-center">
-                  <Image
-                    src={"/img/logo.png"}
-                    layout="fixed"
-                    width={200}
-                    height={65}
-                  />
+                  <Image alt="Tania logo" src={"/img/logo.png"} width={200} height={65} />
                 </div>
                 <Form>
                   <Form.Group className="mb-3">
