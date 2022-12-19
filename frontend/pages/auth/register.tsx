@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { NextPage } from "next";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useRouter } from "next/router";
 import { Card, Col, Container, Form, Row } from "react-bootstrap";
 import { FaUserPlus } from "react-icons/fa";
