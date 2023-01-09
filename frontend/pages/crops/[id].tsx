@@ -38,7 +38,7 @@ const CropDetail: NextPage = () => {
   const [priority, setPriority] = useState("");
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [isError, setIsError] = useState(false);
   const target = useRef(null);
 
@@ -213,7 +213,7 @@ const CropDetail: NextPage = () => {
                       <ButtonIcon
                         label="Add Task"
                         icon={<FaPlus className="me-2" />}
-                        onClick={() => showModal(true)}
+                        onClick={() => showModal()}
                         variant="primary"
                       />
                     </div>
@@ -450,7 +450,7 @@ const CropDetail: NextPage = () => {
             <Form.Label>{`How many plants do you want to move? (${moveQty})`}</Form.Label>
             <Form.Range
               value={moveQty}
-              onChange={(e) => setMoveQty(e.target.value)}
+              onChange={(e) => setMoveQty(Number(e.target.value))}
             />
           </Form.Group>
         </Form>
@@ -474,7 +474,7 @@ const CropDetail: NextPage = () => {
             <Form.Label>{`How many plants do you want to dump? (${dumpQty})`}</Form.Label>
             <Form.Range
               value={moveQty}
-              onChange={(e) => setDumpQty(e.target.value)}
+              onChange={(e) => setDumpQty(Number(e.target.value))}
             />
           </Form.Group>
           <Form.Group className="mb-3">
