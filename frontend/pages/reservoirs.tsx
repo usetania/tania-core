@@ -13,7 +13,7 @@ import useModal from "../hooks/useModal";
 const Reservoir: NextPage = () => {
   const { modalOpen, showModal, closeModal } = useModal();
   const [reservoirName, setReservoirName] = useState("");
-  const [selectedSource, setSelectedSource] = useState();
+  const [selectedSource, setSelectedSource] = useState("");
   const [sourceNumber, setSourceNumber] = useState("0");
   const [nameIsEmpty, setNameIsEmpty] = useState(false);
 
