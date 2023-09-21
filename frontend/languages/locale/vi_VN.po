@@ -1,0 +1,1003 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-04-16 14:10+0800\n"
+"PO-Revision-Date: 2023-09-21 22:17+0700\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:19
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:25
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:37
+#: resources/js/pages/inventories/materials-form-potharvest.vue:19
+#: resources/js/pages/inventories/materials-form-seed.vue:37
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:20
+msgid "€"
+msgstr "đ"
+
+#: resources/js/components/aside.vue:56
+msgid "Account"
+msgstr "Tài khoản"
+
+#: resources/js/pages/settings/account.vue:6
+msgid "Account Settings"
+msgstr "Thiết lập tài khoản"
+
+#: resources/js/pages/farms/crop.vue:134
+msgid "Activity"
+msgstr "Hoạt động"
+
+#: resources/js/pages/farms/areas.vue:12
+msgid "Add Area"
+msgstr "Thêm khu vực"
+
+#: resources/js/pages/farms/reservoirs.vue:12
+msgid "Add Reservoir"
+msgstr "Thêm bồn chứa"
+
+#: resources/js/pages/home.vue:12
+msgid "At A Glance"
+msgstr "Nhìn thoáng qua"
+
+#: resources/js/pages/farms/crops-form.vue:5
+msgid "Add a New Batch"
+msgstr "Thêm một đợt mới"
+
+#: resources/js/pages/inventories/materials.vue:13
+msgid "Add Material"
+msgstr "Thêm vật liệu"
+
+#: resources/js/pages/inventories/materials-form.vue:8
+msgid "Add Material to Inventory"
+msgstr "Thêm vật liệu vào kho"
+
+#: resources/js/pages/intro/area.vue:19
+#: resources/js/pages/farms/areas-form.vue:5
+msgid "Add New Area"
+msgstr "Thêm khu vực mới"
+
+#: resources/js/pages/farms/crops.vue:20
+msgid "Add New Batch"
+msgstr "Thêm đợt mới"
+
+#: resources/js/pages/farms/reservoirs-form.vue:5
+msgid "Add New Reservoir"
+msgstr "Thêm bồn mới"
+
+#: resources/js/pages/farms/tasks/task-form.vue:14
+msgid "Add New Task"
+msgstr "Thêm nhiệm vụ"
+
+#: resources/js/pages/farms/tasks/task-form.vue:10
+msgid "Add New Task on"
+msgstr "Thêm nhiệm vụ vào"
+
+#: resources/js/pages/farms/crop-notes.vue:49
+msgid "Add Notes"
+msgstr "Thêm ghi chép"
+
+#: resources/js/pages/farms/area.vue:18
+#: resources/js/pages/farms/crop-notes.vue:31
+#: resources/js/pages/farms/reservoir.vue:9
+#: resources/js/pages/tasks/task.vue:15
+msgid "Add Task"
+msgstr "Thêm nhiệm vụ"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:63
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:44
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:30
+#: resources/js/pages/inventories/materials-form-other.vue:38
+#: resources/js/pages/inventories/materials-form-plant.vue:63
+#: resources/js/pages/inventories/materials-form-potharvest.vue:38
+#: resources/js/pages/inventories/materials-form-seed.vue:63
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:46
+#: resources/js/pages/inventories/materials.vue:38
+msgid "Additional Notes"
+msgstr "Ghi chép mở rộng"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:35
+#: resources/js/pages/farms/crop.vue:210
+#: resources/js/pages/farms/tasks/water-task.vue:16
+#: resources/js/pages/tasks/task.vue:33 resources/js/pages/tasks/task.vue:56
+msgid "All"
+msgstr "Toàn bộ"
+
+#: resources/js/pages/farms/crop.vue:245 resources/js/pages/farms/crop.vue:278
+#: resources/js/pages/farms/tasks/task-list.vue:60
+msgid "Apply"
+msgstr "Áp dụng"
+
+#: resources/js/pages/farms/crops.vue:25
+msgid "Archives"
+msgstr "Lưu trữ"
+
+#: resources/js/pages/farms/crop.vue:229
+#: resources/js/pages/farms/tasks/task-form.vue:60
+#: resources/js/pages/tasks/task.vue:36
+msgid "Area"
+msgstr "Khu vực"
+
+#: resources/js/pages/farms/tasks/task-label.vue:4
+msgid "AREA"
+msgstr "KHU VỰC"
+
+#: resources/js/pages/intro/area.vue:19
+#: resources/js/pages/farms/areas-form.vue:8
+msgid ""
+"Area is a space where you grow your plants. It could be a seeding tray, a "
+"garden bed, or a pot or anything that describes the different physical "
+"locations in your facility."
+msgstr ""
+"Khu vực là không gian nơi bạn trồng cây. Đó có thể là khay gieo hạt, luống "
+"trong vườn, chậu hoặc bất cứ thứ gì mô tả các vị trí thực tế khác nhau trong "
+"cơ sở của bạn."
+
+#: resources/js/pages/farms/areas-form.vue:14
+#: resources/js/pages/intro/area.vue:33
+msgid "Area Name"
+msgstr "Tên khu vực"
+
+#: resources/js/pages/farms/area.vue:29
+msgid "Area Size"
+msgstr "Diện tích khu vực"
+
+#: resources/js/components/aside.vue:24 resources/js/pages/farms/areas.vue:6
+#: resources/js/pages/home.vue:19
+msgid "Areas"
+msgstr "Khu vực"
+
+#: resources/js/components/timestamp.vue:4 resources/js/pages/farms/crop.vue:88
+#: resources/js/pages/farms/crop.vue:97
+msgid "at"
+msgstr "tại"
+
+#: resources/js/pages/intro/reservoir.vue:11
+msgid "Awesome! Now let's create a new water source for your farm."
+msgstr "Tuyệt vời! Bây giờ hãy tạo một nguồn nước mới cho trang trại của bạn."
+
+#: resources/js/components/common/btn-back.vue:3
+msgid "Back"
+msgstr "Quay lại"
+
+#: resources/js/pages/farms/crop-notes.vue:10
+#: resources/js/pages/farms/crop.vue:19
+msgid "Back to Crop Batches"
+msgstr "Quay lại Mùa Vụ"
+
+#: resources/js/pages/farms/area.vue:28
+#: resources/js/pages/farms/crop-notes.vue:15
+#: resources/js/pages/farms/crop.vue:24
+#: resources/js/pages/farms/reservoir.vue:21
+msgid "Basic Info"
+msgstr "Thông tin cơ bản"
+
+#: resources/js/pages/farms/crops.vue:16
+msgid "Batch"
+msgstr "Hàng loạt"
+
+#: resources/js/pages/farms/crops-listing.vue:10
+msgid "Batch ID"
+msgstr "Mã đợt"
+
+#: resources/js/pages/farms/area.vue:34 resources/js/pages/farms/areas.vue:34
+msgid "Batches"
+msgstr "Đợt"
+
+#: resources/js/components/upload.vue:5
+msgid "Browse"
+msgstr "Duyệt"
+
+#: resources/js/components/common/btn-cancel.vue:3
+#: resources/js/pages/farms/activities/dump-crop-task.vue:38
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:77
+#: resources/js/pages/farms/activities/move-crop-task.vue:44
+#: resources/js/pages/farms/activities/upload-crop-task.vue:27
+#: resources/js/pages/farms/tasks/crop-task-form.vue:113
+msgid "Cancel"
+msgstr "Hủy"
+
+#: resources/js/pages/farms/reservoir.vue:25
+#: resources/js/pages/farms/reservoirs.vue:32
+msgid "Capacity"
+msgstr "Dung tích"
+
+#: resources/js/pages/intro/reservoir.vue:54
+msgid "Capacity (litre)"
+msgstr "Dung tích (lít)"
+
+#: resources/js/pages/farms/tasks/task-list.vue:11
+#: resources/js/pages/inventories/materials.vue:23
+#: resources/js/pages/tasks/task.vue:27
+msgid "Category"
+msgstr "Thể loại"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:13
+msgid "Chemical Type"
+msgstr "Loại hóa chất"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:12
+msgid "Choose area"
+msgstr "Chọn khu vực"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:15
+msgid "Choose area to be harvested"
+msgstr "Chọn diện tích cần thu hoạch"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:12
+msgid "Choose photo"
+msgstr "Chọn ảnh"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:28
+msgid "Choose type of harvesting"
+msgstr "Chọn loại thu hoạch"
+
+#: resources/js/pages/inventories/materials-form.vue:18
+msgid "Choose type of material"
+msgstr "Chọn loại vật liệu"
+
+#: resources/js/pages/farms/tasks/water-task.vue:12
+msgid "Choose type of watering"
+msgstr "Chọn loại nước"
+
+#: resources/js/pages/intro/farm.vue:66
+msgid "City"
+msgstr "Thành phố"
+
+#: resources/js/components/more-detail.vue:5
+msgid "Close details"
+msgstr "Đóng chi tiết"
+
+#: resources/js/pages/tasks/task.vue:71
+msgid "Completed"
+msgstr "Hoàn thành"
+
+#: resources/js/pages/settings/account.vue:34
+msgid "Confirm Password"
+msgstr "Xác nhận mật khẩu"
+
+#: resources/js/pages/intro/farm.vue:110
+#: resources/js/pages/intro/reservoir.vue:60
+#: resources/js/pages/farms/create.vue:72
+msgid "Continue"
+msgstr "Tiếp tục"
+
+#: resources/js/pages/intro/farm.vue:87
+msgid "Country"
+msgstr "Quốc gia"
+
+#: resources/js/pages/intro/farm.vue:21 resources/js/pages/farms/create.vue:13
+msgid "Create Farm"
+msgstr "Tạo trang trại"
+
+#: resources/js/pages/intro/reservoir.vue:19
+msgid "Create Reservoir"
+msgstr "Tạo bồn chứa"
+
+#: resources/js/pages/farms/reservoir.vue:33
+#: resources/js/pages/farms/reservoirs.vue:26
+msgid "Created On"
+msgstr "Tạo vào"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:64
+#: resources/js/pages/tasks/task.vue:42
+msgid "Crop"
+msgstr "Mùa vụ"
+
+#: resources/js/pages/farms/tasks/task-label.vue:8
+msgid "CROP"
+msgstr "MÙA VỤ"
+
+#: resources/js/pages/farms/crops-form.vue:8
+msgid "Crop Batch is a quantity or consignment of crops done at one time."
+msgstr "Vụ mùa là số lượng hoặc lô hàng cây trồng được thực hiện cùng một lúc."
+
+#: resources/js/pages/farms/area.vue:36
+#: resources/js/pages/farms/crops-listing.vue:7
+msgid "Crop Variety"
+msgstr "Đa dạng cây trồng"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:4
+msgid "Crop: Add New Task for"
+msgstr "Trồng trọt: Thêm nhiệm vụ cho"
+
+#: resources/js/components/aside.vue:40 resources/js/pages/farms/crops.vue:6
+msgid "Crops"
+msgstr "Trồng trọt"
+
+#: resources/js/pages/farms/crop.vue:111
+msgid "Current Quantity"
+msgstr "Số lượng hiện tại"
+
+#: resources/js/pages/farms/area.vue:58
+msgid "Current Status"
+msgstr "Trạng thái hiện tại"
+
+#: resources/js/components/aside.vue:8 resources/js/pages/home.vue:6
+msgid "Dashboard"
+msgstr "Bảng điều khiển"
+
+#: resources/js/components/aside.vue:16
+msgid "Reservoirs"
+msgstr "Bồn chứa"
+
+#: resources/js/pages/farms/crops-listing.vue:16
+msgid "Days Since Seeding"
+msgstr "Ngày kể từ khi gieo hạt"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:18
+msgid "Describe a bit about this photo"
+msgstr "Mô tả một chút về ảnh này"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:104
+#: resources/js/pages/farms/tasks/task-form.vue:82
+msgid "Description"
+msgstr "Mô tả"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:12
+#: resources/js/pages/farms/tasks/task-form.vue:23
+msgid "Due Date"
+msgstr "Ngày đáo hạn"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:58
+msgid "Dump"
+msgstr "Xả"
+
+#: resources/js/pages/farms/crop.vue:47 resources/js/pages/farms/crop.vue:179
+#: resources/js/pages/farms/crops-listing.vue:60
+msgid "Dumped"
+msgstr "Đã xả"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:47
+#: resources/js/pages/inventories/materials-form-plant.vue:53
+#: resources/js/pages/inventories/materials-form-seed.vue:53
+msgid "Expiration date"
+msgstr "Ngày hết hạn"
+
+#: resources/js/pages/farms/create.vue:24 resources/js/pages/intro/farm.vue:28
+msgid "Farm Description"
+msgstr "Mô tả trang trại"
+
+#: resources/js/pages/farms/create.vue:18 resources/js/pages/intro/farm.vue:22
+msgid "Farm Name"
+msgstr "Tên trang trại"
+
+#: resources/js/pages/farms/create.vue:30 resources/js/pages/intro/farm.vue:34
+msgid "Farm Type"
+msgstr "Loại trang trại"
+
+#: resources/js/pages/farms/tasks/task-label.vue:7
+msgid "FINANCE"
+msgstr "TÀI CHÍNH"
+
+#: resources/js/pages/intro/area.vue:122
+msgid "Finish Setup"
+msgstr "Kết thúc cài đặt"
+
+#: resources/js/pages/farms/crop.vue:147
+msgid "from"
+msgstr "từ"
+
+#: resources/js/pages/farms/tasks/task-form.vue:66
+#: resources/js/pages/tasks/task.vue:45
+msgid "General"
+msgstr "Chung"
+
+#: resources/js/pages/farms/tasks/task-label.vue:11
+msgid "GENERAL"
+msgstr "CHUNG"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:57
+#: resources/js/pages/farms/crop.vue:216
+msgid "Grams"
+msgstr "Gram"
+
+#: resources/js/pages/farms/crop.vue:44
+#: resources/js/pages/farms/crops-listing.vue:56
+msgid "Growing"
+msgstr "Đang trồng"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:53
+msgid "Harvest"
+msgstr "Vụ thu hoạch"
+
+#: resources/js/pages/farms/crop.vue:204
+msgid "Harvested"
+msgstr "Vụ thu hoạch"
+
+#: resources/js/pages/intro/farm.vue:11
+msgid "Hello! Can you tell me a little about your farm?"
+msgstr "Xin chào! Bạn có thể nói cho tôi 1 chút về trang trại của bạn?"
+
+#: resources/js/pages/farms/create.vue:5
+msgid "Home"
+msgstr "Trang chủ"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:35
+msgid "How many plants do you want to move?"
+msgstr "Bạn muốn chuyển đi bao nhiêu loại cây trồng?"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:23
+msgid "How many plants you want to dump?"
+msgstr "Bạn muốn phá bỏ bao nhiêu loại cây trồng?"
+
+#: resources/js/pages/tasks/task.vue:76
+msgid "Incomplete"
+msgstr "Chưa hoàn thành"
+
+#: resources/js/pages/farms/crop.vue:104
+msgid "Initial Planting"
+msgstr "Bắt đầu trồng cây"
+
+#: resources/js/pages/farms/crops-listing.vue:22
+msgid "Initial Quantity"
+msgstr "Số lượng ban đầu"
+
+#: resources/js/pages/auth/login.vue:23
+msgid "Input your username here"
+msgstr "Điền tên đăng nhập của bạn tại đây"
+
+#: resources/js/pages/farms/tasks/task-form.vue:70
+msgid "Inventory"
+msgstr "Kho"
+
+#: resources/js/pages/farms/tasks/task-label.vue:10
+msgid "INVENTORY"
+msgstr "KHO"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:23
+#: resources/js/pages/farms/tasks/task-form.vue:34
+msgid "Is this task urgent?"
+msgstr "Nhiệm vụ này khẩn cấp?"
+
+#: resources/js/pages/farms/tasks/task-list.vue:8
+msgid "Items"
+msgstr "Mặt hàng"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:60
+msgid "Kilograms"
+msgstr "Cân"
+
+#: resources/js/pages/farms/crop.vue:84
+#: resources/js/pages/farms/crops-listing.vue:28
+msgid "Last Watering"
+msgstr "Tưới nước gần nhất"
+
+#: resources/js/components/mapbox.vue:5 resources/js/pages/farms/area.vue:32
+msgid "Location"
+msgstr "Địa điểm"
+
+#: resources/js/pages/intro/area.vue:70
+msgid "Locations"
+msgstr "Địa điểm"
+
+#: resources/js/components/common/btn-login.vue:3
+msgid "Login"
+msgstr "Đăng nhập"
+
+#: resources/js/components/footer.vue:6
+msgid "Made for the &#9829; of plants &copy; 2019 Copyright."
+msgstr "Làm cho &#9829; cây &copy; 2019 Bảo lưu mọi quyền."
+
+#: resources/js/pages/inventories/materials-form.vue:13
+msgid ""
+"Material is a consumable product using in your farm such as seeds, growing "
+"medium, fertilizer, pesticide, and so on."
+msgstr ""
+"Vật liệu là sản phẩm tiêu dùng được sử dụng trong trang trại của bạn như hạt "
+"giống, chất trồng, phân bón, thuốc trừ sâu, v.v."
+
+#: resources/js/components/aside.vue:32
+#: resources/js/pages/inventories/materials.vue:6
+msgid "Materials"
+msgstr "Vật liệu"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:65
+msgid "Move"
+msgstr "Di chuyển"
+
+#: resources/js/pages/farms/crop.vue:143
+msgid "Moved"
+msgstr "Đã chuyển"
+
+#: resources/js/pages/farms/reservoirs.vue:23
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:6
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:6
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:6
+#: resources/js/pages/inventories/materials-form-other.vue:7
+#: resources/js/pages/inventories/materials-form-potharvest.vue:7
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:7
+#: resources/js/pages/inventories/materials.vue:26
+msgid "Name"
+msgstr "Tên"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:34
+#: resources/js/pages/farms/tasks/task-form.vue:45
+msgid "No"
+msgstr "Không"
+
+#: resources/js/pages/farms/crops-listing.vue:36
+msgid "No crops available."
+msgstr "Chưa có cây trồng."
+
+#: resources/js/pages/home.vue:59
+msgid "No crops on production."
+msgstr "Không có cây trồng để sản xuất"
+
+#: resources/js/pages/inventories/materials.vue:46
+msgid "No Inventories Available"
+msgstr "Không còn hàng tồn kho"
+
+#: resources/js/pages/farms/tasks/task-list.vue:19
+#: resources/js/pages/farms/tasks/task-list.vue:48
+msgid "No Task Created"
+msgstr "Chưa có nhiệm vụ nào"
+
+#: resources/js/pages/tasks/task.vue:62
+msgid "Normal"
+msgstr "Bình thường"
+
+#: resources/js/pages/farms/tasks/task-label.vue:14
+msgid "NORMAL"
+msgstr "BÌNH THƯỜNG"
+
+#: resources/js/pages/farms/area.vue:68
+#: resources/js/pages/farms/activities/dump-crop-task.vue:29
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:68
+#: resources/js/pages/farms/crop-notes.vue:41
+#: resources/js/pages/farms/reservoir.vue:47
+msgid "Notes"
+msgstr "Ghi chép"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:67
+msgid "Nutrient"
+msgstr "Dinh dưỡng"
+
+#: resources/js/pages/farms/tasks/task-label.vue:12
+msgid "NUTRIENT"
+msgstr "DINH DƯỠNG"
+
+#: resources/js/pages/farms/crop.vue:165 resources/js/pages/farms/crop.vue:213
+msgid "of"
+msgstr "của"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:35
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:74
+#: resources/js/pages/farms/activities/move-crop-task.vue:41
+#: resources/js/pages/farms/activities/upload-crop-task.vue:24
+#: resources/js/pages/farms/tasks/crop-task-form.vue:110
+msgid "OK"
+msgstr "VÂNG"
+
+#: resources/js/pages/settings/account.vue:22
+msgid "Old Password"
+msgstr "Mật khẩu cũ"
+
+#: resources/js/pages/farms/crop.vue:108 resources/js/pages/farms/crop.vue:115
+#: resources/js/pages/farms/crop.vue:121 resources/js/pages/farms/crop.vue:168
+#: resources/js/pages/farms/crop.vue:183 resources/js/pages/farms/crop.vue:218
+#: resources/js/pages/farms/crop.vue:248 resources/js/pages/farms/crop.vue:258
+#: resources/js/pages/farms/crop.vue:268 resources/js/pages/farms/crop.vue:280
+#: resources/js/pages/farms/crop.vue:289
+#: resources/js/pages/farms/tasks/task-list.vue:67
+#: resources/js/pages/farms/tasks/task-list.vue:70
+msgid "on"
+msgstr "vào"
+
+#: resources/js/pages/tasks/task.vue:81
+msgid "Overdue"
+msgstr "Quá hạn"
+
+#: resources/js/pages/farms/tasks/task-list.vue:36
+#: resources/js/pages/farms/tasks/task-list.vue:78
+msgid "Overdue!"
+msgstr "Quá hạn!"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:32
+#: resources/js/pages/farms/crop.vue:207
+#: resources/js/pages/farms/tasks/water-task.vue:19
+msgid "Partial"
+msgstr "Một phần"
+
+#: resources/js/pages/auth/login.vue:17
+#: resources/js/pages/settings/account.vue:28
+msgid "Password"
+msgstr "Mật khẩu"
+
+#: resources/js/pages/intro/area.vue:11
+msgid "Perfect! Let's create a new area."
+msgstr "Tuyệt vời! Hãy tạo một khu vực mới."
+
+#: resources/js/pages/farms/tasks/task-label.vue:2
+msgid "PEST CONTROL"
+msgstr "KIỂM SOÁT SÂU BỆNH"
+
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:19
+#: resources/js/pages/inventories/materials-form-other.vue:25
+#: resources/js/pages/inventories/materials-form-potharvest.vue:25
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:26
+msgid "Pieces"
+msgstr "Miếng"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:13
+#: resources/js/pages/inventories/materials-form-seed.vue:13
+msgid "Plant Type"
+msgstr "Loại cây trồng"
+
+#: resources/js/pages/farms/activities/dump-crop-task.vue:16
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:19
+#: resources/js/pages/farms/activities/move-crop-task.vue:17
+#: resources/js/pages/farms/activities/move-crop-task.vue:28
+#: resources/js/pages/farms/tasks/crop-task-form.vue:48
+msgid "Please select area"
+msgstr "Vui lòng chọn khu vực"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:61
+#: resources/js/pages/farms/tasks/task-form.vue:57
+msgid "Please select category"
+msgstr "Vui lòng chọn thể loại"
+
+#: resources/js/pages/intro/farm.vue:59
+msgid "Please select country"
+msgstr "Vui lòng chọn quốc gia"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:80
+msgid "Please select fertilizer"
+msgstr "Vui lòng chọn phân bón"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:91
+msgid "Please select pesticide"
+msgstr "Vui lòng chọn thuốc trừ sâu"
+
+#: resources/js/pages/intro/area.vue:86
+msgid "Please select reservoir"
+msgstr "Vui lòng chọn bồn chứa"
+
+#: resources/js/pages/farms/reservoirs-form.vue:22
+#: resources/js/pages/intro/reservoir.vue:32
+msgid "Please select source"
+msgstr "Vui lòng chọn nguồn"
+
+#: resources/js/pages/intro/farm.vue:38
+msgid "Please select type"
+msgstr "Vui lòng chọn loại"
+
+#: resources/js/pages/inventories/materials.vue:29
+msgid "Price"
+msgstr "Giá bán"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:21
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:29
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:13
+#: resources/js/pages/inventories/materials-form-other.vue:21
+#: resources/js/pages/inventories/materials-form-plant.vue:45
+#: resources/js/pages/inventories/materials-form-potharvest.vue:21
+#: resources/js/pages/inventories/materials-form-seed.vue:45
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:23
+msgid "Price per Unit"
+msgstr "Giá theo đơn vị"
+
+#: resources/js/pages/tasks/task.vue:52
+msgid "Priority"
+msgstr "Độ quan trọng"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:56
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:37
+#: resources/js/pages/inventories/materials-form-other.vue:13
+#: resources/js/pages/inventories/materials-form-plant.vue:21
+#: resources/js/pages/inventories/materials-form-potharvest.vue:13
+#: resources/js/pages/inventories/materials-form-seed.vue:21
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:40
+msgid "Produced by"
+msgstr "Sản xuất bởi"
+
+#: resources/js/pages/inventories/materials.vue:32
+msgid "Produced By"
+msgstr "Sản xuất bởi"
+
+#: resources/js/pages/home.vue:52
+msgid "Qty"
+msgstr "SL"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:45
+#: resources/js/pages/farms/areas.vue:39
+#: resources/js/pages/farms/crops-listing.vue:19
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:31
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:13
+#: resources/js/pages/inventories/materials-form-labelcrop.vue:21
+#: resources/js/pages/inventories/materials-form-other.vue:29
+#: resources/js/pages/inventories/materials-form-plant.vue:29
+#: resources/js/pages/inventories/materials-form-potharvest.vue:29
+#: resources/js/pages/inventories/materials-form-seed.vue:29
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:31
+#: resources/js/pages/inventories/materials.vue:35
+msgid "Quantity"
+msgstr "Số lượng"
+
+#: resources/js/components/more-detail.vue:6
+msgid "Read details"
+msgstr "Đọc chi tiết"
+
+#: resources/js/pages/farms/area.vue:38
+#: resources/js/pages/farms/tasks/task-form.vue:63
+#: resources/js/pages/tasks/task.vue:39
+msgid "Reservoir"
+msgstr "Bồn chứa"
+
+#: resources/js/pages/farms/tasks/task-label.vue:5
+msgid "RESERVOIR"
+msgstr "BỒN CHỨA"
+
+#: resources/js/pages/farms/reservoirs-form.vue:7
+msgid ""
+"Reservoir is a water source for your farm. It can be a direct line from "
+"well, or water tank that has volume/capacity."
+msgstr ""
+"Bồn chứa nước là nguồn nước cho trang trại của bạn. Nó có thể là đường dây "
+"trực tiếp từ giếng, hoặc bể chứa nước có thể tích/dung tích."
+
+#: resources/js/pages/farms/reservoirs-form.vue:12
+#: resources/js/pages/intro/reservoir.vue:22
+msgid "Reservoir Name"
+msgstr "Tên bồn chứa"
+
+#: resources/js/pages/farms/tasks/task-label.vue:6
+msgid "SAFETY"
+msgstr "AN TOÀN"
+
+#: resources/js/pages/farms/tasks/task-label.vue:3
+msgid "SANITATION"
+msgstr "VỆ SINH"
+
+#: resources/js/components/common/btn-save.vue:3
+msgid "Save"
+msgstr "Lưu"
+
+#: resources/js/pages/home.vue:43
+msgid "See all Crops"
+msgstr "Xem tất cả mùa vụ"
+
+#: resources/js/pages/home.vue:81
+msgid "See all Tasks"
+msgstr "Xem toàn bộ nhiệm vụ"
+
+#: resources/js/pages/farms/crop.vue:161
+msgid "Seeded"
+msgstr "Đã gieo hạt"
+
+#: resources/js/pages/farms/crop.vue:41
+#: resources/js/pages/farms/crops-listing.vue:52
+msgid "Seeding"
+msgstr "Gieo hạt"
+
+#: resources/js/pages/farms/crop.vue:82
+#: resources/js/pages/farms/crops-listing.vue:13
+msgid "Seeding Date"
+msgstr "Ngày gieo"
+
+#: resources/js/pages/farms/crops-form.vue:14
+msgid "Select activity type of this crop batch"
+msgstr "Chọn loại hoạt động của đợt trồng trọt này"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:44
+msgid "Select area to do your task"
+msgstr "Chọn khu vực để làm nhiệm vụ của bạn"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:24
+msgid "Select destination area"
+msgstr "Chọn khu vực đích"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:76
+msgid "Select fertilizer you are going to use"
+msgstr "Chọn phân bón bạn định sử dụng"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:87
+msgid "Select pesticide you are going to use"
+msgstr "Chọn thuốc trừ sâu bạn sẽ sử dụng"
+
+#: resources/js/pages/intro/area.vue:95
+msgid "Select photo"
+msgstr "Chọn ảnh"
+
+#: resources/js/pages/intro/area.vue:82
+msgid "Select Reservoir"
+msgstr "Chọn bồn"
+
+#: resources/js/pages/farms/activities/move-crop-task.vue:13
+msgid "Select source area"
+msgstr "Chọn khu vực nguồn"
+
+#: resources/js/components/header.vue:21
+msgid "Sign Out"
+msgstr "Đăng xuất"
+
+#: resources/js/pages/farms/areas-form.vue:20
+#: resources/js/pages/intro/area.vue:41
+msgid "Size"
+msgstr "Kích thước"
+
+#: resources/js/pages/farms/reservoirs-form.vue:18
+#: resources/js/pages/intro/reservoir.vue:28
+msgid "Source"
+msgstr "Nguồn"
+
+#: resources/js/pages/farms/reservoir.vue:21
+#: resources/js/pages/farms/reservoirs.vue:29
+msgid "Source Type"
+msgstr "Loại nguồn"
+
+#: resources/js/pages/farms/crops-listing.vue:25
+msgid "Status"
+msgstr "Trạng thái"
+
+#: resources/js/pages/farms/activities/upload-crop-task.vue:5
+#: resources/js/pages/farms/crop.vue:70
+msgid "Take Picture"
+msgstr "Chụp ảnh"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:57
+#: resources/js/pages/farms/tasks/task-form.vue:53
+msgid "Task Category"
+msgstr "Phân loại nhiệm vụ"
+
+#: resources/js/pages/home.vue:72 resources/js/pages/farms/crop-notes.vue:24
+#: resources/js/pages/farms/area.vue:91
+#: resources/js/pages/farms/reservoir.vue:86
+#: resources/js/components/aside.vue:48 resources/js/pages/home.vue:33
+#: resources/js/pages/tasks/task.vue:12
+msgid "Tasks"
+msgstr "Nhiệm vụ"
+
+#: resources/js/pages/farms/crop-notes.vue:20
+#: resources/js/pages/farms/crop.vue:29
+msgid "Tasks &amp; Notes"
+msgstr "Nhiệm vụ &amp; Ghi chép"
+
+#: resources/js/components/modal.vue:11
+msgid "This is the Modal Body"
+msgstr "Đây là phần nội dung cửa sổ"
+
+#: resources/js/components/modal.vue:9
+msgid "This is the Modal Header"
+msgstr "Đây là phần đầu cửa sổ"
+
+#: resources/js/pages/tasks/task.vue:96
+msgid "This Month"
+msgstr "Tháng này"
+
+#: resources/js/pages/tasks/task.vue:91
+msgid "This Week"
+msgstr "Tuần này"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:98
+#: resources/js/pages/farms/tasks/task-form.vue:76
+msgid "Title"
+msgstr "Tiêu đề"
+
+#: resources/js/pages/farms/crop.vue:150 resources/js/pages/farms/crop.vue:247
+#: resources/js/pages/farms/tasks/task-list.vue:64
+msgid "to"
+msgstr "đến"
+
+#: resources/js/pages/farms/tasks/task-list.vue:37
+#: resources/js/pages/tasks/task.vue:86
+msgid "Today"
+msgstr "Hôm nay"
+
+#: resources/js/pages/farms/areas-form.vue:37
+#: resources/js/pages/intro/area.vue:60
+#: resources/js/pages/inventories/materials-form-seedcontainer.vue:13
+msgid "Type"
+msgstr "Loại"
+
+#: resources/js/pages/inventories/materials-form-agrochemical.vue:37
+#: resources/js/pages/inventories/materials-form-growingmedium.vue:19
+#: resources/js/pages/inventories/materials-form-plant.vue:35
+#: resources/js/pages/inventories/materials-form-seed.vue:35
+msgid "Unit"
+msgstr "Đơn vị"
+
+#: resources/js/pages/farms/activities/harvest-crop-task.vue:53
+msgid "Units"
+msgstr "Đơn vị"
+
+#: resources/js/pages/farms/areas-form.vue:4
+msgid "Update Area"
+msgstr "Cập nhật khu vực"
+
+#: resources/js/pages/farms/crops-form.vue:4
+msgid "Update Crop"
+msgstr "Cập nhật mùa vụ"
+
+#: resources/js/pages/inventories/materials-form.vue:5
+msgid "Update Material"
+msgstr "Cập nhật nguyên vật liệu"
+
+#: resources/js/pages/farms/reservoirs-form.vue:4
+msgid "Update Reservoir"
+msgstr "Cập nhật bồn chứa"
+
+#: resources/js/pages/farms/tasks/task-form.vue:5
+msgid "Update Task"
+msgstr "Cập nhập nhiệm vụ"
+
+#: resources/js/pages/tasks/task.vue:59
+msgid "Urgent"
+msgstr "Khẩn cấp"
+
+#: resources/js/pages/farms/tasks/task-label.vue:13
+#: resources/js/pages/farms/tasks/task-list.vue:76
+msgid "URGENT"
+msgstr "KHẨN CẤP"
+
+#: resources/js/pages/farms/reservoir.vue:29
+#: resources/js/pages/farms/reservoirs.vue:35
+msgid "Used In"
+msgstr "Dùng trong"
+
+#: resources/js/pages/auth/login.vue:11
+#: resources/js/pages/settings/account.vue:16
+msgid "Username"
+msgstr "Tên người dùng"
+
+#: resources/js/pages/home.vue:26 resources/js/pages/home.vue:49
+msgid "Varieties"
+msgstr "Giống"
+
+#: resources/js/pages/inventories/materials-form-plant.vue:6
+#: resources/js/pages/inventories/materials-form-seed.vue:6
+msgid "Variety Name"
+msgstr "Tên giống"
+
+#: resources/js/pages/farms/tasks/task-label.vue:9
+msgid "WATER"
+msgstr "NƯỚC"
+
+#: resources/js/pages/farms/reservoirs.vue:6
+msgid "Water Reservoir"
+msgstr "Bồn nước"
+
+#: resources/js/pages/farms/crop.vue:235
+msgid "Watered"
+msgstr "Đã tưới nước"
+
+#: resources/js/components/common/btn-watering.vue:3
+#: resources/js/pages/farms/tasks/water-task.vue:5
+msgid "Watering"
+msgstr "Tưới nước"
+
+#: resources/js/pages/home.vue:41
+msgid "What is On Production"
+msgstr "Sản xuất là gì"
+
+#: resources/js/pages/farms/tasks/water-task.vue:25
+msgid "Which crop do you want to water?"
+msgstr "Bạn muốn tưới nước cho cây trồng nào?"
+
+#: resources/js/pages/farms/tasks/crop-task-form.vue:28
+#: resources/js/pages/farms/tasks/task-form.vue:39
+msgid "Yes"
+msgstr "Vâng"
+
+#: resources/js/pages/home.vue:13
+msgid "You are using Tania 1.7 right now"
+msgstr "Bạn đang sử dụng Tania 1.7"
+
+#: resources/js/pages/auth/login.vue:37
+msgid "Your password here"
+msgstr "Mật khẩu của bạn tại đây"
