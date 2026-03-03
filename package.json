@@ -99,7 +99,7 @@
     "moment-timezone": "^0.5.14",
     "nprogress": "^0.2.0",
     "vee-validate": "^2.0.0",
-    "vue": "2.6.10",
+    "vue": "3.0.0",
     "vue-gettext": "^2.1.2",
     "vue-moment": "^3.1.0",
     "vue-router": "^2.7.0",
