@@ -1,0 +1,793 @@
+## This file is a PO Template file.
+##
+## "msgid"s here are often extracted from source code.
+## Add new messages manually only if they're dynamic
+## messages that can't be statically extracted.
+##
+## Run "mix gettext.extract" to bring this file up to
+## date. Leave "msgstr"s empty as changing them here has no
+## effect: edit them in PO (.po) files instead.
+#
+msgid ""
+msgstr ""
+
+#: lib/tania_core_web/components/core_components.ex:692
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:118
+#, elixir-autogen, elixir-format
+msgid "Active"
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:56
+#: lib/tania_core_web/live/dashboard_live.ex:67
+#, elixir-autogen, elixir-format
+msgid "Active Crops"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:261
+#, elixir-autogen, elixir-format
+msgid "Activity Timeline"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:333
+#, elixir-autogen, elixir-format
+msgid "All"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:119
+#, elixir-autogen, elixir-format
+msgid "Archived"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:347
+#: lib/tania_core_web/live/crop_live/show.ex:396
+#, elixir-autogen, elixir-format
+msgid "Area"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:57
+#: lib/tania_core_web/live/area_live/index.ex:135
+#: lib/tania_core_web/live/dashboard_live.ex:54
+#, elixir-autogen, elixir-format
+msgid "Areas"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:166
+#: lib/tania_core_web/components/layouts.ex:178
+#, elixir-autogen, elixir-format
+msgid "Attempting to reconnect"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:196
+#, elixir-autogen, elixir-format
+msgid "Back to Crops"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:131
+#: lib/tania_core_web/live/dashboard_live.ex:69
+#, elixir-autogen, elixir-format
+msgid "Batch ID"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:232
+#: lib/tania_core_web/live/crop_live/index.ex:233
+#: lib/tania_core_web/live/crop_live/show.ex:313
+#: lib/tania_core_web/live/crop_live/show.ex:369
+#: lib/tania_core_web/live/crop_live/show.ex:403
+#: lib/tania_core_web/live/material_live/index.ex:289
+#: lib/tania_core_web/live/reservoir_live/index.ex:185
+#: lib/tania_core_web/live/task_live/index.ex:257
+#: lib/tania_core_web/live/task_live/index.ex:308
+#, elixir-autogen, elixir-format
+msgid "Cancel"
+msgstr ""
+
+#: lib/tania_core_web/live/reservoir_live/index.ex:132
+#, elixir-autogen, elixir-format
+msgid "Capacity"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:91
+#: lib/tania_core_web/live/reservoir_live/index.ex:180
+#, elixir-autogen, elixir-format
+msgid "Capacity (Litres)"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:302
+#, elixir-autogen, elixir-format
+msgid "Category"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:241
+#, elixir-autogen, elixir-format
+msgid "Chemical Type"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:249
+#, elixir-autogen, elixir-format
+msgid "Complete"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:211
+#, elixir-autogen, elixir-format
+msgid "Container"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:221
+#, elixir-autogen, elixir-format
+msgid "Container Cells"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:256
+#, elixir-autogen, elixir-format
+msgid "Container Type"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:235
+#: lib/tania_core_web/live/task_live/index.ex:310
+#, elixir-autogen, elixir-format
+msgid "Create"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:150
+#, elixir-autogen, elixir-format
+msgid "Created"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:201
+#, elixir-autogen, elixir-format
+msgid "Crop Batch"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:187
+#, elixir-autogen, elixir-format
+msgid "Crop Type"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:69
+#: lib/tania_core_web/live/crop_live/index.ex:108
+#, elixir-autogen, elixir-format
+msgid "Crops"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:282
+#, elixir-autogen, elixir-format
+msgid "Currency"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:51
+#: lib/tania_core_web/live/dashboard_live.ex:48
+#, elixir-autogen, elixir-format
+msgid "Dashboard"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:265
+#, elixir-autogen, elixir-format
+msgid "Delete"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:292
+#, elixir-autogen, elixir-format
+msgid "Description"
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:101
+#: lib/tania_core_web/live/task_live/index.ex:241
+#, elixir-autogen, elixir-format
+msgid "Due"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:305
+#, elixir-autogen, elixir-format
+msgid "Due Date"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:243
+#: lib/tania_core_web/live/crop_live/show.ex:405
+#, elixir-autogen, elixir-format
+msgid "Dump"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:383
+#, elixir-autogen, elixir-format
+msgid "Dump Crop"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:197
+#, elixir-autogen, elixir-format
+msgid "Edit Area"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:209
+#, elixir-autogen, elixir-format
+msgid "Edit Material"
+msgstr ""
+
+#: lib/tania_core_web/live/reservoir_live/index.ex:165
+#, elixir-autogen, elixir-format
+msgid "Edit Reservoir"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:283
+#, elixir-autogen, elixir-format
+msgid "Expiration Date"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:249
+#, elixir-autogen, elixir-format
+msgid "Fertilize"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:290
+#, elixir-autogen, elixir-format
+msgid "From Area"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:190
+#: lib/tania_core_web/live/dashboard_live.ex:61
+#: lib/tania_core_web/live/intro_live/area_live.ex:85
+#, elixir-autogen, elixir-format
+msgid "Growing"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:240
+#: lib/tania_core_web/live/crop_live/show.ex:371
+#, elixir-autogen, elixir-format
+msgid "Harvest"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:327
+#, elixir-autogen, elixir-format
+msgid "Harvest Crop"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:332
+#, elixir-autogen, elixir-format
+msgid "Harvest Type"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:204
+#, elixir-autogen, elixir-format
+msgid "Initial Area"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:228
+#, elixir-autogen, elixir-format
+msgid "Last Fertilized"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:223
+#, elixir-autogen, elixir-format
+msgid "Last Watered"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:211
+#: lib/tania_core_web/live/intro_live/area_live.ex:92
+#, elixir-autogen, elixir-format
+msgid "Location"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:100
+#, elixir-autogen, elixir-format
+msgid "Log out"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:134
+#: lib/tania_core_web/live/crop_live/show.ex:218
+#, elixir-autogen, elixir-format
+msgid "Material"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:75
+#: lib/tania_core_web/live/material_live/index.ex:156
+#, elixir-autogen, elixir-format
+msgid "Materials"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:237
+#: lib/tania_core_web/live/crop_live/show.ex:315
+#, elixir-autogen, elixir-format
+msgid "Move"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:285
+#, elixir-autogen, elixir-format
+msgid "Move Crop"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:200
+#: lib/tania_core_web/live/material_live/index.ex:170
+#: lib/tania_core_web/live/material_live/index.ex:212
+#: lib/tania_core_web/live/reservoir_live/index.ex:128
+#: lib/tania_core_web/live/reservoir_live/index.ex:169
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:138
+#: lib/tania_core_web/live/area_live/index.ex:190
+#: lib/tania_core_web/live/area_live/index.ex:197
+#, elixir-autogen, elixir-format
+msgid "New Area"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:111
+#: lib/tania_core_web/live/crop_live/index.ex:175
+#: lib/tania_core_web/live/crop_live/index.ex:182
+#, elixir-autogen, elixir-format
+msgid "New Crop Batch"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:159
+#: lib/tania_core_web/live/material_live/index.ex:201
+#: lib/tania_core_web/live/material_live/index.ex:209
+#, elixir-autogen, elixir-format
+msgid "New Material"
+msgstr ""
+
+#: lib/tania_core_web/live/reservoir_live/index.ex:117
+#: lib/tania_core_web/live/reservoir_live/index.ex:156
+#: lib/tania_core_web/live/reservoir_live/index.ex:166
+#, elixir-autogen, elixir-format
+msgid "New Reservoir"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:185
+#: lib/tania_core_web/live/task_live/index.ex:281
+#: lib/tania_core_web/live/task_live/index.ex:289
+#, elixir-autogen, elixir-format
+msgid "New Task"
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:85
+#, elixir-autogen, elixir-format
+msgid "No active crops."
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:169
+#, elixir-autogen, elixir-format
+msgid "No active crops. Create a crop batch to get started."
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:274
+#, elixir-autogen, elixir-format
+msgid "No activities recorded yet."
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:170
+#, elixir-autogen, elixir-format
+msgid "No archived crops."
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:186
+#, elixir-autogen, elixir-format
+msgid "No areas yet. Create your first area to get started."
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:197
+#, elixir-autogen, elixir-format
+msgid "No materials yet. Add seeds, chemicals, or other supplies."
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:106
+#, elixir-autogen, elixir-format
+msgid "No pending tasks."
+msgstr ""
+
+#: lib/tania_core_web/live/reservoir_live/index.ex:152
+#, elixir-autogen, elixir-format
+msgid "No reservoirs yet. Create your first water source."
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:277
+#, elixir-autogen, elixir-format
+msgid "No tasks found."
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:297
+#, elixir-autogen, elixir-format
+msgid "Normal"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:285
+#, elixir-autogen, elixir-format
+msgid "Notes"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:238
+#, elixir-autogen, elixir-format
+msgid "Overdue"
+msgstr ""
+
+#: lib/tania_core_web/components/core_components.ex:581
+#, elixir-autogen, elixir-format
+msgid "Page %{page} of %{total}"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:333
+#, elixir-autogen, elixir-format
+msgid "Partial"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:255
+#, elixir-autogen, elixir-format
+msgid "Pesticide"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:197
+#, elixir-autogen, elixir-format
+msgid "Plant Material"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:226
+#, elixir-autogen, elixir-format
+msgid "Plant Type"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:214
+#, elixir-autogen, elixir-format
+msgid "Pot"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:177
+#, elixir-autogen, elixir-format
+msgid "Price"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:279
+#, elixir-autogen, elixir-format
+msgid "Price per Unit"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:296
+#, elixir-autogen, elixir-format
+msgid "Priority"
+msgstr ""
+
+#: lib/tania_core_web/live/material_live/index.ex:284
+#, elixir-autogen, elixir-format
+msgid "Produced By"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:355
+#, elixir-autogen, elixir-format
+msgid "Produced Weight"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:252
+#, elixir-autogen, elixir-format
+msgid "Prune"
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:82
+#, elixir-autogen, elixir-format
+msgid "Qty"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:142
+#: lib/tania_core_web/live/crop_live/index.ex:227
+#: lib/tania_core_web/live/crop_live/show.ex:216
+#: lib/tania_core_web/live/crop_live/show.ex:339
+#: lib/tania_core_web/live/material_live/index.ex:174
+#: lib/tania_core_web/live/material_live/index.ex:267
+#, elixir-autogen, elixir-format
+msgid "Quantity"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:388
+#, elixir-autogen, elixir-format
+msgid "Quantity to dump"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:306
+#, elixir-autogen, elixir-format
+msgid "Quantity to move"
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:91
+#, elixir-autogen, elixir-format
+msgid "Recent Tasks"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:168
+#: lib/tania_core_web/live/area_live/index.ex:226
+#: lib/tania_core_web/live/intro_live/area_live.ex:111
+#, elixir-autogen, elixir-format
+msgid "Reservoir"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:63
+#: lib/tania_core_web/live/reservoir_live/index.ex:114
+#, elixir-autogen, elixir-format
+msgid "Reservoirs"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:234
+#: lib/tania_core_web/live/material_live/index.ex:291
+#: lib/tania_core_web/live/reservoir_live/index.ex:187
+#, elixir-autogen, elixir-format
+msgid "Save"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:189
+#: lib/tania_core_web/live/dashboard_live.ex:60
+#: lib/tania_core_web/live/intro_live/area_live.ex:84
+#, elixir-autogen, elixir-format
+msgid "Seeding"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:206
+#, elixir-autogen, elixir-format
+msgid "Select area"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:349
+#: lib/tania_core_web/live/crop_live/show.ex:398
+#, elixir-autogen, elixir-format
+msgid "Select area (optional)"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:216
+#, elixir-autogen, elixir-format
+msgid "Select container (optional)"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:300
+#, elixir-autogen, elixir-format
+msgid "Select destination area"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:199
+#, elixir-autogen, elixir-format
+msgid "Select material"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:292
+#, elixir-autogen, elixir-format
+msgid "Select source area (optional)"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:364
+#, elixir-autogen, elixir-format
+msgid "Select unit (optional)"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:91
+#, elixir-autogen, elixir-format
+msgid "Settings"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:215
+#: lib/tania_core_web/live/intro_live/area_live.ex:99
+#, elixir-autogen, elixir-format
+msgid "Size"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:173
+#, elixir-autogen, elixir-format
+msgid "Something went wrong!"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:145
+#, elixir-autogen, elixir-format
+msgid "Status"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:81
+#: lib/tania_core_web/live/task_live/index.ex:182
+#, elixir-autogen, elixir-format
+msgid "Tasks"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:291
+#, elixir-autogen, elixir-format
+msgid "Title"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:298
+#, elixir-autogen, elixir-format
+msgid "To Area"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/index.ex:213
+#, elixir-autogen, elixir-format
+msgid "Tray"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:204
+#: lib/tania_core_web/live/crop_live/index.ex:137
+#: lib/tania_core_web/live/dashboard_live.ex:77
+#: lib/tania_core_web/live/intro_live/area_live.ex:82
+#: lib/tania_core_web/live/material_live/index.ex:171
+#: lib/tania_core_web/live/material_live/index.ex:216
+#, elixir-autogen, elixir-format
+msgid "Type"
+msgstr ""
+
+#: lib/tania_core_web/live/area_live/index.ex:219
+#: lib/tania_core_web/live/intro_live/area_live.ex:103
+#: lib/tania_core_web/live/material_live/index.ex:272
+#, elixir-autogen, elixir-format
+msgid "Unit"
+msgstr ""
+
+#: lib/tania_core_web/live/task_live/index.ex:297
+#, elixir-autogen, elixir-format
+msgid "Urgent"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:246
+#, elixir-autogen, elixir-format
+msgid "Water"
+msgstr ""
+
+#: lib/tania_core_web/live/reservoir_live/index.ex:129
+#, elixir-autogen, elixir-format
+msgid "Water Source"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:81
+#: lib/tania_core_web/live/reservoir_live/index.ex:173
+#, elixir-autogen, elixir-format
+msgid "Water Source Type"
+msgstr ""
+
+#: lib/tania_core_web/components/layouts.ex:161
+#, elixir-autogen, elixir-format
+msgid "We can't find the internet"
+msgstr ""
+
+#: lib/tania_core_web/live/crop_live/show.ex:362
+#, elixir-autogen, elixir-format
+msgid "Weight Unit"
+msgstr ""
+
+#: lib/tania_core_web/live/dashboard_live.ex:49
+#, elixir-autogen, elixir-format
+msgid "Welcome to"
+msgstr ""
+
+#: lib/tania_core_web/components/core_components.ex:57
+#: lib/tania_core_web/components/core_components.ex:355
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:62
+#, elixir-autogen, elixir-format
+msgid "Add a Reservoir"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:78
+#, elixir-autogen, elixir-format
+msgid "Area Name"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:84
+#, elixir-autogen, elixir-format
+msgid "Bucket"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:102
+#, elixir-autogen, elixir-format
+msgid "City"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:124
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:100
+#, elixir-autogen, elixir-format
+msgid "Continue"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:101
+#, elixir-autogen, elixir-format
+msgid "Country"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:90
+#, elixir-autogen, elixir-format
+msgid "Create Your Farm"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:63
+#, elixir-autogen, elixir-format
+msgid "Create Your First Area"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:92
+#, elixir-autogen, elixir-format
+msgid "Farm Name"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:96
+#, elixir-autogen, elixir-format
+msgid "Farm Type"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:44
+#, elixir-autogen, elixir-format
+msgid "Farm setup complete! Welcome to Tania."
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:94
+#, elixir-autogen, elixir-format
+msgid "Field (Outdoor)"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:118
+#, elixir-autogen, elixir-format
+msgid "Finish Setup"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:95
+#, elixir-autogen, elixir-format
+msgid "Greenhouse (Indoor)"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:119
+#, elixir-autogen, elixir-format
+msgid "Latitude"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:78
+#, elixir-autogen, elixir-format
+msgid "Let's set up your farm. Step 1 of 3."
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:106
+#, elixir-autogen, elixir-format
+msgid "Location (click the map)"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:120
+#, elixir-autogen, elixir-format
+msgid "Longitude"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:77
+#, elixir-autogen, elixir-format
+msgid "Reservoir Name"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:98
+#, elixir-autogen, elixir-format
+msgid "Select farm type"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:113
+#, elixir-autogen, elixir-format
+msgid "Select reservoir (optional)"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:105
+#, elixir-autogen, elixir-format
+msgid "Select unit"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:97
+#, elixir-autogen, elixir-format
+msgid "Skip"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:64
+#, elixir-autogen, elixir-format
+msgid "Step 2 of 3. Add a water source for your farm."
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/area_live.ex:65
+#, elixir-autogen, elixir-format
+msgid "Step 3 of 3. Add a growing or seeding area."
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/reservoir_live.ex:83
+#, elixir-autogen, elixir-format
+msgid "Tap"
+msgstr ""
+
+#: lib/tania_core_web/live/intro_live/farm_live.ex:76
+#, elixir-autogen, elixir-format
+msgid "Welcome to Tania"
+msgstr ""

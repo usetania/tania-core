@@ -1,0 +1,43 @@
+/* See the Tailwind configuration guide for advanced usage
+   https://tailwindcss.com/docs/configuration */
+
+@import "tailwindcss" source(none);
+@source "../css";
+@source "../js";
+@source "../../lib/tania_core_web";
+
+/* A Tailwind plugin that makes "hero-#{ICON}" classes available.
+   The heroicons installation itself is managed by your mix.exs */
+@plugin "../vendor/heroicons";
+
+/* Tania brand theme */
+@theme {
+  --color-primary: #7136A1;
+  --color-primary-dark: #513969;
+  --color-primary-light: #9b6bc5;
+  --color-success: #84BA4B;
+  --color-success-dark: #6a9b38;
+  --color-danger: #dc3545;
+  --color-danger-dark: #bd2130;
+  --color-warning: #f0ad4e;
+  --color-warning-dark: #ec971f;
+  --color-info: #5bc0de;
+  --color-info-dark: #31b0d5;
+  --color-background: #F6F8F8;
+  --color-sidebar: #513969;
+  --color-sidebar-hover: #6b4d85;
+  --color-sidebar-active: #7136A1;
+  --color-text: #333333;
+  --color-text-light: #6c757d;
+  --color-border: #dee2e6;
+}
+
+/* Add variants based on LiveView classes */
+@custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
+@custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
+@custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
+
+/* Make LiveView wrapper divs transparent for layout */
+[data-phx-session], [data-phx-teleported-src] { display: contents }
+
+/* This file is for your main application CSS */
