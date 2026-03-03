@@ -17,6 +17,7 @@ defmodule TaniaCoreWeb.MaterialLive.Index do
        |> assign(:page_title, "Materials")
        |> assign(:active_page, :materials)
        |> assign(:farm, farm)
+       |> assign(:materials_count, length(materials))
        |> stream(:materials, materials)
        |> assign(:material, nil)
        |> assign(:show_form, false)
@@ -83,6 +84,7 @@ defmodule TaniaCoreWeb.MaterialLive.Index do
         {:noreply,
          socket
          |> stream_delete(:materials, material)
+         |> update(:materials_count, &(&1 - 1))
          |> put_flash(:info, "Material deleted")}
 
       {:error, _} ->
@@ -99,6 +101,7 @@ defmodule TaniaCoreWeb.MaterialLive.Index do
         {:noreply,
          socket
          |> stream_insert(:materials, material)
+         |> update(:materials_count, &(&1 + 1))
          |> assign(:show_form, false)
          |> put_flash(:info, "Material created")}
 
@@ -163,7 +166,7 @@ defmodule TaniaCoreWeb.MaterialLive.Index do
 
       <div class="mt-6">
         <.table
-          :if={@streams.materials |> Enum.any?()}
+          :if={@materials_count > 0}
           id="materials"
           rows={@streams.materials}
         >
@@ -192,7 +195,7 @@ defmodule TaniaCoreWeb.MaterialLive.Index do
         </.table>
 
         <.empty_state
-          :if={!(@streams.materials |> Enum.any?())}
+          :if={@materials_count == 0}
           icon="hero-archive-box"
           message={gettext("No materials yet. Add seeds, chemicals, or other supplies.")}
         >

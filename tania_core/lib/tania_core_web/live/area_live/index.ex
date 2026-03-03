@@ -18,6 +18,7 @@ defmodule TaniaCoreWeb.AreaLive.Index do
        |> assign(:active_page, :areas)
        |> assign(:farm, farm)
        |> assign(:reservoirs, reservoirs)
+       |> assign(:areas_count, length(areas))
        |> stream(:areas, areas)
        |> assign(:area, nil)
        |> assign(:show_form, false)}
@@ -83,6 +84,7 @@ defmodule TaniaCoreWeb.AreaLive.Index do
         {:noreply,
          socket
          |> stream_delete(:areas, area)
+         |> update(:areas_count, &(&1 - 1))
          |> put_flash(:info, "Area deleted")}
 
       {:error, _} ->
@@ -101,6 +103,7 @@ defmodule TaniaCoreWeb.AreaLive.Index do
         {:noreply,
          socket
          |> stream_insert(:areas, area)
+         |> update(:areas_count, &(&1 + 1))
          |> assign(:show_form, false)
          |> put_flash(:info, "Area created")}
 
@@ -141,7 +144,7 @@ defmodule TaniaCoreWeb.AreaLive.Index do
       </.header>
 
       <div
-        :if={@streams.areas |> Enum.any?()}
+        :if={@areas_count > 0}
         class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mt-6"
       >
         <div
@@ -181,7 +184,7 @@ defmodule TaniaCoreWeb.AreaLive.Index do
       </div>
 
       <.empty_state
-        :if={!(@streams.areas |> Enum.any?())}
+        :if={@areas_count == 0}
         icon="hero-map"
         message={gettext("No areas yet. Create your first area to get started.")}
       >

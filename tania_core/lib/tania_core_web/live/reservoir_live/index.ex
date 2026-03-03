@@ -16,6 +16,7 @@ defmodule TaniaCoreWeb.ReservoirLive.Index do
        |> assign(:page_title, "Reservoirs")
        |> assign(:active_page, :reservoirs)
        |> assign(:farm, farm)
+       |> assign(:reservoirs_count, length(reservoirs))
        |> stream(:reservoirs, reservoirs)
        |> assign(:reservoir, nil)
        |> assign(:show_form, false)}
@@ -66,6 +67,7 @@ defmodule TaniaCoreWeb.ReservoirLive.Index do
         {:noreply,
          socket
          |> stream_delete(:reservoirs, reservoir)
+         |> update(:reservoirs_count, &(&1 - 1))
          |> put_flash(:info, "Reservoir deleted")}
 
       {:error, _} ->
@@ -82,6 +84,7 @@ defmodule TaniaCoreWeb.ReservoirLive.Index do
         {:noreply,
          socket
          |> stream_insert(:reservoirs, reservoir)
+         |> update(:reservoirs_count, &(&1 + 1))
          |> assign(:show_form, false)
          |> put_flash(:info, "Reservoir created")}
 
@@ -121,7 +124,7 @@ defmodule TaniaCoreWeb.ReservoirLive.Index do
 
       <div class="mt-6">
         <.table
-          :if={@streams.reservoirs |> Enum.any?()}
+          :if={@reservoirs_count > 0}
           id="reservoirs"
           rows={@streams.reservoirs}
         >
@@ -147,7 +150,7 @@ defmodule TaniaCoreWeb.ReservoirLive.Index do
         </.table>
 
         <.empty_state
-          :if={!(@streams.reservoirs |> Enum.any?())}
+          :if={@reservoirs_count == 0}
           icon="hero-beaker"
           message={gettext("No reservoirs yet. Create your first water source.")}
         >

@@ -18,6 +18,7 @@ defmodule TaniaCoreWeb.TaskLive.Index do
        |> assign(:active_page, :tasks)
        |> assign(:farm, farm)
        |> assign(:filter, "all")
+       |> assign(:tasks_count, length(tasks))
        |> stream(:tasks, tasks)
        |> assign(:task, nil)
        |> assign(:show_form, false)}
@@ -45,6 +46,7 @@ defmodule TaniaCoreWeb.TaskLive.Index do
     {:noreply,
      socket
      |> assign(:filter, filter)
+     |> assign(:tasks_count, length(tasks))
      |> stream(:tasks, tasks, reset: true)}
   end
 
@@ -75,6 +77,7 @@ defmodule TaniaCoreWeb.TaskLive.Index do
         {:noreply,
          socket
          |> stream_insert(:tasks, task)
+         |> update(:tasks_count, &(&1 + 1))
          |> assign(:show_form, false)
          |> put_flash(:info, "Task created")}
 
@@ -124,6 +127,7 @@ defmodule TaniaCoreWeb.TaskLive.Index do
         {:noreply,
          socket
          |> stream_delete(:tasks, task)
+         |> update(:tasks_count, &(&1 - 1))
          |> put_flash(:info, "Task deleted")}
 
       {:error, _} ->
@@ -210,7 +214,7 @@ defmodule TaniaCoreWeb.TaskLive.Index do
 
         <%!-- Task list --%>
         <div class="flex-1 min-w-0">
-          <div :if={@streams.tasks |> Enum.any?()} class="space-y-3">
+          <div :if={@tasks_count > 0} class="space-y-3">
             <div
               :for={{dom_id, task} <- @streams.tasks}
               id={dom_id}
@@ -272,7 +276,7 @@ defmodule TaniaCoreWeb.TaskLive.Index do
           </div>
 
           <.empty_state
-            :if={!(@streams.tasks |> Enum.any?())}
+            :if={@tasks_count == 0}
             icon="hero-clipboard-document-list"
             message={gettext("No tasks found.")}
           >

@@ -23,6 +23,7 @@ defmodule TaniaCoreWeb.CropLive.Index do
        |> assign(:areas, areas)
        |> assign(:materials, materials)
        |> assign(:tab, "active")
+       |> assign(:crops_count, length(crops))
        |> stream(:crops, crops)
        |> assign(:crop, nil)
        |> assign(:show_form, false)}
@@ -38,6 +39,7 @@ defmodule TaniaCoreWeb.CropLive.Index do
     {:noreply,
      socket
      |> assign(:tab, tab)
+     |> assign(:crops_count, length(crops))
      |> stream(:crops, crops, reset: true)}
   end
 
@@ -73,6 +75,7 @@ defmodule TaniaCoreWeb.CropLive.Index do
         {:noreply,
          socket
          |> stream_insert(:crops, crop)
+         |> update(:crops_count, &(&1 + 1))
          |> assign(:show_form, false)
          |> put_flash(:info, "Crop batch created")}
 
@@ -90,6 +93,7 @@ defmodule TaniaCoreWeb.CropLive.Index do
         {:noreply,
          socket
          |> stream_delete(:crops, crop)
+         |> update(:crops_count, &(&1 - 1))
          |> put_flash(:info, "Crop deleted")}
 
       {:error, _} ->
@@ -123,7 +127,7 @@ defmodule TaniaCoreWeb.CropLive.Index do
 
       <div class="mt-6">
         <.table
-          :if={@streams.crops |> Enum.any?()}
+          :if={@crops_count > 0}
           id="crops"
           rows={@streams.crops}
           row_click={fn {_id, crop} -> JS.navigate("/crops/#{crop.id}") end}
@@ -162,7 +166,7 @@ defmodule TaniaCoreWeb.CropLive.Index do
         </.table>
 
         <.empty_state
-          :if={!(@streams.crops |> Enum.any?())}
+          :if={@crops_count == 0}
           icon="hero-squares-2x2"
           message={
             if @tab == "active",
