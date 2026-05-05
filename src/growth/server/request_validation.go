@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/rondweb/tania-core/src/growth/domain"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 )

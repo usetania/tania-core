@@ -3,7 +3,7 @@ package storage
 import (
 	"time"
 
-	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/rondweb/tania-core/src/assets/domain"
 	uuid "github.com/satori/go.uuid"
 )
 

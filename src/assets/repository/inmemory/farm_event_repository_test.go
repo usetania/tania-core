@@ -3,9 +3,9 @@ package inmemory
 import (
 	"testing"
 
-	"github.com/Tanibox/tania-core/src/assets/storage"
+	"github.com/rondweb/tania-core/src/assets/storage"
 
-	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/rondweb/tania-core/src/assets/domain"
 	"github.com/stretchr/testify/assert"
 )
 

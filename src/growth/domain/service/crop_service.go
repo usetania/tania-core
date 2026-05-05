@@ -1,9 +1,9 @@
 package service
 
 import (
-	"github.com/Tanibox/tania-core/src/growth/domain"
-	"github.com/Tanibox/tania-core/src/growth/query"
-	"github.com/Tanibox/tania-core/src/growth/storage"
+	"github.com/rondweb/tania-core/src/growth/domain"
+	"github.com/rondweb/tania-core/src/growth/query"
+	"github.com/rondweb/tania-core/src/growth/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

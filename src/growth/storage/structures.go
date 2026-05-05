@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/rondweb/tania-core/src/growth/domain"
 	deadlock "github.com/sasha-s/go-deadlock"
 	uuid "github.com/satori/go.uuid"
 )

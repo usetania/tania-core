@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/growth/query"
-	"github.com/Tanibox/tania-core/src/helper/stringhelper"
+	"github.com/rondweb/tania-core/src/growth/query"
+	"github.com/rondweb/tania-core/src/helper/stringhelper"
 	uuid "github.com/satori/go.uuid"
 )
 

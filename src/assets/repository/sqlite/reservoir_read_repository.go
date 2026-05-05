@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/assets/repository"
-	"github.com/Tanibox/tania-core/src/assets/storage"
+	"github.com/rondweb/tania-core/src/assets/repository"
+	"github.com/rondweb/tania-core/src/assets/storage"
 )
 
 type ReservoirReadRepositorySqlite struct {

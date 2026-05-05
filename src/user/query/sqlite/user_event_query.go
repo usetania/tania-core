@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/user/decoder"
-	"github.com/Tanibox/tania-core/src/user/query"
-	"github.com/Tanibox/tania-core/src/user/storage"
+	"github.com/rondweb/tania-core/src/user/decoder"
+	"github.com/rondweb/tania-core/src/user/query"
+	"github.com/rondweb/tania-core/src/user/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

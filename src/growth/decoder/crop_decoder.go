@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/growth/domain"
+	"github.com/rondweb/tania-core/src/growth/domain"
 	"github.com/mitchellh/mapstructure"
 	uuid "github.com/satori/go.uuid"
 )

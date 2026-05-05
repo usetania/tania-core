@@ -6,7 +6,7 @@ This project adheres to the [Contributor Covenant 1.4](code-of-conduct.md). By p
 
 ## Raising Issues
 
-Please raise any bug reports on [Tania's Github issue trackers](https://github.com/Tanibox/tania-core/issues). Be sure to search the list to see if your issue has already been raised.
+Please raise any bug reports on [Tania's Github issue trackers](https://github.com/rondweb/tania-core/issues). Be sure to search the list to see if your issue has already been raised.
 
 A good bug report is one that make it easy to understand what you were trying to do and what went wrong.
 

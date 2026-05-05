@@ -3,8 +3,8 @@ package mysql
 import (
 	"database/sql"
 
-	"github.com/Tanibox/tania-core/src/user/repository"
-	"github.com/Tanibox/tania-core/src/user/storage"
+	"github.com/rondweb/tania-core/src/user/repository"
+	"github.com/rondweb/tania-core/src/user/storage"
 )
 
 type UserAuthRepositoryMysql struct {

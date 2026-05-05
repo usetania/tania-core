@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/assets/decoder"
-	"github.com/Tanibox/tania-core/src/assets/domain"
-	"github.com/Tanibox/tania-core/src/assets/repository"
-	"github.com/Tanibox/tania-core/src/helper/structhelper"
+	"github.com/rondweb/tania-core/src/assets/decoder"
+	"github.com/rondweb/tania-core/src/assets/domain"
+	"github.com/rondweb/tania-core/src/assets/repository"
+	"github.com/rondweb/tania-core/src/helper/structhelper"
 	uuid "github.com/satori/go.uuid"
 )
 

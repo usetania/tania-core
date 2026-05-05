@@ -3,9 +3,9 @@ package inmemory
 import (
 	"errors"
 
-	"github.com/Tanibox/tania-core/src/growth/query"
-	tasksdomain "github.com/Tanibox/tania-core/src/tasks/domain"
-	"github.com/Tanibox/tania-core/src/tasks/storage"
+	"github.com/rondweb/tania-core/src/growth/query"
+	tasksdomain "github.com/rondweb/tania-core/src/tasks/domain"
+	"github.com/rondweb/tania-core/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

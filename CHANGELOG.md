@@ -15,7 +15,7 @@ and this project currently doesn't strictly adhere to [Semantic Versioning](http
 
 ## [1.5.1] - 2018-04-14
 ### Fixed
-- https://github.com/Tanibox/tania-core/issues/9
+- https://github.com/rondweb/tania-core/issues/9
 
 ## [1.5.0] - 2018-04-03
 ### Added

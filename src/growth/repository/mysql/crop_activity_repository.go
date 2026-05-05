@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/Tanibox/tania-core/src/growth/decoder"
-	"github.com/Tanibox/tania-core/src/growth/repository"
-	"github.com/Tanibox/tania-core/src/growth/storage"
+	"github.com/rondweb/tania-core/src/growth/decoder"
+	"github.com/rondweb/tania-core/src/growth/repository"
+	"github.com/rondweb/tania-core/src/growth/storage"
 )
 
 type CropActivityRepositoryMysql struct {

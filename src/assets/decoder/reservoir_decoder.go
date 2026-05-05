@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Tanibox/tania-core/src/assets/domain"
+	"github.com/rondweb/tania-core/src/assets/domain"
 	"github.com/mitchellh/mapstructure"
 )
 

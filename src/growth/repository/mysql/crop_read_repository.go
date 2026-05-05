@@ -3,8 +3,8 @@ package sqlite
 import (
 	"database/sql"
 
-	"github.com/Tanibox/tania-core/src/growth/repository"
-	"github.com/Tanibox/tania-core/src/growth/storage"
+	"github.com/rondweb/tania-core/src/growth/repository"
+	"github.com/rondweb/tania-core/src/growth/storage"
 )
 
 type CropReadRepositoryMysql struct {

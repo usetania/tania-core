@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/Tanibox/tania-core/src/user/domain"
-	"github.com/Tanibox/tania-core/src/user/storage"
+	"github.com/rondweb/tania-core/src/user/domain"
+	"github.com/rondweb/tania-core/src/user/storage"
 	"github.com/labstack/gommon/log"
 )
 

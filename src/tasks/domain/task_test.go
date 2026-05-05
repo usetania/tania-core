@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/Tanibox/tania-core/src/tasks/query"
+	"github.com/rondweb/tania-core/src/tasks/query"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -38,7 +38,7 @@ func TestCreateTask(t *testing.T) {
 
 	due_date_invalid, _ := time.Parse(time.RFC3339, "2017-01-23T17:37:39.697328206+01:00")
 	due_ptr_invalid := &due_date_invalid
-	due_date, _ := time.Parse(time.RFC3339, "2020-12-31T17:37:39.697328206+01:00")
+	due_date := time.Now().AddDate(1, 0, 0)
 	due_ptr := &due_date
 
 	tasktitle := "My Task"

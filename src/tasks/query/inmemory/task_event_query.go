@@ -3,8 +3,8 @@ package inmemory
 import (
 	"sort"
 
-	"github.com/Tanibox/tania-core/src/tasks/query"
-	"github.com/Tanibox/tania-core/src/tasks/storage"
+	"github.com/rondweb/tania-core/src/tasks/query"
+	"github.com/rondweb/tania-core/src/tasks/storage"
 	uuid "github.com/satori/go.uuid"
 )
 

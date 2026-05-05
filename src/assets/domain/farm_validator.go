@@ -3,7 +3,7 @@ package domain
 import (
 	"regexp"
 
-	"github.com/Tanibox/tania-core/src/helper/validationhelper"
+	"github.com/rondweb/tania-core/src/helper/validationhelper"
 )
 
 func validateFarmName(name string) error {

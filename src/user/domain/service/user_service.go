@@ -3,10 +3,10 @@ package service
 import (
 	"errors"
 
-	"github.com/Tanibox/tania-core/src/user/domain"
+	"github.com/rondweb/tania-core/src/user/domain"
 
-	"github.com/Tanibox/tania-core/src/user/query"
-	"github.com/Tanibox/tania-core/src/user/storage"
+	"github.com/rondweb/tania-core/src/user/query"
+	"github.com/rondweb/tania-core/src/user/storage"
 )
 
 type UserServiceImpl struct {
